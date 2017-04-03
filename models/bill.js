@@ -1,4 +1,4 @@
-const cozy = require('../lib/cozyclient')
+const cozy = require('../cozyclient')
 const moment = require('moment')
 
 module.exports = {

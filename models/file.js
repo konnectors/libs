@@ -1,6 +1,6 @@
 const request = require('request')
 const log = require('debug')('konnectors:file')
-const cozy = require('../lib/cozyclient')
+const cozy = require('../cozyclient')
 
 module.exports = {
   isPresent (fullPath, callback) {

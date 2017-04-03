@@ -1,5 +1,5 @@
 const async = require('async')
-const cozy = require('../lib/cozyclient')
+const cozy = require('../cozyclient')
 
 // Folder model is used to list the list of available folders in the user's
 // Cozy. It's required for konnectors that download files like bill PDFs.

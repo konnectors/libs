@@ -1,8 +1,8 @@
 const async = require('async')
 const naming = require('./naming')
 const moment = require('moment')
-const Folder = require('../models/folder')
-const File = require('../models/file')
+const Folder = require('./models/folder')
+const File = require('./models/file')
 
 // Fetcher layer that creates an object in database for each entry. If a field
 // named pdfurl is is set on the entry, it downloads the file and creates a Cozy
