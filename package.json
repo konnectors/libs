@@ -1,0 +1,20 @@
+{
+  "name": "cozy-konnector-libs",
+  "version": "1.0.0",
+  "description": "All the libs needed by a cozy v3 konnector",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/doubleface/cozy-konnector-libs.git"
+  },
+  "keywords": [
+    "cozy-v3",
+    "konnector"
+  ],
+  "author": "doubleface",
+  "license": "AGPL-3.0",
+  "bugs": {
+    "url": "https://github.com/doubleface/cozy-konnector-libs/issues"
+  },
+  "homepage": "https://github.com/doubleface/cozy-konnector-libs#readme"
+}
