@@ -1,6 +1,5 @@
 const async = require('async')
 const naming = require('./naming')
-const moment = require('moment')
 const Folder = require('./models/folder')
 const File = require('./models/file')
 
@@ -20,7 +19,7 @@ module.exports = (log, model, options, tags) => {
 
     // For each entry...
     return async.eachSeries(entriesToSave, function (entry, callback) {
-      if (!(entry.date instanceof moment)) {
+      if (entry.date.format === undefined) {
         log.info('Bill creation aborted')
         return callback('Moment instance expected for date field')
       }
