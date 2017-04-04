@@ -17,11 +17,11 @@ if (fs.existsSync(TOKEN_PATH)) {
 const cozyURL = process.env.COZY_URL ? process.env.COZY_URL : 'http://cozy.tools:8080'
 log(cozyURL, 'cozyURL')
 
-const manifestPath = process.argv[2]
+let manifestPath = process.argv[2]
 if (manifestPath) {
-    manifestPath = path.resolve(manifestPath)
+  manifestPath = path.resolve(manifestPath)
 } else {
-    console.log(`
+  console.log(`
 Manifest file not found : ${manifestPath}
 
 Please use this command like this :
@@ -30,8 +30,8 @@ cozy-authenticate MANIFEST_PATH
 
 Where MANIFEST_PATH is the path to a konnector manifest : manifest.konnectors
 `)
+  process.exit(0)
 }
-
 
 const scopes = manifest.getScopes(manifestPath)
 

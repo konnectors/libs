@@ -1,8 +1,4 @@
 #!/usr/bin/env node
 
-const path = require('path')
-
-var root = path.join(__dirname, '..');
-
-require(path.join(root, 'cozy-authenticate'))
+require(require('path').join(__dirname, '..', 'cozy-authenticate'))
 
