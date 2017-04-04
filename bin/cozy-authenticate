@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const http = require('http')
 const path = require('path')
 const fs = require('fs')
@@ -12,9 +14,26 @@ if (fs.existsSync(TOKEN_PATH)) {
   process.exit(0)
 }
 
-const cozyURL = process.argv[2] ? process.argv[2] : 'http://cozy.local:8080'
+const cozyURL = process.env.COZY_URL ? process.env.COZY_URL : 'http://cozy.tools:8080'
 log(cozyURL, 'cozyURL')
-const scopes = manifest.getScopes(path.join(__dirname, '../manifest.konnectors'))
+
+const manifestPath = process.argv[2]
+if (manifestPath) {
+    manifestPath = path.resolve(manifestPath)
+} else {
+    console.log(`
+Manifest file not found : ${manifestPath}
+
+Please use this command like this :
+
+cozy-authenticate MANIFEST_PATH
+
+Where MANIFEST_PATH is the path to a konnector manifest : manifest.konnectors
+`)
+}
+
+
+const scopes = manifest.getScopes(manifestPath)
 
 function onRegistered (client, url) {
   let server
