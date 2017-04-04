@@ -7,16 +7,7 @@ const log = require('debug')('gettoken')
 const {Client, MemoryStorage} = require('cozy-client-js')
 const manifest = require('./manifest')
 
-// only genereate the token file if it does not already exist
-const TOKEN_PATH = path.join(__dirname, '../data/token.json')
-if (fs.existsSync(TOKEN_PATH)) {
-  log(`${TOKEN_PATH} already present`)
-  process.exit(0)
-}
-
-const cozyURL = process.env.COZY_URL ? process.env.COZY_URL : 'http://cozy.tools:8080'
-log(cozyURL, 'cozyURL')
-
+// Manifest path is mandatory in the cli
 let manifestPath = process.argv[2]
 if (manifestPath) {
   manifestPath = path.resolve(manifestPath)
@@ -32,6 +23,16 @@ Where MANIFEST_PATH is the path to a konnector manifest : manifest.konnectors
 `)
   process.exit(0)
 }
+
+// only genereate the token file if it does not already exist
+const tokenPath = path.join(path.dirname(manifestPath), 'data/token.json')
+if (fs.existsSync(tokenPath)) {
+  log(`${tokenPath} already present`)
+  process.exit(0)
+}
+
+const cozyURL = process.env.COZY_URL ? process.env.COZY_URL : 'http://cozy.tools:8080'
+log(cozyURL, 'cozyURL')
 
 const scopes = manifest.getScopes(manifestPath)
 
@@ -74,7 +75,7 @@ const cozy = new Client({
 })
 
 cozy.authorize().then((creds) => {
-  fs.writeFileSync(TOKEN_PATH, JSON.stringify(creds))
-  log(TOKEN_PATH, 'file saved')
+  fs.writeFileSync(tokenPath, JSON.stringify(creds))
+  log(tokenPath, 'file saved')
   process.exit()
 })
