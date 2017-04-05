@@ -5,7 +5,7 @@
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/doubleface/cozy-konnector-libs.git"
+    "url": "git+https://github.com/cozy/cozy-konnector-libs.git"
   },
   "keywords": [
     "cozy-v3",
@@ -17,9 +17,9 @@
     "cozy-authenticate": "bin/cozy-authenticate"
   },
   "bugs": {
-    "url": "https://github.com/doubleface/cozy-konnector-libs/issues"
+    "url": "https://github.com/cozy/cozy-konnector-libs/issues"
   },
-  "homepage": "https://github.com/doubleface/cozy-konnector-libs#readme",
+  "homepage": "https://github.com/cozy/cozy-konnector-libs#readme",
   "dependencies": {
     "btoa": "^1.1.2",
     "core-js": "^2.4.1",
