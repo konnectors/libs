@@ -33,5 +33,49 @@ module.exports = {
     delete () {
       return Promise.resolve({})
     }
+  },
+  files: {
+    statByPath (pathToCheck) {
+      // check this path in ./data
+      return new Promise((resolve, reject) => {
+        log(`Checking if ${pathToCheck} exists`)
+        const realpath = path.join('./data', pathToCheck)
+        log(`Real path : ${realpath}`)
+        if (fs.existsSync(realpath)) {
+          resolve({_id: pathToCheck})
+        } else {
+          reject(new Error(`${pathToCheck} does not exist`))
+        }
+      })
+    },
+    create (file, options) {
+      return new Promise((resolve, reject) => {
+        log(`Creating new file ${options.name}`)
+        const finalPath = path.join('./data', options.dirID, options.name)
+        log(`Real path : ${finalPath}`)
+        let writeStream = fs.createWriteStream(finalPath)
+        file.pipe(writeStream)
+
+        file.on('end', () => {
+          log(`File ${finalPath} created`)
+          resolve()
+        })
+
+        writeStream.on('error', err => {
+          log(`Error : ${err}`)
+          reject(new Error(err))
+        })
+      })
+    },
+    createDirectory (options) {
+      return new Promise((resolve, reject) => {
+        log(`Creating new directory ${options.name}`)
+        const finalPath = path.join('./data', options.dirID, options.name)
+        log(`Real path : ${finalPath}`)
+        let result = fs.mkdir(finalPath)
+        if (result) resolve()
+        else reject(new Error(`Could not create ${finalPath}`))
+      })
+    }
   }
 }
