@@ -1,4 +1,5 @@
 const async = require('async')
+const moment = require('moment')
 const naming = require('./naming')
 const Folder = require('./models/folder')
 const File = require('./models/file')
@@ -19,9 +20,9 @@ module.exports = (log, model, options, tags) => {
 
     // For each entry...
     return async.eachSeries(entriesToSave, function (entry, callback) {
-      if (entry.date.format === undefined) {
+      if (entry.date instanceof moment) {
         log.info('Bill creation aborted')
-        return callback('Moment instance expected for date field')
+        return callback(new Error('Moment instance expected for date field'))
       }
 
       const fileName = naming.getEntryFileName(entry, options)
@@ -50,8 +51,37 @@ module.exports = (log, model, options, tags) => {
         if (err) {
           log.raw(err)
           log.info(`File for ${entryLabel} not created.`)
+          return callback()
+        } else {
+          log.info(`File for ${entryLabel} created: ${fileName}`)
+          return saveEntry(entry, entryLabel)
         }
-        return callback(null)
+      }
+
+      function saveEntry (entry, entryLabel) {
+        if ((entry.vendor == null)) {
+          if (options.vendor) { entry.vendor = options.vendor }
+        }
+
+        // Only update the date format for the bills, to be able to
+        // match correctly the bill with operations.
+        if (entry.pdfurl != null) {
+          let dateWithoutTimezone = entry.date.format('YYYY-MM-DD')
+          dateWithoutTimezone += 'T00:00:00.000Z'
+          entry.date = moment(dateWithoutTimezone)
+        }
+
+        // cozy-db will cast the moment instance into a date since
+        // moment.valueOf returns a timestamp that new Date() will parse
+        return model.create(entry, function (err) {
+          if (err) {
+            log.raw(err)
+            log.error(`entry for ${entryLabel} not saved.`)
+          } else {
+            log.info(`entry for ${entryLabel} saved.`)
+          }
+          return callback()
+        })
       }
 
       log.info(`import for entry ${entryLabel} started.`)
@@ -61,6 +91,7 @@ module.exports = (log, model, options, tags) => {
       } else {
         // If there is no file link set, it saves only data.
         log.info(`No file to download for ${entryLabel}.`)
+        return saveEntry(entry, entryLabel)
       }
     }, function (err) {
       if (err) {
@@ -84,7 +115,7 @@ module.exports = (log, model, options, tags) => {
 // For each entry, ensure that the corresponding file exists in the Cozy Files
 // application. If it doesn't exist, it creates the file by downloading it
 // from its url.
-var checkForMissingFiles = function (options, callback) {
+function checkForMissingFiles (options, callback) {
   const {entries, folderPath, nameOptions, tags, log} = options
 
   return async.eachSeries(entries, function (entry, done) {
@@ -97,6 +128,7 @@ var checkForMissingFiles = function (options, callback) {
         log.error(err)
         return done()
       }
+
       // If it's there, it does nothing.
       if (isPresent || (entry.pdfurl == null)) { return done() }
 
@@ -104,16 +136,16 @@ var checkForMissingFiles = function (options, callback) {
       const url = entry.pdfurl
       path = folderPath
 
-      return Folder.mkdirp(path, () =>
-          File.createNew(fileName, path, url, tags, function (err, file) {
-            if (err) {
-              log.error('An error occured while creating file')
-              return log.raw(err)
-            } else {
-              done()
-            }
-          })
-      )
+      return Folder.mkdirp(path, () => {
+        return File.createNew(fileName, path, url, tags, function (err, file) {
+          if (err) {
+            log.error('An error occured while creating file')
+            return log.raw(err)
+          } else {
+            done()
+          }
+        })
+      })
     })
   }, err => {
     if (err) {
