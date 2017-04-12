@@ -20,7 +20,7 @@ module.exports = (log, model, options, tags) => {
 
     // For each entry...
     return async.eachSeries(entriesToSave, function (entry, callback) {
-      if (entry.date instanceof moment) {
+      if (entry.date.format === undefined) {
         log.info('Bill creation aborted')
         return callback(new Error('Moment instance expected for date field'))
       }
