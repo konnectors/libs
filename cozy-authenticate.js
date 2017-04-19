@@ -19,7 +19,7 @@ Please use this command like this :
 
 cozy-authenticate MANIFEST_PATH
 
-Where MANIFEST_PATH is the path to a konnector manifest : manifest.konnectors
+Where MANIFEST_PATH is the path to a konnector manifest : manifest.konnector
 `)
   process.exit(0)
 }

@@ -2,9 +2,10 @@ const {Client, MemoryStorage} = require('cozy-client-js')
 const log = require('debug')('cozyclient')
 
 let cozy = null
-if (process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV === 'standalone') {
   cozy = require('./cozy-client-js-stub')
-} else {
+} else if (process.env.NODE_ENV === 'development') {
+  // In development mode, the credentials are the full OAuth json file
   // COZY_CREDENTIALS
   let credentials = null
   try {
@@ -15,6 +16,7 @@ if (process.env.NODE_ENV === 'development') {
     process.exit(1)
   }
 
+  // in development mode, node COZY_DOMAIN but full COZY_URL is given
   // COZY_URL
   if (process.env.COZY_URL === undefined) {
     console.log(`Please provide COZY_URL environment variable.`)
@@ -33,6 +35,29 @@ if (process.env.NODE_ENV === 'development') {
   })
 
   cozy.saveCredentials(credentials.client, credentials.token)
+} else { // production mode
+  // COZY_CREDENTIALS
+  let credentials = null
+  try {
+    credentials = process.env.COZY_CREDENTIALS.trim()
+    // log(credentials, 'COZY_CREDENTIALS')
+  } catch (err) {
+    console.log(`Please provide proper COZY_CREDENTIALS environment variable.`)
+    process.exit(1)
+  }
+
+  // COZY_DOMAIN
+  if (process.env.COZY_DOMAIN === undefined) {
+    console.log(`Please provide COZY_DOMAIN environment variable.`)
+    process.exit(1)
+  } else {
+    log(process.env.COZY_DOMAIN, 'COZY_DOMAIN')
+  }
+
+  cozy = new Client({
+    token: credentials,
+    cozyURL: process.env.COZY_DOMAIN
+  })
 }
 
 module.exports = cozy
