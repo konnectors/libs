@@ -14,7 +14,8 @@
   "author": "doubleface",
   "license": "AGPL-3.0",
   "bin": {
-    "cozy-authenticate": "bin/cozy-authenticate"
+    "cozy-authenticate": "bin/cozy-authenticate",
+    "cozy-init-dev-account": "bin/cozy-init-dev-account"
   },
   "bugs": {
     "url": "https://github.com/cozy/cozy-konnector-libs/issues"

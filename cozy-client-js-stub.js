@@ -32,6 +32,18 @@ module.exports = {
     },
     delete () {
       return Promise.resolve({})
+    },
+    find (doctype, id) {
+      // Find the doc in the fixture
+      // exeption for "io.cozy.accounts" doctype where we return env_fields.json content
+      let result = null
+      if (doctype === 'io.cozy.accounts') {
+        const FIELDS_PATH = path.resolve('data/env_fields.json')
+        result = {auth: require(FIELDS_PATH)}
+      } else {
+        return Promise.reject(new Error('find is not implemented yet in cozy-client-js stub'))
+      }
+      return Promise.resolve(result)
     }
   },
   files: {
