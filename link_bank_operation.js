@@ -2,6 +2,7 @@ const async = require('async')
 const moment = require('moment')
 
 const BankOperation = require('./models/bankoperation')
+const Bill = require('./models/bill')
 
 // Object that will handle all the matching and linking operation depending a
 // given model.
@@ -58,6 +59,7 @@ class BankOperationLinker {
     if (entry.isRefund === true) amount *= -1
 
     let minAmountDelta = Infinity
+
     for (let operation of operations) {
       let opAmount = Math.abs(operation.amount)
 
@@ -81,32 +83,32 @@ class BankOperationLinker {
       }
     }
 
-    if (operationToLink === null) {
-      callback()
-    } else {
+    if (operationToLink !== null) {
       this.linkOperation(operationToLink, entry, callback)
+    } else {
+      callback();
     }
   }
-  // Save the binary ID and the file ID as an extra attribute of the
-  // operation.
   linkOperation (operation, entry, callback) {
     let date = new Date(entry.date)
     let key = `${moment(date).format('YYYY-MM-DD')}T00:00:00.000Z`
 
-    this.model.request('byDate', {key: key}, (err, entries) => {
+    Bill.findBy({date: key}, (err, entries) => {
       // We ignore error, no need to make fail the import for that.
       // We just log it.
       if (err) {
-        this.log.raw(err)
+        this.log.error(err)
         callback()
       } else if (entries.length === 0) {
         callback()
       } else {
         let entry = entries[0]
 
-        operation.setBinaryFromFile(operation._id, entry.fileId, (err, operation) => {
-          if (err) this.log.raw(err)
-          else { this.log.debug(`Binary ${operation.binary.file.id} linked with operation: ${operation.title} - ${operation.amount}`) }
+        BankOperation.attachBill(operation._id, Bill.doctype + ':' + entry._id, (err, operation) => {
+          if (err) this.log.error(err)
+          else {
+            this.log.info(`Binary ${operation.bill} linked with operation: ${operation.title} - ${operation.amount}`)
+          }
           callback()
         })
       }
