@@ -3,19 +3,18 @@ const moment = require('moment')
 
 const BankOperation = require('./models/bankoperation')
 
-//Object that will handle all the matching and linking operation depending a
-//given model.
-//For each given bills, it will compare if a bank operation looks to match it.
-//If the amount and date matched, the bill binary is linked to the bank
-//operation.
-class BankOperationLinker{
-  constructor(options){
+// Object that will handle all the matching and linking operation depending a
+// given model.
+// For each given bills, it will compare if a bank operation looks to match it.
+// If the amount and date matched, the bill binary is linked to the bank
+// operation.
+class BankOperationLinker {
+  constructor (options) {
     this.log = options.log
     this.model = options.model
     if (typeof options.identifier === 'string') {
       this.identifier = [options.identifier.toLowerCase()]
-    }
-    else {
+    } else {
       this.identifier = options.identifier.map((id) => (id.toLowerCase()))
     }
 
@@ -24,13 +23,13 @@ class BankOperationLinker{
     this.minDateDelta = options.minDateDelta || this.dateDelta
     this.maxDateDelta = options.maxDateDelta || this.dateDelta
   }
-  link(entries, callback){
+  link (entries, callback) {
     async.eachSeries(entries, this.linkOperationIfExist.bind(this), callback)
   }
 //  For a given entry we look for an operation with same date and same
 //  amount.
   linkOperationIfExist (entry, callback) {
-    let date = new Date (entry.paidDate || entry.date)
+    let date = new Date(entry.paidDate || entry.date)
     let startDate = moment(date).subtract(this.minDateDelta, 'days')
     let endDate = moment(date).add(this.maxDateDelta, 'days')
 
@@ -40,16 +39,16 @@ class BankOperationLinker{
     BankOperation.all({
       date: {
         '$gt': startkey,
-        '$lt': endkey,
+        '$lt': endkey
       }
     }, (err, operations) => {
       if (err) return callback(err)
       this.linkRightOperation(operations, entry, callback)
     })
   }
-  //Look for the operation of which amount matches the entry amount
-  //If an operation to link is found, we save the binary ID
-  //and the file ID as an extra attribute of the operation.
+  // Look for the operation of which amount matches the entry amount
+  // If an operation to link is found, we save the binary ID
+  // and the file ID as an extra attribute of the operation.
   linkRightOperation (operations, entry, callback) {
     let operationToLink = null
 
@@ -67,7 +66,6 @@ class BankOperationLinker{
       if (entry.isRefund === true) opAmount *= -1
 
       let amountDelta = Math.abs(opAmount - amount)
-      let operationToLink = null
 
       // Select the operation to link based on the minimal amount
       // difference to the expected one and if the label matches one
@@ -76,17 +74,16 @@ class BankOperationLinker{
         if (operation.title.toLowerCase().indexOf(identifier) >= 0 &&
           amountDelta <= this.amountDelta &&
           amountDelta <= minAmountDelta) {
-            operationToLink = operation
-            let minAmountDelta = amountDelta
-            break
+          operationToLink = operation
+          minAmountDelta = amountDelta
+          break
         }
       }
     }
 
     if (operationToLink === null) {
       callback()
-    }
-    else {
+    } else {
       this.linkOperation(operationToLink, entry, callback)
     }
   }
@@ -102,18 +99,15 @@ class BankOperationLinker{
       if (err) {
         this.log.raw(err)
         callback()
-      }
-      else if (entries.length === 0) {
+      } else if (entries.length === 0) {
         callback()
-      }
-      else{
+      } else {
         let entry = entries[0]
 
         operation.setBinaryFromFile(operation._id, entry.fileId, (err, operation) => {
-            if (err) this.log.raw(err)
-            else
-                this.log.debug(`Binary ${operation.binary.file.id} linked with operation: ${operation.title} - ${operation.amount}`)
-            callback()
+          if (err) this.log.raw(err)
+          else { this.log.debug(`Binary ${operation.binary.file.id} linked with operation: ${operation.title} - ${operation.amount}`) }
+          callback()
         })
       }
     })

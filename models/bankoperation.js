@@ -1,4 +1,5 @@
 const cozy = require('../cozyclient')
+const File = require('./file.js')
 const moment = require('moment')
 const DOCTYPE = 'io.cozy.bankoperations'
 
@@ -28,23 +29,22 @@ module.exports = {
       if (err) return callback(err)
 
       if (file && file.binary && file.binary.file) {
-          let attributes = {
-            binary: {
-              file: file.binary.file,
-              fileName: file.name,
-              fileMime: file.mime
-            }
+        let attributes = {
+          binary: {
+            file: file.binary.file,
+            fileName: file.name,
+            fileMime: file.mime
           }
+        }
 
-          cozy.data.updateAttributes(DOCTYPE, operationId, attributes)
+        cozy.data.updateAttributes(DOCTYPE, operationId, attributes)
           .then(updated => {
             callback(updated)
           })
           .catch(err => {
             callback(err)
           })
-      }
-      else {
+      } else {
         callback(new Error(`No binary for this file ${fileId}`))
       }
     })
