@@ -58,7 +58,7 @@ class BankOperationLinker {
     if (entry.isRefund === true) amount *= -1
 
     let minAmountDelta = Infinity
-    for (let operation in operations) {
+    for (let operation of operations) {
       let opAmount = Math.abs(operation.amount)
 
       // By default, an entry is an expense. If it is not, it should be
