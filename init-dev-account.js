@@ -10,15 +10,22 @@ if (accountIdPath) {
   accountIdPath = path.resolve(accountIdPath)
 } else {
   console.log(`Account id file not found : ${accountIdPath}`)
-  process.exit(1)
+  process.exit(0)
 }
 
 let fieldsFilePath = process.argv[3]
 if (fieldsFilePath) {
   fieldsFilePath = path.resolve(fieldsFilePath)
 } else {
-  console.log(`Fields file not found : ${fieldsFilePath}`)
-  process.exit(1)
+  console.log(`Fields file not found : ${fieldsFilePath}
+Please copy the env_fields.json.template file and fill the credentials`)
+  process.exit(0)
+}
+
+if (!fs.existsSync(fieldsFilePath)) {
+  console.log(`Fields file not found : ${fieldsFilePath}
+Please copy the env_fields.json.template file and fill the credentials`)
+  process.exit(0)
 }
 
 cozy.data.create('io.cozy.accounts', {
