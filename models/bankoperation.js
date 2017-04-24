@@ -1,5 +1,4 @@
 const cozy = require('../cozyclient')
-const File = require('./file.js')
 const moment = require('moment')
 const DOCTYPE = 'io.cozy.bank_operations'
 

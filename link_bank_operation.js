@@ -86,7 +86,7 @@ class BankOperationLinker {
     if (operationToLink !== null) {
       this.linkOperation(operationToLink, entry, callback)
     } else {
-      callback();
+      callback()
     }
   }
   linkOperation (operation, entry, callback) {
