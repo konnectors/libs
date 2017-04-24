@@ -70,7 +70,7 @@ class BankOperationLinker {
       // Select the operation to link based on the minimal amount
       // difference to the expected one and if the label matches one
       // of the possible labels (identifier)
-      for (let identifier in this.identifier) {
+      for (let identifier of this.identifier) {
         if (operation.title.toLowerCase().indexOf(identifier) >= 0 &&
           amountDelta <= this.amountDelta &&
           amountDelta <= minAmountDelta) {
