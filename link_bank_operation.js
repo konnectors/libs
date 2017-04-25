@@ -82,13 +82,12 @@ class BankOperationLinker {
           operationToLink = operation
           minAmountDelta = amountDelta
           break
-        }
-        else if (operation.title.toLowerCase().indexOf(identifier) >= 0 &&  // label must match
+        } else if (operation.title.toLowerCase().indexOf(identifier) >= 0 &&  // label must match
                  !operation.parent &&                                       // not a child operation itself
                  amountDelta > 0 &&                                         // op amount is smaller than entry amount
                  ((entry.isRefund && operation.amount > 0) ||               // if entry is refund, op is refund
                  (!entry.isRefund && operation.amount < 0)) &&              // if entry is expense, op is expense
-                 this.allowUnsafeLinks){
+                 this.allowUnsafeLinks) {
           candidateOperationsForLink.push(operation)
         }
       }
@@ -114,9 +113,9 @@ class BankOperationLinker {
       } else if (entries.length === 0) {
         callback(new Error('No matching entry found'))
       } else {
-        callback(null, entries[0]._id);
+        callback(null, entries[0]._id)
       }
-    });
+    })
   }
   linkOperation (operation, entry, callback) {
     this.getEntryId(entry, (err, entryId) => {
@@ -128,7 +127,7 @@ class BankOperationLinker {
       } else {
         let link = Bill.doctype + ':' + entryId
 
-        //if the operation and the entry are already linked, we can skip this step
+        // if the operation and the entry are already linked, we can skip this step
         if (operation.bill === link) return callback()
 
         BankOperation.attachBill(operation._id, link, (err, operation) => {
@@ -141,7 +140,7 @@ class BankOperationLinker {
       }
     })
   }
-  linkChildOperations (parentOperation, entry, callback){
+  linkChildOperations (parentOperation, entry, callback) {
     this.getEntryId(entry, (err, entryId) => {
       if (err) {
         // We ignore error, no need to make fail the import for that.
