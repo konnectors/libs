@@ -6,6 +6,7 @@ module.exports = {
   manifest: require('./manifest'),
   naming: require('./naming'),
   saveDataAndFile: require('./save_data_and_file'),
+  updateOrCreate: require('./update_or_create'),
   models: {
     bill: require('./models/bill'),
     file: require('./models/file'),
