@@ -76,13 +76,13 @@ class BankOperationLinker {
       // of the possible labels (identifier)
       // If unsafe matching is enabled, also find all operations for which the entry could ba a part of
       for (let identifier of this.identifier) {
-        if (operation.title.toLowerCase().indexOf(identifier) >= 0 &&
+        if (operation.label.toLowerCase().indexOf(identifier) >= 0 &&
           amountDelta <= this.amountDelta &&
           amountDelta <= minAmountDelta) {
           operationToLink = operation
           minAmountDelta = amountDelta
           break
-        } else if (operation.title.toLowerCase().indexOf(identifier) >= 0 &&  // label must match
+        } else if (operation.label.toLowerCase().indexOf(identifier) >= 0 &&  // label must match
                  !operation.parent &&                                       // not a child operation itself
                  amountDelta > 0 &&                                         // op amount is smaller than entry amount
                  ((entry.isRefund && operation.amount > 0) ||               // if entry is refund, op is refund
@@ -133,7 +133,7 @@ class BankOperationLinker {
         BankOperation.attachBill(operation._id, link, (err, operation) => {
           if (err) this.log.error(err)
           else {
-            this.log.info(`Binary ${operation.bill} linked with operation: ${operation.title} - ${operation.amount}`)
+            this.log.info(`Binary ${operation.bill} linked with operation: ${operation.label} - ${operation.amount}`)
           }
           callback()
         })
@@ -154,7 +154,7 @@ class BankOperationLinker {
         BankOperation.createChildOperation(parentOperation, {
           amount: entry.amount,
           bill: link,
-          title: parentOperation.title + ' - ' + entry.subtype
+          label: parentOperation.label + ' - ' + entry.subtype
         }, callback)
       }
     })
