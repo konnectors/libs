@@ -8,7 +8,7 @@ module.exports = {
     .then(file => {
       callback(null, true)
     })
-    .catch(err => callback(null, false))
+    .catch(() => callback(null, false))
   },
   createNew (fileName, path, url, tags, callback, requestoptions) {
     cozy.files.statByPath(path)

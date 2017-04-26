@@ -16,7 +16,6 @@ if (process.env.NODE_ENV === 'standalone') {
     process.exit(1)
   }
 
-  // in development mode, node COZY_DOMAIN but full COZY_URL is given
   // COZY_URL
   if (process.env.COZY_URL === undefined) {
     console.log(`Please provide COZY_URL environment variable.`)
@@ -46,17 +45,17 @@ if (process.env.NODE_ENV === 'standalone') {
     process.exit(1)
   }
 
-  // COZY_DOMAIN
-  if (process.env.COZY_DOMAIN === undefined) {
-    console.log(`Please provide COZY_DOMAIN environment variable.`)
+  // COZY_URL
+  if (process.env.COZY_URL === undefined) {
+    console.log(`Please provide COZY_URL environment variable.`)
     process.exit(1)
   } else {
-    log(process.env.COZY_DOMAIN, 'COZY_DOMAIN')
+    log(process.env.COZY_URL, 'COZY_URL')
   }
 
   cozy = new Client({
     token: credentials,
-    cozyURL: process.env.COZY_DOMAIN
+    cozyURL: process.env.COZY_URL
   })
 }
 

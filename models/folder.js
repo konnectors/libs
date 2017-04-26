@@ -36,7 +36,7 @@ module.exports = {
     .then(folder => {
       callback(null, true)
     })
-    .catch(err => callback(null, false))
+    .catch(() => callback(null, false))
   },
   createNewFolder (folder, callback) {
     const path = (folder.path !== '') ? folder.path : '/'

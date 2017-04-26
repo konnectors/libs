@@ -4,6 +4,7 @@ const _ = require('lodash')
 const printit = require('printit')
 const slugify = require('cozy-slug')
 const fetcher = require('./fetcher')
+const cozy = require('./cozyclient')
 
 module.exports = {
 
@@ -38,20 +39,32 @@ module.exports = {
       logger: logger,
       models: modelsObj,
 
-      fetch: function (requiredFields, callback) {
+      fetch: function (cozyFields, callback) {
         var importer = fetcher.new()
-        konnector.fetchOperations.forEach(operation => {
-          importer.use(operation)
+
+        // First get the account related to the specified account id
+        cozy.data.find('io.cozy.accounts', cozyFields.account)
+        .then(account => {
+          const requiredFields = Object.assign({
+            folderPath: cozyFields.folderPath
+          }, account.auth)
+
+          konnector.fetchOperations.forEach(operation => {
+            importer.use(operation)
+          })
+          importer.args(requiredFields, {}, {})
+          importer.fetch((err, fields, entries) => {
+            if (err) {
+              konnector.logger.error('Import failed.')
+              callback(err)
+            } else {
+              konnector.logger.info('Import succeeded.')
+              callback(null, entries.notifContent)
+            }
+          })
         })
-        importer.args(requiredFields, {}, {})
-        importer.fetch((err, fields, entries) => {
-          if (err) {
-            konnector.logger.error('Import failed.')
-            callback(err)
-          } else {
-            konnector.logger.info('Import succeeded.')
-            callback(null, entries.notifContent)
-          }
+        .catch(err => {
+          callback(err)
         })
       }
 
