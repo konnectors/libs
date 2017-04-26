@@ -9,6 +9,7 @@ module.exports = {
   updateOrCreate: require('./update_or_create'),
   linkBankOperation: require('./link_bank_operation'),
   models: {
+    baseModel: require('./models/base_model'),
     bill: require('./models/bill'),
     file: require('./models/file'),
     folder: require('./models/folder')
