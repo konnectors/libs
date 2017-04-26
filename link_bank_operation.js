@@ -23,6 +23,7 @@ class BankOperationLinker {
     this.dateDelta = options.dateDelta || 15
     this.minDateDelta = options.minDateDelta || this.dateDelta
     this.maxDateDelta = options.maxDateDelta || this.dateDelta
+    this.allowUnsafeLinks = options.allowUnsafeLinks || false
   }
   link (entries, callback) {
     async.eachSeries(entries, this.linkOperationIfExist.bind(this), callback)
@@ -52,6 +53,7 @@ class BankOperationLinker {
   // and the file ID as an extra attribute of the operation.
   linkRightOperation (operations, entry, callback) {
     let operationToLink = null
+    let candidateOperationsForLink = []
 
     let amount = Math.abs(parseFloat(entry.amount))
     // By default, an entry is an expense. If it is not, it should be
@@ -72,45 +74,88 @@ class BankOperationLinker {
       // Select the operation to link based on the minimal amount
       // difference to the expected one and if the label matches one
       // of the possible labels (identifier)
+      // If unsafe matching is enabled, also find all operations for which the entry could ba a part of
       for (let identifier of this.identifier) {
-        if (operation.title.toLowerCase().indexOf(identifier) >= 0 &&
+        if (operation.label.toLowerCase().indexOf(identifier) >= 0 &&
           amountDelta <= this.amountDelta &&
           amountDelta <= minAmountDelta) {
           operationToLink = operation
           minAmountDelta = amountDelta
           break
+        } else if (operation.label.toLowerCase().indexOf(identifier) >= 0 &&  // label must match
+                 !operation.parent &&                                       // not a child operation itself
+                 amountDelta > 0 &&                                         // op amount is smaller than entry amount
+                 ((entry.isRefund && operation.amount > 0) ||               // if entry is refund, op is refund
+                 (!entry.isRefund && operation.amount < 0)) &&              // if entry is expense, op is expense
+                 this.allowUnsafeLinks) {
+          candidateOperationsForLink.push(operation)
         }
       }
     }
 
     if (operationToLink !== null) {
       this.linkOperation(operationToLink, entry, callback)
+    } else if (candidateOperationsForLink.length > 0) {
+      // there may be several operations that fit this entry, but right now we don't have enough data to choose one. So we use the first one arbitrarily
+      let operation = candidateOperationsForLink[0]
+
+      this.linkChildOperations(operation, entry, callback)
     } else {
       callback()
     }
   }
-  linkOperation (operation, entry, callback) {
-    let date = new Date(entry.date)
-    let key = `${moment(date).format('YYYY-MM-DD')}T00:00:00.000Z`
+  getEntryId (entry, callback) {
+    let date = `${moment(new Date(entry.date)).format('YYYY-MM-DD')}T00:00:00.000Z`
 
-    Bill.findBy({date: key}, (err, entries) => {
-      // We ignore error, no need to make fail the import for that.
-      // We just log it.
+    Bill.findBy({date: date, amount: entry.amount}, (err, entries) => {
       if (err) {
+        callback(err)
+      } else if (entries.length === 0) {
+        callback(new Error('No matching entry found'))
+      } else {
+        callback(null, entries[0]._id)
+      }
+    })
+  }
+  linkOperation (operation, entry, callback) {
+    this.getEntryId(entry, (err, entryId) => {
+      if (err) {
+        // We ignore error, no need to make fail the import for that.
+        // We just log it.
         this.log.error(err)
         callback()
-      } else if (entries.length === 0) {
-        callback()
       } else {
-        let entry = entries[0]
+        let link = Bill.doctype + ':' + entryId
 
-        BankOperation.attachBill(operation._id, Bill.doctype + ':' + entry._id, (err, operation) => {
+        // if the operation and the entry are already linked, we can skip this step
+        if (operation.bill === link) return callback()
+
+        BankOperation.attachBill(operation._id, link, (err, operation) => {
           if (err) this.log.error(err)
           else {
-            this.log.info(`Binary ${operation.bill} linked with operation: ${operation.title} - ${operation.amount}`)
+            this.log.info(`Binary ${operation.bill} linked with operation: ${operation.label} - ${operation.amount}`)
           }
           callback()
         })
+      }
+    })
+  }
+  linkChildOperations (parentOperation, entry, callback) {
+    this.getEntryId(entry, (err, entryId) => {
+      if (err) {
+        // We ignore error, no need to make fail the import for that.
+        // We just log it.
+        this.log.error(err)
+        callback()
+      } else {
+        let link = Bill.doctype + ':' + entryId
+
+        // Since the entry is only a subset of the operation, we create a child operation
+        BankOperation.createChildOperation(parentOperation, {
+          amount: entry.amount,
+          bill: link,
+          label: parentOperation.label + ' - ' + entry.subtype
+        }, callback)
       }
     })
   }

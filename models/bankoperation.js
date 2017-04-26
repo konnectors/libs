@@ -35,5 +35,18 @@ module.exports = {
       .catch(err => {
         callback(err)
       })
+  },
+  createChildOperation (parentOperation, difference, callback) {
+    let attributes = Object.assign({}, parentOperation, difference)
+    attributes.parent = attributes._id
+    delete attributes._id
+    delete attributes._rev
+    delete attributes._type
+
+    cozy.data.create(DOCTYPE, attributes)
+      .then(() => callback(null))
+      .catch(err => {
+        callback(err)
+      })
   }
 }
