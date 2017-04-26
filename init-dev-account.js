@@ -9,7 +9,7 @@ let accountIdPath = process.argv[2]
 if (accountIdPath) {
   accountIdPath = path.resolve(accountIdPath)
 } else {
-  console.log(`Account id file not found : ${accountIdPath}`)
+  console.log(`No account id file path parameter: ${accountIdPath}`)
   process.exit(0)
 }
 
