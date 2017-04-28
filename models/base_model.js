@@ -7,7 +7,7 @@ module.exports = {
     return _.assignIn(model, {
       all (callback) {
         cozyClient.data.defineIndex(model.name, ['_id'])
-        .then(index => cozyClient.data.query(index, { 'selector': {_id: {'$gt': null}}}))
+        .then(index => cozyClient.data.query(index, {'selector': {_id: {'$gt': null}}}))
         .then(models => callback(null, models))
         .catch(err => callback(err))
       },
@@ -25,5 +25,3 @@ module.exports = {
     })
   }
 }
-
-
