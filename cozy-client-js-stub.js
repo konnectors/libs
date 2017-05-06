@@ -39,6 +39,10 @@ module.exports = {
       let result = null
       if (doctype === 'io.cozy.accounts') {
         const FIELDS_PATH = path.resolve('data/env_fields.json')
+        if (!fs.existsSync(FIELDS_PATH)) {
+          console.log(`Fields file not found : ${FIELDS_PATH} Please copy the ${FIELDS_PATH}.template file and fill the credentials`)
+          process.exit(0)
+        }
         result = {auth: require(FIELDS_PATH)}
       } else {
         return Promise.reject(new Error('find is not implemented yet in cozy-client-js stub'))

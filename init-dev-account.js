@@ -13,19 +13,24 @@ if (accountIdPath) {
   process.exit(0)
 }
 
+// Now check if the account file already exists and do nothing if it already exists
+if (fs.existsSync(accountIdPath)) {
+  console.log(`Account id file already present : ${accountIdPath}. Nothing to do`)
+  process.exit(0)
+}
+
 let fieldsFilePath = process.argv[3]
 if (fieldsFilePath) {
   fieldsFilePath = path.resolve(fieldsFilePath)
 } else {
-  console.log(`Fields file not found : ${fieldsFilePath}
-Please copy the env_fields.json.template file and fill the credentials`)
-  process.exit(0)
+  console.log(`Fields file parameter not found : ${fieldsFilePath}`)
+  process.exit(1)
 }
 
 if (!fs.existsSync(fieldsFilePath)) {
   console.log(`Fields file not found : ${fieldsFilePath}
-Please copy the env_fields.json.template file and fill the credentials`)
-  process.exit(0)
+Please copy the ${fieldsFilePath}.template file and fill the credentials`)
+  process.exit(1)
 }
 
 cozy.data.create('io.cozy.accounts', {
