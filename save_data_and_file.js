@@ -29,7 +29,7 @@ module.exports = (log, model, options, tags) => {
       const entryLabel = entry.date.format('MMYYYY')
 
       function createFileAndSaveData (entry, entryLabel) {
-        File.isPresent(`${normalizedPath}/${fileName}`, (err, result) => {
+        File.isPresent(`${normalizedPath}/${fileName}`, (err, result, file) => {
           if (err) return callback(err)
           if (result === false) {
             const { pdfurl } = entry
@@ -42,18 +42,20 @@ module.exports = (log, model, options, tags) => {
                   onCreated, options.requestoptions)
             })
           } else {
-            onCreated()
+            onCreated(null, file)
           }
         })
       }
 
-      function onCreated (err) {
+      function onCreated (err, file) {
         if (err) {
           log.raw(err)
           log.info(`File for ${entryLabel} not created.`)
           return callback()
         } else {
           log.info(`File for ${entryLabel} created: ${fileName}`)
+          //add the file id to the entry
+          if (!entry.file) entry.file = file._id;
           return saveEntry(entry, entryLabel)
         }
       }
