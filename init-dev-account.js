@@ -43,4 +43,10 @@ cozy.data.create('io.cozy.accounts', {
   console.log('account created')
   console.log('account id in ' + accountIdPath)
 })
-.catch(err => console.log(err, 'there was an error'))
+.catch(err => {
+  if (err.status === 400) {
+    console.log('Your connector probably does not have correct tokens. Please remore the data/token.json file and retry.')
+    process.exit(0)
+  }
+  console.log(err, 'there was an error')
+})

@@ -44,6 +44,10 @@ module.exports = {
 
         // First get the account related to the specified account id
         cozy.data.find('io.cozy.accounts', cozyFields.account)
+        .catch(() => {
+          console.error(`Account ${cozyFields.account} does not exist`)
+          process.exit(0)
+        })
         .then(account => {
           const requiredFields = Object.assign({
             folderPath: cozyFields.folderPath
