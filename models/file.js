@@ -6,7 +6,7 @@ module.exports = {
   isPresent (fullPath, callback) {
     cozy.files.statByPath(fullPath)
     .then(file => {
-      callback(null, true)
+      callback(null, true, file)
     })
     .catch(() => callback(null, false))
   },
