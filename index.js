@@ -3,6 +3,7 @@ module.exports = {
   cozyClient: require('./cozyclient'),
   fetcher: require('./fetcher'),
   filterExisting: require('./filter_existing'),
+  log: require('./logger')
   manifest: require('./manifest'),
   naming: require('./naming'),
   saveDataAndFile: require('./save_data_and_file'),

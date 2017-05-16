@@ -3,6 +3,7 @@ const moment = require('moment')
 const naming = require('./naming')
 const Folder = require('./models/folder')
 const File = require('./models/file')
+const log = require('./logger')
 
 // Fetcher layer that creates an object in database for each entry. If a field
 // named pdfurl is is set on the entry, it downloads the file and creates a Cozy
@@ -10,7 +11,7 @@ const File = require('./models/file')
 //
 // It expects to find the list of entries in the "filtered" field. If the
 // filtered field is null, it checks for the  "fetched" field.
-module.exports = (log, model, options, tags) => {
+module.exports = (logger, model, options, tags) => {
   return function (requiredFields, entries, body, next) {
     const entriesToSave = entries.filtered || entries.fetched
     const path = requiredFields.folderPath
@@ -21,7 +22,7 @@ module.exports = (log, model, options, tags) => {
     // For each entry...
     return async.eachSeries(entriesToSave, function (entry, callback) {
       if (entry.date.format === undefined) {
-        log.info('Bill creation aborted')
+        log('info', 'Bill creation aborted')
         return callback(new Error('Moment instance expected for date field'))
       }
 
@@ -49,11 +50,11 @@ module.exports = (log, model, options, tags) => {
 
       function onCreated (err, file) {
         if (err) {
-          log.raw(err)
-          log.info(`File for ${entryLabel} not created.`)
+          log('error', err)
+          log('info', `File for ${entryLabel} not created.`)
           return callback()
         } else {
-          log.info(`File for ${entryLabel} created: ${fileName}`)
+          log('info', `File for ${entryLabel} created: ${fileName}`)
           //add the file id to the entry
           if (!entry.file) entry.file = file._id;
           return saveEntry(entry, entryLabel)
@@ -77,27 +78,27 @@ module.exports = (log, model, options, tags) => {
         // moment.valueOf returns a timestamp that new Date() will parse
         return model.create(entry, function (err) {
           if (err) {
-            log.raw(err)
-            log.error(`entry for ${entryLabel} not saved.`)
+            log('error', err)
+            log('error', `entry for ${entryLabel} not saved.`)
           } else {
-            log.info(`entry for ${entryLabel} saved.`)
+            log('info', `entry for ${entryLabel} saved.`)
           }
           return callback()
         })
       }
 
-      log.info(`import for entry ${entryLabel} started.`)
+      log('info', `import for entry ${entryLabel} started.`)
       if (entry.pdfurl != null) {
         // It creates a file for the PDF.
         return createFileAndSaveData(entry, entryLabel)
       } else {
         // If there is no file link set, it saves only data.
-        log.info(`No file to download for ${entryLabel}.`)
+        log('info', `No file to download for ${entryLabel}.`)
         return saveEntry(entry, entryLabel)
       }
     }, function (err) {
       if (err) {
-        log.error(err)
+        log('error', err)
         return next()
       }
 
@@ -118,7 +119,7 @@ module.exports = (log, model, options, tags) => {
 // application. If it doesn't exist, it creates the file by downloading it
 // from its url.
 function checkForMissingFiles (options, callback) {
-  const {entries, folderPath, nameOptions, tags, log} = options
+  const {entries, folderPath, nameOptions, tags} = options
 
   return async.eachSeries(entries, function (entry, done) {
     const fileName = naming.getEntryFileName(entry, nameOptions)
@@ -127,7 +128,7 @@ function checkForMissingFiles (options, callback) {
     // Check if the file is there.
     return File.isPresent(path, function (err, isPresent) {
       if (err) {
-        log.error(err)
+        log('error', err)
         return done()
       }
 
@@ -141,8 +142,8 @@ function checkForMissingFiles (options, callback) {
       return Folder.mkdirp(path, () => {
         return File.createNew(fileName, path, url, tags, function (err, file) {
           if (err) {
-            log.error('An error occured while creating file')
-            return log.raw(err)
+            log('error', 'An error occured while creating file')
+            log('error', err)
           } else {
             done()
           }
@@ -151,7 +152,7 @@ function checkForMissingFiles (options, callback) {
     })
   }, err => {
     if (err) {
-      log.error(err)
+      log('error', err)
     }
     return callback()
   })
