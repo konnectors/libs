@@ -43,7 +43,7 @@ module.exports = {
         .then(account => {
           const requiredFields = Object.assign({
             folderPath: cozyFields.folderPath
-          }, account.auth)
+          }, account.auth, account.oauth)
 
           konnector.fetchOperations.forEach(operation => {
             importer.use(operation)
