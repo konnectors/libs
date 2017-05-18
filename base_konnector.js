@@ -41,6 +41,17 @@ module.exports = {
           process.exit(0)
         })
         .then(account => {
+          // get the folder path from the folder id and put it in cozyFields.folderPath
+          return new Promise((resolve, reject) => {
+            cozy.files.statById(cozyFields.folderPath, false)
+            .then(folder => {
+              cozyFields.folderPath = folder.attributes.path
+              resolve(account)
+            })
+            .catch(() => reject('NOT_EXISTING_DIRECTORY'))
+          })
+        })
+        .then(account => {
           const requiredFields = Object.assign({
             folderPath: cozyFields.folderPath
           }, account.auth, account.oauth)

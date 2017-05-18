@@ -64,6 +64,10 @@ module.exports = {
         }
       })
     },
+    statById (idToCheck) {
+      // just return the / path for dev purpose
+      return Promise.resolve({attributes: {path: '/'}})
+    },
     create (file, options) {
       return new Promise((resolve, reject) => {
         log(`Creating new file ${options.name}`)
