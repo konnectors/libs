@@ -12,7 +12,7 @@
     "konnector"
   ],
   "author": "doubleface",
-  "license": "AGPL-3.0",
+  "license": "MIT",
   "bin": {
     "cozy-authenticate": "bin/cozy-authenticate",
     "cozy-init-dev-account": "bin/cozy-init-dev-account"
