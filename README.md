@@ -35,6 +35,13 @@ models.file -> models/file
 models.folder -> models/folder
 ```
 
+Please note that some permissions are required to use some of those classes:
+
+- `io.cozy.accounts` for the `baseKonnector` class (`GET` only)
+- `io.cozy.files` for the `File` and `Folder` models
+- `io.cozy.bills` for the `Bill` model
+- `io.cozy.bank.operations` for the `linkBankOperation` function, and its `BankOperation` model
+
 ### How to use it?
 
 We will take the example of `baseKonnector` and `models.bill`
