@@ -1,6 +1,6 @@
 const cozy = require('../cozyclient')
 const moment = require('moment')
-const DOCTYPE = 'io.cozy.bank_operations'
+const DOCTYPE = 'io.cozy.bank.operations'
 
 module.exports = {
   displayName: 'Bank Operation',
