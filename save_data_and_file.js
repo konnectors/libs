@@ -1,5 +1,6 @@
 const async = require('async')
 const moment = require('moment')
+
 const naming = require('./naming')
 const Folder = require('./models/folder')
 const File = require('./models/file')
@@ -37,10 +38,14 @@ module.exports = (logger, model, options, tags) => {
 
             return Folder.mkdirp(normalizedPath, function () {
               if (options.requestoptions) {
+                if (typeof options.requestoptions === 'function') {
+                  options.requestoptions = options.requestoptions(entry)
+                }
+
                 options.requestoptions.entry = entry
               }
               return File.createNew(fileName, normalizedPath, pdfurl, tags,
-                  onCreated, options.requestoptions)
+                onCreated, options.requestoptions, options.parseoptions)
             })
           } else {
             onCreated(null, file)
@@ -110,7 +115,9 @@ module.exports = (logger, model, options, tags) => {
         model,
         log
       }
-      return checkForMissingFiles(opts, () => next())
+      //TODO !!
+      //return checkForMissingFiles(opts, () => next())
+      next()
     })
   }
 }
