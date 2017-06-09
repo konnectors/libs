@@ -21,15 +21,14 @@ module.exports = (logger, model, options, tags) => {
 
     // For each entry...
     return async.eachSeries(entriesToSave, function (entry, callback) {
-      if (entry.date.format === undefined) {
+      if (entry.date && entry.date.format === undefined) {
         log('info', 'Bill creation aborted')
         return callback(new Error('Moment instance expected for date field'))
       }
 
       const fileName = naming.getEntryFileName(entry, options)
-      const entryLabel = entry.date.format('MMYYYY')
 
-      function createFileAndSaveData (entry, entryLabel) {
+      function createFileAndSaveData (entry) {
         File.isPresent(`${normalizedPath}/${fileName}`, (err, result, file) => {
           if (err) return callback(err)
           if (result === false) {
@@ -39,25 +38,24 @@ module.exports = (logger, model, options, tags) => {
               if (options.requestoptions) {
                 options.requestoptions.entry = entry
               }
-              return File.createNew(fileName, normalizedPath, pdfurl, tags,
-                  onCreated, options.requestoptions)
+              return File.createNew(fileName, normalizedPath, pdfurl, tags, onCreated, options.requestoptions)
             })
           } else {
-            onCreated(null, file)
+            onCreated(null, file, entry.pdfurl)
           }
         })
       }
 
-      function onCreated (err, file) {
+      function onCreated (err, file, url) {
         if (err) {
-          log('error', err)
-          log('info', `File for ${entryLabel} not created.`)
+          log('error', err.message)
+          log('info', `File for ${url} not created.`)
           return callback()
         } else {
-          log('info', `File for ${entryLabel} created: ${fileName}`)
-          //add the file id to the entry
-          if (!entry.file) entry.file = file._id;
-          return saveEntry(entry, entryLabel)
+          log('info', `File for ${url} created: ${fileName}`)
+          // add the file id to the entry
+          if (!entry.file) entry.file = file._id
+          return saveEntry(entry, url)
         }
       }
 
@@ -87,14 +85,14 @@ module.exports = (logger, model, options, tags) => {
         })
       }
 
-      log('info', `import for entry ${entryLabel} started.`)
+      log('info', `import for entry ${entry.pdfurl} started.`)
       if (entry.pdfurl != null) {
         // It creates a file for the PDF.
-        return createFileAndSaveData(entry, entryLabel)
+        return createFileAndSaveData(entry, entry.pdfurl)
       } else {
         // If there is no file link set, it saves only data.
-        log('info', `No file to download for ${entryLabel}.`)
-        return saveEntry(entry, entryLabel)
+        log('info', `No file to download for ${entry.pdfurl}.`)
+        return saveEntry(entry, entry.pdfurl)
       }
     }, function (err) {
       if (err) {

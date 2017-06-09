@@ -33,6 +33,9 @@ module.exports = (log, model, suffix, vendor) => {
           }
 
           // Simply add the entry
+        } else if (entry.uniqueId) {
+          hash = entry.uniqueId
+          entryHash[hash] = entry
         } else {
           hash = `${entry.date.format('YYYY-MM-DD')}T00:00:00.000Z`
           entryHash[hash] = entry
@@ -41,7 +44,11 @@ module.exports = (log, model, suffix, vendor) => {
 
       // Keep only non already existing entries.
       entries.filtered = entries.fetched.filter(function (entry) {
-        hash = `${entry.date.format('YYYY-MM-DD')}T00:00:00.000Z`
+        if (entry.uniqueId) {
+          hash = entry.uniqueId
+        } else {
+          hash = `${entry.date.format('YYYY-MM-DD')}T00:00:00.000Z`
+        }
         return (entryHash[hash] == null)
       })
 
