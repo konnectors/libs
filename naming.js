@@ -29,7 +29,9 @@ module.exports = {
       name = `${date.format('YYYYMM')}_${options}.pdf`
     } else {
       // Build date prefix.
-      if (date) {
+      if (entry.uniqueId) {
+        name = entry.uniqueId
+      } else if (date) {
         if (options.dateFormat != null) {
           name = date.format(options.dateFormat)
         } else {
@@ -38,7 +40,7 @@ module.exports = {
       }
 
       // Add vendor name.
-      name += `_${options.vendor}`
+      if (options.vendor) name += `_${options.vendor}`
 
       // Add optional information.
       if (options.others != null) {
