@@ -69,7 +69,7 @@ module.exports = {
           })
         })
         .catch(err => {
-          callback(err)
+          callback(err.message || err)
         })
       }
 

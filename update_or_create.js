@@ -27,7 +27,7 @@ module.exports = (logger, model, filter, options) =>
     data.created[modelName] = 0
 
     model.all((err, docs) => {
-      if (err) { return next(err) };
+      if (err) { return next(err.message) };
 
       async.eachSeries(news, (entry, cb) => {
         let toUpdate = docs.find(doc =>

@@ -76,7 +76,7 @@ module.exports = (logger, model, options, tags) => {
         // moment.valueOf returns a timestamp that new Date() will parse
         return model.create(entry, function (err) {
           if (err) {
-            log('error', err)
+            log('error', err.message)
             log('error', `entry for ${entryLabel} not saved.`)
           } else {
             log('info', `entry for ${entryLabel} saved.`)
@@ -96,7 +96,7 @@ module.exports = (logger, model, options, tags) => {
       }
     }, function (err) {
       if (err) {
-        log('error', err)
+        log('error', err.message)
         return next()
       }
 
@@ -126,7 +126,7 @@ function checkForMissingFiles (options, callback) {
     // Check if the file is there.
     return File.isPresent(path, function (err, isPresent) {
       if (err) {
-        log('error', err)
+        log('error', err.message)
         return done()
       }
 
@@ -141,7 +141,7 @@ function checkForMissingFiles (options, callback) {
         return File.createNew(fileName, path, url, tags, function (err, file) {
           if (err) {
             log('error', 'An error occured while creating file')
-            log('error', err)
+            log('error', err.message)
           } else {
             done()
           }
@@ -150,7 +150,7 @@ function checkForMissingFiles (options, callback) {
     })
   }, err => {
     if (err) {
-      log('error', err)
+      log('error', err.message)
     }
     return callback()
   })
