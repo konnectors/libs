@@ -19,7 +19,7 @@ module.exports = (log, model, suffix, vendor) => {
     // Get current entries
     return model.all(function (err, entryObjects) {
       let hash
-      if (err) { return next(err) }
+      if (err) { return next(err.message) }
       const entryHash = {}
 
       // Build an hash where key is the date and valie is the entry
