@@ -66,7 +66,7 @@ module.exports = (logger, model, options, tags) => {
 
         // Only update the date format for the bills, to be able to
         // match correctly the bill with operations.
-        if (entry.pdfurl != null) {
+        if (entry.pdfurl != null && entry.date) {
           let dateWithoutTimezone = entry.date.format('YYYY-MM-DD')
           dateWithoutTimezone += 'T00:00:00.000Z'
           entry.date = moment(dateWithoutTimezone)
