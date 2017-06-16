@@ -4,6 +4,7 @@ const _ = require('lodash')
 const slugify = require('cozy-slug')
 const fetcher = require('./fetcher')
 const cozy = require('./cozyclient')
+const log = require('./logger')
 
 module.exports = {
 
@@ -48,7 +49,10 @@ module.exports = {
               cozyFields.folderPath = folder.attributes.path
               resolve(account)
             })
-            .catch(() => reject('NOT_EXISTING_DIRECTORY'))
+            .catch(err => {
+              log('error', err.message)
+              reject(new Error('NOT_EXISTING_DIRECTORY'))
+            })
           })
         })
         .then(account => {
