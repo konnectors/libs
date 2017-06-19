@@ -4,6 +4,7 @@ const naming = require('./naming')
 const Folder = require('./models/folder')
 const File = require('./models/file')
 const log = require('./logger')
+const debug = require('debug')('save_data_and_file')
 
 // Fetcher layer that creates an object in database for each entry. If a field
 // named pdfurl is is set on the entry, it downloads the file and creates a Cozy
@@ -12,25 +13,35 @@ const log = require('./logger')
 // It expects to find the list of entries in the "filtered" field. If the
 // filtered field is null, it checks for the  "fetched" field.
 module.exports = (logger, model, options, tags) => {
+  debug(model, 'model')
+  debug(options, 'options')
   return function (requiredFields, entries, body, next) {
     const entriesToSave = entries.filtered || entries.fetched
+    debug(entriesToSave, 'entriesToSave')
     const path = requiredFields.folderPath
 
     const normalizedPath = path.charAt(0) === '/'
       ? path : `/${path}`
 
+    debug(normalizedPath, 'path')
+
     // For each entry...
     return async.eachSeries(entriesToSave, function (entry, callback) {
+      debug(entry, 'entry')
       if (entry.date && entry.date.format === undefined) {
         log('info', 'Bill creation aborted')
         return callback(new Error('Moment instance expected for date field'))
       }
 
       const fileName = naming.getEntryFileName(entry, options)
+      debug(fileName, 'fileName')
 
       function createFileAndSaveData (entry) {
         File.isPresent(`${normalizedPath}/${fileName}`, (err, result, file) => {
-          if (err) return callback(err)
+          if (err) {
+            debug(err, `error while checking if ${normalizedPath}/${fileName} is present`)
+            return callback(err)
+          }
           if (result === false) {
             const { pdfurl } = entry
 
@@ -49,6 +60,7 @@ module.exports = (logger, model, options, tags) => {
       function onCreated (err, file, url) {
         if (err) {
           log('error', err.message)
+          debug(err)
           log('info', `File for ${url} not created.`)
           return callback()
         } else {
@@ -77,6 +89,7 @@ module.exports = (logger, model, options, tags) => {
         return model.create(entry, function (err) {
           if (err) {
             log('error', err.message)
+            debug(err)
             log('error', `entry for ${entryLabel} not saved.`)
           } else {
             log('info', `entry for ${entryLabel} saved.`)
@@ -97,6 +110,7 @@ module.exports = (logger, model, options, tags) => {
     }, function (err) {
       if (err) {
         log('error', err.message)
+        debug(err)
         return next()
       }
 
@@ -127,6 +141,7 @@ function checkForMissingFiles (options, callback) {
     return File.isPresent(path, function (err, isPresent) {
       if (err) {
         log('error', err.message)
+        debug(err)
         return done()
       }
 
@@ -141,6 +156,7 @@ function checkForMissingFiles (options, callback) {
         return File.createNew(fileName, path, url, tags, function (err, file) {
           if (err) {
             log('error', 'An error occured while creating file')
+            debug(err)
             log('error', err.message)
           } else {
             done()
@@ -150,6 +166,7 @@ function checkForMissingFiles (options, callback) {
     })
   }, err => {
     if (err) {
+      debug(err)
       log('error', err.message)
     }
     return callback()
