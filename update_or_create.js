@@ -9,9 +9,12 @@
 */
 const async = require('async')
 const log = require('./logger')
+const debug = require('debug')('update_or_create')
 
-module.exports = (logger, model, filter, options) =>
-  function (requiredFields, entries, data, next) {
+module.exports = (logger, model, filter, options) => {
+  debug(model, 'model')
+  debug(filter, 'filter')
+  return function (requiredFields, entries, data, next) {
     const modelName = `${model.displayName.toLowerCase()}s`
 
     let news = entries[modelName]
@@ -27,9 +30,13 @@ module.exports = (logger, model, filter, options) =>
     data.created[modelName] = 0
 
     model.all((err, docs) => {
-      if (err) { return next(err.message) };
+      if (err) {
+        debug(err, 'error while getting the list of models')
+        return next(err.message)
+      };
 
       async.eachSeries(news, (entry, cb) => {
+        debug(entry, 'entry to save')
         let toUpdate = docs.find(doc =>
             filter.reduce((good, k) => good && doc[k] === entry[k], true))
 
@@ -43,3 +50,4 @@ module.exports = (logger, model, filter, options) =>
       }, next)
     })
   }
+}

@@ -1,5 +1,6 @@
 const async = require('async')
 const moment = require('moment')
+const debug = require('debug')('link_bank_operation')
 
 const BankOperation = require('./models/bankoperation')
 const Bill = require('./models/bill')
@@ -44,7 +45,10 @@ class BankOperationLinker {
         '$lt': endkey
       }
     }, (err, operations) => {
-      if (err) return callback(err)
+      if (err) {
+        debug(err, 'error while fetching all the bank operations')
+        return callback(err)
+      }
       this.linkRightOperation(operations, entry, callback)
     })
   }
@@ -122,6 +126,7 @@ class BankOperationLinker {
       if (err) {
         // We ignore error, no need to make fail the import for that.
         // We just log it.
+        debug(err, 'error while trying to find corresponding operations')
         this.log.error(err)
         callback()
       } else {
@@ -131,8 +136,10 @@ class BankOperationLinker {
         if (operation.bill === link) return callback()
 
         BankOperation.attachBill(operation._id, link, (err, operation) => {
-          if (err) this.log.error(err)
-          else {
+          if (err) {
+            debug(err, 'error while attaching bill to an operation')
+            this.log.error(err)
+          } else {
             this.log.info(`Binary ${operation.bill} linked with operation: ${operation.label} - ${operation.amount}`)
           }
           callback()
@@ -145,6 +152,7 @@ class BankOperationLinker {
       if (err) {
         // We ignore error, no need to make fail the import for that.
         // We just log it.
+        debug(err, 'error while trying to find corresponding operations')
         this.log.error(err)
         callback()
       } else {

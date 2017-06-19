@@ -1,3 +1,5 @@
+const debug = require('debug')('filter_existing')
+
 // Returns a fetcher layer that adds a new array field to the second function
 // parameter.
 // This array contains all entries that are not already stored in the
@@ -9,6 +11,7 @@
 //
 module.exports = (log, model, suffix, vendor) => {
   return function (requiredFields, entries, body, next) {
+    debug(entries.fetched, 'entries to filter')
     entries.filtered = []
 
     // Set vendor automatically if not given
@@ -19,7 +22,10 @@ module.exports = (log, model, suffix, vendor) => {
     // Get current entries
     return model.all(function (err, entryObjects) {
       let hash
-      if (err) { return next(err.message) }
+      if (err) {
+        debug(err, 'error when trying to get all the entries')
+        return next(err.message)
+      }
       const entryHash = {}
 
       // Build an hash where key is the date and valie is the entry
@@ -54,6 +60,8 @@ module.exports = (log, model, suffix, vendor) => {
 
       // Keep only entries matching current vendor.
       entries.filtered = entries.filtered.filter(entry => entry.vendor === vendor)
+
+      debug(entries.filtered, 'filtered entries')
       return next()
     })
   }

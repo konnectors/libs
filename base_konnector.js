@@ -5,6 +5,7 @@ const slugify = require('cozy-slug')
 const fetcher = require('./fetcher')
 const cozy = require('./cozyclient')
 const log = require('./logger')
+const debug = require('debug')('base_konnector')
 
 module.exports = {
 
@@ -33,12 +34,16 @@ module.exports = {
       models: modelsObj,
 
       fetch: function (cozyFields, callback) {
+        // FIXME : this should be removed when stack offers a clean way to pass DEBUG='*' in debug mode
+        process.env.DEBUG = process.env.DEBUG || '*'
+        debug(cozyFields, 'cozyFields in fetch')
         var importer = fetcher.new()
 
         // First get the account related to the specified account id
         cozy.data.find('io.cozy.accounts', cozyFields.account)
-        .catch(() => {
+        .catch(err => {
           console.error(`Account ${cozyFields.account} does not exist`)
+          debug(err, 'error while fetching the account')
           process.exit(0)
         })
         .then(account => {
@@ -47,15 +52,18 @@ module.exports = {
             cozy.files.statById(cozyFields.folderPath, false)
             .then(folder => {
               cozyFields.folderPath = folder.attributes.path
+              debug(folder, 'folder details')
               resolve(account)
             })
             .catch(err => {
+              debug(err, 'error while getting the folder path')
               log('error', err.message)
               reject(new Error('NOT_EXISTING_DIRECTORY'))
             })
           })
         })
         .then(account => {
+          debug(account, 'account content')
           const requiredFields = Object.assign({
             folderPath: cozyFields.folderPath
           }, account.auth, account.oauth)
@@ -65,7 +73,9 @@ module.exports = {
           })
           importer.args(requiredFields, {}, {})
           importer.fetch((err, fields, entries) => {
+            debug(entries, 'final entries')
             if (err) {
+              debug(err, 'error during the fetch operations of the connector')
               callback(err)
             } else {
               callback(null, entries.notifContent)
@@ -73,10 +83,10 @@ module.exports = {
           })
         })
         .catch(err => {
+          debug(err, 'unexpected error while running the connector')
           callback(err.message || err)
         })
       }
-
     })
   }
 }

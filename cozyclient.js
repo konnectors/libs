@@ -3,15 +3,17 @@ const log = require('debug')('cozyclient')
 
 let cozy = null
 if (process.env.NODE_ENV === 'standalone') {
+  log('standalone mode')
   cozy = require('./cozy-client-js-stub')
 } else if (process.env.NODE_ENV === 'development') {
-  // In development mode, the credentials are the full OAuth json file
+  log('development mode')
   // COZY_CREDENTIALS
   let credentials = null
   try {
     credentials = JSON.parse(process.env.COZY_CREDENTIALS)
     log(credentials, 'COZY_CREDENTIALS')
   } catch (err) {
+    log(err)
     console.log(`Please provide proper COZY_CREDENTIALS environment variable. ${process.env.COZY_CREDENTIALS} is not OK`)
     process.exit(1)
   }
@@ -35,12 +37,14 @@ if (process.env.NODE_ENV === 'standalone') {
 
   cozy.saveCredentials(credentials.client, credentials.token)
 } else { // production mode
+  log('production mode')
   // COZY_CREDENTIALS
   let credentials = null
   try {
     credentials = process.env.COZY_CREDENTIALS.trim()
     // log(credentials, 'COZY_CREDENTIALS')
   } catch (err) {
+    log(err)
     console.log(`Please provide proper COZY_CREDENTIALS environment variable.`)
     process.exit(1)
   }
