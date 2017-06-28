@@ -23,6 +23,7 @@
   "homepage": "https://github.com/cozy/cozy-konnector-libs#readme",
   "dependencies": {
     "async": "^2.4.1",
+    "bluebird": "^3.5.0",
     "btoa": "^1.1.2",
     "core-js": "^2.4.1",
     "cozy-client-js": "^0.3.4",

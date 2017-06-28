@@ -1,4 +1,3 @@
 #!/usr/bin/env node
 
-require(require('path').join(__dirname, '..', 'cozy-authenticate'))
-
+require(require('path').join(__dirname, '../helpers', 'cozy-authenticate'))

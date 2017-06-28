@@ -3,13 +3,13 @@
 process.env.NODE_ENV = 'development'
 process.env.DEBUG = '*'
 
-const log = require('./logger')
+const log = require('../lib/logger')
 const debug = require('debug')('cozy-konnector-dev')
 
 const config = require('./init-konnector-config')()
 process.env.COZY_URL = config.COZY_URL
 
-require('./cozy-authenticate')()
+require('../lib/cozy-authenticate')()
 .then(credentials => {
   // check if the token is valid
   process.env.COZY_CREDENTIALS = JSON.stringify(credentials)

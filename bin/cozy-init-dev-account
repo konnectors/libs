@@ -1,4 +1,3 @@
 #!/usr/bin/env node
 
-require(require('path').join(__dirname, '..', 'init-dev-account'))
-
+require(require('path').join(__dirname, '../helpers', 'init-dev-account'))

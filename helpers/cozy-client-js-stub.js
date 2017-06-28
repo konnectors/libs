@@ -2,7 +2,7 @@ const fs = require('fs')
 const path = require('path')
 const log = require('debug')('cozy-client-js-stub')
 let fixture = {}
-const FIXTURE_PATH = path.resolve('data/fixture.json')
+const FIXTURE_PATH = path.resolve('./fixture.json')
 if (fs.existsSync(FIXTURE_PATH)) {
   log(`Found ${FIXTURE_PATH} fixture file`)
   fixture = require(FIXTURE_PATH)
@@ -38,12 +38,8 @@ module.exports = {
       // exeption for "io.cozy.accounts" doctype where we return env_fields.json content
       let result = null
       if (doctype === 'io.cozy.accounts') {
-        const FIELDS_PATH = path.resolve('data/env_fields.json')
-        if (!fs.existsSync(FIELDS_PATH)) {
-          console.log(`Fields file not found : ${FIELDS_PATH} Please copy the ${FIELDS_PATH}.template file and fill the credentials`)
-          process.exit(0)
-        }
-        result = {auth: require(FIELDS_PATH)}
+        const config = require('./init-konnector-config')()
+        result = {auth: config.fields}
       } else {
         return Promise.reject(new Error('find is not implemented yet in cozy-client-js stub'))
       }

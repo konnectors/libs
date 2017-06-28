@@ -1,4 +1,3 @@
 #!/usr/bin/env node
 
-require(require('path').join(__dirname, '..', 'cozy-konnector-dev'))
-
+require(require('path').join(__dirname, '../commands', 'dev'))

@@ -4,7 +4,7 @@ const log = require('debug')('cozyclient')
 let cozy = null
 if (process.env.NODE_ENV === 'standalone') {
   log('standalone mode')
-  cozy = require('./cozy-client-js-stub')
+  cozy = require('../helpers/cozy-client-js-stub')
 } else if (process.env.NODE_ENV === 'development') {
   log('development mode')
   // COZY_CREDENTIALS

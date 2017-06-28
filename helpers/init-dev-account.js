@@ -1,6 +1,6 @@
 'use strict'
 
-const cozy = require('./cozyclient')
+const cozy = require('../libs/cozyclient')
 const fs = require('fs')
 const path = require('path')
 
