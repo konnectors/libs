@@ -2,7 +2,7 @@ const fs = require('fs')
 const path = require('path')
 const log = require('debug')('cozy-client-js-stub')
 let fixture = {}
-const FIXTURE_PATH = path.resolve('./fixture.json')
+const FIXTURE_PATH = path.resolve('fixture.json')
 if (fs.existsSync(FIXTURE_PATH)) {
   log(`Found ${FIXTURE_PATH} fixture file`)
   fixture = require(FIXTURE_PATH)
@@ -48,10 +48,10 @@ module.exports = {
   },
   files: {
     statByPath (pathToCheck) {
-      // check this path in ./data
+      // check this path in .
       return new Promise((resolve, reject) => {
         log(`Checking if ${pathToCheck} exists`)
-        const realpath = path.join('./data', pathToCheck)
+        const realpath = path.join('.', pathToCheck)
         log(`Real path : ${realpath}`)
         if (fs.existsSync(realpath)) {
           resolve({_id: pathToCheck})
@@ -67,7 +67,7 @@ module.exports = {
     create (file, options) {
       return new Promise((resolve, reject) => {
         log(`Creating new file ${options.name}`)
-        const finalPath = path.join('./data', options.dirID, options.name)
+        const finalPath = path.join('.', options.dirID, options.name)
         log(`Real path : ${finalPath}`)
         let writeStream = fs.createWriteStream(finalPath)
         file.pipe(writeStream)
@@ -86,7 +86,7 @@ module.exports = {
     createDirectory (options) {
       return new Promise((resolve, reject) => {
         log(`Creating new directory ${options.name}`)
-        const finalPath = path.join('./data', options.dirID, options.name)
+        const finalPath = path.join('.', options.dirID, options.name)
         log(`Real path : ${finalPath}`)
         let result = fs.mkdir(finalPath)
         if (result) resolve()

@@ -3,50 +3,45 @@
 const cozy = require('../libs/cozyclient')
 const fs = require('fs')
 const path = require('path')
+const debug = require('debug')('init-dev-account')
 
-// account id path is mandatory in the cli
-let accountIdPath = process.argv[2]
-if (accountIdPath) {
-  accountIdPath = path.resolve(accountIdPath)
-} else {
-  console.log(`No account id file path parameter: ${accountIdPath}`)
-  process.exit(0)
+const accountIdPath = path.resolve('.account')
+
+module.exports = function () {
+  return ensureAccount()
 }
 
-// Now check if the account file already exists and do nothing if it already exists
-if (fs.existsSync(accountIdPath)) {
-  console.log(`Account id file already present : ${accountIdPath}. Nothing to do`)
-  process.exit(0)
+function ensureAccount () {
+  return getAccountId()
+    .then(id => {
+      debug('Found .account file')
+      return cozy.data.find('io.cozy.accounts', id)
+        .then(doc => doc._id)
+    })
+    .catch((err) => {
+      debug(err.message)
+      return createAccount()
+    })
 }
 
-let fieldsFilePath = process.argv[3]
-if (fieldsFilePath) {
-  fieldsFilePath = path.resolve(fieldsFilePath)
-} else {
-  console.log(`Fields file parameter not found : ${fieldsFilePath}`)
-  process.exit(1)
+function getAccountId () {
+  return new Promise((resolve, reject) => {
+    if (fs.existsSync(accountIdPath)) {
+      resolve(fs.readFileSync(accountIdPath, 'utf-8').trim())
+    } else reject(new Error(`No account file at ${accountIdPath}`))
+  })
 }
 
-if (!fs.existsSync(fieldsFilePath)) {
-  console.log(`Fields file not found : ${fieldsFilePath}
-Please copy the ${fieldsFilePath}.template file and fill the credentials`)
-  process.exit(1)
+function createAccount () {
+  debug('creating a new account')
+  return cozy.data.create('io.cozy.accounts', {
+    name: 'dev_account',
+    account_type: 'dev_account',
+    status: 'PENDING',
+    auth: require('./init-konnector-config')().fields
+  })
+  .then(doc => {
+    fs.writeFileSync(accountIdPath, doc._id)
+    return doc._id
+  })
 }
-
-cozy.data.create('io.cozy.accounts', {
-  account_type: 'dev_account',
-  status: 'PENDING',
-  auth: JSON.parse(fs.readFileSync(fieldsFilePath), 'utf-8')
-})
-.then(doc => {
-  fs.writeFileSync(accountIdPath, doc._id)
-  console.log('account created')
-  console.log('account id in ' + accountIdPath)
-})
-.catch(err => {
-  if (err.status === 400) {
-    console.log('Your connector probably does not have correct tokens. Please remore the data/token.json file and retry.')
-    process.exit(0)
-  }
-  console.log(err, 'there was an error')
-})

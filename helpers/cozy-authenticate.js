@@ -3,38 +3,21 @@
 const http = require('http')
 const path = require('path')
 const fs = require('fs')
-const log = require('debug')('gettoken')
+const log = require('debug')('cozy-authenticate')
 const {Client, MemoryStorage} = require('cozy-client-js')
 const manifest = require('./manifest')
 
-// Manifest path is mandatory in the cli
-let manifestPath = process.argv[2]
-if (manifestPath) {
-  manifestPath = path.resolve(manifestPath)
-} else {
-  console.log(`
-Manifest file not found : ${manifestPath}
-
-Please use this command like this :
-
-cozy-authenticate MANIFEST_PATH
-
-Where MANIFEST_PATH is the path to a konnector manifest : manifest.konnector
-`)
-  process.exit(0)
-}
-
-// only genereate the token file if it does not already exist
-const tokenPath = path.join(path.dirname(manifestPath), 'data/token.json')
-if (fs.existsSync(tokenPath)) {
-  log(`${tokenPath} already present`)
-  process.exit(0)
-}
+const manifestPath = path.resolve('manifest.konnector')
 
 const cozyURL = process.env.COZY_URL ? process.env.COZY_URL : 'http://cozy.tools:8080'
-log(cozyURL, 'cozyURL')
+log(cozyURL, 'COZY_URL')
 
 const scopes = manifest.getScopes(manifestPath)
+
+const tokenPath = path.resolve('.token.json')
+
+// check if we have a token file
+// if any return a promise with the credentials
 
 function onRegistered (client, url) {
   let server
@@ -43,7 +26,7 @@ function onRegistered (client, url) {
       if (request.url.indexOf('/do_access') === 0) {
         log(request.url, 'url received')
         resolve(request.url)
-        response.end()
+        response.end('Authorization registered, you can close this page')
       }
     })
     server.listen(3333, () => {
@@ -60,22 +43,31 @@ function onRegistered (client, url) {
   })
 }
 
-const cozy = new Client({
-  cozyURL,
-  oauth: {
-    storage: new MemoryStorage(),
-    clientParams: {
-      redirectURI: 'http://localhost:3333/do_access',
-      softwareID: 'foobar',
-      clientName: 'client',
-      scopes: scopes
-    },
-    onRegistered: onRegistered
-  }
-})
+function authenticate () {
+  if (fs.existsSync(tokenPath)) {
+    log('token file already present')
+    return Promise.resolve(JSON.parse(fs.readFileSync(tokenPath)))
+  } else {
+    const cozy = new Client({
+      cozyURL,
+      oauth: {
+        storage: new MemoryStorage(),
+        clientParams: {
+          redirectURI: 'http://localhost:3333/do_access',
+          softwareID: 'foobar',
+          clientName: 'konnector', // should be the connector name (package.json's name ?)
+          scopes: scopes
+        },
+        onRegistered
+      }
+    })
 
-cozy.authorize().then((creds) => {
-  fs.writeFileSync(tokenPath, JSON.stringify(creds))
-  log(tokenPath, 'file saved')
-  process.exit()
-})
+    return cozy.authorize()
+      .then((creds) => {
+        fs.writeFileSync(tokenPath, JSON.stringify(creds))
+        return creds
+      })
+  }
+}
+
+module.exports = authenticate

@@ -5,4 +5,4 @@ if (!process.env.DEBUG) process.env.DEBUG = '*'
 
 process.env.COZY_FIELDS = '{}'
 
-require(require('path').resolve('konnector.js'))
+require(require('path').resolve('index.js'))
