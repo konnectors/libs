@@ -2,10 +2,12 @@ const bluebird = require('bluebird')
 const path = require('path')
 const cozy = require('./cozyclient')
 const request = require('request')
+const log = require('./logger')
 
 // Saves the files given in the fileurl attribute of each entries
 module.exports = (entries, folderPath) => {
   return bluebird.mapSeries(entries, entry => {
+    log('debug', entry)
     if (!entry.fileurl) return false
 
     return cozy.files.statByPath(path.join(folderPath, getFileName(entry)))
@@ -15,7 +17,9 @@ module.exports = (entries, folderPath) => {
     })
     .catch(err => {
       if (err.message === 'FILE_ALREADY_PRESENT') return entry
-
+      else throw err
+    })
+    .then(() => {
       return cozy.files.statByPath(folderPath)
       .then(folder => {
         const options = {
@@ -29,10 +33,10 @@ module.exports = (entries, folderPath) => {
           return entry
         })
       })
-      .catch(err => {
-        console.log(err, `There was an error trying to save the file ${entry.fileurl}`)
-        return entry
-      })
+    })
+    .catch(err => {
+      console.log(err, `There was an error trying to save the file ${entry.fileurl}`)
+      return entry
     })
   })
   .then(result => {

@@ -8,10 +8,9 @@ module.exports = class baseKonnector {
     if (typeof fetch === 'function') this.fetch = fetch
     this.init()
     .then(requiredFields => this.fetch(requiredFields))
-    .then(() => log('info', 'The konnector has been run'))
+    .then(() => log('info', 'The connector has been run'))
     .catch(err => {
-      console.log(err)
-      log('error', err.message || err)
+      log('error', err.message || err, 'Error catched by BaseKonnector')
       process.exit(1)
     })
   }
@@ -33,7 +32,7 @@ module.exports = class baseKonnector {
       .then(folder => {
         cozyFields.folder_to_save = folder.attributes.path
         log('debug', folder, 'folder details')
-        return cozyFields
+        return account
       })
       .catch(err => {
         log('error', err, 'error while getting the folder path')
@@ -41,7 +40,7 @@ module.exports = class baseKonnector {
       })
     })
     .then(account => {
-      // log('debug', account, 'account content')
+      log('debug', account, 'account content')
       const requiredFields = Object.assign({
         folderPath: cozyFields.folder_to_save
       }, account.auth, account.oauth)
