@@ -3,5 +3,6 @@ module.exports = {
   cozyClient: require('./libs/cozyclient'),
   log: require('./libs/logger'),
   saveFiles: require('./libs/saveFiles'),
-  saveData: require('./libs/saveData')
+  saveData: require('./libs/saveData'),
+  filterData: require('./libs/filterData')
 }
