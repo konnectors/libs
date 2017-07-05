@@ -11,7 +11,7 @@ module.exports = (entries, doctype, options = {}) => {
   //  correspond to all document of the selected doctype
   //  - selector : this the mango request : default one will be {selector: {_id: {"$gt": null}}} to
   //  get all the records
-  //  - keys : this is the list of keys used to check that to items are the same
+  //  - keys : this is the list of keys used to check that two items are the same
   const keys = options.keys ? options.keys : ['_id']
   log('debug', keys, 'keys')
   const index = options.index ? options.index : cozy.data.defineIndex(doctype, keys)
@@ -35,7 +35,10 @@ module.exports = (entries, doctype, options = {}) => {
     // filter out existing items
     return bluebird.filter(entries, entry => !hashTable[createHash(entry)])
   })
-  .then(entries => log('debug', entries.length, 'Number of items after filterData'))
+  .then(entries => {
+    log('debug', entries.length, 'Number of items after filterData')
+    return entries
+  })
 
   function createHash (item) {
     return keys.map(key => item[key]).join('####')

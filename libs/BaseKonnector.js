@@ -5,7 +5,7 @@ const log = require('./logger')
 
 module.exports = class baseKonnector {
   constructor (fetch) {
-    if (typeof fetch === 'function') this.fetch = fetch
+    if (typeof fetch === 'function') this.fetch = fetch.bind(this)
     this.init()
     .then(requiredFields => this.fetch(requiredFields))
     .then(() => log('info', 'The connector has been run'))
@@ -27,6 +27,9 @@ module.exports = class baseKonnector {
       process.exit(0)
     })
     .then(account => {
+      this.accountId = cozyFields.account
+      this.account = account
+
       // get the folder path from the folder id and put it in cozyFields.folder_to_save
       return cozy.files.statById(cozyFields.folder_to_save, false)
       .then(folder => {
@@ -46,5 +49,14 @@ module.exports = class baseKonnector {
       }, account.auth, account.oauth)
       return requiredFields
     })
+  }
+
+  saveAccountData (data) {
+    return cozy.data.updateAttributes('io.cozy.accounts', this.accountId, {data})
+    .then(account => account.data)
+  }
+
+  getAccountData () {
+    return this.account.data || {}
   }
 }
