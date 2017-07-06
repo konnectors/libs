@@ -1,3 +1,5 @@
+require('./debug_hijack')
+
 module.exports = {
   baseKonnector: require('./base_konnector'),
   cozyClient: require('./cozyclient'),
