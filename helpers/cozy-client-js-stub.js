@@ -1,21 +1,21 @@
 const fs = require('fs')
 const path = require('path')
-const log = require('debug')('cozy-client-js-stub')
+const log = require('../libs/logger')
 let fixture = {}
 const FIXTURE_PATH = path.resolve('fixture.json')
 if (fs.existsSync(FIXTURE_PATH)) {
-  log(`Found ${FIXTURE_PATH} fixture file`)
+  log('debug', `Found ${FIXTURE_PATH} fixture file`)
   fixture = require(FIXTURE_PATH)
 }
 
 module.exports = {
   data: {
     create (doctype, item) {
-      log(item, `creating ${doctype}`)
+      log('debug', item, `creating ${doctype}`)
       return Promise.resolve(item)
     },
     updateAttributes (doctype, id, attrs) {
-      log(attrs, `updating ${id} in ${doctype}`)
+      log('debug', attrs, `updating ${id} in ${doctype}`)
       return Promise.resolve({})
     },
     defineIndex (doctype) {
@@ -50,9 +50,9 @@ module.exports = {
     statByPath (pathToCheck) {
       // check this path in .
       return new Promise((resolve, reject) => {
-        log(`Checking if ${pathToCheck} exists`)
+        log('debug', `Checking if ${pathToCheck} exists`)
         const realpath = path.join('.', pathToCheck)
-        log(`Real path : ${realpath}`)
+        log('debug', `Real path : ${realpath}`)
         if (fs.existsSync(realpath)) {
           resolve({_id: pathToCheck})
         } else {
@@ -66,28 +66,28 @@ module.exports = {
     },
     create (file, options) {
       return new Promise((resolve, reject) => {
-        log(`Creating new file ${options.name}`)
+        log('debug', `Creating new file ${options.name}`)
         const finalPath = path.join('.', options.dirID, options.name)
-        log(`Real path : ${finalPath}`)
+        log('debug', `Real path : ${finalPath}`)
         let writeStream = fs.createWriteStream(finalPath)
         file.pipe(writeStream)
 
         file.on('end', () => {
-          log(`File ${finalPath} created`)
+          log('debug', `File ${finalPath} created`)
           resolve({_id: options.name})
         })
 
         writeStream.on('error', err => {
-          log(`Error : ${err}`)
+          log('debug', `Error : ${err} whil trying to write file`)
           reject(new Error(err))
         })
       })
     },
     createDirectory (options) {
       return new Promise((resolve, reject) => {
-        log(`Creating new directory ${options.name}`)
+        log('debug', `Creating new directory ${options.name}`)
         const finalPath = path.join('.', options.dirID, options.name)
-        log(`Real path : ${finalPath}`)
+        log('debug', `Real path : ${finalPath}`)
         let result = fs.mkdir(finalPath)
         if (result) resolve()
         else reject(new Error(`Could not create ${finalPath}`))

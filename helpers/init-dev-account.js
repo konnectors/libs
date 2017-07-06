@@ -3,7 +3,7 @@
 const cozy = require('../libs/cozyclient')
 const fs = require('fs')
 const path = require('path')
-const debug = require('debug')('init-dev-account')
+const log = require('../libs/logger')
 
 const accountIdPath = path.resolve('.account')
 
@@ -14,12 +14,12 @@ module.exports = function () {
 function ensureAccount () {
   return getAccountId()
     .then(id => {
-      debug('Found .account file')
+      log('debug', 'Found .account file')
       return cozy.data.find('io.cozy.accounts', id)
         .then(doc => doc._id)
     })
     .catch((err) => {
-      debug(err.message)
+      log('debug', err.message, 'Error while getting the account')
       return createAccount()
     })
 }
@@ -33,7 +33,7 @@ function getAccountId () {
 }
 
 function createAccount () {
-  debug('creating a new account')
+  log('debug', 'Creating a new account')
   return cozy.data.create('io.cozy.accounts', {
     name: 'dev_account',
     account_type: 'dev_account',

@@ -3,14 +3,14 @@
 const http = require('http')
 const path = require('path')
 const fs = require('fs')
-const log = require('debug')('cozy-authenticate')
+const log = require('../libs/logger')
 const {Client, MemoryStorage} = require('cozy-client-js')
 const manifest = require('./manifest')
 
 const manifestPath = path.resolve('manifest.konnector')
 
 const cozyURL = process.env.COZY_URL ? process.env.COZY_URL : 'http://cozy.tools:8080'
-log(cozyURL, 'COZY_URL')
+log('debug', cozyURL, 'COZY_URL')
 
 const scopes = manifest.getScopes(manifestPath)
 
@@ -24,7 +24,7 @@ function onRegistered (client, url) {
   return new Promise((resolve) => {
     server = http.createServer((request, response) => {
       if (request.url.indexOf('/do_access') === 0) {
-        log(request.url, 'url received')
+        log('debug', request.url, 'url received')
         resolve(request.url)
         response.end('Authorization registered, you can close this page')
       }
@@ -38,14 +38,14 @@ function onRegistered (client, url) {
     return url
   }, (err) => {
     server.close()
-    log(err, 'registration error')
+    log('error', err, 'registration error')
     throw err
   })
 }
 
 function authenticate () {
   if (fs.existsSync(tokenPath)) {
-    log('token file already present')
+    log('debug', 'token file already present')
     return Promise.resolve(JSON.parse(fs.readFileSync(tokenPath)))
   } else {
     const cozy = new Client({

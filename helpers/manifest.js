@@ -1,5 +1,5 @@
 const fs = require('fs')
-const log = require('debug')('manifest')
+const log = require('../libs/logger')
 
 module.exports = {
   getScopes (manifestPath) {
@@ -11,7 +11,7 @@ module.exports = {
     for (let key in permissions) {
       scopes.push(permissions[key].type)
     }
-    log(scopes, 'scopes found in the manifest')
+    log('debug', scopes, 'scopes found in the manifest')
 
     return scopes
   }

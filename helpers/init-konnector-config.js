@@ -2,7 +2,7 @@
 
 const fs = require('fs')
 const path = require('path')
-const debug = require('debug')('init-konnector-config')
+const log = require('../libs/logger')
 
 module.exports = getKonnectorConfig
 
@@ -19,6 +19,6 @@ const template = {
 }
 
 function createKonnectorConfig () {
-  debug(`No ${configPath} file found, creating an empty one. Don't you need to define some fields for your connector?`)
+  log('error', `No ${configPath} file found, creating an empty one. Don't you need to define some fields for your connector?`)
   fs.writeFileSync(configPath, JSON.stringify(template, null, '  '))
 }
