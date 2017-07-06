@@ -56,7 +56,7 @@ module.exports = {
               resolve(account)
             })
             .catch(err => {
-              debug(err, 'error while getting the folder path')
+              log('error', `error while getting the folder path from ID : "${cozyFields.folderPath}"`)
               log('error', err.message)
               reject(new Error('NOT_EXISTING_DIRECTORY'))
             })
