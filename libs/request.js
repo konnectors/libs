@@ -1,4 +1,5 @@
 let request = require('request-promise')
+const log = require('./logger')
 
 let singleton = null
 
@@ -31,6 +32,8 @@ module.exports = function (options = {}) {
   if (options.cheerio) requestOptions.transform = (body) => require('cheerio').load(body)
 
   request = request.defaults(requestOptions)
+
+  log('debug', requestOptions, 'Getting a new request instance with the following options')
 
   return request
 }

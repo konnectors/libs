@@ -19,7 +19,7 @@ function ensureAccount () {
         .then(doc => doc._id)
     })
     .catch((err) => {
-      log('debug', err.message, 'Error while getting the account')
+      log('warning', err.message, 'Error while getting the account')
       return createAccount()
     })
 }
@@ -33,7 +33,7 @@ function getAccountId () {
 }
 
 function createAccount () {
-  log('debug', 'Creating a new account')
+  log('info', 'Creating a new dev account')
   return cozy.data.create('io.cozy.accounts', {
     name: 'dev_account',
     account_type: 'dev_account',

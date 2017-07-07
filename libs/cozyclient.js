@@ -3,17 +3,17 @@ const log = require('./logger')
 
 let cozy = null
 if (process.env.NODE_ENV === 'standalone') {
-  log('debug', 'standalone mode')
+  log('info', 'standalone mode')
   cozy = require('../helpers/cozy-client-js-stub')
 } else if (process.env.NODE_ENV === 'development') {
-  log('debug', 'development mode')
+  log('info', 'development mode')
   // COZY_CREDENTIALS
   let credentials = null
   try {
     credentials = JSON.parse(process.env.COZY_CREDENTIALS)
-    log('debug', credentials, 'COZY_CREDENTIALS')
+    // log('debug', credentials, 'COZY_CREDENTIALS')
   } catch (err) {
-    log('error', err)
+    log('error', err.message, 'Error catched in cozyclient')
     console.log(`Please provide proper COZY_CREDENTIALS environment variable. ${process.env.COZY_CREDENTIALS} is not OK`)
     process.exit(1)
   }
@@ -44,7 +44,7 @@ if (process.env.NODE_ENV === 'standalone') {
     credentials = process.env.COZY_CREDENTIALS.trim()
     // log(credentials, 'COZY_CREDENTIALS')
   } catch (err) {
-    log('error', err)
+    log('error', err.message, 'Error catched in cozyclient')
     console.log(`Please provide proper COZY_CREDENTIALS environment variable.`)
     process.exit(1)
   }

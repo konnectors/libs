@@ -35,7 +35,7 @@ module.exports = (entries, folderPath) => {
       })
     })
     .catch(err => {
-      console.log(err, `There was an error trying to save the file ${entry.fileurl}`)
+      log('error', err.message, `Error cached while trying to save the file ${entry.fileurl}`)
       return entry
     })
   })

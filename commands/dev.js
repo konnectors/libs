@@ -1,6 +1,7 @@
 'use strict'
 
 process.env.NODE_ENV = 'development'
+if (!process.env.DEBUG) process.env.DEBUG = '*'
 
 const config = require('../helpers/init-konnector-config')()
 process.env.COZY_URL = config.COZY_URL
@@ -16,7 +17,7 @@ require('../helpers/cozy-authenticate')()
     account: accountId,
     folder_to_save: 'io.cozy.files.root-dir'
   })
-  require(require('path').resolve('index.js'))
+  return require(require('path').resolve('index.js'))
 })
 .catch(err => {
   console.log(err, 'unexpected error')

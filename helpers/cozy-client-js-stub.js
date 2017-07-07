@@ -11,11 +11,11 @@ if (fs.existsSync(FIXTURE_PATH)) {
 module.exports = {
   data: {
     create (doctype, item) {
-      log('debug', item, `creating ${doctype}`)
+      log('info', item, `creating ${doctype}`)
       return Promise.resolve(item)
     },
     updateAttributes (doctype, id, attrs) {
-      log('debug', attrs, `updating ${id} in ${doctype}`)
+      log('info', attrs, `updating ${id} in ${doctype}`)
       return Promise.resolve({})
     },
     defineIndex (doctype) {
@@ -50,9 +50,9 @@ module.exports = {
     statByPath (pathToCheck) {
       // check this path in .
       return new Promise((resolve, reject) => {
-        log('debug', `Checking if ${pathToCheck} exists`)
+        log('info', `Checking if ${pathToCheck} exists`)
         const realpath = path.join('.', pathToCheck)
-        log('debug', `Real path : ${realpath}`)
+        log('info', `Real path : ${realpath}`)
         if (fs.existsSync(realpath)) {
           resolve({_id: pathToCheck})
         } else {
@@ -66,28 +66,28 @@ module.exports = {
     },
     create (file, options) {
       return new Promise((resolve, reject) => {
-        log('debug', `Creating new file ${options.name}`)
+        log('info', `Creating new file ${options.name}`)
         const finalPath = path.join('.', options.dirID, options.name)
-        log('debug', `Real path : ${finalPath}`)
+        log('info', `Real path : ${finalPath}`)
         let writeStream = fs.createWriteStream(finalPath)
         file.pipe(writeStream)
 
         file.on('end', () => {
-          log('debug', `File ${finalPath} created`)
+          log('info', `File ${finalPath} created`)
           resolve({_id: options.name})
         })
 
         writeStream.on('error', err => {
-          log('debug', `Error : ${err} whil trying to write file`)
+          log('warning', `Error : ${err} while trying to write file`)
           reject(new Error(err))
         })
       })
     },
     createDirectory (options) {
       return new Promise((resolve, reject) => {
-        log('debug', `Creating new directory ${options.name}`)
+        log('info', `Creating new directory ${options.name}`)
         const finalPath = path.join('.', options.dirID, options.name)
-        log('debug', `Real path : ${finalPath}`)
+        log('info', `Real path : ${finalPath}`)
         let result = fs.mkdir(finalPath)
         if (result) resolve()
         else reject(new Error(`Could not create ${finalPath}`))

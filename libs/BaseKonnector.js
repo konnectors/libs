@@ -38,12 +38,12 @@ module.exports = class baseKonnector {
         return account
       })
       .catch(err => {
-        log('error', err, 'error while getting the folder path')
+        log('error', err, `error while getting the folder path of ${cozyFields.folder_to_save}`)
         throw new Error('NOT_EXISTING_DIRECTORY')
       })
     })
     .then(account => {
-      log('debug', account, 'account content')
+      // log('debug', account, 'account content')
       const requiredFields = Object.assign({
         folderPath: cozyFields.folder_to_save
       }, account.auth, account.oauth)
