@@ -8,24 +8,25 @@ const log = require('./logger')
 module.exports = (entries, folderPath) => {
   return bluebird.mapSeries(entries, entry => {
     log('debug', entry)
-    if (!entry.fileurl) return false
+    if (!entry.fileurl && !entry.requestOptions) return false
 
-    return cozy.files.statByPath(path.join(folderPath, getFileName(entry)))
+    const filepath = path.join(folderPath, getFileName(entry))
+    return cozy.files.statByPath(filepath)
     .then(() => {
       // the file is already present then get out of here
-      throw new Error('FILE_ALREADY_PRESENT')
+      return entry
     })
     .catch(err => {
-      if (err.message === 'FILE_ALREADY_PRESENT') return entry
-      else throw err
-    })
-    .then(() => {
+      log('info', `File ${filepath} does not exist yet`, err.message)
       return cozy.files.statByPath(folderPath)
       .then(folder => {
         const options = {
           uri: entry.fileurl,
           method: 'GET',
           jar: true
+        }
+        if (entry.requestOptions) {
+          Object.assign(options, entry.requestOptions)
         }
         return cozy.files.create(request(options), {name: getFileName(entry), dirID: folder._id})
         .then(fileobject => {
