@@ -10,6 +10,7 @@ module.exports = function (options = {}) {
     debug: false,
     json: true,
     cheerio: false,
+    strictSSL: false,
     headers: {
       // a lot of web service do not want to be called by robots and then check the user agent to
       // be sure they are called by a browser. This user agent works most of the time.
@@ -21,13 +22,15 @@ module.exports = function (options = {}) {
 
   options = Object.assign(defaultOptions, options)
 
-  const requestOptions = {}
   if (options.debug) require('request-debug')(request)
+
+  const requestOptions = {}
 
   requestOptions.json = options.json
   requestOptions.jar = options.jar
   requestOptions.headers = options.headers
   requestOptions.followAllRedirects = options.followAllRedirects
+  requestOptions.strictSSL = options.strictSSL
 
   if (options.cheerio) requestOptions.transform = (body) => require('cheerio').load(body)
 
