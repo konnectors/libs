@@ -10,7 +10,7 @@ module.exports = (entries, folderPath) => {
     log('debug', entry)
     if (!entry.fileurl && !entry.requestOptions) return false
 
-    const filepath = path.join(folderPath, getFileName(entry))
+    const filepath = path.join(folderPath, sanitizeFileName(getFileName(entry)))
     return cozy.files.statByPath(filepath)
     .then(() => {
       // the file is already present then get out of here
@@ -28,7 +28,7 @@ module.exports = (entries, folderPath) => {
         if (entry.requestOptions) {
           Object.assign(options, entry.requestOptions)
         }
-        return cozy.files.create(request(options), {name: getFileName(entry), dirID: folder._id})
+        return cozy.files.create(request(options), {name: sanitizeFileName(getFileName(entry)), dirID: folder._id})
         .then(fileobject => {
           entry.fileobject = fileobject
           return entry
@@ -36,7 +36,8 @@ module.exports = (entries, folderPath) => {
       })
     })
     .catch(err => {
-      log('error', err.message, `Error cached while trying to save the file ${entry.fileurl}`)
+      // console.log(err, 'err')
+      log('error', err.message, `Error caught while trying to save the file ${entry.fileurl}`)
       return entry
     })
   })
@@ -52,4 +53,8 @@ function getFileName (entry) {
   // try to get the file name from the url
   const parsed = require('url').parse(entry.fileurl)
   return path.basename(parsed.pathname)
+}
+
+function sanitizeFileName (filename) {
+  return filename.replace(/^\.+$/, '').replace(/[\/\?<>\\:\*\|":]/g, '')
 }
