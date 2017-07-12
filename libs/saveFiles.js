@@ -5,10 +5,17 @@ const request = require('request')
 const log = require('./logger')
 
 // Saves the files given in the fileurl attribute of each entries
-module.exports = (entries, folderPath) => {
+module.exports = (entries, folderPath, options = {}) => {
+  const remainingTime = Math.floor((options.timeout - Date.now()) / 1000)
+  if (options.timeout) log('info', `${remainingTime}s remaining for ${folderPath}`)
+
   return bluebird.mapSeries(entries, entry => {
-    log('debug', entry)
     if (!entry.fileurl && !entry.requestOptions) return false
+
+    if (options.timeout && Date.now() > options.timeout) {
+      log('info', `${remainingTime}s timeout finished for ${folderPath}`)
+      throw new Error('TIMEOUT')
+    }
 
     const filepath = path.join(folderPath, sanitizeFileName(getFileName(entry)))
     return cozy.files.statByPath(filepath)
@@ -17,7 +24,8 @@ module.exports = (entries, folderPath) => {
       return entry
     })
     .catch(err => {
-      log('info', `File ${filepath} does not exist yet`, err.message)
+      log('debug', entry)
+      log('debug', `File ${filepath} does not exist yet`, err.message)
       return cozy.files.statByPath(folderPath)
       .then(folder => {
         const options = {
@@ -36,14 +44,16 @@ module.exports = (entries, folderPath) => {
       })
     })
     .catch(err => {
+      // if error is timeout, do not continue
+      if (err.message === 'TIMEOUT') throw err
       // console.log(err, 'err')
       log('error', err.message, `Error caught while trying to save the file ${entry.fileurl}`)
       return entry
     })
   })
-  .then(result => {
-    // only output newly created files
-    return result.filter(item => item.fileobject)
+  .catch(err => {
+    // do not count TIMEOUT error as an error outside
+    if (err.message !== 'TIMEOUT') throw err
   })
 }
 
@@ -56,5 +66,5 @@ function getFileName (entry) {
 }
 
 function sanitizeFileName (filename) {
-  return filename.replace(/^\.+$/, '').replace(/[\/\?<>\\:\*\|":]/g, '')
+  return filename.replace(/^\.+$/, '').replace(/[/?<>\\:*|":]/g, '')
 }
