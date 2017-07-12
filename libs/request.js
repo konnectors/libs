@@ -1,4 +1,5 @@
 let request = require('request-promise')
+const requestdebug = require('request-debug')
 const log = require('./logger')
 
 let singleton = null
@@ -22,7 +23,7 @@ module.exports = function (options = {}) {
 
   options = Object.assign(defaultOptions, options)
 
-  if (options.debug) require('request-debug')(request)
+  if (options.debug) requestdebug(request)
 
   const requestOptions = {}
 
