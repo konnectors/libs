@@ -13,7 +13,7 @@ if (process.env.NODE_ENV === 'standalone') {
     credentials = JSON.parse(process.env.COZY_CREDENTIALS)
     // log('debug', credentials, 'COZY_CREDENTIALS')
   } catch (err) {
-    log('error', err.message, 'Error catched in cozyclient')
+    log('error', err.message, 'Error caught in cozyclient')
     console.log(`Please provide proper COZY_CREDENTIALS environment variable. ${process.env.COZY_CREDENTIALS} is not OK`)
     process.exit(1)
   }
@@ -44,7 +44,6 @@ if (process.env.NODE_ENV === 'standalone') {
     credentials = process.env.COZY_CREDENTIALS.trim()
     // log(credentials, 'COZY_CREDENTIALS')
   } catch (err) {
-    log('error', err.message, 'Error catched in cozyclient')
     console.log(`Please provide proper COZY_CREDENTIALS environment variable.`)
     process.exit(1)
   }
