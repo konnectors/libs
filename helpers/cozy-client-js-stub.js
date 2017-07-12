@@ -50,13 +50,13 @@ module.exports = {
     statByPath (pathToCheck) {
       // check this path in .
       return new Promise((resolve, reject) => {
-        log('info', `Checking if ${pathToCheck} exists`)
+        log('debug', `Checking if ${pathToCheck} exists`)
         const realpath = path.join('.', pathToCheck)
-        log('info', `Real path : ${realpath}`)
+        log('debug', `Real path : ${realpath}`)
         if (fs.existsSync(realpath)) {
           resolve({_id: pathToCheck})
         } else {
-          reject(new Error(`${pathToCheck} does not exist`))
+          throw new Error(`${pathToCheck} does not exist`)
         }
       })
     },
@@ -66,9 +66,9 @@ module.exports = {
     },
     create (file, options) {
       return new Promise((resolve, reject) => {
-        log('info', `Creating new file ${options.name}`)
+        log('debug', `Creating new file ${options.name}`)
         const finalPath = path.join('.', options.dirID, options.name)
-        log('info', `Real path : ${finalPath}`)
+        log('debug', `Real path : ${finalPath}`)
         let writeStream = fs.createWriteStream(finalPath)
         file.pipe(writeStream)
 
