@@ -84,13 +84,12 @@ module.exports = {
       })
     },
     createDirectory (options) {
-      return new Promise((resolve, reject) => {
+      return new Promise(resolve => {
         log('info', `Creating new directory ${options.name}`)
         const finalPath = path.join('.', options.dirID, options.name)
         log('info', `Real path : ${finalPath}`)
-        let result = fs.mkdir(finalPath)
-        if (result) resolve()
-        else reject(new Error(`Could not create ${finalPath}`))
+        fs.mkdirSync(finalPath)
+        resolve()
       })
     }
   }
