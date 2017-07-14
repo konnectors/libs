@@ -17,7 +17,8 @@ require('../helpers/cozy-authenticate')()
     account: accountId,
     folder_to_save: 'io.cozy.files.root-dir'
   })
-  return require(require('path').resolve('index.js'))
+  const filename = process.argv[2] || 'index.js'
+  return require(require('path').resolve(filename))
 })
 .catch(err => {
   console.log(err, 'unexpected error')

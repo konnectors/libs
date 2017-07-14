@@ -5,4 +5,5 @@ if (!process.env.DEBUG) process.env.DEBUG = '*'
 
 process.env.COZY_FIELDS = '{}'
 
-require(require('path').resolve('index.js'))
+const filename = process.argv[2] || 'index.js'
+require(require('path').resolve(filename))
