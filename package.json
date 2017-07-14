@@ -33,6 +33,7 @@
     "moment": "^2.18.1",
     "regenerator-runtime": "^0.10.5",
     "request": "^2.81.0",
+    "request-debug": "^0.2.0",
     "request-promise": "^4.2.1"
   },
   "config": {
@@ -41,7 +42,6 @@
     }
   },
   "devDependencies": {
-    "cz-conventional-changelog": "^2.0.0",
-    "request-debug": "^0.2.0"
+    "cz-conventional-changelog": "^2.0.0"
   }
 }
