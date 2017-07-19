@@ -10,7 +10,7 @@ module.exports = class baseKonnector {
     .then(requiredFields => this.fetch(requiredFields))
     .then(() => log('info', 'The connector has been run'))
     .catch(err => {
-      log('error', err.message || err, 'Error catched by BaseKonnector')
+      log('error', err.message || err, 'Error caught by BaseKonnector')
       process.exit(1)
     })
   }

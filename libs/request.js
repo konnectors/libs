@@ -33,7 +33,15 @@ module.exports = function (options = {}) {
   requestOptions.followAllRedirects = options.followAllRedirects
   requestOptions.strictSSL = options.strictSSL
 
-  if (options.cheerio) requestOptions.transform = (body) => require('cheerio').load(body)
+  if (options.cheerio) {
+    requestOptions.transform = function (body) {
+      return require('cheerio').load(body)
+    }
+  } else {
+    requestOptions.transform = function (body) {
+      return body
+    }
+  }
 
   request = request.defaults(requestOptions)
 
