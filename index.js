@@ -1,6 +1,7 @@
 module.exports = {
   baseKonnector: require('./base_konnector'),
   cozyClient: require('./cozyclient'),
+  errors: require('./errors'),
   fetcher: require('./fetcher'),
   filterExisting: require('./filter_existing'),
   log: require('./logger'),
