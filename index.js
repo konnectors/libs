@@ -5,5 +5,6 @@ module.exports = {
   saveFiles: require('./libs/saveFiles'),
   addData: require('./libs/addData'),
   filterData: require('./libs/filterData'),
-  request: require('./libs/request')
+  request: require('./libs/request'),
+  retry: require('bluebird-retry')
 }

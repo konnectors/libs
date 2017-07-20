@@ -1,12 +1,9 @@
 TODO before the first release
 =============================
 
- - [ ] Allow the connectors to retry seamlessly
  - [ ] use node-replay npm package to save and replay the http requests
  - [ ] Add an updateOrAddData method
- - [ ] Some shortcut, still to be defined, for most common scrapping use cases
-      - get the token with a jquery selector and pass it in a form
-      - get the token and passit as a Bearer in the header
+ - [X] Allow the connectors to retry seamlessly (use package bluebird-retry)
  - [X] Do not use debug package and enhance the internal logger
   - [X] Remove the debug package
   - [X] Display json logs in production and colored one line logs in standalone and dev mode
