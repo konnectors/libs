@@ -1,6 +1,6 @@
 {
   "name": "cozy-konnector-libs",
-  "version": "3.0.0-alpha.13",
+  "version": "3.0.0-alpha.14",
   "description": "All the libs needed by a cozy v3 konnector",
   "main": "index.js",
   "repository": {
