@@ -1,7 +1,8 @@
 const bluebird = require('bluebird')
 const path = require('path')
 const cozy = require('./cozyclient')
-const request = require('request')
+const request = require('./request')
+const rq = request()
 const log = require('./logger')
 
 // Saves the files given in the fileurl attribute of each entries
@@ -36,7 +37,7 @@ module.exports = (entries, folderPath, options = {}) => {
         if (entry.requestOptions) {
           Object.assign(options, entry.requestOptions)
         }
-        return cozy.files.create(request(options), {name: sanitizeFileName(getFileName(entry)), dirID: folder._id})
+        return cozy.files.create(rq(options), {name: sanitizeFileName(getFileName(entry)), dirID: folder._id})
         .then(fileobject => {
           entry.fileobject = fileobject
           return entry
