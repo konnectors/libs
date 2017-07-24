@@ -41,6 +41,10 @@ module.exports = (entries, doctype, options = {}) => {
   })
 
   function createHash (item) {
-    return keys.map(key => item[key]).join('####')
+    return keys.map(key => {
+      let result = item[key]
+      if (key === 'date') result = new Date(result)
+      return result
+    }).join('####')
   }
 }

@@ -2,6 +2,7 @@ const moment = require('moment')
 const bluebird = require('bluebird')
 const cozyClient = require('./cozyclient')
 const DOCTYPE = 'io.cozy.bank.operations'
+const log = require('./logger')
 
 module.exports = (entries, doctype, options = {}) => {
   if (typeof options.identifiers === 'string') {
@@ -20,16 +21,16 @@ module.exports = (entries, doctype, options = {}) => {
   options.minDateDelta = options.minDateDelta || options.dateDelta
   options.maxDateDelta = options.maxDateDelta || options.dateDelta
 
-  bluebird.each(entries, entry => {
+  // for each entry try to get a corresponding operation
+  return bluebird.each(entries, entry => {
     let date = new Date(entry.paidDate || entry.date)
     let startDate = moment(date).subtract(options.minDateDelta, 'days')
     let endDate = moment(date).add(options.maxDateDelta, 'days')
 
-    // get the list of operation corresponding to the date interval
-
+    // get the list of operation corresponding to the date interval arount the date of the entry
     let startkey = `${startDate.format('YYYY-MM-DDT00:00:00.000')}Z`
     let endkey = `${endDate.format('YYYY-MM-DDT00:00:00.000')}Z`
-    cozyClient.data.defineIndex(DOCTYPE, options.identifiers)
+    return cozyClient.data.defineIndex(DOCTYPE, ['date'])
     .then(index => cozyClient.data.query(index, { selector: {
       date: {
         '$gt': startkey,
@@ -37,6 +38,7 @@ module.exports = (entries, doctype, options = {}) => {
       }}
     }))
     .then(operations => {
+      // find the operations with the expected identifier
       let operationToLink = null
       let candidateOperationsForLink = []
 
@@ -78,33 +80,13 @@ module.exports = (entries, doctype, options = {}) => {
         }
       }
 
-      let result = Promise.resolve()
       if (operationToLink !== null) {
-        result = getEntryId(entry)
-        .then(entryId => {
-          let link = `${doctype}:${entryId}`
-
-          // if the operation and the entry are already linked, we can skip this step
-          if (operationToLink.bill === link) return Promise.resolve()
-
-          return cozyClient.data.updateAttributes(DOCTYPE, entryId, { bill: link })
-        })
+        log('debug', operationToLink, 'There is an operation to link')
+        let link = `${doctype}:${entry._id}`
+        if (operationToLink.bill === link) return Promise.resolve()
+        return cozyClient.data.updateAttributes(DOCTYPE, operationToLink._id, { bill: link })
       }
-      return result
+      return Promise.resolve()
     })
-  })
-}
-
-function getEntryId (entry) {
-  let date = `${moment(new Date(entry.date)).format('YYYY-MM-DD')}T00:00:00.000Z`
-
-  return cozyClient.data.defineIndex(DOCTYPE, ['date', 'amount'])
-  .then(index => cozyClient.data.query(index, { selector: {
-    date: date,
-    amount: entry.amount
-  }}))
-  .then(entries => {
-    if (entries.length === 0) throw new Error('No matching entry found')
-    else return entries[0]._id
   })
 }
