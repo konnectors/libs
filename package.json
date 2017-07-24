@@ -36,13 +36,5 @@
     "request": "^2.81.0",
     "request-debug": "^0.2.0",
     "request-promise": "^4.2.1"
-  },
-  "config": {
-    "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog"
-    }
-  },
-  "devDependencies": {
-    "cz-conventional-changelog": "^2.0.0"
   }
 }
