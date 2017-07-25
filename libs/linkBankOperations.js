@@ -80,7 +80,7 @@ module.exports = (entries, doctype, options = {}) => {
         }
       }
 
-      if (operationToLink !== null) {
+      if (operationToLink !== null && entry._id) {
         log('debug', operationToLink, 'There is an operation to link')
         let link = `${doctype}:${entry._id}`
         if (operationToLink.bill === link) return Promise.resolve()
