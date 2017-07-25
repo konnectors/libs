@@ -86,13 +86,15 @@ module.exports = (logger, model, options, tags) => {
 
         // cozy-db will cast the moment instance into a date since
         // moment.valueOf returns a timestamp that new Date() will parse
-        return model.create(entry, function (err) {
+        return model.create(entry, function (err, data) {
           if (err) {
             log('error', err.message)
             debug(err)
             log('error', `entry for ${entryLabel} not saved.`)
           } else {
             log('info', `entry for ${entryLabel} saved.`)
+            // add id of the doc in the entry to allow linkBankOperations to work
+            if (data && data._id) entry._id = data._id
           }
           return callback()
         })

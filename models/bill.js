@@ -23,7 +23,7 @@ module.exports = {
   },
   create (entry, callback) {
     cozy.data.create(DOCTYPE, entry)
-    .then(() => callback())
+    .then(result => callback(null, result))
     .catch(err => callback(err))
   },
   findBy (selector, callback) {
