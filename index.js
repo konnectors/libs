@@ -7,8 +7,9 @@ module.exports = {
   manifest: require('./manifest'),
   naming: require('./naming'),
   saveDataAndFile: require('./save_data_and_file'),
+  saveBills: require('./saveBills'),
   updateOrCreate: require('./update_or_create'),
-  linkBankOperation: require('./linkBankOperation'),
+  linkBankOperation: require('./linkBankOperations'),
   models: {
     baseModel: require('./models/base_model'),
     bill: require('./models/bill'),

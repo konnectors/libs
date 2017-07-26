@@ -18,7 +18,7 @@ module.exports = (fileOptions, bankOptions) => {
           return bill
         })
 
-        linkBankOperations(bills, 'io.cozy.bills')
+        linkBankOperations(bills, 'io.cozy.bills', bankOptions)
         .then(() => next())
         .catch(err => next(err))
       })
