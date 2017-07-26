@@ -1,3 +1,3 @@
-module.exports = function log (type, message) {
-  console.log(JSON.stringify({ type, message }))
+module.exports = function log (type, message, label) {
+  console.log(JSON.stringify({ type, message, label }))
 }
