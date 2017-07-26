@@ -9,7 +9,7 @@ const debug = require('debug')('filter_existing')
 // It expects a field called "fetched" as field of the second parameter. This
 // field contains the entries to filter.
 //
-module.exports = (log, model, suffix, vendor) => {
+module.exports = (log, model, suffix, vendor, options) => {
   return function (requiredFields, entries, body, next) {
     debug(entries.fetched, 'entries to filter')
     entries.filtered = []
@@ -21,41 +21,26 @@ module.exports = (log, model, suffix, vendor) => {
 
     // Get current entries
     return model.all(function (err, entryObjects) {
-      let hash
       if (err) {
         debug(err, 'error when trying to get all the entries')
         return next(err.message)
       }
       const entryHash = {}
 
-      // Build an hash where key is the date and valie is the entry
+      // Build an hash where key is the date and value is the entry
       for (let entry of Array.from(entryObjects)) {
         // If a vendor parameter is given, entry should be of given
         // vendor to be added to the hash (useful for bills).
         if (vendor != null) {
-          if (entry.vendor === vendor) {
-            hash = `${entry.date.format('YYYY-MM-DD')}T00:00:00.000Z`
-            entryHash[hash] = entry
-          }
-
-          // Simply add the entry
-        } else if (entry.uniqueId) {
-          hash = entry.uniqueId
-          entryHash[hash] = entry
+          if (entry.vendor === vendor) entryHash[createHash(entry, options.keys)] = entry
         } else {
-          hash = `${entry.date.format('YYYY-MM-DD')}T00:00:00.000Z`
-          entryHash[hash] = entry
+          entryHash[createHash(entry, options.keys)] = entry
         }
       }
 
       // Keep only non already existing entries.
       entries.filtered = entries.fetched.filter(function (entry) {
-        if (entry.uniqueId) {
-          hash = entry.uniqueId
-        } else {
-          hash = `${entry.date.format('YYYY-MM-DD')}T00:00:00.000Z`
-        }
-        return (entryHash[hash] == null)
+        return (entryHash[createHash(entry, options.keys)] == null)
       })
 
       // Keep only entries matching current vendor.
@@ -65,4 +50,12 @@ module.exports = (log, model, suffix, vendor) => {
       return next()
     })
   }
+}
+
+function createHash (item, keys = ['date']) {
+  return keys.map(key => {
+    let result = item[key]
+    if (key === 'date') result = `${item.date.format('YYYY/MM/DD')}`
+    return result
+  }).join('####')
 }

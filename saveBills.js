@@ -3,9 +3,9 @@ const filterExisting = require('./filter_existing')
 const saveDataAndFile = require('./save_data_and_file')
 const linkBankOperations = require('./linkBankOperations')
 
-module.exports = (fileOptions, bankOptions) => {
+module.exports = (filterOptions, fileOptions, bankOptions) => {
   return function (requiredFields, entries, body, next) {
-    filterExisting(null, Bill)(requiredFields, entries, body, function (err) {
+    filterExisting(null, Bill, null, null, filterOptions)(requiredFields, entries, body, function (err) {
       if (err) return next(err)
 
       saveDataAndFile(null, Bill, fileOptions)(requiredFields, entries, body, function (err) {
