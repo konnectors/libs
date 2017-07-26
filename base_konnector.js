@@ -63,7 +63,7 @@ module.exports = {
           })
         })
         .then(account => {
-          debug(account, 'account content')
+          // debug(account, 'account content')
           const requiredFields = Object.assign({
             folderPath: cozyFields.folderPath
           }, account.auth, account.oauth)
