@@ -9,7 +9,7 @@ const debug = require('debug')('filter_existing')
 // It expects a field called "fetched" as field of the second parameter. This
 // field contains the entries to filter.
 //
-module.exports = (log, model, suffix, vendor, options) => {
+module.exports = (log, model, suffix, vendor, options = {}) => {
   return function (requiredFields, entries, body, next) {
     debug(entries.fetched, 'entries to filter')
     entries.filtered = []
