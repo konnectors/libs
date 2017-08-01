@@ -21,7 +21,7 @@ module.exports = {
     },
     updateAttributes (doctype, id, attrs) {
       log('info', attrs, `updating ${id} in ${doctype}`)
-      return Promise.resolve({})
+      return Promise.resolve(Object.assign({}, attrs, {_id: id}))
     },
     defineIndex (doctype) {
       return Promise.resolve({doctype})
