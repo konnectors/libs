@@ -1,6 +1,10 @@
 const fs = require('fs')
 const path = require('path')
+<<<<<<< HEAD:helpers/cozy-client-js-stub.js
 const log = require('../libs/logger')
+const uuid = require('uuid/v5')
+const sha1 = require('uuid/lib/sha1')
+const bytesToUuid = require('uuid/lib/bytesToUuid')
 let fixture = {}
 const FIXTURE_PATH = path.resolve('fixture.json')
 if (fs.existsSync(FIXTURE_PATH)) {
@@ -12,7 +16,9 @@ module.exports = {
   data: {
     create (doctype, item) {
       log('info', item, `creating ${doctype}`)
-      return Promise.resolve(item)
+      const ns = bytesToUuid(sha1(doctype))
+      const _id = uuid(JSON.stringify(item), ns).replace(/-/gi, '')
+      return Promise.resolve(Object.assign({}, item, {_id}))
     },
     updateAttributes (doctype, id, attrs) {
       log('info', attrs, `updating ${id} in ${doctype}`)
