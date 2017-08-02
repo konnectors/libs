@@ -19,46 +19,95 @@ What's Cozy?
 What's Cozy Konnector Libs?
 ---------------------------
 
-This package contains all the libs shared by the konnectors. Most of the previous libs in the `libs` directory of the [cozy-labs/konnectors](https://github.com/cozy-labs/konnectors) repository are ported.
+This package contains all the shared libs which can help the creation of a connector and also the
+cli tools to run a connector outside a cozy.
 
-Here is the list available at the moment with their equivalent in the old repository:
+Here is the list of libs available at the moment :
 
-```
-baseKonnector -> libs/base_konnector
-fetcher -> libs/fetcher
-filterExisting -> libs/filter_existing
-linkBankOperation -> libs/link_bank_operation
-naming -> libs/naming
-saveDataAndFile -> libs/save_data_and_file
-models.bill -> models/bill
-models.file -> models/file
-models.folder -> models/folder
-```
+- `BaseKonnector` : the class from which all the connectors must inherit
+- `log` : the konnector internal logger
+- `cozyClient`: this is a [cozy-client-js](https://cozy.github.io/cozy-client-js/) instance already initialized and ready to use
+- `request`: this is a function which returns an instance of [request-promise](https://www.npmjs.com/package/request-promise) initialized with
+defaults often used in connector development
+- `retry`: this is a shortcut the the [bluebird-retry](https://www.npmjs.com/package/bluebird-retry)
+- `saveFiles`: a function which saves a list files in the cozy checking already existing
+  files
+- `filterData`: a function which filters out already existing records according to a given list of
+  keys
+- `addData`: a function which creates records in the given doctype
+- `linkBankOperations`: a function which adds a link to a files in a list of bank operations
+- `saveBills`: a function which combines the features of `saveFiles`, `filterData`, `addData` and
+  `linkBankOperations` and specialized to Bills
+
 
 Please note that some permissions are required to use some of those classes:
 
-- `io.cozy.accounts` for the `baseKonnector` class (`GET` only)
-- `io.cozy.files` for the `File` and `Folder` models
-- `io.cozy.bills` for the `Bill` model
-- `io.cozy.bank.operations` for the `linkBankOperation` function, and its `BankOperation` model
+- `io.cozy.accounts` for the `BaseKonnector` class (`GET` only)
+- `io.cozy.files` to allow the connector to save files
+- `io.cozy.bills` to allow the connector to save bills data in this doctype
+- `io.cozy.bank.operations` for the `linkBankOperation` function
 
 ### How to use it?
 
-We will take the example of `baseKonnector` and `models.bill`
+We will take the example of `BaseKonnector` and `saveBills`
 
 ```javascript
-const {baseKonnector, models} = require('cozy-konnector-libs')
+const {BaseKonnector, saveBills} = require('cozy-konnector-libs')
 ```
 
-Be carefull, the name baseKonnector and models must be exactly the same as expected by cozy-konnector-libs. Another way to use it, which may be clearer:
+You can also find a working example with the SFR mobile connector: https://github.com/cozy/cozy-konnector-sfrmobile.git
+
+### CLI
+
+cozy-konnector-libs also comes with some cli tools which allow to run your connector in standalone
+or development mode
+
+#### cozy-konnector-standalone
+
+If you just want to test your connector without any cozy available. Just add the following code in
+the `scripts` section of your package.json file
 
 ```javascript
-const konnectorLibs = require('cozy-konnector-libs')
-konnectorLibs.models.file
+  scripts: {
+    standalone: "cozy-konnector-standalone"
+  }
 ```
 
-You can also find a working example with the Bouygues Telecom konnector: https://github.com/cozy/cozy-konnector-bouyguestelecom.git
+and run:
 
+```sh
+npm run standalone
+```
+
+The requests to the cozy-stack will be stubbed using the [./fixture.json] file as source of data
+and when cozy-client-js is asked to create or update data, the data will be output to the console.
+The bills (or any file) will be saved in the . directory.
+
+#### cozy-konnector-dev
+
+If you want to run your connector linked to a cozy-stack, even remotely. Just add the follwing code
+in the `scripts` section of your package.json file:
+
+```javascript
+  scripts: {
+    dev: "cozy-konnector-dev"
+  }
+```
+
+and run:
+
+```sh
+npm run dev
+```
+
+This command will register your konnector as an OAuth application to the cozy-stack. By default,
+the cozy-stack is supposed to be located in http://cozy.tools:8080. If this is not your case, just
+update the COZY_URL field in [./konnector-dev-config.json].
+
+After that, your konnector is running but should not work since you did not specify any credentials to
+the target service. You can do this also in [./konnector-dev-config.json] in the "fields" section
+
+The files are saved in the root directory of your cozy by default.
 
 ### Open a Pull-Request
 
@@ -70,8 +119,7 @@ Community
 
 ### Maintainer
 
-The lead maintainer for Cozy Konnector Libs is [doubleface](https://github.com/doubleface), send him/her a :beers: to say hello!
-
+The lead maintainer for Cozy Konnector Libs is [doubleface](https://github.com/doubleface), send him a :beers: to say hello!
 
 ### Get in touch
 
@@ -90,7 +138,6 @@ Cozy Konnector Libs is developed by Cozy Cloud and distributed under the [MIT li
 
 
 [cozy]: https://cozy.io "Cozy Cloud"
-[yarn]: https://yarnpkg.com/
 [mit]: LICENSE.md
 [contribute]: CONTRIBUTING.md
 [freenode]: http://webchat.freenode.net/?randomnick=1&channels=%23cozycloud&uio=d4
