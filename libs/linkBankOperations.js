@@ -80,9 +80,9 @@ module.exports = (entries, doctype, options = {}) => {
         }
       }
 
-      if (operationToLink !== null && entry._id) {
+      if (operationToLink !== null && entry.fileobject && entry.fileobject._id) {
         log('debug', operationToLink, 'There is an operation to link')
-        let link = `${doctype}:${entry._id}`
+        let link = `io.cozy.files:${entry.fileobject._id}`
         if (operationToLink.bill === link) return Promise.resolve()
         return cozyClient.data.updateAttributes(DOCTYPE, operationToLink._id, { bill: link })
       }
