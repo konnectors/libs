@@ -34,12 +34,23 @@ module.exports = function (options = {}) {
   requestOptions.strictSSL = options.strictSSL
 
   if (options.cheerio) {
-    requestOptions.transform = function (body) {
-      return require('cheerio').load(body)
+    requestOptions.transform = function (body, response, resolveWithFullResponse) {
+      let result = require('cheerio').load(body)
+
+      if (resolveWithFullResponse === true) {
+        response.body = result
+        result = response
+      }
+
+      return result
     }
   } else {
-    requestOptions.transform = function (body) {
-      return body
+    requestOptions.transform = function (body, response, resolveWithFullResponse) {
+      let result = body
+      if (resolveWithFullResponse === true) {
+        result = response
+      }
+      return result
     }
   }
 
