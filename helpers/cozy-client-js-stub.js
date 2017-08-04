@@ -1,6 +1,5 @@
 const fs = require('fs')
 const path = require('path')
-<<<<<<< HEAD:helpers/cozy-client-js-stub.js
 const log = require('../libs/logger')
 const uuid = require('uuid/v5')
 const sha1 = require('uuid/lib/sha1')
