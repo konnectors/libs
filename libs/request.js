@@ -1,6 +1,6 @@
 let request = require('request-promise')
 const requestdebug = require('request-debug')
-const log = require('./logger')
+const log = require('./logger').namespace('request')
 
 let singleton = null
 

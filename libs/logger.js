@@ -13,17 +13,25 @@ const format = env2formats[env]
 
 if (!format) console.error('Error while loading the logger')
 
-module.exports = function log (type, message, label) {
+function log (type, message, label, namespace) {
   if (type !== 'debug' || (process.env.DEBUG && process.env.DEBUG.length)) {
-    console.log(format(type, message, label))
+    console.log(format(type, message, label, namespace))
   }
 }
 
-function prodFormat (type, message, label) {
-  return JSON.stringify({ type, message, label })
+module.exports = log
+
+log.namespace = function (namespace) {
+  return function (type, message, label, ns = namespace) {
+    log(type, message, label, ns)
+  }
 }
 
-function devFormat (type, message, label) {
+function prodFormat (type, message, label, namespace) {
+  return JSON.stringify({ type, message, label, namespace })
+}
+
+function devFormat (type, message, label, namespace) {
   let formatmessage = message
   if (typeof formatmessage !== 'string') {
     formatmessage = util.inspect(formatmessage)
@@ -31,6 +39,9 @@ function devFormat (type, message, label) {
 
   let formatlabel = ` : "${label}" `
   if (label === undefined) formatlabel = ``
+
+  let formatnamespace = `\u001b[35m${namespace}: \u001b[0m`
+  if (namespace === undefined) formatnamespace = ``
 
   const type2color = {
     debug: 6,   // cyan
@@ -44,5 +55,5 @@ function devFormat (type, message, label) {
   if (type2color[type]) {
     formattype = `\u001b[3${type2color[type]}m${type}\u001b[0m`
   }
-  return `${formattype}${formatlabel} : ${formatmessage}`
+  return `${formatnamespace}${formattype}${formatlabel} : ${formatmessage}`
 }

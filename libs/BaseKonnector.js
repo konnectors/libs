@@ -1,7 +1,7 @@
 'use strict'
 
 const cozy = require('./cozyclient')
-const log = require('./logger')
+const log = require('./logger').namespace('BaseKonnector')
 
 module.exports = class baseKonnector {
   constructor (fetch) {

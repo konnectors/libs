@@ -3,7 +3,7 @@
 const http = require('http')
 const path = require('path')
 const fs = require('fs')
-const log = require('../libs/logger')
+const log = require('../libs/logger').namespace('cozy-authenticate')
 const {Client, MemoryStorage} = require('cozy-client-js')
 const manifest = require('./manifest')
 

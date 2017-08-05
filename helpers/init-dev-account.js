@@ -3,7 +3,7 @@
 const cozy = require('../libs/cozyclient')
 const fs = require('fs')
 const path = require('path')
-const log = require('../libs/logger')
+const log = require('../libs/logger').namespace('init-dev-account')
 
 const accountIdPath = path.resolve('.account')
 

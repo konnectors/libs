@@ -3,7 +3,7 @@ const path = require('path')
 const cozy = require('./cozyclient')
 const request = require('./request')
 const rq = request()
-const log = require('./logger')
+const log = require('./logger').namespace('saveFiles')
 
 // Saves the files given in the fileurl attribute of each entries
 module.exports = (entries, fields, options = {}) => {

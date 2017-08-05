@@ -2,7 +2,7 @@ TODO before the first release
 =============================
 
  - [X] add the possibility to get the custom bank identifier from fields (generic)
- - [ ] logger: use it like the debug module with a space name with label
+ - [X] logger: use it like the debug module with a space name with label
  - [ ] use node-replay npm package to save and replay the http requests
  - [ ] Add an updateOrAddData method
  - [ ] linkBankOperations optimizations

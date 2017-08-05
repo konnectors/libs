@@ -2,7 +2,7 @@ const moment = require('moment')
 const bluebird = require('bluebird')
 const cozyClient = require('./cozyclient')
 const DOCTYPE = 'io.cozy.bank.operations'
-const log = require('./logger')
+const log = require('./logger').namespace('linkBankOperations')
 
 module.exports = (entries, doctype, fields, options = {}) => {
   // Use the custorm bank identifier from user if any

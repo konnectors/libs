@@ -1,6 +1,6 @@
 const bluebird = require('bluebird')
 const cozy = require('./cozyclient')
-const log = require('./logger')
+const log = require('./logger').namespace('filterData')
 
 module.exports = (entries, doctype, options = {}) => {
   log('info', entries.length, 'Number of items before filterData')

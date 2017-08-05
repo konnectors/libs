@@ -1,5 +1,5 @@
 const {Client, MemoryStorage} = require('cozy-client-js')
-const log = require('./logger')
+const log = require('./logger').namespace('cozyClient')
 
 let cozy = null
 if (process.env.NODE_ENV === 'standalone') {
