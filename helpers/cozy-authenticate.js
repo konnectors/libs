@@ -26,11 +26,12 @@ function onRegistered (client, url) {
       if (request.url.indexOf('/do_access') === 0) {
         log('debug', request.url, 'url received')
         resolve(request.url)
-        response.end('Authorization registered, you can close this page')
+        response.end('Authorization registered, you can close this page and go back to the cli')
       }
     })
     server.listen(3333, () => {
-      console.log('Please visit the following url to authorize the application: ', url)
+      require('opn')(url, {wait: false})
+      console.log('A new tab just opened in your browser to require the right authorizations for this connector in your cozy. Waiting for it...')
     })
   })
   .then((url) => {
