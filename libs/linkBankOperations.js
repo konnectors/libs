@@ -4,7 +4,12 @@ const cozyClient = require('./cozyclient')
 const DOCTYPE = 'io.cozy.bank.operations'
 const log = require('./logger')
 
-module.exports = (entries, doctype, options = {}) => {
+module.exports = (entries, doctype, fields, options = {}) => {
+  // Use the custorm bank identifier from user if any
+  if (fields.bank_identifier && fields.bank_identifier.length) {
+    options.identifiers = [fields.bank_identifier]
+  }
+
   if (typeof options.identifiers === 'string') {
     options.identifiers = [options.identifiers.toLowerCase()]
   } else if (Array.isArray(options.identifiers)) {
@@ -12,6 +17,7 @@ module.exports = (entries, doctype, options = {}) => {
   } else {
     throw new Error('linkBankOperations cannot be called without "identifiers" option')
   }
+  log('info', `Bank identifiers: ${options.identifiers}`)
 
   Object.assign(options, {
     amountDelta: 0.001,

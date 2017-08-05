@@ -6,19 +6,22 @@ const rq = request()
 const log = require('./logger')
 
 // Saves the files given in the fileurl attribute of each entries
-module.exports = (entries, folderPath, options = {}) => {
+module.exports = (entries, fields, options = {}) => {
+  if (typeof fields === 'string') {
+    fields = { folderPath: fields }
+  }
   const remainingTime = Math.floor((options.timeout - Date.now()) / 1000)
-  if (options.timeout) log('info', `${remainingTime}s remaining for ${folderPath}`)
+  if (options.timeout) log('info', `${remainingTime}s remaining for ${fields.folderPath}`)
 
   return bluebird.mapSeries(entries, entry => {
     if (!entry.fileurl && !entry.requestOptions) return false
 
     if (options.timeout && Date.now() > options.timeout) {
-      log('info', `${remainingTime}s timeout finished for ${folderPath}`)
+      log('info', `${remainingTime}s timeout finished for ${fields.folderPath}`)
       throw new Error('TIMEOUT')
     }
 
-    const filepath = path.join(folderPath, sanitizeFileName(getFileName(entry)))
+    const filepath = path.join(fields.folderPath, sanitizeFileName(getFileName(entry)))
     return cozy.files.statByPath(filepath)
     .then(() => {
       // the file is already present then get out of here
@@ -27,7 +30,7 @@ module.exports = (entries, folderPath, options = {}) => {
     .catch(err => {
       log('debug', entry)
       log('debug', `File ${filepath} does not exist yet`, err.message)
-      return cozy.files.statByPath(folderPath)
+      return cozy.files.statByPath(fields.folderPath)
       .then(folder => {
         const options = {
           uri: entry.fileurl,
