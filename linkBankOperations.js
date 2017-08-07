@@ -3,6 +3,7 @@ const bluebird = require('bluebird')
 const cozyClient = require('./cozyclient')
 const DOCTYPE = 'io.cozy.bank.operations'
 const log = require('./logger')
+const debug = require('debug')('linkBankOperation')
 
 module.exports = (entries, doctype, options = {}) => {
   if (typeof options.identifiers === 'string') {
@@ -38,6 +39,7 @@ module.exports = (entries, doctype, options = {}) => {
       }}
     }))
     .then(operations => {
+      debug(operations.length, 'Number of operations to check')
       // find the operations with the expected identifier
       let operationToLink = null
       let candidateOperationsForLink = []
@@ -80,9 +82,9 @@ module.exports = (entries, doctype, options = {}) => {
         }
       }
 
-      if (operationToLink !== null && entry._id) {
+      if (operationToLink !== null && entry.file) {
         log('debug', operationToLink, 'There is an operation to link')
-        let link = `${doctype}:${entry._id}`
+        let link = `io.cozy.files:${entry.file}`
         if (operationToLink.bill === link) return Promise.resolve()
         return cozyClient.data.updateAttributes(DOCTYPE, operationToLink._id, { bill: link })
       }
