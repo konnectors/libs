@@ -7,6 +7,23 @@
 [Cozy] Konnector Libs
 =====================
 
+This package contains all the shared libs which can help the creation of a connector and also the
+cli tools to run a connector outside a cozy.
+
+1. View the [interactive tutorial](https://tech.io/playgrounds/1482/cozy-connector-tutorial/save-cats).
+
+2. Check out [SFR mobile connector](https://github.com/cozy/cozy-konnector-sfrmobile.git) for a real life konnector
+
+3. Read the docs
+
+  * [API](docs/api.md)
+  * [CLI](docs/cli.md)
+
+
+
+### Open a Pull-Request
+
+If you want to work on Cozy Konnector Libs and submit code modifications, feel free to open pull-requests! See the [contributing guide][contribute] for more information about how to properly open pull-requests.
 
 What's Cozy?
 ------------
@@ -14,171 +31,6 @@ What's Cozy?
 ![Cozy Logo](https://cdn.rawgit.com/cozy/cozy-guidelines/master/templates/cozy_logo_small.svg)
 
 [Cozy] is a platform that brings all your web services in the same private space.  With it, your webapps and your devices can share data easily, providing you with a new experience. You can install Cozy on your own hardware where no one's tracking you.
-
-
-What's Cozy Konnector Libs?
----------------------------
-
-This package contains all the shared libs which can help the creation of a connector and also the
-cli tools to run a connector outside a cozy.
-
-Here is the list of libs available at the moment :
-
-### BaseKonnector( fetcher )
-
-The class from which all the connectors must inherit. It takes a fetch function in parameter that must return a `Promise`.
-
-```
-module.exports = new BaseKonnector(function fetch () {
-  // use this to access the instance of the konnector to
-  // store any information that needs to be passed to
-  // different stages of the konnector
-})
-```
-
-Its role is twofold :
-
-* Make the link between account data and konnector
-* Handle errors
-
-### log ( type, message, label, namespace )
-
-Use it to log messages in your konnector. Typical types are
-
-* debug
-* warning
-* info
-* error
-* ok
-
-They will be colored in development mode. In production mode, those logs are formatted in JSON to be interpreted by the stack and possibly sent to the client. `error` will stop the konnector.
-
-```js
-logger = log('my-namespace')
-logger('debug', '365 bills')
-// my-namespace : debug : 365 bills
-logger('info', 'Page fetched')
-// my-namespace : info : Page fetched
-```
-
-### cozyClient
-
-This is a [cozy-client-js](https://cozy.github.io/cozy-client-js/) instance already initialized and ready to use
-
-### request
-
-This is a function which returns an instance of [request-promise](https://www.npmjs.com/package/request-promise) initialized with
-defaults often used in connector development.
-
-
-```js
-// Showing defaults
-req = request({
-  cheerio: false,
-  jar: true,
-  json: true
-})
-```
-
-* `cheerio` parameter will parse automatically the `response.body` in a cheerio instance
-
-```js
-req = request({ cheerio: true })
-req('http://github.com', $ => {
-  const repos = $('#repo_listing .repo')
-})
-```
-
-### retry
-
-A shortcut the the [bluebird-retry](https://www.npmjs.com/package/bluebird-retry)
-
-```
-const { retry } = require('cozy-konnector-libs')
-
-```
-
-### Utility functions
-
-- `saveFiles`: Saves a list files in the cozy checking already existing files
-- `filterData` : Filters out already existing records according to a given list of keys.
-
-- `addData`: Creates records in the given doctype
-- `linkBankOperations`: Adds a link to a files in a list of bank operations
-- `saveBills`: Combines the features of `saveFiles`, `filterData`, `addData` and  `linkBankOperations` and specialized to Bills
-
-Please note that some permissions are required to use some of those classes:
-
-- `io.cozy.accounts` for the `BaseKonnector` class (`GET` only)
-- `io.cozy.files` to allow the connector to save files
-- `io.cozy.bills` to allow the connector to save bills data in this doctype
-- `io.cozy.bank.operations` for the `linkBankOperation` function
-
-### How to use it?
-
-We will take the example of `BaseKonnector` and `saveBills`
-
-```javascript
-const {BaseKonnector, saveBills} = require('cozy-konnector-libs')
-```
-
-You can also find a working example with the SFR mobile connector: https://github.com/cozy/cozy-konnector-sfrmobile.git
-
-### CLI
-
-cozy-konnector-libs also comes with some cli tools which allow to run your connector in standalone
-or development mode
-
-#### cozy-konnector-standalone
-
-If you just want to test your connector without any cozy available. Just add the following code in
-the `scripts` section of your package.json file
-
-```javascript
-  scripts: {
-    standalone: "cozy-konnector-standalone"
-  }
-```
-
-and run:
-
-```sh
-npm run standalone
-```
-
-The requests to the cozy-stack will be stubbed using the [./fixture.json] file as source of data
-and when cozy-client-js is asked to create or update data, the data will be output to the console.
-The bills (or any file) will be saved in the . directory.
-
-#### cozy-konnector-dev
-
-If you want to run your connector linked to a cozy-stack, even remotely. Just add the follwing code
-in the `scripts` section of your package.json file:
-
-```javascript
-  scripts: {
-    dev: "cozy-konnector-dev"
-  }
-```
-
-and run:
-
-```sh
-npm run dev
-```
-
-This command will register your konnector as an OAuth application to the cozy-stack. By default,
-the cozy-stack is supposed to be located in http://cozy.tools:8080. If this is not your case, just
-update the COZY_URL field in [./konnector-dev-config.json].
-
-After that, your konnector is running but should not work since you did not specify any credentials to
-the target service. You can do this also in [./konnector-dev-config.json] in the "fields" section
-
-The files are saved in the root directory of your cozy by default.
-
-### Open a Pull-Request
-
-If you want to work on Cozy Konnector Libs and submit code modifications, feel free to open pull-requests! See the [contributing guide][contribute] for more information about how to properly open pull-requests.
 
 
 Community
