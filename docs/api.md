@@ -118,11 +118,13 @@ in standalone mode, the main path is the path of the connector.
 
 Creates the records in the given doctype.
 
-### saveBills ( entries, folderPath, )
+### saveBills ( entries, folderPath, options )
 
 Combines the features of `saveFiles`, `filterData`, `addData` and  `linkBankOperations`. Will create `io.cozy.bills` objects. The default deduplication keys are `['date', 'amount', 'vendor']`.
 
-### linkBankOperations
+`options` is passed directly to `saveFiles`, `filterData`, `addData` and `linkBankOperations`.
+
+### linkBankOperations ( entries, doctype, fields, options = {} )
 
 This function will soon move to a dedicated service. You should not use it.
 The goal of this function is to find links between bills and bank operations.
