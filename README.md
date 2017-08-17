@@ -30,6 +30,17 @@ What's Cozy?
 
 ![Cozy Logo](https://cdn.rawgit.com/cozy/cozy-guidelines/master/templates/cozy_logo_small.svg)
 
+### About 2FA tokens
+
+The lib contains a way to wrap common errors. Those messages and methods are located under the `errors` namespace.
+
+If your konnector needs a 2FA token, we recommend that you call the `errors.requireTwoFactor` method in your code. This way, the stack and the Cozy-Collect app will be notified that the user needs to supply its token.
+
+The `requireTwoFactor` method allow you to pass a JS Object as argument. This object will be serialized when the 2FA notification will be passed to the Cozy-Collect app. When your user will supply its token, this object will be deserialized and passed as regular fields to your konnector. You'll so be able to continue the auth process. Common fields that can be passed are `SESSIONID` and `_csrf` tokens.
+
+
+### Open a Pull-Request
+
 [Cozy] is a platform that brings all your web services in the same private space.  With it, your webapps and your devices can share data easily, providing you with a new experience. You can install Cozy on your own hardware where no one's tracking you.
 
 
