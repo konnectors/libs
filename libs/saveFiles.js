@@ -5,6 +5,11 @@ const request = require('./request')
 const rq = request()
 const log = require('./logger').namespace('saveFiles')
 
+const sanitizeEntry = function (entry) {
+  delete entry.requestOptions
+  return entry
+}
+
 // Saves the files given in the fileurl attribute of each entries
 module.exports = (entries, fields, options = {}) => {
   if (typeof fields === 'string') {
@@ -70,6 +75,9 @@ module.exports = (entries, fields, options = {}) => {
           )
           return entry
         })
+    })
+    .then(entries => {
+      return entries.map(sanitizeEntry)
     })
     .catch(err => {
       // do not count TIMEOUT error as an error outside
