@@ -32,15 +32,16 @@ module.exports = (entries, fields, options = {}) => {
       log('debug', `File ${filepath} does not exist yet`, err.message)
       return cozy.files.statByPath(fields.folderPath)
       .then(folder => {
-        const options = {
+        const reqOptions = {
           uri: entry.fileurl,
           method: 'GET',
           jar: true
         }
         if (entry.requestOptions) {
           Object.assign(options, entry.requestOptions)
+          delete entry.requestOptions
         }
-        return cozy.files.create(rq(options), {name: sanitizeFileName(getFileName(entry)), dirID: folder._id})
+        return cozy.files.create(rq(reqOptions), {name: sanitizeFileName(getFileName(entry)), dirID: folder._id})
         .then(fileobject => {
           entry.fileobject = fileobject
           return entry
