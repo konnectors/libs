@@ -11,58 +11,73 @@ module.exports = (entries, fields, options = {}) => {
     fields = { folderPath: fields }
   }
   const remainingTime = Math.floor((options.timeout - Date.now()) / 1000)
-  if (options.timeout) log('info', `${remainingTime}s remaining for ${fields.folderPath}`)
+  if (options.timeout)
+    log('info', `${remainingTime}s remaining for ${fields.folderPath}`)
 
-  return bluebird.mapSeries(entries, entry => {
-    if (!entry.fileurl && !entry.requestOptions) return false
+  return bluebird
+    .mapSeries(entries, entry => {
+      if (!entry.fileurl && !entry.requestOptions) return false
 
-    if (options.timeout && Date.now() > options.timeout) {
-      log('info', `${remainingTime}s timeout finished for ${fields.folderPath}`)
-      throw new Error('TIMEOUT')
-    }
+      if (options.timeout && Date.now() > options.timeout) {
+        log(
+          'info',
+          `${remainingTime}s timeout finished for ${fields.folderPath}`
+        )
+        throw new Error('TIMEOUT')
+      }
 
-    const filepath = path.join(fields.folderPath, sanitizeFileName(getFileName(entry)))
-    return cozy.files.statByPath(filepath)
-    .then(() => {
-      // the file is already present then get out of here
-      return entry
-    })
-    .catch(err => {
-      log('debug', entry)
-      log('debug', `File ${filepath} does not exist yet`, err.message)
-      return cozy.files.statByPath(fields.folderPath)
-      .then(folder => {
-        const reqOptions = {
-          uri: entry.fileurl,
-          method: 'GET',
-          jar: true
-        }
-        if (entry.requestOptions) {
-          Object.assign(options, entry.requestOptions)
-          delete entry.requestOptions
-        }
-        return cozy.files.create(rq(reqOptions), {name: sanitizeFileName(getFileName(entry)), dirID: folder._id})
-        .then(fileobject => {
-          entry.fileobject = fileobject
+      const filepath = path.join(
+        fields.folderPath,
+        sanitizeFileName(getFileName(entry))
+      )
+      return cozy.files
+        .statByPath(filepath)
+        .then(() => {
+          // the file is already present then get out of here
           return entry
         })
-      })
+        .catch(err => {
+          log('debug', entry)
+          log('debug', `File ${filepath} does not exist yet`, err.message)
+          return cozy.files.statByPath(fields.folderPath).then(folder => {
+            const reqOptions = {
+              uri: entry.fileurl,
+              method: 'GET',
+              jar: true
+            }
+            if (entry.requestOptions) {
+              Object.assign(reqOptions, entry.requestOptions)
+            }
+            return cozy.files
+              .create(rq(reqOptions), {
+                name: sanitizeFileName(getFileName(entry)),
+                dirID: folder._id
+              })
+              .then(fileobject => {
+                entry.fileobject = fileobject
+                return entry
+              })
+          })
+        })
+        .catch(err => {
+          // if error is timeout, do not continue
+          if (err.message === 'TIMEOUT') throw err
+          // console.log(err, 'err')
+          log(
+            'error',
+            err.message,
+            `Error caught while trying to save the file ${entry.fileurl}`
+          )
+          return entry
+        })
     })
     .catch(err => {
-      // if error is timeout, do not continue
-      if (err.message === 'TIMEOUT') throw err
-      // console.log(err, 'err')
-      log('error', err.message, `Error caught while trying to save the file ${entry.fileurl}`)
-      return entry
+      // do not count TIMEOUT error as an error outside
+      if (err.message !== 'TIMEOUT') throw err
     })
-  })
-  .catch(err => {
-    // do not count TIMEOUT error as an error outside
-    if (err.message !== 'TIMEOUT') throw err
-  })
 }
 
-function getFileName (entry) {
+function getFileName(entry) {
   if (entry.filename) return entry.filename
 
   // try to get the file name from the url
@@ -70,6 +85,6 @@ function getFileName (entry) {
   return path.basename(parsed.pathname)
 }
 
-function sanitizeFileName (filename) {
+function sanitizeFileName(filename) {
   return filename.replace(/^\.+$/, '').replace(/[/?<>\\:*|":]/g, '')
 }
