@@ -7,7 +7,8 @@ const env2formats = {
   '': prodFormat,
   production: prodFormat,
   development: devFormat,
-  standalone: devFormat
+  standalone: devFormat,
+  test: devFormat
 }
 const format = env2formats[env]
 

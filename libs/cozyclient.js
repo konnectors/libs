@@ -22,7 +22,7 @@ const getCredentials = function (environment) {
 
 const getCozyUrl = function () {
   if (process.env.COZY_URL === undefined) {
-    console.log(`Please provide COZY_URL environment variable.`)
+    console.error(`Please provide COZY_URL environment variable.`)
     throw new Error('COZY_URL environment variable is absent/not valid')
   } else {
     return process.env.COZY_URL
@@ -31,7 +31,6 @@ const getCozyUrl = function () {
 
 const getCozyClient = function (environment) {
   if (environment === 'standalone' || environment == 'test') {
-    log('info', 'standalone mode')
     return require('../helpers/cozy-client-js-stub')
   }
 
