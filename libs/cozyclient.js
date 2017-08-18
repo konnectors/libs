@@ -2,64 +2,60 @@ const {Client, MemoryStorage} = require('cozy-client-js')
 const log = require('./logger').namespace('cozyClient')
 
 let cozy = null
-if (process.env.NODE_ENV === 'standalone') {
-  log('info', 'standalone mode')
-  cozy = require('../helpers/cozy-client-js-stub')
-} else if (process.env.NODE_ENV === 'development') {
-  log('info', 'development mode')
-  // COZY_CREDENTIALS
-  let credentials = null
+
+const getCredentials = function (environment) {
   try {
-    credentials = JSON.parse(process.env.COZY_CREDENTIALS)
-    // log('debug', credentials, 'COZY_CREDENTIALS')
+    if (environment === 'development') {
+      const credentials = JSON.parse(process.env.COZY_CREDENTIALS)
+      credentials.token.toAuthHeader = function () {
+        return 'Bearer ' + credentials.client.registrationAccessToken
+      }
+      return credentials
+    } else {
+      return process.env.COZY_CREDENTIALS.trim()
+    }
   } catch (err) {
-    log('error', err.message, 'Error caught in cozyclient')
-    console.log(`Please provide proper COZY_CREDENTIALS environment variable. ${process.env.COZY_CREDENTIALS} is not OK`)
-    process.exit(1)
+    console.error(`Please provide proper COZY_CREDENTIALS environment variable. ${process.env.COZY_CREDENTIALS} is not OK`)
+    throw err
   }
-
-  // COZY_URL
-  if (process.env.COZY_URL === undefined) {
-    console.log(`Please provide COZY_URL environment variable.`)
-    process.exit(1)
-  } else {
-    log('debug', process.env.COZY_URL, 'COZY_URL')
-  }
-
-  credentials.token.toAuthHeader = function () {
-    return 'Bearer ' + credentials.client.registrationAccessToken
-  }
-
-  cozy = new Client({
-    cozyURL: process.env.COZY_URL,
-    oauth: {storage: new MemoryStorage()}
-  })
-
-  cozy.saveCredentials(credentials.client, credentials.token)
-} else { // production mode
-  log('debug', 'production mode')
-  // COZY_CREDENTIALS
-  let credentials = null
-  try {
-    credentials = process.env.COZY_CREDENTIALS.trim()
-    // log(credentials, 'COZY_CREDENTIALS')
-  } catch (err) {
-    console.log(`Please provide proper COZY_CREDENTIALS environment variable.`)
-    process.exit(1)
-  }
-
-  // COZY_URL
-  if (process.env.COZY_URL === undefined) {
-    console.log(`Please provide COZY_URL environment variable.`)
-    process.exit(1)
-  } else {
-    log('debug', process.env.COZY_URL, 'COZY_URL')
-  }
-
-  cozy = new Client({
-    token: credentials,
-    cozyURL: process.env.COZY_URL
-  })
 }
 
-module.exports = cozy
+const getCozyUrl = function () {
+  if (process.env.COZY_URL === undefined) {
+    console.log(`Please provide COZY_URL environment variable.`)
+    throw new Error('COZY_URL environment variable is absent/not valid')
+  } else {
+    return process.env.COZY_URL
+  }
+}
+
+const getCozyClient = function (environment) {
+  if (environment === 'standalone' || environment == 'test') {
+    log('info', 'standalone mode')
+    return require('../helpers/cozy-client-js-stub')
+  }
+
+  const credentials = getCredentials(environment)
+  const cozyURL = getCozyUrl()
+
+  const options = {
+    cozyURL: cozyURL
+  }
+
+  if (environment == 'dev') {
+    options.oauth = {storage: new MemoryStorage()}
+  } else if (environment == 'prod') {
+    options.token = credentials
+  }
+
+  const cozyClient = new Client(options)
+
+  if (environment == 'dev') {
+    cozy.saveCredentials(credentials.client, credentials.token)
+  }
+
+  return cozyClient
+}
+
+
+module.exports = getCozyClient(process.env.NODE_ENV)
