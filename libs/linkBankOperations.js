@@ -61,26 +61,28 @@ const findMatchingOperation = (bill, operations, options) => {
   return null
 }
 
-export const linkBillToOperation = function(bill, operationToLink) {
-  if (bill.fileobject && bill.fileobject._id) {
-    log('debug', operationToLink, 'There is an operation to link')
-    let link = `io.cozy.files:${bill.fileobject._id}`
-    if (operationToLink.bill === link) return Promise.resolve()
-    return cozyClient.data.updateAttributes(DOCTYPE, operationToLink._id, {
-      bill: link
-    })
-  } else {
+const addBillToOperation = function(bill, matchingOperation) {
+  log('debug', matchingOperation, 'There is an operation to link')
+
+  if (matchingOperation.billIds && matchingOperation.billIds.indexOf(bill._id) > -1) {
     return Promise.resolve()
   }
+
+  const billIds = matchingOperation.billIds || []
+  billIds.push(`io.cozy.bills:${bill._id}`)
+
+  return cozyClient.data.updateAttributes(DOCTYPE, matchingOperation._id, {
+    billIds
+  })
 }
 
 const linkBillsToOperations = function(bills, options) {
   return bluebird.each(bills, bill => {
-    return exports.fetchNeighboringOperations(bill, options)
+    return fetchNeighboringOperations(bill, options)
       .then(operations => findMatchingOperation(bill, operations, options))
-      .then(operationToLink => {
-        if (operationToLink) {
-          return linkBillToOperation(bill, operationToLink)
+      .then(matchingOperation => {
+        if (matchingOperation) {
+          return addBillToOperation(bill, matchingOperation)
         }
       })
   })

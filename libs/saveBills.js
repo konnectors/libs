@@ -13,11 +13,19 @@ module.exports = (entries, fields, options = {}) => {
     fields = { folderPath: fields }
   }
 
-  Object.assign(options, {
-    keys: ['date', 'amount', 'vendor']
-  })
+  // Deduplicate on this keys
+  options.keys = ['date', 'amount', 'vendor']
+
+  options.postProcess = function (entry) {
+    if (entry.fileobject) {
+      entry.invoice = `io.cozy.files:${entry.fileobject._id}`
+    }
+    delete entry.fileobject
+    return entry
+  }
+
   return saveFiles(entries, fields, options)
-  .then(entries => filterData(entries, DOCTYPE, options))
-  .then(entries => addData(entries, DOCTYPE, options))
-  .then(entries => linkBankOperations(entries, DOCTYPE, fields, options))
+    .then(entries => filterData(entries, DOCTYPE, options))
+    .then(entries => addData(entries, DOCTYPE, options))
+    .then(entries => linkBankOperations(entries, DOCTYPE, fields, options))
 }

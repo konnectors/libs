@@ -2,7 +2,7 @@ jest.mock('./cozyclient')
 
 import linkBankOperations, {
   findMatchingOperation,
-  linkBillToOperation,
+  addBillToOperation,
   fetchNeighboringOperations
 } from './linkBankOperations'
 
@@ -69,35 +69,24 @@ test('findMatchingOperation returns a matching operation', function() {
   expect(findMatchingOperation(bill3, ops, matchOpts)).toBe(null)
 })
 
-test('linkBillToOperation when bill has not fileobject does nothing', function() {
-  const bill = {
-    isRefund: true,
-    amount: 110
-  }
-  const operation = {
-    _id: 123456
-  }
-  linkBillToOperation(bill, operation)
-  expect(cozyClient.data.updateAttributes).not.toHaveBeenCalled()
-})
-
-test('linkBillToOperation', function() {
+test('addBillToOperation', function() {
   const bill = {
     isRefund: true,
     amount: 110,
     fileobject: {
       _id: 123456
-    }
+    },
+    _id: 'b1'
   }
   const operation = {
     _id: 123456
   }
 
-  linkBillToOperation(bill, operation)
+  addBillToOperation(bill, operation)
   expect(
     cozyClient.data.updateAttributes
   ).lastCalledWith('io.cozy.bank.operations', 123456, {
-    bill: 'io.cozy.files:123456'
+    billIds: ['b1']
   })
 })
 
@@ -143,8 +132,8 @@ test('linkBankOperations', function() {
     { ...searchOpts, ...matchOpts, identifiers: ['SFR'] }
   ).then(function() {
     expect(cozyClient.data.updateAttributes.mock.calls).toEqual([
-      ['io.cozy.bank.operations', 'o3', { bill: 'io.cozy.files:f1' }],
-      ['io.cozy.bank.operations', 'o2', { bill: 'io.cozy.files:f2' }]
+      ['io.cozy.bank.operations', 'o3', { billIds: ['b1'] }],
+      ['io.cozy.bank.operations', 'o2', { billIds: ['b2'] }]
     ])
   })
 })

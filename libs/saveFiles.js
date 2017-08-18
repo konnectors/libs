@@ -11,11 +11,14 @@ const sanitizeEntry = function(entry) {
 }
 
 const downloadEntry = function(entry, folderPath) {
-  const reqOptions = Object.assign({
-    uri: entry.fileurl,
-    method: 'GET',
-    jar: true
-  }, entry.requestOptions)
+  const reqOptions = Object.assign(
+    {
+      uri: entry.fileurl,
+      method: 'GET',
+      jar: true
+    },
+    entry.requestOptions
+  )
   return cozy.files
     .statByPath(folderPath)
     .then(folder => {
@@ -47,9 +50,13 @@ const saveEntry = function(entry, options) {
         return entry
       } else {
         log('debug', entry)
-        log('debug', `File ${filepath} does not exist yet`, err.message)
+        log('debug', `File ${filepath} does not exist yet`)
         return downloadEntry(entry, options.folderPath)
       }
+    })
+    .then(sanitizeEntry)
+    .then(entry => {
+      return options.postProcess ? options.postProcess(entry) : entry
     })
     .catch(err => {
       log(
@@ -73,11 +80,11 @@ module.exports = (entries, folderPath, options = {}) => {
   const remainingTime = Math.floor((options.timeout - Date.now()) / 1000)
   const saveOptions = {
     folderPath: folderPath,
-    timeout: options.timeout
+    timeout: options.timeout,
+    postProcess: options.postProcess
   }
   return bluebird
     .mapSeries(entries, entry => saveEntry(entry, saveOptions))
-    .then(entries => entries.map(sanitizeEntry))
     .catch(err => {
       // do not count TIMEOUT error as an error outside
       if (err.message !== 'TIMEOUT') throw err
