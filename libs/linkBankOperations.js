@@ -64,7 +64,7 @@ const findMatchingOperation = (bill, operations, options) => {
 const addBillToOperation = function(bill, matchingOperation) {
   log('debug', matchingOperation, 'There is an operation to link')
 
-  if (matchingOperation.billIds && matchingOperation.billIds.indexOf(bill._id) > -1) {
+  if (matchingOperation.bills && matchingOperation.bills.indexOf(bill._id) > -1) {
     return Promise.resolve()
   }
 
@@ -72,7 +72,7 @@ const addBillToOperation = function(bill, matchingOperation) {
   billIds.push(`io.cozy.bills:${bill._id}`)
 
   return cozyClient.data.updateAttributes(DOCTYPE, matchingOperation._id, {
-    billIds
+    bills: billIds
   })
 }
 

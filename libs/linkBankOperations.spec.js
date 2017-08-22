@@ -86,7 +86,7 @@ test('addBillToOperation', function() {
   expect(
     cozyClient.data.updateAttributes
   ).lastCalledWith('io.cozy.bank.operations', 123456, {
-    billIds: ['b1']
+    bills: ['io.cozy.bills:b1']
   })
 })
 
@@ -132,8 +132,8 @@ test('linkBankOperations', function() {
     { ...searchOpts, ...matchOpts, identifiers: ['SFR'] }
   ).then(function() {
     expect(cozyClient.data.updateAttributes.mock.calls).toEqual([
-      ['io.cozy.bank.operations', 'o3', { billIds: ['b1'] }],
-      ['io.cozy.bank.operations', 'o2', { billIds: ['b2'] }]
+      ['io.cozy.bank.operations', 'o3', { bills: ['io.cozy.bills:b1'] }],
+      ['io.cozy.bank.operations', 'o2', { bills: ['io.cozy.bills:b2'] }]
     ])
   })
 })
