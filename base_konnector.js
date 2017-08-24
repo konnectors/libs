@@ -49,7 +49,13 @@ module.exports = {
         .then(account => {
           // get the folder path from the folder id and put it in cozyFields.folderPath
           return new Promise((resolve, reject) => {
-            cozy.files.statById(cozyFields.folderPath, false)
+            // folder ID will be stored in cozyFields.folderPath when first connection
+            const folderId = account.folderId || cozyFields.folderPath
+            if (!folderId) { // if no folder needed
+              debug('No folder needed')
+              return resolve(account)
+            }
+            cozy.files.statById(folderId, false)
             .then(folder => {
               cozyFields.folderPath = folder.attributes.path
               debug(folder, 'folder details')
@@ -63,10 +69,9 @@ module.exports = {
           })
         })
         .then(account => {
-          // debug(account, 'account content')
-          const requiredFields = Object.assign({
+          const requiredFields = Object.assign(cozyFields.folderPath ? {
             folderPath: cozyFields.folderPath
-          }, account.auth, account.oauth)
+          } : {}, account.auth, account.oauth)
 
           konnector.fetchOperations.forEach(operation => {
             importer.use(operation)
