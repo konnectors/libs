@@ -30,23 +30,28 @@ module.exports = class baseKonnector {
       this.accountId = cozyFields.account
       this.account = account
 
-      // get the folder path from the folder id and put it in cozyFields.folder_to_save
-      return cozy.files.statById(cozyFields.folder_to_save, false)
+      // folder ID will be stored in cozyFields.folder_to_save when first connection
+      const folderId = account.folderId || cozyFields.folder_to_save
+      if (!folderId) { // if no folder needed
+        log('debug', 'No folder needed')
+        return Promise.resolve(account)
+      }
+      return cozy.files.statById(folderId, false)
       .then(folder => {
         cozyFields.folder_to_save = folder.attributes.path
         log('debug', folder, 'folder details')
         return account
       })
       .catch(err => {
-        log('error', err, `error while getting the folder path of ${cozyFields.folder_to_save}`)
+        log('error', err, `error while getting the folder path of ${folderId}`)
         throw new Error('NOT_EXISTING_DIRECTORY')
       })
     })
     .then(account => {
       // log('debug', account, 'account content')
-      const requiredFields = Object.assign({
+      const requiredFields = Object.assign(cozyFields.folder_to_save ? {
         folderPath: cozyFields.folder_to_save
-      }, account.auth, account.oauth)
+      } : {}, account.auth, account.oauth)
       return requiredFields
     })
   }
