@@ -1,6 +1,5 @@
 const bluebird = require('bluebird')
 const path = require('path')
-const cozy = require('./cozyclient')
 const request = require('./request')
 const rq = request()
 const log = require('./logger').namespace('saveFiles')
@@ -11,6 +10,8 @@ const sanitizeEntry = function(entry) {
 }
 
 const downloadEntry = function(entry, folderPath) {
+  const cozy = require('./cozyclient')
+
   const reqOptions = Object.assign(
     {
       uri: entry.fileurl,
@@ -34,6 +35,8 @@ const downloadEntry = function(entry, folderPath) {
 }
 
 const saveEntry = function(entry, options) {
+  const cozy = require('./cozyclient')
+
   if (!entry.fileurl && !entry.requestOptions) return false
 
   if (options.timeout && Date.now() > options.timeout) {

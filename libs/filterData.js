@@ -1,8 +1,9 @@
 const bluebird = require('bluebird')
-const cozy = require('./cozyclient')
 const log = require('./logger').namespace('filterData')
 
 module.exports = (entries, doctype, options = {}) => {
+  const cozy = require('./cozyclient')
+
   log('info', entries.length, 'Number of items before filterData')
   if (!doctype) return Promise.reject(new Error(`Doctype is mandatory to filter the connector data.`))
 
