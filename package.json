@@ -14,8 +14,6 @@
   "author": "doubleface",
   "license": "MIT",
   "bin": {
-    "cozy-authenticate": "bin/cozy-authenticate",
-    "cozy-init-dev-account": "bin/cozy-init-dev-account",
     "cozy-konnector-standalone": "bin/cozy-konnector-standalone",
     "cozy-konnector-dev": "bin/cozy-konnector-dev"
   },
