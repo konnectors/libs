@@ -5,80 +5,86 @@ const request = require('./request')
 const rq = request()
 const log = require('./logger').namespace('saveFiles')
 
-const sanitizeEntry = function (entry) {
+const sanitizeEntry = function(entry) {
   delete entry.requestOptions
   return entry
 }
 
+const downloadEntry = function(entry, folderPath) {
+  const reqOptions = Object.assign(
+    {
+      uri: entry.fileurl,
+      method: 'GET',
+      jar: true
+    },
+    entry.requestOptions
+  )
+  return cozy.files
+    .statByPath(folderPath)
+    .then(folder => {
+      return cozy.files.create(rq(reqOptions), {
+        name: getFileName(entry),
+        dirID: folder._id
+      })
+    })
+    .then(fileobject => {
+      entry.fileobject = fileobject
+      return entry
+    })
+}
+
+const saveEntry = function(entry, options) {
+  if (!entry.fileurl && !entry.requestOptions) return false
+
+  if (options.timeout && Date.now() > options.timeout) {
+    log('info', `${remainingTime}s timeout finished for ${options.folderPath}`)
+    throw new Error('TIMEOUT')
+  }
+
+  const filepath = path.join(options.folderPath, getFileName(entry))
+  return cozy.files
+    .statByPath(filepath)
+    .then(() => true, () => false)
+    .then(fileExists => {
+      if (fileExists) {
+        return entry
+      } else {
+        log('debug', entry)
+        log('debug', `File ${filepath} does not exist yet`)
+        return downloadEntry(entry, options.folderPath)
+      }
+    })
+    .then(sanitizeEntry)
+    .then(entry => {
+      return options.postProcess ? options.postProcess(entry) : entry
+    })
+    .catch(err => {
+      log(
+        'error',
+        err.message,
+        `Error caught while trying to save the file ${entry.fileurl}`
+      )
+      return entry
+    })
+}
+
 // Saves the files given in the fileurl attribute of each entries
-module.exports = (entries, fields, options = {}) => {
-  if (typeof fields === 'string') {
-    fields = { folderPath: fields }
+module.exports = (entries, folderPath, options = {}) => {
+  if (typeof fields !== 'object') {
+    log(
+      'debug',
+      'Deprecation warning, saveFiles 2nd argument should be a string'
+    )
+    folderPath = folderPath.folderPath
   }
   const remainingTime = Math.floor((options.timeout - Date.now()) / 1000)
-  if (options.timeout)
-    log('info', `${remainingTime}s remaining for ${fields.folderPath}`)
-
+  const saveOptions = {
+    folderPath: folderPath,
+    timeout: options.timeout,
+    postProcess: options.postProcess
+  }
   return bluebird
-    .mapSeries(entries, entry => {
-      if (!entry.fileurl && !entry.requestOptions) return false
-
-      if (options.timeout && Date.now() > options.timeout) {
-        log(
-          'info',
-          `${remainingTime}s timeout finished for ${fields.folderPath}`
-        )
-        throw new Error('TIMEOUT')
-      }
-
-      const filepath = path.join(
-        fields.folderPath,
-        sanitizeFileName(getFileName(entry))
-      )
-      return cozy.files
-        .statByPath(filepath)
-        .then(() => {
-          // the file is already present then get out of here
-          return entry
-        })
-        .catch(err => {
-          log('debug', entry)
-          log('debug', `File ${filepath} does not exist yet`, err.message)
-          return cozy.files.statByPath(fields.folderPath).then(folder => {
-            const reqOptions = {
-              uri: entry.fileurl,
-              method: 'GET',
-              jar: true
-            }
-            if (entry.requestOptions) {
-              Object.assign(reqOptions, entry.requestOptions)
-            }
-            return cozy.files
-              .create(rq(reqOptions), {
-                name: sanitizeFileName(getFileName(entry)),
-                dirID: folder._id
-              })
-              .then(fileobject => {
-                entry.fileobject = fileobject
-                return entry
-              })
-          })
-        })
-        .catch(err => {
-          // if error is timeout, do not continue
-          if (err.message === 'TIMEOUT') throw err
-          // console.log(err, 'err')
-          log(
-            'error',
-            err.message,
-            `Error caught while trying to save the file ${entry.fileurl}`
-          )
-          return entry
-        })
-    })
-    .then(entries => {
-      return entries.map(sanitizeEntry)
-    })
+    .mapSeries(entries, entry => saveEntry(entry, saveOptions))
     .catch(err => {
       // do not count TIMEOUT error as an error outside
       if (err.message !== 'TIMEOUT') throw err
@@ -86,11 +92,15 @@ module.exports = (entries, fields, options = {}) => {
 }
 
 function getFileName(entry) {
-  if (entry.filename) return entry.filename
-
-  // try to get the file name from the url
-  const parsed = require('url').parse(entry.fileurl)
-  return path.basename(parsed.pathname)
+  let filename
+  if (entry.filename) {
+    filename = entry.filename
+  } else {
+    // try to get the file name from the url
+    const parsed = require('url').parse(entry.fileurl)
+    filename = path.basename(parsed.pathname)
+  }
+  return sanitizeFileName(filename)
 }
 
 function sanitizeFileName(filename) {
