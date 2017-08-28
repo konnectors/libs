@@ -1,5 +1,4 @@
 const {Client, MemoryStorage} = require('cozy-client-js')
-const log = require('./logger').namespace('cozyClient')
 
 let cozy = null
 
@@ -30,7 +29,7 @@ const getCozyUrl = function () {
 }
 
 const getCozyClient = function (environment) {
-  if (environment === 'standalone' || environment == 'test') {
+  if (environment === 'standalone' || environment === 'test') {
     return require('../helpers/cozy-client-js-stub')
   }
 
@@ -41,20 +40,19 @@ const getCozyClient = function (environment) {
     cozyURL: cozyURL
   }
 
-  if (environment == 'dev') {
+  if (environment === 'dev') {
     options.oauth = {storage: new MemoryStorage()}
-  } else if (environment == 'prod') {
+  } else if (environment === 'prod') {
     options.token = credentials
   }
 
   const cozyClient = new Client(options)
 
-  if (environment == 'dev') {
+  if (environment === 'dev') {
     cozy.saveCredentials(credentials.client, credentials.token)
   }
 
   return cozyClient
 }
-
 
 module.exports = getCozyClient(process.env.NODE_ENV)

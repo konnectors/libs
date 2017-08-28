@@ -1,10 +1,11 @@
-jest.mock('./cozyclient')
-
+/* eslint-env node, jest */
 import linkBankOperations, {
   findMatchingOperation,
   findReimbursedOperation,
   Linker
 } from './linkBankOperations'
+
+jest.mock('./cozyclient')
 
 const cozyClient = require('./cozyclient')
 
@@ -18,19 +19,19 @@ const searchOpts = {
   maxDateDelta: 15
 }
 
-beforeEach(function() {
+beforeEach(function () {
   cozyClient.data.updateAttributes.mockReset()
   cozyClient.data.updateAttributes.mockReturnValue(Promise.resolve({}))
 })
 
-test('fetchNeighboringOperations', function() {
+test('fetchNeighboringOperations', function () {
   const bill = {
     date: new Date(2017, 10, 12)
   }
   const INDEX = 'index'
   const linker = new Linker(cozyClient)
   cozyClient.data.defineIndex.mockReturnValue(Promise.resolve(INDEX))
-  return linker.fetchNeighboringOperations(bill, searchOpts).then(function() {
+  return linker.fetchNeighboringOperations(bill, searchOpts).then(function () {
     expect(cozyClient.data.query).lastCalledWith(INDEX, {
       selector: {
         date: {
@@ -42,7 +43,7 @@ test('fetchNeighboringOperations', function() {
   })
 })
 
-test('findMatchingOperation returns null if no operations', function() {
+test('findMatchingOperation returns null if no operations', function () {
   const bill = {
     amount: 123
   }
@@ -50,7 +51,7 @@ test('findMatchingOperation returns null if no operations', function() {
   expect(findMatchingOperation(bill, ops, matchOpts)).toBe(null)
 })
 
-test('findMatchingOperation returns a matching operation', function() {
+test('findMatchingOperation returns a matching operation', function () {
   const bill = {
     amount: -100
   }
@@ -69,7 +70,7 @@ test('findMatchingOperation returns a matching operation', function() {
   expect(findMatchingOperation(bill3, ops, matchOpts)).toBe(null)
 })
 
-test('addBillToOperation', function() {
+test('addBillToOperation', function () {
   const bill = {
     amount: -110,
     _id: 'b1'
@@ -86,7 +87,7 @@ test('addBillToOperation', function() {
   })
 })
 
-test('linkBankOperations match operations to bills', function() {
+test('linkBankOperations match operations to bills', function () {
   // We mock defineIndex/query so that fetchOperations returns the right operations
   const INDEX = 'index'
 
@@ -123,7 +124,7 @@ test('linkBankOperations match operations to bills', function() {
     null,
     {},
     { ...searchOpts, ...matchOpts, identifiers: ['SFR'] }
-  ).then(function() {
+  ).then(function () {
     expect(cozyClient.data.updateAttributes.mock.calls).toEqual([
       ['io.cozy.bank.operations', 'o3', { bills: ['io.cozy.bills:b1'] }],
       ['io.cozy.bank.operations', 'o2', { bills: ['io.cozy.bills:b2'] }]
@@ -131,7 +132,7 @@ test('linkBankOperations match operations to bills', function() {
   })
 })
 
-test('findReimbursedOperation', function() {
+test('findReimbursedOperation', function () {
   const bill = {
     isRefund: true,
     amount: 20,
@@ -167,7 +168,7 @@ test('findReimbursedOperation', function() {
   expect(findReimbursedOperation(bill3, ops, matchOpts)).toBe(null)
 })
 
-test('linkBankOperations match operations to reimbursements bills', function() {
+test('linkBankOperations match operations to reimbursements bills', function () {
   // We mock defineIndex/query so that fetchOperations returns the right operations
   const INDEX = 'index'
 
@@ -234,7 +235,7 @@ test('linkBankOperations match operations to reimbursements bills', function() {
     null,
     {},
     { ...searchOpts, ...matchOpts, identifiers: ['SFR'] }
-  ).then(function(result) {
+  ).then(function (result) {
     expect(result).toEqual({
       b1: {
         matching: [],

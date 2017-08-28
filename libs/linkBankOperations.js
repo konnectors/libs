@@ -1,16 +1,17 @@
 const moment = require('moment')
 const bluebird = require('bluebird')
 const DOCTYPE = 'io.cozy.bank.operations'
-const log = require('./logger').namespace('linkBankOperations')
 
 const reimbursedTypes = ['health_costs']
 
 const coerceToDate = function (d) {
-  if (!d) { return d }
-  else if (typeof d == 'string') { return new Date(d) }
-  else if (d.toDate) { return d.toDate() }
-  else if (d.getYear) { return d }
-  else {
+  if (!d) {
+    return d
+  } else if (typeof d === 'string') {
+    return new Date(d)
+  } else if (d.toDate) {
+    return d.toDate()
+  } else if (d.getYear) { return d } else {
     throw new Error('Invalid date')
   }
 }
@@ -18,14 +19,13 @@ const equalDates = function (d1, d2) {
   d1 = coerceToDate(d1)
   d2 = coerceToDate(d2)
   try {
-   return d1 && d2
-    && d1.getYear() == d2.getYear()
-    && d1.getMonth() == d2.getMonth()
-    && d1.getDate() == d2.getDate()
+    return d1 && d2 &&
+    d1.getYear() === d2.getYear() &&
+    d1.getMonth() === d2.getMonth() &&
+    d1.getDate() === d2.getDate()
   } catch (e) {
     return false
   }
-
 }
 
 const getTotalReimbursements = operation => {
@@ -81,7 +81,7 @@ const findReimbursedOperation = (bill, operations, options) => {
 
   for (let operation of operations) {
     const opAmount = operation.amount
-    const sameAmount = -billAmount == opAmount
+    const sameAmount = -billAmount === opAmount
     const sameDate = equalDates(bill.originalDate, operation.date)
     const totalReimbursements = getTotalReimbursements(operation)
     const fitIntoReimbursements = totalReimbursements + -billAmount <= -opAmount
@@ -92,15 +92,14 @@ const findReimbursedOperation = (bill, operations, options) => {
   return null
 }
 
-
 class Linker {
   constructor (cozy) {
     this.cozy = cozy
   }
 
   fetchNeighboringOperations (bill, options) {
-    if (typeof options.minDateDelta == 'undefined' || typeof options.maxDateDelta == 'undefined') {
-      return Promise.reject('Must have options.{min,max}DateDelta')
+    if (typeof options.minDateDelta === 'undefined' || typeof options.maxDateDelta === 'undefined') {
+      return Promise.reject(new Error('Must have options.{min,max}DateDelta'))
     }
     let date = new Date(bill.originalDate || bill.date)
     let startDate = moment(date).subtract(options.minDateDelta, 'days')
@@ -153,7 +152,7 @@ class Linker {
 
   linkMatchingOperation (bill, operations, options) {
     const matchingOp = findMatchingOperation(bill, operations, options)
-    if (matchingOp){
+    if (matchingOp) {
       if (!matchingOp) { return }
       return this.addBillToOperation(bill, matchingOp).then(() => matchingOp)
     }
