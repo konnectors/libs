@@ -14,8 +14,6 @@
   "author": "doubleface",
   "license": "MIT",
   "bin": {
-    "cozy-authenticate": "bin/cozy-authenticate",
-    "cozy-init-dev-account": "bin/cozy-init-dev-account",
     "cozy-konnector-standalone": "bin/cozy-konnector-standalone",
     "cozy-konnector-dev": "bin/cozy-konnector-dev"
   },
@@ -31,12 +29,12 @@
     "btoa": "^1.1.2",
     "cheerio": "^1.0.0-rc.2",
     "core-js": "^2.4.1",
-    "cozy-client-js": "^0.3.4",
+    "cozy-client-js": "^0.3.13",
     "isomorphic-fetch": "^2.2.1",
     "jest": "^20.0.4",
     "moment": "^2.18.1",
     "opn": "^5.1.0",
-    "regenerator-runtime": "^0.10.5",
+    "regenerator-runtime": "^0.11.0",
     "replay": "^2.1.2",
     "request": "^2.81.0",
     "request-debug": "^0.2.0",
@@ -44,6 +42,7 @@
     "uuid": "^3.1.0"
   },
   "scripts": {
+    "lint": "standard --fix commands/* helpers/* libs/* index.js",
     "test": "jest"
   }
 }

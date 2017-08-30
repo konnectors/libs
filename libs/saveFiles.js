@@ -4,12 +4,12 @@ const request = require('./request')
 const rq = request()
 const log = require('./logger').namespace('saveFiles')
 
-const sanitizeEntry = function(entry) {
+const sanitizeEntry = function (entry) {
   delete entry.requestOptions
   return entry
 }
 
-const downloadEntry = function(entry, folderPath) {
+const downloadEntry = function (entry, folderPath) {
   const cozy = require('./cozyclient')
 
   const reqOptions = Object.assign(
@@ -34,12 +34,13 @@ const downloadEntry = function(entry, folderPath) {
     })
 }
 
-const saveEntry = function(entry, options) {
+const saveEntry = function (entry, options) {
   const cozy = require('./cozyclient')
 
   if (!entry.fileurl && !entry.requestOptions) return false
 
   if (options.timeout && Date.now() > options.timeout) {
+    const remainingTime = Math.floor((options.timeout - Date.now()) / 1000)
     log('info', `${remainingTime}s timeout finished for ${options.folderPath}`)
     throw new Error('TIMEOUT')
   }
@@ -80,7 +81,6 @@ module.exports = (entries, folderPath, options = {}) => {
     )
     folderPath = folderPath.folderPath
   }
-  const remainingTime = Math.floor((options.timeout - Date.now()) / 1000)
   const saveOptions = {
     folderPath: folderPath,
     timeout: options.timeout,
@@ -94,7 +94,7 @@ module.exports = (entries, folderPath, options = {}) => {
     })
 }
 
-function getFileName(entry) {
+function getFileName (entry) {
   let filename
   if (entry.filename) {
     filename = entry.filename
@@ -106,6 +106,6 @@ function getFileName(entry) {
   return sanitizeFileName(filename)
 }
 
-function sanitizeFileName(filename) {
+function sanitizeFileName (filename) {
   return filename.replace(/^\.+$/, '').replace(/[/?<>\\:*|":]/g, '')
 }
