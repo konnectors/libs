@@ -26,7 +26,7 @@
     "bluebird": "^3.5.0",
     "btoa": "^1.1.2",
     "core-js": "^2.4.1",
-    "cozy-client-js": "^0.3.4",
+    "cozy-client-js": "^0.3.15",
     "cozy-slug": "^0.2.2",
     "debug": "^2.6.8",
     "isomorphic-fetch": "^2.2.1",
