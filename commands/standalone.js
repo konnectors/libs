@@ -3,7 +3,9 @@
 process.env.NODE_ENV = 'standalone'
 if (!process.env.DEBUG) process.env.DEBUG = '*'
 
-process.env.COZY_FIELDS = '{}'
+process.env.COZY_FIELDS = JSON.stringify({
+  folder_to_save: '.'
+})
 
 const filename = process.argv[2] || 'index.js'
 
