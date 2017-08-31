@@ -85,9 +85,9 @@ core-js@^2.4.1:
   version "2.4.1"
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.4.1.tgz#4de911e667b0eae9124e34254b53aea6fc618d3e"
 
-cozy-client-js@^0.3.15:
-  version "0.3.15"
-  resolved "https://registry.yarnpkg.com/cozy-client-js/-/cozy-client-js-0.3.15.tgz#f87e47f7aa08dbac4309a9a5f94322d747ce9799"
+cozy-client-js@^0.3.16:
+  version "0.3.16"
+  resolved "https://registry.yarnpkg.com/cozy-client-js/-/cozy-client-js-0.3.16.tgz#4d909efa31d11d30ad35a349065694e38b3d5a21"
 
 cozy-slug@^0.2.2:
   version "0.2.2"
