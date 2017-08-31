@@ -38,6 +38,15 @@ module.exports = {
       }
       return Promise.resolve(result)
     },
+    findAll (doctype) {
+      let result = null
+      if (fixture[doctype]) {
+        result = fixture[doctype]
+      } else {
+        result = []
+      }
+      return Promise.resolve(result)
+    },
     delete () {
       return Promise.resolve({})
     },
