@@ -21,6 +21,8 @@ What's Cozy Konnector Libs?
 
 This package contains all the libs shared by the konnectors. Most of the previous libs in the `libs` directory of the [cozy-labs/konnectors](https://github.com/cozy-labs/konnectors) repository are ported.
 
+There is a page [listing the state of existing connectors](./konnectors.md)
+
 Here is the list available at the moment with their equivalent in the old repository:
 
 ```
