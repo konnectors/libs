@@ -29,7 +29,7 @@ log.namespace = function (namespace) {
 }
 
 function prodFormat (type, message, label, namespace) {
-  return JSON.stringify({ type, message, label, namespace })
+  return JSON.stringify({ time: new Date(), type, message, label, namespace })
 }
 
 function devFormat (type, message, label, namespace) {
