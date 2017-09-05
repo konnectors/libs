@@ -1,7 +1,5 @@
 const {Client, MemoryStorage} = require('cozy-client-js')
 
-let cozy = null
-
 const getCredentials = function (environment) {
   try {
     if (environment === 'development') {
@@ -40,7 +38,7 @@ const getCozyClient = function (environment) {
     cozyURL: cozyURL
   }
 
-  if (environment === 'dev') {
+  if (environment === 'development') {
     options.oauth = {storage: new MemoryStorage()}
   } else if (environment === 'prod') {
     options.token = credentials
@@ -48,8 +46,8 @@ const getCozyClient = function (environment) {
 
   const cozyClient = new Client(options)
 
-  if (environment === 'dev') {
-    cozy.saveCredentials(credentials.client, credentials.token)
+  if (environment === 'development') {
+    cozyClient.saveCredentials(credentials.client, credentials.token)
   }
 
   return cozyClient
