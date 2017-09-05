@@ -73,16 +73,18 @@ const saveEntry = function (entry, options) {
 }
 
 // Saves the files given in the fileurl attribute of each entries
-module.exports = (entries, folderPath, options = {}) => {
+module.exports = (entries, fields, options = {}) => {
   if (typeof fields !== 'object') {
     log(
       'debug',
-      'Deprecation warning, saveFiles 2nd argument should be a string'
+      'Deprecation warning, saveFiles 2nd argument should not be a string'
     )
-    folderPath = folderPath.folderPath
+    fields = {
+      folderPath: fields
+    }
   }
   const saveOptions = {
-    folderPath: folderPath,
+    folderPath: fields.folderPath,
     timeout: options.timeout,
     postProcess: options.postProcess
   }
