@@ -26,7 +26,7 @@ const getCozyUrl = function () {
   }
 }
 
-const getCozyClient = function (environment) {
+const getCozyClient = function (environment = 'production') {
   if (environment === 'standalone' || environment === 'test') {
     return require('../helpers/cozy-client-js-stub')
   }
