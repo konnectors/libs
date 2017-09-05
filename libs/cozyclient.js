@@ -40,7 +40,7 @@ const getCozyClient = function (environment) {
 
   if (environment === 'development') {
     options.oauth = {storage: new MemoryStorage()}
-  } else if (environment === 'prod') {
+  } else if (environment === 'production') {
     options.token = credentials
   }
 
