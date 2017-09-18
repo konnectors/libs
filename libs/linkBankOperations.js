@@ -172,6 +172,9 @@ class Linker {
    */
   linkBillsToOperations (bills, options) {
     const result = {}
+
+    bills = bills.filter(bill => !bill.isThirdPartyPayer === true)
+
     return bluebird.each(bills, bill => {
       const res = result[bill._id] = {matching: [], reimbursed: []}
       // Get all operations whose date is close to out bill
