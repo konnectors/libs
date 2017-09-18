@@ -15,6 +15,7 @@ module.exports = {
     baseModel: require('./models/base_model'),
     bill: require('./models/bill'),
     file: require('./models/file'),
-    folder: require('./models/folder')
+    folder: require('./models/folder'),
+    event: require('./models/event')
   }
 }
