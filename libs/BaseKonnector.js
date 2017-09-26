@@ -58,7 +58,10 @@ module.exports = class baseKonnector {
 
   saveAccountData (data) {
     return cozy.data.updateAttributes('io.cozy.accounts', this.accountId, {data})
-      .then(account => account.data)
+      .then(account => {
+        this._account = account
+        return account.data
+      })
   }
 
   getAccountData () {
