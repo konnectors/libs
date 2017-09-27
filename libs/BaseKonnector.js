@@ -28,7 +28,7 @@ module.exports = class baseKonnector {
     })
     .then(account => {
       this.accountId = cozyFields.account
-      this.account = account
+      this._account = account
 
       // folder ID will be stored in cozyFields.folder_to_save when first connection
       const folderId = account.folderId || cozyFields.folder_to_save
@@ -58,10 +58,10 @@ module.exports = class baseKonnector {
 
   saveAccountData (data) {
     return cozy.data.updateAttributes('io.cozy.accounts', this.accountId, {data})
-    .then(account => account.data)
+      .then(account => account.data)
   }
 
   getAccountData () {
-    return this.account.data || {}
+    return this._account.data || {}
   }
 }
