@@ -19,6 +19,7 @@ const template = {
 }
 
 function createKonnectorConfig () {
-  log('warning', `No ${configPath} file found, creating an empty one. Don't you need to define some fields for your connector?`)
   fs.writeFileSync(configPath, JSON.stringify(template, null, '  '))
+  log('warning', `No ${configPath} file found, creating an empty one. To let you add fields for your connector.`)
+  process.exit()
 }
