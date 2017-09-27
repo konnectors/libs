@@ -56,8 +56,27 @@ module.exports = class baseKonnector {
     })
   }
 
-  saveAccountData (data) {
-    return cozy.data.updateAttributes('io.cozy.accounts', this.accountId, {data})
+  /**
+   * Saves data to the account that is passed to the konnector.
+   * Use it to persist data that needs to be passed to each
+   * konnector run.
+   *
+   * By default, the data is merged to the remote data, use
+   * `options.merge = false` to overwrite the data.
+   *
+   * The data is saved under the `.data` attribute of the cozy
+   * account.
+   *
+   * @param  {[type]} data    - Attributes to be merged
+   * @param  {[type]} options - { merge: true|false }
+   * @return {[type]}         - Promise
+   */
+  saveAccountData (data, options) {
+    options = options || {}
+    options.merge = options.merge === undefined ? true : options.merge
+    const start = options.merge ? {...this.getAccountData()} : {}
+    const newData = {...start, ...data}
+    return cozy.data.updateAttributes('io.cozy.accounts', this.accountId, {data: newData})
       .then(account => {
         this._account = account
         return account.data
