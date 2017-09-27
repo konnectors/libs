@@ -1,3 +1,5 @@
+require('./libs/error')
+
 module.exports = {
   BaseKonnector: require('./libs/BaseKonnector'),
   cozyClient: require('./libs/cozyclient'),
