@@ -19,6 +19,7 @@ cli tools to run a connector outside a cozy.
   * [API](docs/api.md)
   * [CLI](docs/cli.md)
 
+4. Read the list of [existing connectors](./konnectors.md)
 
 
 ### Open a Pull-Request
