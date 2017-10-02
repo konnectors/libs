@@ -38,7 +38,8 @@ module.exports = (entries, doctype, options = {}) => {
   })
   .then(entries => {
     log('info', entries.length, 'Number of items after filterData')
-    return entries
+    // filter out wrong entries
+    return entries.filter(entry => entry)
   })
 
   function createHash (item) {
