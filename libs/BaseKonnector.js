@@ -43,7 +43,8 @@ module.exports = class baseKonnector {
         return account
       })
       .catch(err => {
-        log('error', err, `error while getting the folder path of ${folderId}`)
+        log('error', err, 'NOT_EXISTING_DIRECTORY')
+        log('debug', err, `error while getting the folder path of ${folderId}`)
         throw new Error('NOT_EXISTING_DIRECTORY')
       })
     })
