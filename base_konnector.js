@@ -62,8 +62,9 @@ module.exports = {
               resolve(account)
             })
             .catch(err => {
-              log('error', `error while getting the folder path from ID : "${folderId}"`)
+              log('error', 'NOT_EXISTING_DIRECTORY')
               log('error', err.message)
+              log('debug', `error while getting the folder path from ID : "${folderId}"`)
               reject(new Error('NOT_EXISTING_DIRECTORY'))
             })
           })
