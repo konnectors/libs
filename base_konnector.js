@@ -90,7 +90,7 @@ module.exports = {
         })
         .catch(err => {
           debug(err, 'unexpected error while running the connector')
-          callback(err.message || err)
+          callback(err)
         })
       }
     })
