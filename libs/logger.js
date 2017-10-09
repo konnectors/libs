@@ -1,3 +1,5 @@
+const colors = require('colors')
+
 const util = require('util')
 util.inspect.defaultOptions.maxArrayLength = null
 util.inspect.defaultOptions.colors = true
@@ -10,6 +12,15 @@ const env2formats = {
   standalone: devFormat,
   test: devFormat
 }
+
+const type2color = {
+  debug: 'cyan',
+  warn: 'yellow',
+  info: 'blue',
+  error: 'red',
+  ok: 'green'
+}
+
 const format = env2formats[env]
 
 if (!format) console.error('Error while loading the logger')
@@ -42,23 +53,11 @@ function devFormat (type, message, label, namespace) {
     formatmessage = util.inspect(formatmessage)
   }
 
-  let formatlabel = ` : "${label}" `
-  if (label === undefined) formatlabel = ``
+  let formatlabel = label ? ` : "${label}" ` : ''
+  let formatnamespace = namespace ? colors.purple(`${namespace}: `) : ''
 
-  let formatnamespace = `\u001b[35m${namespace}: \u001b[0m`
-  if (namespace === undefined) formatnamespace = ``
+  let color = type2color[type]
+  let formattype = color ? colors[color](type) : type
 
-  const type2color = {
-    debug: 6,   // cyan
-    warning: 3, // yellow
-    info: 4,    // blue
-    error: 1,   // red
-    ok: 2       // green
-  }
-
-  let formattype = type
-  if (type2color[type]) {
-    formattype = `\u001b[3${type2color[type]}m${type}\u001b[0m`
-  }
   return `${formatnamespace}${formattype}${formatlabel} : ${formatmessage}`
 }
