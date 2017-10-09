@@ -2,6 +2,7 @@
 
 const cozy = require('./cozyclient')
 const log = require('./logger').namespace('BaseKonnector')
+const Secret = require('./Secret')
 
 module.exports = class baseKonnector {
   constructor (fetch) {
@@ -85,6 +86,6 @@ module.exports = class baseKonnector {
   }
 
   getAccountData () {
-    return this._account.data || {}
+    return new Secret(this._account.data || {})
   }
 }
