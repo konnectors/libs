@@ -1,35 +1,43 @@
-const colors = require('colors')
+const { env2formats } = require('./log-formats')
+const { filterLevel } = require('./log-filters')
 
-const util = require('util')
-util.inspect.defaultOptions.maxArrayLength = null
-util.inspect.defaultOptions.colors = true
-
-const env = process.env.NODE_ENV || ''
-const env2formats = {
-  '': prodFormat,
-  production: prodFormat,
-  development: devFormat,
-  standalone: devFormat,
-  test: devFormat
-}
-
-const type2color = {
-  debug: 'cyan',
-  warn: 'yellow',
-  info: 'blue',
-  error: 'red',
-  ok: 'green'
-}
-
+const { DEBUG, NODE_ENV } = process.env
+const env = (env2formats[NODE_ENV] && NODE_ENV) || 'production'
+let level = DEBUG && DEBUG.length ? 'debug' : 'info'
 const format = env2formats[env]
+const filters = [filterLevel]
 
-if (!format) console.error('Error while loading the logger')
+const filterOut = function (level, type, message, label, namespace) {
+  for (const filter of filters) {
+    if (filter.apply(null, arguments) === false) {
+      return true
+    }
+  }
+  return false
+}
 
 function log (type, message, label, namespace) {
-  if (type !== 'debug' || (process.env.DEBUG && process.env.DEBUG.length)) {
-    console.log(format(type, message, label, namespace))
+  if (filterOut(level, type, message, label, namespace)) {
+    return
   }
+  console.log(format(type, message, label, namespace))
 }
+
+log.addFilter = function (filter) {
+  return filters.push(filter)
+}
+
+log.setLevel = function (lvl) {
+  level = lvl
+}
+
+// Short-hands
+const methods = ['debug', 'info', 'warn', 'error', 'ok']
+methods.forEach(level => {
+  log[level] = function () {
+    return log(level, message, label, namespace)
+  }
+})
 
 module.exports = log
 
@@ -37,27 +45,4 @@ log.namespace = function (namespace) {
   return function (type, message, label, ns = namespace) {
     log(type, message, label, ns)
   }
-}
-
-function prodFormat (type, message, label, namespace) {
-  // properly display error messages
-  if (message.stack) message = message.stack
-  if (message.toString) message = message.toString()
-
-  return JSON.stringify({ time: new Date(), type, message, label, namespace })
-}
-
-function devFormat (type, message, label, namespace) {
-  let formatmessage = message
-  if (typeof formatmessage !== 'string') {
-    formatmessage = util.inspect(formatmessage)
-  }
-
-  let formatlabel = label ? ` : "${label}" ` : ''
-  let formatnamespace = namespace ? colors.purple(`${namespace}: `) : ''
-
-  let color = type2color[type]
-  let formattype = color ? colors[color](type) : type
-
-  return `${formatnamespace}${formattype}${formatlabel} : ${formatmessage}`
 }
