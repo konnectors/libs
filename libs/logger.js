@@ -1,5 +1,6 @@
 const util = require('util')
 util.inspect.defaultOptions.maxArrayLength = null
+util.inspect.defaultOptions.depth = null
 util.inspect.defaultOptions.colors = true
 
 const env = process.env.NODE_ENV || ''
