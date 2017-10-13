@@ -13,7 +13,7 @@ State of the connectors in Cozy V3
 | Free Mobile             | [cozy](https://github.com/cozy/cozy-konnector-free-mobile)                | PDF  | ?           | :white_check_mark: |
 | Harmonie Mutuelle       | [cozy](https://github.com/cozy/cozy-konnector-harmonie)                   | PDF  | ?           | :white_check_mark: |
 | MAIF                    | [cozy](https://github.com/cozy/cozy-konnector-maif)                       | PDF  | ?           | :white_check_mark: |
-| Malakoff Mederic        | [cozy](https://github.com/cozy/cozy-konnector-malakoffmederic)            | PDF  | doubleface  | :x: (API change)   |
+| Malakoff Mederic        | [cozy](https://github.com/cozy/cozy-konnector-malakoffmederic)            | PDF  | doubleface  | :white_check_mark: |
 | Materiel.net            | [nicofrand](https://github.com/nicofrand/cozy-konnector-materielnet)      | PDF  | nicofrand   | :white_check_mark: |
 | Numéricable             | [cozy](https://github.com/cozy/cozy-konnector-numericable)                | PDF  | ?           | :white_check_mark: |
 | Orange                  | [cozy](https://github.com/cozy/cozy-konnector-orange)                     | PDF  | ?           | :white_check_mark: |
