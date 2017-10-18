@@ -34,9 +34,9 @@ log.setLevel = function (lvl) {
 }
 
 // Short-hands
-const methods = ['debug', 'info', 'warn', 'error', 'ok']
+const methods = ['debug', 'info', 'warn', 'error', 'ok', 'critical']
 methods.forEach(level => {
-  log[level] = function () {
+  log[level] = function (message, label, namespace) {
     return log(level, message, label, namespace)
   }
 })

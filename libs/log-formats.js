@@ -10,7 +10,8 @@ const type2color = {
   info: 'blue',
   error: 'red',
   ok: 'green',
-  secret: 'red'
+  secret: 'red',
+  critical: 'red'
 }
 
 function prodFormat (type, message, label, namespace) {

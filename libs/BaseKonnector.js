@@ -88,4 +88,16 @@ module.exports = class baseKonnector {
   getAccountData () {
     return new Secret(this._account.data || {})
   }
+
+  /**
+   * Send a special which is interpreted by the cozy stack to terminate the execution of the
+   * connector now
+   *
+   * @param  {[type]} message - The error code to be saved as connector result see [doc/ERROR_CODES.md]
+   */
+  terminate (message) {
+    // The error log is also sent to be compatible with older versions of the cozy stack
+    log('error', message)
+    log('critical', message)
+  }
 }
