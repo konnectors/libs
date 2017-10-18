@@ -2,6 +2,7 @@
 
 const cozy = require('./cozyclient')
 const log = require('./logger').namespace('BaseKonnector')
+const Secret = require('./Secret')
 
 module.exports = class baseKonnector {
   constructor (fetch) {
@@ -75,8 +76,8 @@ module.exports = class baseKonnector {
   saveAccountData (data, options) {
     options = options || {}
     options.merge = options.merge === undefined ? true : options.merge
-    const start = options.merge ? {...this.getAccountData()} : {}
-    const newData = {...start, ...data}
+    const start = options.merge ? Object.assign({}, this.getAccountData()) : {}
+    const newData = Object.assign({}, start, data)
     return cozy.data.updateAttributes('io.cozy.accounts', this.accountId, {data: newData})
       .then(account => {
         this._account = account
@@ -85,6 +86,6 @@ module.exports = class baseKonnector {
   }
 
   getAccountData () {
-    return this._account.data || {}
+    return new Secret(this._account.data || {})
   }
 }
