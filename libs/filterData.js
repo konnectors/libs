@@ -4,7 +4,7 @@ const log = require('./logger').namespace('filterData')
 module.exports = (entries, doctype, options = {}) => {
   const cozy = require('./cozyclient')
 
-  log('info', entries.length, 'Number of items before filterData')
+  log('debug', String(entries.length), 'Number of items before filterData')
   if (!doctype) return Promise.reject(new Error(`Doctype is mandatory to filter the connector data.`))
 
   // expected options:
@@ -37,7 +37,7 @@ module.exports = (entries, doctype, options = {}) => {
     return bluebird.filter(entries, entry => !hashTable[createHash(entry)])
   })
   .then(entries => {
-    log('info', entries.length, 'Number of items after filterData')
+    log('debug', String(entries.length), 'Number of items after filterData')
     // filter out wrong entries
     return entries.filter(entry => entry)
   })

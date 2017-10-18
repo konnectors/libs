@@ -24,6 +24,9 @@ The requests to the cozy-stack will be stubbed using the [./fixture.json] file a
 and when cozy-client-js is asked to create or update data, the data will be output to the console.
 The bills (or any file) will be saved in the . directory.
 
+It is also possible to add an argument to this command which tells which file to run. Default is
+./index.js
+
 #### cozy-konnector-dev
 
 If you want to run your connector linked to a cozy-stack, even remotely. Just add the follwing code
@@ -49,3 +52,6 @@ After that, your konnector is running but should not work since you did not spec
 the target service. You can do this also in [./konnector-dev-config.json] in the "fields" section
 
 The files are saved in the root directory of your cozy by default.
+
+As for standalone command, it is possible to add an argument to this command which tells which file to run. Default is
+./index.js

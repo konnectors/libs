@@ -8,7 +8,7 @@ State of the connectors in Cozy V3
 | Bouygues Telecom Mobile | [cozy](https://github.com/cozy/cozy-konnector-bouyguestelecom)            | PDF  | doubleface  | :white_check_mark: |
 | Trainline               | [cozy](https://github.com/cozy/cozy-konnector-trainline)                  | PDF  | doubleface  | :white_check_mark: |
 | Digiposte               | [cozy](https://github.com/cozy/cozy-konnector-digiposte)                  | PDF  | doubleface  | :white_check_mark: |
-| EDF                     | [cozy](https://gitlab.cozycloud.cc/labs/cozy-konnector-edf)               | PDF  | ?           | :white_check_mark: |
+| EDF                     | [cozy](https://gitlab.cozycloud.cc/labs/cozy-konnector-edf)               | PDF  | ?           | :x: (blacklist)    |
 | Free                    | [cozy](https://github.com/cozy/cozy-konnector-free)                       | PDF  | ?           | :white_check_mark: |
 | Free Mobile             | [cozy](https://github.com/cozy/cozy-konnector-free-mobile)                | PDF  | ?           | :white_check_mark: |
 | Harmonie Mutuelle       | [cozy](https://github.com/cozy/cozy-konnector-harmonie)                   | PDF  | ?           | :white_check_mark: |
@@ -22,7 +22,7 @@ State of the connectors in Cozy V3
 | Sosh                    | [cozy](https://github.com/cozy/cozy-konnector-sosh)                       | PDF  | ?           | :white_check_mark: |
 | SFR box                 | [cozy](https://github.com/cozy/cozy-konnector-sfrbox)                     | PDF  | doubleface  | :white_check_mark: |
 | SFR mobile              | [cozy](https://github.com/cozy/cozy-konnector-sfrmobile)                  | PDF  | doubleface  | :white_check_mark: |
-| SFR RED mobile          | [cozy](https://github.com/cozy/cozy-konnector-redmobile)                  | PDF  | doubleface  | :x: (https://forum.cozy.io/t/collect-connecteur-red-by-sfr-mobile/4944/2) |
+| SFR RED mobile          | [cozy](https://github.com/cozy/cozy-konnector-redmobile)                  | PDF  | doubleface  | :white_check_mark: |
 | Uber                    | [cozy](https://github.com/cozy/cozy-konnector-uber)                       | PDF  | ?           | :white_check_mark: |
 | Voyage-SNCF             | [cozy](https://github.com/cozy/cozy-konnector-sncf)                       | PDF  | doubleface  | :white_check_mark: |
 | Virgin mobile           | [cozy](https://github.com/cozy/cozy-konnector-virgin-mobile)              | PDF  | ?           | :white_check_mark: |
