@@ -22,5 +22,5 @@ require('../helpers/cozy-authenticate')()
 })
 .catch(err => {
   console.log(err, 'unexpected error')
-  process.exit(1)
+  setImmediate(() => process.exit(1))
 })

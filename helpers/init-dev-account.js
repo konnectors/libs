@@ -19,7 +19,7 @@ function ensureAccount () {
         .then(doc => doc._id)
     })
     .catch((err) => {
-      log('warning', err.message, 'Error while getting the account')
+      log('warn', err.message, 'Error while getting the account')
       return createAccount()
     })
 }
