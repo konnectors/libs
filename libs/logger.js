@@ -23,6 +23,9 @@ function log (type, message, label, namespace) {
     return
   }
   console.log(format(type, message, label, namespace))
+
+  // Try to stop the connector after current running io before the stack
+  if (type === 'critical') setImmediate(() => process.exit(1))
 }
 
 log.addFilter = function (filter) {
@@ -34,9 +37,9 @@ log.setLevel = function (lvl) {
 }
 
 // Short-hands
-const methods = ['debug', 'info', 'warn', 'error', 'ok']
+const methods = ['debug', 'info', 'warn', 'error', 'ok', 'critical']
 methods.forEach(level => {
-  log[level] = function () {
+  log[level] = function (message, label, namespace) {
     return log(level, message, label, namespace)
   }
 })

@@ -19,6 +19,12 @@ Its role is twofold :
 * Make the link between account data and konnector
 * Handle errors
 
+It also has a terminate method which allows to stop the connector with a specific error code :
+
+```
+this.terminate('LOGIN_FAILED')
+```
+
 ### log ( type, message, label, namespace )
 
 Use it to log messages in your konnector. Typical types are

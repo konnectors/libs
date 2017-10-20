@@ -11,8 +11,8 @@ module.exports = class baseKonnector {
     .then(requiredFields => this.fetch(requiredFields))
     .then(() => log('info', 'The connector has been run'))
     .catch(err => {
-      log('error', err.message || err, 'Error caught by BaseKonnector')
-      process.exit(1)
+      log('warn', 'Error caught by BaseKonnector')
+      this.terminate(err.message || err)
     })
   }
 
@@ -23,9 +23,9 @@ module.exports = class baseKonnector {
     // First get the account related to the specified account id
     return cozy.data.find('io.cozy.accounts', cozyFields.account)
     .catch(err => {
-      console.error(`Account ${cozyFields.account} does not exist`)
-      log('error', err, 'error while fetching the account')
-      process.exit(0)
+      log('error', err)
+      log('error', `Account ${cozyFields.account} does not exist`)
+      this.terminate('CANNOT_FIND_ACCOUNT')
     })
     .then(account => {
       this.accountId = cozyFields.account
@@ -44,9 +44,9 @@ module.exports = class baseKonnector {
         return account
       })
       .catch(err => {
-        log('error', err, 'NOT_EXISTING_DIRECTORY')
-        log('debug', err, `error while getting the folder path of ${folderId}`)
-        throw new Error('NOT_EXISTING_DIRECTORY')
+        log('error', err)
+        log('error', `error while getting the folder path of ${folderId}`)
+        this.terminate('NOT_EXISTING_DIRECTORY')
       })
     })
     .then(account => {
@@ -87,5 +87,17 @@ module.exports = class baseKonnector {
 
   getAccountData () {
     return new Secret(this._account.data || {})
+  }
+
+  /**
+   * Send a special which is interpreted by the cozy stack to terminate the execution of the
+   * connector now
+   *
+   * @param  {[type]} message - The error code to be saved as connector result see [doc/ERROR_CODES.md]
+   */
+  terminate (message) {
+    // The error log is also sent to be compatible with older versions of the cozy stack
+    log('error', message)
+    log('critical', message)
   }
 }

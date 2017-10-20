@@ -92,7 +92,7 @@ module.exports = {
         })
 
         writeStream.on('error', err => {
-          log('warning', `Error : ${err} while trying to write file`)
+          log('warn', `Error : ${err} while trying to write file`)
           reject(new Error(err))
         })
       })
