@@ -4,7 +4,8 @@ const levels = {
   info: 10,
   warn: 20,
   error: 30,
-  ok: 40
+  ok: 40,
+  critical: 40
 }
 
 const Secret = require('./Secret')
