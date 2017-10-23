@@ -1,59 +1,166 @@
 ## API
 
-### BaseKonnector( fetcher )
+## Modules
 
-The class from which all the connectors must inherit. It takes a fetch function in parameter that must return a `Promise`.
-
-```
-const { BaseKonnector } = require('cozy-konnector-libs')
-
-module.exports = new BaseKonnector(function fetch () {
-  // use this to access the instance of the konnector to
-  // store any information that needs to be passed to
-  // different stages of the konnector
+<dl>
+<dt><a href="#module_addData">addData</a></dt>
+<dd><p>Creates the records in the given doctype.</p>
+</dd>
+<dt><a href="#module_cozy-client">cozy-client</a></dt>
+<dd><p>This is a <a href="https://cozy.github.io/cozy-client-js/">cozy-client-js</a> instance already initialized and ready to use</p>
+</dd>
+<dt><a href="#module_filterData">filterData</a></dt>
+<dd><p>Used not to duplicate data.</p>
+<ul>
+<li><code>options</code> :<ul>
+<li><code>keys</code> : List of keys used to check that two items are the same. By default it is set to `[&#39;id&#39;]&#39;.</li>
+<li><code>index</code> : Return value returned by <code>cozy.data.defineIndex</code>, the default will correspond to all documents of the selected doctype.</li>
+<li><code>selector</code> : Mango request to get records. Default is built from the keys <code>{selector: {_id: {&quot;$gt&quot;: null}}}</code> to get all the records.</li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt><a href="#module_linkBankOperations">linkBankOperations</a></dt>
+<dd><h3 id="linkbankoperations-entries-doctype-fields-options-">linkBankOperations ( entries, doctype, fields, options = {} )</h3>
+<p>This function will soon move to a dedicated service. You should not use it.
+The goal of this function is to find links between bills and bank operations.</p>
+</dd>
+<dt><a href="#module_request">request</a></dt>
+<dd><p>This is a function which returns an instance of
+<a href="https://www.npmjs.com/package/request-promise">request-promise</a> initialized with
+defaults often used in connector development.</p>
+<pre><code class="language-javascript">// Showing defaults
+req = request({
+  cheerio: false,
+  jar: true,
+  json: true
 })
-```
+</code></pre>
+<ul>
+<li><code>cheerio</code>  will parse automatically the <code>response.body</code> in a cheerio instance</li>
+</ul>
+<pre><code class="lang-js">req = request({ cheerio: true })
+req(&#39;http://github.com&#39;, $ =&gt; {
+  const repos = $(&#39;#repo_listing .repo&#39;)
+})
+</code></pre>
+<ul>
+<li><code>jar</code> is passed to <code>request</code> options. Remembers cookies for future use.</li>
+<li><code>json</code> will parse the <code>response.body</code> as JSON</li>
+</ul>
+</dd>
+<dt><a href="#module_saveBills">saveBills</a></dt>
+<dd><p>Combines the features of <code>saveFiles</code>, <code>filterData</code>, <code>addData</code> and  <code>linkBankOperations</code>.
+Will create <code>io.cozy.bills</code> objects. The default deduplication keys are
+<code>[&#39;date&#39;, &#39;amount&#39;, &#39;vendor&#39;]</code>.</p>
+<p><code>options</code> is passed directly to <code>saveFiles</code>, <code>filterData</code>, <code>addData</code> and <code>linkBankOperations</code>.</p>
+</dd>
+<dt><a href="#module_saveFiles">saveFiles</a></dt>
+<dd><p>The goal of this function is to save the given files in the given folder via the Cozy API.</p>
+<ul>
+<li><p><code>files</code> is an array of <code>{ fileurl, filename }</code> :</p>
+<ul>
+<li>fileurl: The url of the file. This attribute is mandatory or
+this item will be ignored</li>
+<li>filename : The file name of the item written on disk. This attribute is optional and as default value, the
+file name will be &quot;smartly&quot; guessed by the function. Use this attribute if the guess is not smart
+enough for you.</li>
+</ul>
+</li>
+<li><p><code>folderPath</code> (string) is relative to the main path given by the <code>cozy-collect</code> application to the connector. If the connector is run
+in standalone mode, the main path is the path of the connector.</p>
+</li>
+<li><p><code>options</code> (object) is optional. Possible options :</p>
+<ul>
+<li><code>timeout</code> (timestamp) can be used if your connector
+needs to fetch a lot of files and if the the stack does not give enough time to your connector to
+fetch it all. It could happen that the connector is stopped right in the middle of the download of
+the file and the file will be broken. With the <code>timeout</code> option, the <code>saveFiles</code> function will check
+if the timeout has passed right after downloading each file and then will be sure to be stopped
+cleanly if the timeout is not too long. And since it is really fast to check that a file has
+already been downloaded, on the next run of the connector, it will be able to download some more
+files, and so on. If you want the timeout to be in 10s, do <code>Date.now() + 10*1000</code>. You can try it in the previous code.</li>
+</ul>
+</li>
+</ul>
+</dd>
+</dl>
 
-Its role is twofold :
+## Classes
 
-* Make the link between account data and konnector
-* Handle errors
+<dl>
+<dt><a href="#baseKonnector">baseKonnector</a></dt>
+<dd><p>The class from which all the connectors must inherit.
+It takes a fetch function in parameter that must return a <code>Promise</code>.</p>
+</dd>
+</dl>
 
-It also has a terminate method which allows to stop the connector with a specific error code :
+## Constants
 
-```
-this.terminate('LOGIN_FAILED')
-```
+<dl>
+<dt><a href="#LOGIN_FAILED">LOGIN_FAILED</a> : <code>String</code></dt>
+<dd><p>The konnector could not login</p>
+</dd>
+<dt><a href="#NOT_EXISTING_DIRECTORY">NOT_EXISTING_DIRECTORY</a> : <code>String</code></dt>
+<dd><p>The folder specified as folder_to_save does not exist (checked by BaseKonnector)</p>
+</dd>
+<dt><a href="#VENDOR_DOWN">VENDOR_DOWN</a> : <code>String</code></dt>
+<dd><p>The vendor&#39;s website is down</p>
+</dd>
+<dt><a href="#USER_ACTION_NEEDED">USER_ACTION_NEEDED</a> : <code>String</code></dt>
+<dd><p>There was an unexpected error, please take a look at the logs to know what happened</p>
+</dd>
+</dl>
 
-### log ( type, message, label, namespace )
+## Functions
 
-Use it to log messages in your konnector. Typical types are
+<dl>
+<dt><a href="#log">log(type, message, label, namespace)</a></dt>
+<dd><p>Use it to log messages in your konnector. Typical types are</p>
+<ul>
+<li><code>debug</code></li>
+<li><code>warning</code></li>
+<li><code>info</code></li>
+<li><code>error</code></li>
+<li><code>ok</code></li>
+</ul>
+</dd>
+</dl>
 
-* `debug`
-* `warning`
-* `info`
-* `error`
-* `ok`
+<a name="module_addData"></a>
 
-They will be colored in development mode. In production mode, those logs are formatted in JSON to be interpreted by the stack and possibly sent to the client. `error` will stop the konnector.
+## addData
+Creates the records in the given doctype.
 
-```js
-logger = log('my-namespace')
-logger('debug', '365 bills')
-// my-namespace : debug : 365 bills
-logger('info', 'Page fetched')
-// my-namespace : info : Page fetched
-```
+<a name="module_cozy-client"></a>
 
-### cozyClient
-
+## cozy-client
 This is a [cozy-client-js](https://cozy.github.io/cozy-client-js/) instance already initialized and ready to use
 
-### request
+<a name="module_filterData"></a>
 
-This is a function which returns an instance of [request-promise](https://www.npmjs.com/package/request-promise) initialized with
+## filterData
+Used not to duplicate data.
+
+* `options` :
+   - `keys` : List of keys used to check that two items are the same. By default it is set to `['id']'.
+   - `index` : Return value returned by `cozy.data.defineIndex`, the default will correspond to all documents of the selected doctype.
+   - `selector` : Mango request to get records. Default is built from the keys `{selector: {_id: {"$gt": null}}}` to get all the records.
+
+<a name="module_linkBankOperations"></a>
+
+## linkBankOperations
+### linkBankOperations ( entries, doctype, fields, options = {} )
+
+This function will soon move to a dedicated service. You should not use it.
+The goal of this function is to find links between bills and bank operations.
+
+<a name="module_request"></a>
+
+## request
+This is a function which returns an instance of
+[request-promise](https://www.npmjs.com/package/request-promise) initialized with
 defaults often used in connector development.
-
 
 ```js
 // Showing defaults
@@ -64,7 +171,7 @@ req = request({
 })
 ```
 
-* `cheerio`  will parse automatically the `response.body` in a cheerio instance
+- `cheerio`  will parse automatically the `response.body` in a cheerio instance
 
 ```js
 req = request({ cheerio: true })
@@ -73,29 +180,21 @@ req('http://github.com', $ => {
 })
 ```
 
-* `jar` is passed to `request` options. Remembers cookies for future use.
-* `json` will parse the `response.body` as JSON
+- `jar` is passed to `request` options. Remembers cookies for future use.
+- `json` will parse the `response.body` as JSON
 
-### retry
+<a name="module_saveBills"></a>
 
-A shortcut the the [bluebird-retry](https://www.npmjs.com/package/bluebird-retry)
+## saveBills
+Combines the features of `saveFiles`, `filterData`, `addData` and  `linkBankOperations`.
+Will create `io.cozy.bills` objects. The default deduplication keys are
+`['date', 'amount', 'vendor']`.
 
-```
-const { retry } = require('cozy-konnector-libs')
+`options` is passed directly to `saveFiles`, `filterData`, `addData` and `linkBankOperations`.
 
-```
+<a name="module_saveFiles"></a>
 
-### filterData ( entries, doctype, options )
-
-Used not to duplicate data.
-
-* `options` :
-    - `keys` : List of keys used to check that two items are the same. By default it is set to `['id']'.
-    - `index` : Return value returned by `cozy.data.defineIndex`, the default will correspond to all documents of the selected doctype.
-    - `selector` : Mango request to get records. Default is built from the keys `{selector: {_id: {"$gt": null}}}` to get all the records.
-
-### saveFiles ( files\[\], folderPath, options? )
-
+## saveFiles
 The goal of this function is to save the given files in the given folder via the Cozy API.
 
 - `files` is an array of `{ fileurl, filename }` :
@@ -120,20 +219,128 @@ in standalone mode, the main path is the path of the connector.
   already been downloaded, on the next run of the connector, it will be able to download some more
   files, and so on. If you want the timeout to be in 10s, do `Date.now() + 10*1000`. You can try it in the previous code.
 
-### addData ( entries, doctype )
+<a name="baseKonnector"></a>
 
-Creates the records in the given doctype.
+## baseKonnector
+The class from which all the connectors must inherit.
+It takes a fetch function in parameter that must return a `Promise`.
 
-### saveBills ( entries, folderPath, options )
+**Kind**: global class  
 
-Combines the features of `saveFiles`, `filterData`, `addData` and  `linkBankOperations`. Will create `io.cozy.bills` objects. The default deduplication keys are `['date', 'amount', 'vendor']`.
+* [baseKonnector](#baseKonnector)
+    * [new baseKonnector()](#new_baseKonnector_new)
+    * [.saveAccountData(data, options)](#baseKonnector+saveAccountData) ⇒ <code>Promise</code>
+    * [.terminate(message)](#baseKonnector+terminate)
 
-`options` is passed directly to `saveFiles`, `filterData`, `addData` and `linkBankOperations`.
+<a name="new_baseKonnector_new"></a>
 
-### linkBankOperations ( entries, doctype, fields, options = {} )
+### new baseKonnector()
+Its role is twofold :
 
-This function will soon move to a dedicated service. You should not use it.
-The goal of this function is to find links between bills and bank operations.
+- Make the link between account data and konnector
+- Handle errors
+
+```
+this.terminate('LOGIN_FAILED')
+```
+
+**Example**  
+```
+const { BaseKonnector } = require('cozy-konnector-libs')
+
+module.exports = new BaseKonnector(function fetch () {
+ // use this to access the instance of the konnector to
+ // store any information that needs to be passed to
+ // different stages of the konnector
+})
+```
+<a name="baseKonnector+saveAccountData"></a>
+
+### baseKonnector.saveAccountData(data, options) ⇒ <code>Promise</code>
+Saves data to the account that is passed to the konnector.
+Use it to persist data that needs to be passed to each
+konnector run.
+
+By default, the data is merged to the remote data, use
+`options.merge = false` to overwrite the data.
+
+The data is saved under the `.data` attribute of the cozy
+account.
+
+**Kind**: instance method of [<code>baseKonnector</code>](#baseKonnector)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| data | <code>object</code> | Attributes to be merged |
+| options | <code>object</code> | { merge: true|false } |
+
+<a name="baseKonnector+terminate"></a>
+
+### baseKonnector.terminate(message)
+Send a special error code which is interpreted by the cozy stack to terminate the execution of the
+connector now
+
+**Kind**: instance method of [<code>baseKonnector</code>](#baseKonnector)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| message | <code>string</code> | The error code to be saved as connector result see [docs/ERROR_CODES.md] |
+
+<a name="LOGIN_FAILED"></a>
+
+## LOGIN_FAILED : <code>String</code>
+The konnector could not login
+
+**Kind**: global constant  
+<a name="NOT_EXISTING_DIRECTORY"></a>
+
+## NOT_EXISTING_DIRECTORY : <code>String</code>
+The folder specified as folder_to_save does not exist (checked by BaseKonnector)
+
+**Kind**: global constant  
+<a name="VENDOR_DOWN"></a>
+
+## VENDOR_DOWN : <code>String</code>
+The vendor's website is down
+
+**Kind**: global constant  
+<a name="USER_ACTION_NEEDED"></a>
+
+## USER_ACTION_NEEDED : <code>String</code>
+There was an unexpected error, please take a look at the logs to know what happened
+
+**Kind**: global constant  
+<a name="log"></a>
+
+## log(type, message, label, namespace)
+Use it to log messages in your konnector. Typical types are
+
+- `debug`
+- `warning`
+- `info`
+- `error`
+- `ok`
+
+**Kind**: global function  
+
+| Param | Type |
+| --- | --- |
+| type | <code>string</code> | 
+| message | <code>string</code> | 
+| label | <code>string</code> | 
+| namespace | <code>string</code> | 
+
+**Example**  
+They will be colored in development mode. In production mode, those logs are formatted in JSON to be interpreted by the stack and possibly sent to the client. `error` will stop the konnector.
+
+```js
+logger = log('my-namespace')
+logger('debug', '365 bills')
+// my-namespace : debug : 365 bills
+logger('info', 'Page fetched')
+// my-namespace : info : Page fetched
+```
+
 
 ### ⚠ Permissions
 

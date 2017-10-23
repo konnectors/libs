@@ -1,3 +1,32 @@
+/**
+ * This is a function which returns an instance of
+ * [request-promise](https://www.npmjs.com/package/request-promise) initialized with
+ * defaults often used in connector development.
+ *
+ * ```js
+ * // Showing defaults
+ * req = request({
+ *   cheerio: false,
+ *   jar: true,
+ *   json: true
+ * })
+ * ```
+ *
+ * - `cheerio`  will parse automatically the `response.body` in a cheerio instance
+ *
+ * ```js
+ * req = request({ cheerio: true })
+ * req('http://github.com', $ => {
+ *   const repos = $('#repo_listing .repo')
+ * })
+ * ```
+ *
+ * - `jar` is passed to `request` options. Remembers cookies for future use.
+ * - `json` will parse the `response.body` as JSON
+ *
+ * @module request
+ */
+
 let request = require('request-promise')
 const requestdebug = require('request-debug')
 const log = require('./logger').namespace('request')

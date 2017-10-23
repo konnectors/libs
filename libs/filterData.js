@@ -1,3 +1,14 @@
+/**
+ * Used not to duplicate data.
+ *
+ * * `options` :
+ *    - `keys` : List of keys used to check that two items are the same. By default it is set to `['id']'.
+ *    - `index` : Return value returned by `cozy.data.defineIndex`, the default will correspond to all documents of the selected doctype.
+ *    - `selector` : Mango request to get records. Default is built from the keys `{selector: {_id: {"$gt": null}}}` to get all the records.
+ *
+ * @module filterData
+ */
+
 const bluebird = require('bluebird')
 const log = require('./logger').namespace('filterData')
 
