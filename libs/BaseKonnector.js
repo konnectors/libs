@@ -4,7 +4,33 @@ const cozy = require('./cozyclient')
 const log = require('./logger').namespace('BaseKonnector')
 const Secret = require('./Secret')
 
-module.exports = class baseKonnector {
+/**
+ * @class
+ * The class from which all the connectors must inherit.
+ * It takes a fetch function in parameter that must return a `Promise`.
+ *
+ * @example
+ * ```
+ * const { BaseKonnector } = require('cozy-konnector-libs')
+ *
+ * module.exports = new BaseKonnector(function fetch () {
+ *  // use this to access the instance of the konnector to
+ *  // store any information that needs to be passed to
+ *  // different stages of the konnector
+ * })
+ * ```
+ *
+ * @description
+ * Its role is twofold :
+ *
+ * - Make the link between account data and konnector
+ * - Handle errors
+ *
+ * ```
+ * this.terminate('LOGIN_FAILED')
+ * ```
+ */
+class baseKonnector {
   constructor (fetch) {
     if (typeof fetch === 'function') this.fetch = fetch.bind(this)
     this.init()
@@ -69,9 +95,9 @@ module.exports = class baseKonnector {
    * The data is saved under the `.data` attribute of the cozy
    * account.
    *
-   * @param  {[type]} data    - Attributes to be merged
-   * @param  {[type]} options - { merge: true|false }
-   * @return {[type]}         - Promise
+   * @param  {object} data    - Attributes to be merged
+   * @param  {object} options - { merge: true|false }
+   * @return {Promise}
    */
   saveAccountData (data, options) {
     options = options || {}
@@ -90,10 +116,10 @@ module.exports = class baseKonnector {
   }
 
   /**
-   * Send a special which is interpreted by the cozy stack to terminate the execution of the
+   * Send a special error code which is interpreted by the cozy stack to terminate the execution of the
    * connector now
    *
-   * @param  {[type]} message - The error code to be saved as connector result see [doc/ERROR_CODES.md]
+   * @param  {string} message - The error code to be saved as connector result see [docs/ERROR_CODES.md]
    */
   terminate (message) {
     // The error log is also sent to be compatible with older versions of the cozy stack
@@ -102,3 +128,5 @@ module.exports = class baseKonnector {
     log('critical', message)
   }
 }
+
+module.exports = baseKonnector

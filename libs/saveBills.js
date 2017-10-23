@@ -1,3 +1,13 @@
+/**
+ * Combines the features of `saveFiles`, `filterData`, `addData` and  `linkBankOperations`.
+ * Will create `io.cozy.bills` objects. The default deduplication keys are
+ * `['date', 'amount', 'vendor']`.
+ *
+ * `options` is passed directly to `saveFiles`, `filterData`, `addData` and `linkBankOperations`.
+ *
+ *  @module  saveBills
+ */
+
 const saveFiles = require('./saveFiles')
 const filterData = require('./filterData')
 const addData = require('./addData')

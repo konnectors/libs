@@ -1,3 +1,8 @@
+/**
+ * This is a [cozy-client-js](https://cozy.github.io/cozy-client-js/) instance already initialized and ready to use
+ * @module  cozy-client
+ */
+
 const {Client, MemoryStorage} = require('cozy-client-js')
 
 const getCredentials = function (environment) {

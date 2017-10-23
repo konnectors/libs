@@ -1,3 +1,8 @@
+/**
+ * Creates the records in the given doctype.
+ *
+ * @module addData
+ */
 const bluebird = require('bluebird')
 const log = require('./logger').namespace('addData')
 

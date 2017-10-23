@@ -18,6 +18,32 @@ const filterOut = function (level, type, message, label, namespace) {
   return false
 }
 
+/**
+ * Use it to log messages in your konnector. Typical types are
+ *
+ * - `debug`
+ * - `warning`
+ * - `info`
+ * - `error`
+ * - `ok`
+ *
+ *
+ * @example
+ *
+ * They will be colored in development mode. In production mode, those logs are formatted in JSON to be interpreted by the stack and possibly sent to the client. `error` will stop the konnector.
+ *
+ * ```js
+ * logger = log('my-namespace')
+ * logger('debug', '365 bills')
+ * // my-namespace : debug : 365 bills
+ * logger('info', 'Page fetched')
+ * // my-namespace : info : Page fetched
+ * ```
+ * @param  {string} type
+ * @param  {string} message
+ * @param  {string} label
+ * @param  {string} namespace
+ */
 function log (type, message, label, namespace) {
   if (filterOut(level, type, message, label, namespace)) {
     return

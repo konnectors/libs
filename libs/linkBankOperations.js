@@ -1,3 +1,12 @@
+/**
+ * ### linkBankOperations ( entries, doctype, fields, options = {} )
+ *
+ * This function will soon move to a dedicated service. You should not use it.
+ * The goal of this function is to find links between bills and bank operations.
+ *
+ * @module linkBankOperations
+ */
+
 const moment = require('moment')
 const bluebird = require('bluebird')
 const DOCTYPE = 'io.cozy.bank.operations'
