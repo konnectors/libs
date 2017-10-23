@@ -97,6 +97,7 @@ module.exports = class baseKonnector {
    */
   terminate (message) {
     // The error log is also sent to be compatible with older versions of the cozy stack
+    // For version of the stack older than 18bcbd5865a46026de6f794f661d83d5d87a3dbf
     log('error', message)
     log('critical', message)
   }
