@@ -19,6 +19,22 @@ const searchOpts = {
   maxDateDelta: 15
 }
 
+const padLeft = function (v, s, l) {
+  let r = v + ''
+  while (r.length < l) {
+    r = s + r
+  }
+  return r
+}
+
+const createUTCDate = function (y, m, d) {
+  y = padLeft(y, '0', 4)
+  m = padLeft(m, '0', 2)
+  d = padLeft(d, '0', 2)
+
+  return new Date(`${y}-${m}-${d}T00:00:00.000Z`)
+}
+
 beforeEach(function () {
   cozyClient.data.updateAttributes.mockReset()
   cozyClient.data.updateAttributes.mockReturnValue(Promise.resolve({}))
@@ -26,7 +42,7 @@ beforeEach(function () {
 
 test('fetchNeighboringOperations', function () {
   const bill = {
-    date: new Date(2017, 10, 12)
+    date: createUTCDate(2017, 11, 12)
   }
   const INDEX = 'index'
   const linker = new Linker(cozyClient)
@@ -94,12 +110,12 @@ test('linkBankOperations match operations to bills', function () {
   const bills = [
     {
       amount: -30,
-      date: new Date(2017, 10, 12),
+      date: createUTCDate(2017, 11, 12),
       _id: 'b1'
     },
     {
       amount: -120,
-      date: new Date(2017, 10, 10),
+      date: createUTCDate(2017, 11, 10),
       fileobject: {
         _id: 'f2'
       },
@@ -138,7 +154,7 @@ test('findReimbursedOperation', function () {
     amount: 20,
     originalAmount: 100,
     type: 'health_costs',
-    originalDate: new Date(2017, 10, 5)
+    originalDate: createUTCDate(2017, 11, 5)
   }
   const bill2 = { ...bill, isRefund: false } // not refund, cannot be a reimbursement
   const bill3 = { ...bill, type: 'phone' } // is not a reimbursable type
@@ -156,7 +172,7 @@ test('findReimbursedOperation', function () {
     {
       amount: -100,
       label: 'Visite chez le médecin',
-      date: new Date(2017, 10, 5),
+      date: createUTCDate(2017, 11, 5),
       _id: 'o5'
     }
   ]
@@ -178,8 +194,8 @@ test('linkBankOperations match operations to reimbursements bills', function () 
       amount: 5,
       originalAmount: 20,
       type: 'health_costs',
-      originalDate: new Date(2017, 10, 13),
-      date: new Date(2017, 10, 15),
+      originalDate: createUTCDate(2017, 11, 13),
+      date: createUTCDate(2017, 11, 15),
       isRefund: true,
       _id: 'b1'
     },
@@ -187,7 +203,7 @@ test('linkBankOperations match operations to reimbursements bills', function () 
     // Facture SFR
     {
       amount: -120,
-      date: new Date(2017, 10, 10),
+      date: createUTCDate(2017, 11, 10),
       _id: 'b2'
     }
   ]
@@ -197,34 +213,34 @@ test('linkBankOperations match operations to reimbursements bills', function () 
       amount: -20,
       label: 'Visite chez le médecin',
       _id: 'o1',
-      date: new Date(2017, 10, 13)
+      date: createUTCDate(2017, 11, 13)
     },
     {
       amount: 5,
       label: 'Remboursement CPAM',
       _id: 'o2',
-      date: new Date(2017, 10, 15)
+      date: createUTCDate(2017, 11, 15)
     },
     {
       amount: -120,
       label: 'Facture SFR',
       _id: 'o3',
-      date: new Date(2017, 10, 8)
+      date: createUTCDate(2017, 11, 8)
     },
     {
       amount: -30,
       label: 'Facture SFR',
       _id: 'o4',
-      date: new Date(2017, 10, 7)
+      date: createUTCDate(2017, 11, 7)
     },
     {
       amount: -80,
       label: "Matériel d'escalade",
       _id: 'o5',
-      date: new Date(2017, 10, 7)
+      date: createUTCDate(2017, 11, 7)
     },
-    { amount: -5.5, label: 'Burrito', _id: 'o6', date: new Date(2017, 10, 5) },
-    { amount: -2.6, label: 'Salade', _id: 'o7', date: new Date(2017, 10, 6) }
+    { amount: -5.5, label: 'Burrito', _id: 'o6', date: createUTCDate(2017, 11, 5) },
+    { amount: -2.6, label: 'Salade', _id: 'o7', date: createUTCDate(2017, 11, 6) }
   ]
 
   cozyClient.data.defineIndex.mockReturnValue(Promise.resolve(INDEX))
@@ -244,7 +260,7 @@ test('linkBankOperations match operations to reimbursements bills', function () 
             amount: -20,
             label: 'Visite chez le médecin',
             _id: 'o1',
-            date: new Date('2017-11-12T23:00:00.000Z')
+            date: createUTCDate(2017, 11, 13)
           }
         ]
       },
@@ -254,7 +270,7 @@ test('linkBankOperations match operations to reimbursements bills', function () 
             amount: -120,
             label: 'Facture SFR',
             _id: 'o3',
-            date: new Date('2017-11-07T23:00:00.000Z')
+            date: createUTCDate(2017, 11, 8)
           }
         ],
         reimbursed: []
