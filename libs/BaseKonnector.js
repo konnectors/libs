@@ -31,17 +31,47 @@ const Secret = require('./Secret')
  * ```
  */
 class baseKonnector {
+  /**
+   * Constructor
+   *
+   * @param  {function} fetch    - Function to be run automatically after account data is fetched.
+   * This function will be binded to the current connector.
+   *
+   * If not fetch function is given. The connector will have to handle itself it's own exection and
+   * error handling
+   */
   constructor (fetch) {
-    if (typeof fetch === 'function') this.fetch = fetch.bind(this)
-    this.init()
-    .then(requiredFields => this.fetch(requiredFields))
-    .then(() => log('info', 'The connector has been run'))
-    .catch(err => {
-      log('warn', 'Error caught by BaseKonnector')
-      this.terminate(err.message || err)
-    })
+    if (typeof fetch === 'function') {
+      this.fetch = fetch.bind(this)
+
+      return this.init()
+      .then(requiredFields => this.fetch(requiredFields))
+      .then(() => log('info', 'The connector has been run'))
+      .then(this.end)
+      .catch(this.fail)
+    }
   }
 
+  /**
+   * Hook called when the connector is ended
+   */
+  end () {
+    log('info', 'The connector has been run')
+  }
+
+  /**
+   * Hook called when the connector fails
+   */
+  fail (err) {
+    log('warn', 'Error caught by BaseKonnector')
+    this.terminate(err.message || err)
+  }
+
+  /**
+   * Initializes the current connector with data comming from the associated account
+   *
+   * @return {Promise} with the fields as an object
+   */
   init () {
     const cozyFields = JSON.parse(process.env.COZY_FIELDS)
     log('debug', cozyFields, 'cozyFields in fetch')

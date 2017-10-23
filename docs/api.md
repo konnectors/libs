@@ -228,13 +228,16 @@ It takes a fetch function in parameter that must return a `Promise`.
 **Kind**: global class  
 
 * [baseKonnector](#baseKonnector)
-    * [new baseKonnector()](#new_baseKonnector_new)
+    * [new baseKonnector(fetch)](#new_baseKonnector_new)
+    * [.end()](#baseKonnector+end)
+    * [.fail()](#baseKonnector+fail)
+    * [.init()](#baseKonnector+init) ⇒ <code>Promise</code>
     * [.saveAccountData(data, options)](#baseKonnector+saveAccountData) ⇒ <code>Promise</code>
     * [.terminate(message)](#baseKonnector+terminate)
 
 <a name="new_baseKonnector_new"></a>
 
-### new baseKonnector()
+### new baseKonnector(fetch)
 Its role is twofold :
 
 - Make the link between account data and konnector
@@ -243,6 +246,11 @@ Its role is twofold :
 ```
 this.terminate('LOGIN_FAILED')
 ```
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| fetch | <code>function</code> | Function to be run automatically after account data is fetched. This function will be binded to the current connector. If not fetch function is given. The connector will have to handle itself it's own exection and error handling |
 
 **Example**  
 ```
@@ -254,6 +262,25 @@ module.exports = new BaseKonnector(function fetch () {
  // different stages of the konnector
 })
 ```
+<a name="baseKonnector+end"></a>
+
+### baseKonnector.end()
+Hook called when the connector is ended
+
+**Kind**: instance method of [<code>baseKonnector</code>](#baseKonnector)  
+<a name="baseKonnector+fail"></a>
+
+### baseKonnector.fail()
+Hook called when the connector fails
+
+**Kind**: instance method of [<code>baseKonnector</code>](#baseKonnector)  
+<a name="baseKonnector+init"></a>
+
+### baseKonnector.init() ⇒ <code>Promise</code>
+Initializes the current connector with data comming from the associated account
+
+**Kind**: instance method of [<code>baseKonnector</code>](#baseKonnector)  
+**Returns**: <code>Promise</code> - with the fields as an object  
 <a name="baseKonnector+saveAccountData"></a>
 
 ### baseKonnector.saveAccountData(data, options) ⇒ <code>Promise</code>
