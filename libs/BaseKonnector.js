@@ -43,13 +43,15 @@ class baseKonnector {
   constructor (fetch) {
     if (typeof fetch === 'function') {
       this.fetch = fetch.bind(this)
-
-      return this.init()
-      .then(requiredFields => this.fetch(requiredFields))
-      .then(() => log('info', 'The connector has been run'))
-      .then(this.end)
-      .catch(this.fail)
+      return this.run()
     }
+  }
+
+  run () {
+    return this.init()
+    .then(requiredFields => this.fetch(requiredFields))
+    .then(this.end)
+    .catch(this.fail)
   }
 
   /**
