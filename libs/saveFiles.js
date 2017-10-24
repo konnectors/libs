@@ -56,6 +56,7 @@ const downloadEntry = function (entry, folderPath) {
       })
     })
     .then(fileobject => {
+      // This allows us to have the warning message at the first run
       checkMimeWithPath(fileobject.attributes.mime, fileobject.attributes.name)
       checkFileSize(fileobject)
       return fileobject
