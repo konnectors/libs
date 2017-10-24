@@ -57,6 +57,7 @@ const downloadEntry = function (entry, folderPath) {
     })
     .then(fileobject => {
       checkMimeWithPath(fileobject.attributes.mime, fileobject.attributes.name)
+      checkFileSize(fileobject)
       return fileobject
     })
     .then(fileobject => {
@@ -81,9 +82,9 @@ const saveEntry = function (entry, options) {
       // check that the extension and mime type of the existing file in cozy match
       // if this is not the case, we redownload it
       const mime = file.attributes.mime
-      if (!checkMimeWithPath(mime, filepath)) {
+      if (!checkMimeWithPath(mime, filepath) || !checkFileSize(file)) {
         return cozy.files.trashById(file._id)
-        .then(() => Promise.reject(new Error('BAD_MIME_TYPE')))
+        .then(() => Promise.reject(new Error('BAD_DOWNLOADED_FILE')))
       }
     })
     .then(() => true, () => false)
@@ -92,7 +93,7 @@ const saveEntry = function (entry, options) {
         return entry
       } else {
         log('debug', entry)
-        log('debug', `File ${filepath} does not exist yet`)
+        log('debug', `File ${filepath} does not exist yet or is not valid`)
         return downloadEntry(entry, options.folderPath)
       }
     })
@@ -148,6 +149,15 @@ function getFileName (entry) {
 
 function sanitizeFileName (filename) {
   return filename.replace(/^\.+$/, '').replace(/[/?<>\\:*|":]/g, '')
+}
+
+function checkFileSize (fileobject) {
+  if (fileobject.attributes.size === 0) {
+    log('warn', `${fileobject.attributes.name} is empty`)
+    log('warn', 'BAD_FILE_SIZE')
+    return false
+  }
+  return true
 }
 
 function checkMimeWithPath (mime, filepath) {
