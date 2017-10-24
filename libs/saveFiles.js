@@ -30,6 +30,8 @@ const path = require('path')
 const request = require('./request')
 const rq = request()
 const log = require('./logger').namespace('saveFiles')
+const cozy = require('./cozyclient')
+const mimetypes = require('mime-types')
 
 const sanitizeEntry = function (entry) {
   delete entry.requestOptions
@@ -37,8 +39,6 @@ const sanitizeEntry = function (entry) {
 }
 
 const downloadEntry = function (entry, folderPath) {
-  const cozy = require('./cozyclient')
-
   const reqOptions = Object.assign(
     {
       uri: entry.fileurl,
@@ -56,15 +56,18 @@ const downloadEntry = function (entry, folderPath) {
       })
     })
     .then(fileobject => {
+      checkMimeWithPath(fileobject.attributes.mime, fileobject.attributes.name)
+      checkFileSize(fileobject)
+      return fileobject
+    })
+    .then(fileobject => {
       entry.fileobject = fileobject
       return entry
     })
 }
 
 const saveEntry = function (entry, options) {
-  const cozy = require('./cozyclient')
-
-  if (!entry.fileurl && !entry.requestOptions) return false
+  if (!entry.fileurl && !entry.requestOptions) return entry
 
   if (options.timeout && Date.now() > options.timeout) {
     const remainingTime = Math.floor((options.timeout - Date.now()) / 1000)
@@ -75,13 +78,22 @@ const saveEntry = function (entry, options) {
   const filepath = path.join(options.folderPath, getFileName(entry))
   return cozy.files
     .statByPath(filepath)
+    .then(file => {
+      // check that the extension and mime type of the existing file in cozy match
+      // if this is not the case, we redownload it
+      const mime = file.attributes.mime
+      if (!checkMimeWithPath(mime, filepath) || !checkFileSize(file)) {
+        return cozy.files.trashById(file._id)
+        .then(() => Promise.reject(new Error('BAD_DOWNLOADED_FILE')))
+      }
+    })
     .then(() => true, () => false)
     .then(fileExists => {
       if (fileExists) {
         return entry
       } else {
         log('debug', entry)
-        log('debug', `File ${filepath} does not exist yet`)
+        log('debug', `File ${filepath} does not exist yet or is not valid`)
         return downloadEntry(entry, options.folderPath)
       }
     })
@@ -137,4 +149,23 @@ function getFileName (entry) {
 
 function sanitizeFileName (filename) {
   return filename.replace(/^\.+$/, '').replace(/[/?<>\\:*|":]/g, '')
+}
+
+function checkFileSize (fileobject) {
+  if (fileobject.attributes.size === 0) {
+    log('warn', `${fileobject.attributes.name} is empty`)
+    log('warn', 'BAD_FILE_SIZE')
+    return false
+  }
+  return true
+}
+
+function checkMimeWithPath (mime, filepath) {
+  const extension = path.extname(filepath).substr(1)
+  if (extension && mime && mimetypes.lookup(extension) !== mime) {
+    log('warn', `${filepath} and ${mime} do not correspond`)
+    log('warn', 'BAD_MIME_TYPE')
+    return false
+  }
+  return true
 }
