@@ -4,6 +4,8 @@ const log = require('../libs/logger').namespace('cozy-client-js-stub')
 const uuid = require('uuid/v5')
 const sha1 = require('uuid/lib/sha1')
 const bytesToUuid = require('uuid/lib/bytesToUuid')
+const mimetypes = require('mime-types')
+
 let fixture = {}
 const FIXTURE_PATH = path.resolve('fixture.json')
 if (fs.existsSync(FIXTURE_PATH)) {
@@ -88,7 +90,14 @@ module.exports = {
 
         file.on('end', () => {
           log('info', `File ${finalPath} created`)
-          resolve({_id: options.name})
+          const extension = path.extname(options.name).substr(1)
+          resolve({
+            _id: options.name,
+            attributes: {
+              mime: mimetypes.lookup(extension),
+              name: options.name
+            }
+          })
         })
 
         writeStream.on('error', err => {
