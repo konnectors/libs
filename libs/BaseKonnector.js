@@ -51,7 +51,7 @@ class baseKonnector {
     return this.init()
     .then(requiredFields => this.fetch(requiredFields))
     .then(this.end)
-    .catch(this.fail)
+    .catch(this.fail.bind(this))
   }
 
   /**
