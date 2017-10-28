@@ -47,7 +47,7 @@ function onRegistered (client, url) {
 function authenticate () {
   if (fs.existsSync(tokenPath)) {
     log('debug', 'token file already present')
-    return Promise.resolve(JSON.parse(fs.readFileSync(tokenPath)))
+    return Promise.resolve({creds: JSON.parse(fs.readFileSync(tokenPath)), scopes})
   } else {
     const cozy = new Client({
       cozyURL,
@@ -57,7 +57,7 @@ function authenticate () {
           redirectURI: 'http://localhost:3333/do_access',
           softwareID: 'foobar',
           clientName: 'konnector', // should be the connector name (package.json's name ?)
-          scopes: scopes
+          scopes
         },
         onRegistered
       }
@@ -66,7 +66,7 @@ function authenticate () {
     return cozy.authorize()
       .then((creds) => {
         fs.writeFileSync(tokenPath, JSON.stringify(creds))
-        return creds
+        return {creds, scopes}
       })
   }
 }
