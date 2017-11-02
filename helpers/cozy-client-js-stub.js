@@ -51,7 +51,7 @@ module.exports = {
     },
     find (doctype, id) {
       // Find the doc in the fixture
-      // exeption for "io.cozy.accounts" doctype where we return env_fields.json content
+      // exeption for "io.cozy.accounts" doctype where we return konnector-dev-config.json content
       let result = null
       if (doctype === 'io.cozy.accounts') {
         const config = require('./init-konnector-config')()
