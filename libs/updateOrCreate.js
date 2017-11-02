@@ -15,14 +15,14 @@ const bluebird = require('bluebird')
 const log = require('./logger').namespace('updateOrCreate')
 const cozy = require('./cozyclient')
 
-module.exports = (entries = [], doctype, filters = []) => {
+module.exports = (entries = [], doctype, matchingAttributes = []) => {
   return cozy.data.findAll(doctype)
     .then(existings => bluebird.mapSeries(entries, entry => {
       log('debug', entry)
       // try to find a corresponding existing element
       const toUpdate = existings.find(doc =>
-        filters.reduce((good, filter) =>
-          good && doc[filter] === entry[filter]
+        matchingAttributes.reduce((isMatching, matchingAttribute) =>
+          isMatching && doc[matchingAttribute] === entry[matchingAttribute]
         , true)
       )
 
