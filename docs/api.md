@@ -84,6 +84,19 @@ files, and so on. If you want the timeout to be in 10s, do <code>Date.now() + 10
 </li>
 </ul>
 </dd>
+<dt><a href="#module_updateOrCreate">updateOrCreate</a></dt>
+<dd><p>The goal of this function is create or update the given entries according to if they already
+exist in the cozy or not</p>
+<ul>
+<li><p><code>entries</code> is an array of objects with any attributes :</p>
+</li>
+<li><p><code>doctype</code> (string) is the cozy doctype where the entries should be saved</p>
+</li>
+<li><p><code>filters</code> (array) is the list of attributes in each entry should be used to check if an entry
+is already saved in the cozy</p>
+</li>
+</ul>
+</dd>
 </dl>
 
 ## Classes
@@ -218,6 +231,19 @@ in standalone mode, the main path is the path of the connector.
   cleanly if the timeout is not too long. And since it is really fast to check that a file has
   already been downloaded, on the next run of the connector, it will be able to download some more
   files, and so on. If you want the timeout to be in 10s, do `Date.now() + 10*1000`. You can try it in the previous code.
+
+<a name="module_updateOrCreate"></a>
+
+## updateOrCreate
+The goal of this function is create or update the given entries according to if they already
+exist in the cozy or not
+
+- `entries` is an array of objects with any attributes :
+
+- `doctype` (string) is the cozy doctype where the entries should be saved
+
+- `filters` (array) is the list of attributes in each entry should be used to check if an entry
+  is already saved in the cozy
 
 <a name="baseKonnector"></a>
 

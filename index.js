@@ -10,6 +10,7 @@ module.exports = {
   linkBankOperations: require('./libs/linkBankOperations'),
   addData: require('./libs/addData'),
   filterData: require('./libs/filterData'),
+  updateOrCreate: require('./libs/updateOrCreate'),
   request: require('./libs/request'),
   retry: require('bluebird-retry')
 }
