@@ -8,7 +8,7 @@ State of the connectors in Cozy V3
 | Bouygues Telecom Mobile | [cozy](https://github.com/cozy/cozy-konnector-bouyguestelecom)            | PDF  | doubleface  | :white_check_mark: |
 | Trainline               | [cozy](https://github.com/cozy/cozy-konnector-trainline)                  | PDF  | doubleface  | :white_check_mark: |
 | Digiposte               | [cozy](https://github.com/cozy/cozy-konnector-digiposte)                  | PDF  | doubleface  | :white_check_mark: |
-| EDF                     | [cozy](https://gitlab.cozycloud.cc/labs/cozy-konnector-edf)               | PDF  | ?           | :x: (blacklist)    |
+| EDF                     | [cozy](https://gitlab.cozycloud.cc/labs/cozy-konnector-edf)               | PDF  | ptbrowne    | :white_check_mark: |
 | Free                    | [cozy](https://github.com/cozy/cozy-konnector-free)                       | PDF  | ?           | :white_check_mark: |
 | Free Mobile             | [cozy](https://github.com/cozy/cozy-konnector-free-mobile)                | PDF  | ?           | :white_check_mark: |
 | Harmonie Mutuelle       | [cozy](https://github.com/cozy/cozy-konnector-harmonie)                   | PDF  | ?           | :white_check_mark: |
