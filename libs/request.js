@@ -29,7 +29,6 @@
 
 let request = require('request-promise')
 const requestdebug = require('request-debug')
-const log = require('./logger').namespace('request')
 
 let singleton = null
 
@@ -41,12 +40,7 @@ module.exports = function (options = {}) {
     json: true,
     cheerio: false,
     strictSSL: false,
-    headers: {
-      // a lot of web service do not want to be called by robots and then check the user agent to
-      // be sure they are called by a browser. This user agent works most of the time.
-      'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:36.0) ' +
-                    'Gecko/20100101 Firefox/36.0'
-    },
+    headers: {},
     followAllRedirects: true
   }
 
@@ -63,6 +57,10 @@ module.exports = function (options = {}) {
   requestOptions.strictSSL = options.strictSSL
 
   if (options.cheerio) {
+    // a lot of web service do not want to be called by robots and then check the user agent to
+    // be sure they are called by a browser. This user agent works most of the time.
+    requestOptions.headers['User-Agent'] = 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:36.0) ' +
+                                           'Gecko/20100101 Firefox/36.0'
     requestOptions.transform = function (body, response, resolveWithFullResponse) {
       let result = require('cheerio').load(body)
 
@@ -84,8 +82,6 @@ module.exports = function (options = {}) {
   }
 
   request = request.defaults(requestOptions)
-
-  log('debug', requestOptions, 'Getting a new request instance with the following options')
 
   return request
 }
