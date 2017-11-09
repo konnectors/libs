@@ -38,22 +38,29 @@ const sanitizeEntry = function (entry) {
   return entry
 }
 
-const downloadEntry = function (entry, folderPath) {
-  const reqOptions = Object.assign(
-    {
-      uri: entry.fileurl,
-      method: 'GET',
-      jar: true
-    },
-    entry.requestOptions
-  )
+const downloadEntry = function (entry, options) {
+  const reqOptions = Object.assign({
+    uri: entry.fileurl,
+    method: 'GET',
+    jar: true
+  }, entry.requestOptions)
+
   return cozy.files
-    .statByPath(folderPath)
+    .statByPath(options.folderPath)
     .then(folder => {
-      return cozy.files.create(rq(reqOptions), {
+      let filePromise = rq(reqOptions)
+      const createFileOptions = {
         name: getFileName(entry),
-        dirID: folder._id
-      })
+        dirID: folder._id,
+        contentType: options.contentType
+      }
+      if (options.fileStreamProcess) {
+        return filePromise
+        .then(data => options.fileStreamProcess(data))
+        .then(data => cozy.files.create(data, createFileOptions))
+      }
+
+      return cozy.files.create(filePromise, createFileOptions)
     })
     .then(fileobject => {
       // This allows us to have the warning message at the first run
@@ -95,7 +102,7 @@ const saveEntry = function (entry, options) {
       } else {
         log('debug', entry)
         log('debug', `File ${filepath} does not exist yet or is not valid`)
-        return downloadEntry(entry, options.folderPath)
+        return downloadEntry(entry, options)
       }
     })
     .then(sanitizeEntry)
@@ -103,11 +110,7 @@ const saveEntry = function (entry, options) {
       return options.postProcess ? options.postProcess(entry) : entry
     })
     .catch(err => {
-      log(
-        'error',
-        err.message,
-        `Error caught while trying to save the file ${entry.fileurl}`
-      )
+      log('error', err.message, `Error caught while trying to save the file ${entry.fileurl}`)
       return entry
     })
 }
@@ -126,7 +129,9 @@ module.exports = (entries, fields, options = {}) => {
   const saveOptions = {
     folderPath: fields.folderPath,
     timeout: options.timeout,
-    postProcess: options.postProcess
+    postProcess: options.postProcess,
+    fileStreamProcess: options.fileStreamProcess,
+    contentType: options.contentType
   }
   return bluebird
     .mapSeries(entries, entry => saveEntry(entry, saveOptions))
