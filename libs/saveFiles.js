@@ -54,9 +54,9 @@ const downloadEntry = function (entry, options) {
         dirID: folder._id,
         contentType: options.contentType
       }
-      if (options.fileStreamProcess) {
+      if (options.postProcessFile) {
         return filePromise
-        .then(data => options.fileStreamProcess(data))
+        .then(data => options.postProcessFile(data))
         .then(data => cozy.files.create(data, createFileOptions))
       }
 
@@ -130,7 +130,7 @@ module.exports = (entries, fields, options = {}) => {
     folderPath: fields.folderPath,
     timeout: options.timeout,
     postProcess: options.postProcess,
-    fileStreamProcess: options.fileStreamProcess,
+    postProcessFile: options.postProcessFile,
     contentType: options.contentType
   }
   return bluebird
