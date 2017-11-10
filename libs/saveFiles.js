@@ -54,6 +54,8 @@ const downloadEntry = function (entry, options) {
         dirID: folder._id,
         contentType: options.contentType
       }
+      // we have to do this since the result of filePromise is not a stream and cannot be taken by
+      // cozy.files.create
       if (options.postProcessFile) {
         return filePromise
         .then(data => options.postProcessFile(data))
