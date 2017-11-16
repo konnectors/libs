@@ -1,0 +1,3 @@
+#!/home/doubleface/.nvm/versions/node/v8.9.1/bin/node --max_old_space_size=460
+
+require(require('path').join(__dirname, '../commands', 'shell'))

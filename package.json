@@ -14,6 +14,7 @@
   "author": "doubleface",
   "license": "MIT",
   "bin": {
+    "cozy-konnector-shell": "bin/cozy-konnector-shell",
     "cozy-konnector-standalone": "bin/cozy-konnector-standalone",
     "cozy-konnector-dev": "bin/cozy-konnector-dev"
   },
