@@ -31,9 +31,12 @@ let request = require('request-promise')
 const requestdebug = require('request-debug')
 
 let singleton = null
+let requestClass = null
 
 module.exports = function (options = {}) {
   if (singleton) return singleton
+
+  if (request.Request) requestClass = request.Request
 
   const defaultOptions = {
     debug: false,
@@ -46,7 +49,12 @@ module.exports = function (options = {}) {
 
   options = Object.assign(defaultOptions, options)
 
-  if (options.debug) requestdebug(request)
+  if (options.debug) {
+    // This avoids an error message comming from request-debug
+    // see https://github.com/request/request-debug/blob/0.2.0/index.js#L15
+    if (!request.Request) request.Request = requestClass
+    requestdebug(request)
+  }
 
   const requestOptions = {}
 
