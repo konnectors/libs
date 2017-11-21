@@ -109,10 +109,11 @@ class baseKonnector {
     })
     .then(account => {
       // log('debug', account, 'account content')
-      const requiredFields = Object.assign(cozyFields.folder_to_save ? {
+      this.fields = Object.assign(cozyFields.folder_to_save ? {
         folderPath: cozyFields.folder_to_save
       } : {}, account.auth, account.oauth)
-      return requiredFields
+
+      return this.fields
     })
   }
 
