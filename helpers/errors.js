@@ -36,11 +36,18 @@ const VENDOR_DOWN = 'VENDOR_DOWN'
  */
 const USER_ACTION_NEEDED = 'USER_ACTION_NEEDED'
 
+/**
+ * There was a problem while downloading a file
+ * @type {String}
+ */
+const FILE_DOWNLOAD_FAILED = 'FILE_DOWNLOAD_FAILED'
+
 module.exports = {
   MSG: MSG,
   LOGIN_FAILED,
   NOT_EXISTING_DIRECTORY,
   VENDOR_DOWN,
   USER_ACTION_NEEDED,
+  FILE_DOWNLOAD_FAILED,
   requireTwoFactor: requireTwoFactor
 }

@@ -32,6 +32,7 @@ const rq = request()
 const log = require('./logger').namespace('saveFiles')
 const cozy = require('./cozyclient')
 const mimetypes = require('mime-types')
+const errors = require('../helpers/errors')
 
 const sanitizeEntry = function (entry) {
   delete entry.requestOptions
@@ -54,6 +55,7 @@ const downloadEntry = function (entry, options) {
         dirID: folder._id,
         contentType: options.contentType
       }
+
       // we have to do this since the result of filePromise is not a stream and cannot be taken by
       // cozy.files.create
       if (options.postProcessFile) {
@@ -112,7 +114,8 @@ const saveEntry = function (entry, options) {
       return options.postProcess ? options.postProcess(entry) : entry
     })
     .catch(err => {
-      log('error', err.message, `Error caught while trying to save the file ${entry.fileurl}`)
+      log('warn', errors.FILE_DOWNLOAD_FAILED)
+      log('warn', err.message, `Error caught while trying to save the file ${entry.fileurl}`)
       return entry
     })
 }
