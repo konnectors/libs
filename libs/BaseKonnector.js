@@ -105,10 +105,10 @@ class baseKonnector {
         log('error', err)
         log('error', `error while getting the folder path of ${folderId}`)
         this.terminate('NOT_EXISTING_DIRECTORY')
+        return {} // to avoid having an undefined account for next part
       })
     })
     .then(account => {
-      // log('debug', account, 'account content')
       this.fields = Object.assign(cozyFields.folder_to_save ? {
         folderPath: cozyFields.folder_to_save
       } : {}, account.auth, account.oauth)
