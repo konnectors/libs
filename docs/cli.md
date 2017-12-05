@@ -44,14 +44,22 @@ and run:
 npm run dev
 ```
 
-This command will register your konnector as an OAuth application to the cozy-stack. By default,
+This command will register your konnector as an OAuth application to the cozy-stack and then set the `COZY_CREDENTIALS` and `COZY_FIELDS` environment variable. By default,
 the cozy-stack is supposed to be located in http://cozy.tools:8080. If this is not your case, just
 update the COZY_URL field in [./konnector-dev-config.json].
 
 After that, your konnector is running but should not work since you did not specify any credentials to
-the target service. You can do this also in [./konnector-dev-config.json] in the "fields" section
+the target service. You can do this also in [./konnector-dev-config.json] in the "fields" section.
 
 The files are saved in the root directory of your cozy by default.
 
-As for standalone command, it is possible to add an argument to this command which tells which file to run. Default is
-./index.js
+##### Arguments
+
+```
+$ cozy-konnector-dev <file> [-t token.json] [-m manifest.webapp]
+```
+
+As for the `standalone` command, you can specify which file to run. Default is `./index.js`.
+
+- `-t`, `--token` : Specify where the token should be saved
+- `-m`, `--manifest` : Specify the manifest.path that should be used for the permissions

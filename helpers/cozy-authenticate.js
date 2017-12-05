@@ -7,14 +7,11 @@ const log = require('../libs/logger').namespace('cozy-authenticate')
 const {Client, MemoryStorage} = require('cozy-client-js')
 const manifest = require('./manifest')
 
-const manifestPath = path.resolve('manifest.konnector')
+const DEFAULT_MANIFEST_PATH = path.resolve('manifest.konnector')
+const DEFAULT_TOKEN_PATH = path.resolve('.token.json')
 
 const cozyURL = process.env.COZY_URL ? process.env.COZY_URL : 'http://cozy.tools:8080'
 log('debug', cozyURL, 'COZY_URL')
-
-const scopes = manifest.getScopes(manifestPath)
-
-const tokenPath = path.resolve('.token.json')
 
 // check if we have a token file
 // if any return a promise with the credentials
@@ -44,7 +41,8 @@ function onRegistered (client, url) {
   })
 }
 
-function authenticate () {
+function authenticate ({ manifestPath = DEFAULT_MANIFEST_PATH, tokenPath = DEFAULT_TOKEN_PATH }) {
+  const scopes = manifest.getScopes(manifestPath)
   if (fs.existsSync(tokenPath)) {
     log('debug', 'token file already present')
     return Promise.resolve({creds: JSON.parse(fs.readFileSync(tokenPath)), scopes})

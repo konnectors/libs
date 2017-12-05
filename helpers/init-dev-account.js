@@ -1,6 +1,5 @@
 'use strict'
 
-const cozy = require('../libs/cozyclient')
 const fs = require('fs')
 const path = require('path')
 const log = require('../libs/logger').namespace('init-dev-account')
@@ -12,6 +11,8 @@ module.exports = function () {
 }
 
 function ensureAccount () {
+  const cozy = require('../libs/cozyclient')
+
   return getAccountId()
     .then(id => {
       log('debug', 'Found .account file')
@@ -33,6 +34,7 @@ function getAccountId () {
 }
 
 function createAccount () {
+  const cozy = require('../libs/cozyclient')
   log('info', 'Creating a new dev account')
   return cozy.data.create('io.cozy.accounts', {
     name: 'dev_account',
