@@ -1,4 +1,4 @@
-const colors = require('colors')
+const chalk = require('chalk')
 const util = require('util')
 util.inspect.defaultOptions.maxArrayLength = null
 util.inspect.defaultOptions.depth = null
@@ -30,10 +30,10 @@ function devFormat (type, message, label, namespace) {
   }
 
   let formatlabel = label ? ` : "${label}" ` : ''
-  let formatnamespace = namespace ? colors.magenta(`${namespace}: `) : ''
+  let formatnamespace = namespace ? chalk.magenta(`${namespace}: `) : ''
 
   let color = type2color[type]
-  let formattype = color ? colors[color](type) : type
+  let formattype = color ? chalk[color](type) : type
 
   return `${formatnamespace}${formattype}${formatlabel} : ${formatmessage}`
 }
