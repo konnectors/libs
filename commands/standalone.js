@@ -7,6 +7,9 @@ process.env.COZY_FIELDS = JSON.stringify({
   folder_to_save: '.'
 })
 
+const config = require('../helpers/init-konnector-config')()
+process.env.COZY_URL = config.COZY_URL
+
 const filename = process.argv[2] || 'index.js'
 
 // assign default value of replay to bloody which cancels it
