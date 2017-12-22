@@ -43,6 +43,9 @@ function onRegistered (client, url) {
 
 function authenticate ({ manifestPath = DEFAULT_MANIFEST_PATH, tokenPath = DEFAULT_TOKEN_PATH }) {
   const scopes = manifest.getScopes(manifestPath)
+  if (!scopes.includes('io.cozy.accounts')) {
+    scopes.push('io.cozy.accounts')
+  }
   if (fs.existsSync(tokenPath)) {
     log('debug', 'token file already present')
     return Promise.resolve({creds: JSON.parse(fs.readFileSync(tokenPath)), scopes})
