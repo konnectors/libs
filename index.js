@@ -1,5 +1,7 @@
 require('./libs/error')
 
+const requestFactory = require('./libs/request')
+
 module.exports = {
   BaseKonnector: require('./libs/BaseKonnector'),
   cozyClient: require('./libs/cozyclient'),
@@ -11,6 +13,7 @@ module.exports = {
   addData: require('./libs/addData'),
   filterData: require('./libs/filterData'),
   updateOrCreate: require('./libs/updateOrCreate'),
-  request: require('./libs/request'),
+  request: requestFactory, // keep the old alias
+  requestFactory,
   retry: require('bluebird-retry')
 }
