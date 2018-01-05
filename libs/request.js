@@ -49,6 +49,8 @@ module.exports = function (options = {}) {
 
   options = Object.assign(defaultOptions, options)
 
+  if (options.cheerio === true && !options.json) options.json = false
+
   if (options.debug) {
     // This avoids an error message comming from request-debug
     // see https://github.com/request/request-debug/blob/0.2.0/index.js#L15
