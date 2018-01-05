@@ -28,7 +28,12 @@
 const bluebird = require('bluebird')
 const path = require('path')
 const request = require('./request')
-const rq = request()
+const rq = request({
+  json: false,
+  headers: {
+    'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:36.0) Gecko/20100101 Firefox/36.0'
+  }
+})
 const log = require('./logger').namespace('saveFiles')
 const cozy = require('./cozyclient')
 const mimetypes = require('mime-types')
