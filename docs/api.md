@@ -147,7 +147,7 @@ Creates the records in the given doctype.
 
 <a name="module_cozy-client"></a>
 
-## cozy-client
+## cozyClient
 This is a [cozy-client-js](https://cozy.github.io/cozy-client-js/) instance already initialized and ready to use
 
 <a name="module_filterData"></a>
