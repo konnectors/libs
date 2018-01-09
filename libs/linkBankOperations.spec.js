@@ -14,20 +14,15 @@ const matchOpts = {
   amountDelta: 0.1
 }
 
-const searchOpts = {
-  minDateDelta: 10,
-  maxDateDelta: 15
-}
-
-const padLeft = function (v, s, l) {
-  let r = v + ''
-  while (r.length < l) {
-    r = s + r
-  }
-  return r
-}
-
 const createUTCDate = function (y, m, d) {
+  const padLeft = function (v, s, l) {
+    let r = v + ''
+    while (r.length < l) {
+      r = s + r
+    }
+    return r
+  }
+
   y = padLeft(y, '0', 4)
   m = padLeft(m, '0', 2)
   d = padLeft(d, '0', 2)
@@ -35,60 +30,25 @@ const createUTCDate = function (y, m, d) {
   return new Date(`${y}-${m}-${d}T00:00:00.000Z`)
 }
 
+const searchOpts = {
+  minDateDelta: 10,
+  maxDateDelta: 15
+}
+
 beforeEach(function () {
   cozyClient.data.updateAttributes.mockReset()
   cozyClient.data.updateAttributes.mockReturnValue(Promise.resolve({}))
 })
 
-test('fetchNeighboringOperations', function () {
-  const bill = {
-    date: createUTCDate(2017, 11, 12)
-  }
-  const INDEX = 'index'
-  const linker = new Linker(cozyClient)
-  cozyClient.data.defineIndex.mockReturnValue(Promise.resolve(INDEX))
-  return linker.fetchNeighboringOperations(bill, searchOpts).then(function () {
-    expect(cozyClient.data.query).lastCalledWith(INDEX, {
-      selector: {
-        date: {
-          $gt: '2017-11-02T00:00:00.000Z',
-          $lt: '2017-11-27T00:00:00.000Z'
-        }
-      }
-    })
-  })
-})
-
-test('findMatchingOperation returns null if no operations', function () {
-  const bill = {
-    amount: 123
-  }
+test('findMatchingOperation returns undefined if no operations', () => {
+  const bill = {}
   const ops = []
-  expect(findMatchingOperation(bill, ops, matchOpts)).toBe(null)
+  expect(findMatchingOperation(bill, ops, matchOpts)).toBe(undefined)
 })
 
-test('findMatchingOperation returns a matching operation', function () {
+test('addBillToOperation', () => {
   const bill = {
-    amount: -100
-  }
-  const bill2 = { ...bill, isRefund: false }
-  const bill3 = { ...bill, amount: -200 }
-
-  const ops = [
-    { amount: -20, label: 'Billet de train' },
-    { amount: -100, label: 'Harmonie Mutuelle Remboursement' },
-    { amount: -80, label: "Matériel d'escalade" },
-    { amount: -5.5, label: 'Mexicain' },
-    { amount: -2.6, label: 'Chips' }
-  ]
-  expect(findMatchingOperation(bill, ops, matchOpts)).toBe(ops[1])
-  expect(findMatchingOperation(bill2, ops, matchOpts)).toBe(ops[1])
-  expect(findMatchingOperation(bill3, ops, matchOpts)).toBe(null)
-})
-
-test('addBillToOperation', function () {
-  const bill = {
-    amount: -110,
+    amount: 110,
     _id: 'b1'
   }
   const operation = {
@@ -103,18 +63,18 @@ test('addBillToOperation', function () {
   })
 })
 
-test('linkBankOperations match operations to bills', function () {
+test('linkBankOperations match operations to bills', () => {
   // We mock defineIndex/query so that fetchOperations returns the right operations
   const INDEX = 'index'
 
   const bills = [
     {
-      amount: -30,
+      amount: 30,
       date: createUTCDate(2017, 11, 12),
       _id: 'b1'
     },
     {
-      amount: -120,
+      amount: 120,
       date: createUTCDate(2017, 11, 10),
       fileobject: {
         _id: 'f2'
@@ -124,12 +84,12 @@ test('linkBankOperations match operations to bills', function () {
   ]
 
   const operations = [
-    { amount: -20, label: 'Billet de train', _id: 'o1' },
-    { amount: -120, label: 'Facture SFR', _id: 'o2' },
-    { amount: -30, label: 'Facture SFR', _id: 'o3' },
-    { amount: -80, label: "Matériel d'escalade", _id: 'o4' },
-    { amount: -5.5, label: 'Burrito', _id: 'o5' },
-    { amount: -2.6, label: 'Salade', _id: 'o6' }
+    { amount: -20, label: 'Billet de train', _id: 'o1', date: createUTCDate(2017, 11, 10) },
+    { amount: -120, label: 'Facture SFR', _id: 'o2', date: createUTCDate(2017, 11, 10) },
+    { amount: -30, label: 'Facture SFR', _id: 'o3', date: createUTCDate(2017, 11, 12) },
+    { amount: -80, label: "Matériel d'escalade", _id: 'o4', date: createUTCDate(2017, 11, 12) },
+    { amount: -5.5, label: 'Burrito', _id: 'o5', date: createUTCDate(2017, 11, 12) },
+    { amount: -2.6, label: 'Salade', _id: 'o6', date: createUTCDate(2017, 11, 12) }
   ]
 
   cozyClient.data.defineIndex.mockReturnValue(Promise.resolve(INDEX))
@@ -148,7 +108,7 @@ test('linkBankOperations match operations to bills', function () {
   })
 })
 
-test('findReimbursedOperation', function () {
+test('findReimbursedOperation', () => {
   const bill = {
     isRefund: true,
     amount: 20,
@@ -184,7 +144,7 @@ test('findReimbursedOperation', function () {
   expect(findReimbursedOperation(bill3, ops, matchOpts)).toBe(null)
 })
 
-test('linkBankOperations match operations to reimbursements bills', function () {
+test('linkBankOperations match operations to reimbursements bills', () => {
   // We mock defineIndex/query so that fetchOperations returns the right operations
   const INDEX = 'index'
 
@@ -202,7 +162,7 @@ test('linkBankOperations match operations to reimbursements bills', function () 
 
     // Facture SFR
     {
-      amount: -120,
+      amount: 120,
       date: createUTCDate(2017, 11, 10),
       _id: 'b2'
     }
