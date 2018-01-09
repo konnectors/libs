@@ -9,7 +9,10 @@
 
 const moment = require('moment')
 const bluebird = require('bluebird')
+
 const DOCTYPE = 'io.cozy.bank.operations'
+const DEFAULT_AMOUNT_DELTA = 0.001
+const DEFAULT_DATE_DELTA = 15
 
 const reimbursedTypes = ['health_costs']
 
@@ -221,8 +224,8 @@ module.exports = (bills, doctype, fields, options = {}) => {
     )
   }
 
-  options.amountDelta = options.amountDelta || 0.001
-  options.dateDelta = options.dateDelta || 15
+  options.amountDelta = options.amountDelta || DEFAULT_AMOUNT_DELTA
+  options.dateDelta = options.dateDelta || DEFAULT_DATE_DELTA
   options.minDateDelta = options.minDateDelta || options.dateDelta
   options.maxDateDelta = options.maxDateDelta || options.dateDelta
 
