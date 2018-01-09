@@ -90,16 +90,29 @@ class Linker {
       }
     }
 
+    const createAmountSelector = () => {
+      const amount = bill.isRefund ? bill.amount : -bill.amount
+      const min = amount - options.minAmountDelta
+      const max = amount + options.maxAmountDelta
+
+      return {
+        $gt: min,
+        $lt: max
+      }
+    }
+
     let operations = []
     const dateSelector = createDateSelector()
+    const amountSelector = createAmountSelector()
 
     const limit = 100
     const getOptions = ids => {
       const options = {
           selector: {
-            date: dateSelector
+            date: dateSelector,
+            amount: amountSelector
           },
-          sort: [{date: 'desc'}],
+          sort: [{date: 'desc'}, {amount: 'desc'}],
           limit
       }
 
