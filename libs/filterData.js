@@ -74,7 +74,7 @@ const filterData = (entries, doctype, options = {}) => {
     return entries.filter(entry => entry)
   }
 
-  return getIndex(options, doctype, keys)
+  return getIndex()
     .then(getItems)
     .then(getEntries)
     .then(formatOutput)

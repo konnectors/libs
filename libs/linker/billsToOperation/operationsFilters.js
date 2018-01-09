@@ -3,17 +3,15 @@ var isWithinRange = require('date-fns/is_within_range')
 var differenceInHours = require('date-fns/difference_in_hours')
 var { getIdentifiers, getDateRange, getAmountRange, getBillDate, getBillAmount } = require('./getterHelper')
 
+const assert = (pred, msg) => { if (!pred) { throw new Error(msg) } }
+
 export const filterByIdentifiers = (operations, identifiers) => {
-  if (!Array.isArray(operations)) {
-    throw new Error(
-      'filterByIdentifiers cannot be called without "operations" array.'
-    )
-  }
-  if (!Array.isArray(identifiers)) {
-    throw new Error(
-      'filterByIdentifiers cannot be called without "identifiers" array.'
-    )
-  }
+  assert(Array.isArray(operations),
+    'filterByIdentifiers cannot be called without "operations" array.'
+  )
+  assert(Array.isArray(identifiers),
+    'filterByIdentifiers cannot be called without "identifiers" array.'
+  )
 
   return operations.filter(operation => {
     let hasIdentifier = false
@@ -27,23 +25,15 @@ export const filterByIdentifiers = (operations, identifiers) => {
 }
 
 export const filterByDates = (operations, startDate, endDate) => {
-  if (!Array.isArray(operations)) {
-    throw new Error(
-      'filterByDates cannot be called without "operations" array.'
-    )
-  }
-  if (!(startDate instanceof Date)) {
-    log('warn', `typeof startDate: ${typeof startDate} = ${startDate}`)
-    throw new Error(
-      'filterByDates cannot be called without valid "startDate" date.'
-    )
-  }
-  if (!(endDate instanceof Date)) {
-    log('warn', `typeof endDate: ${typeof endDate} = ${endDate}`)
-    throw new Error(
-      'filterByDates cannot be called without valid "endDate" date.'
-    )
-  }
+  assert(Array.isArray(operations),
+    'filterByDates cannot be called without "operations" array.'
+  )
+  assert(startDate instanceof Date,
+    'filterByDates cannot be called without valid "startDate" date.'
+  )
+  assert(endDate instanceof Date,
+    'filterByDates cannot be called without valid "endDate" date.'
+  )
 
   return operations.filter(operation => {
     return isWithinRange(operation.date, startDate, endDate)
@@ -51,21 +41,15 @@ export const filterByDates = (operations, startDate, endDate) => {
 }
 
 export const filterByAmount = (operations, startAmount, endAmount) => {
-  if (!Array.isArray(operations)) {
-    throw new Error(
-      'filterByAmount cannot be called without "operations" array.'
-    )
-  }
-  if (!(typeof startAmount === 'number')) {
-    throw new Error(
-      'filterByAmount cannot be called without valid "startAmount" Number.'
-    )
-  }
-  if (!(typeof endAmount === 'number')) {
-    throw new Error(
-      'filterByAmount cannot be called without valid "endAmount" Number.'
-    )
-  }
+  assert(Array.isArray(operations),
+    'filterByAmount cannot be called without "operations" array.'
+  )
+  assert(typeof startAmount === 'number',
+    'filterByAmount cannot be called without valid "startAmount" Number.'
+  )
+  assert(typeof endAmount === 'number',
+    'filterByAmount cannot be called without valid "endAmount" Number.'
+  )
 
   return operations.filter(operation => {
     return operation.amount >= startAmount && operation.amount <= endAmount
@@ -74,12 +58,8 @@ export const filterByAmount = (operations, startAmount, endAmount) => {
 
 export const order = (bill, operations) => {
   // it's not possible to sort with 2 parameters, so we create a weight list
-  // with date diff & amount diff. I choise weight with 0.8 because date is more
-  // important, but this value is ramdom.
-
-  // P : donner un poid pour les dates : 0.8
-  //     comme le montant est en génral identique le paramettre est moins important
-  // = P * nombre jour + (1 - P) ecart du montant
+  // with date diff & amount diff. I choise weight with 0.7 because date is more
+  // important, but this value is random.
   const weight = 0.7
   const dateW = weight
   const amountW = 1 - weight

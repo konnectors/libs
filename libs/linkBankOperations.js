@@ -102,15 +102,14 @@ class Linker {
     }
 
     let operations = []
-    const dateSelector = createDateSelector()
-    const amountSelector = createAmountSelector()
-
+    // cozy-stack limit to 100 elements
     const limit = 100
+
     const getOptions = ids => {
       const options = {
           selector: {
-            date: dateSelector,
-            amount: amountSelector
+            date: createDateSelector(),
+            amount: createAmountSelector()
           },
           sort: [{date: 'desc'}, {amount: 'desc'}],
           limit
@@ -123,13 +122,12 @@ class Linker {
       return options
     }
 
-    // cozy-stack limit to 100 elements
     const fetchAll = (index, ids = []) => {
       return this.cozyClient.data.query(index, getOptions(ids)).then(ops => {
         operations = operations.concat(ops)
         if (ops.length === limit) {
-          const newId = ops.map(op => op._id)
-          return fetchAll(index, ids.concat(newId))
+          const newIds = ops.map(op => op._id)
+          return fetchAll(index, ids.concat(newIds))
         } else {
           return operations
         }
