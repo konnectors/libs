@@ -12,7 +12,7 @@
 const bluebird = require('bluebird')
 const log = require('./logger').namespace('filterData')
 
-module.exports = (entries, doctype, options = {}) => {
+const filterData = (entries, doctype, options = {}) => {
   const cozy = require('./cozyclient')
 
   log('debug', String(entries.length), 'Number of items before filterData')
@@ -26,17 +26,35 @@ module.exports = (entries, doctype, options = {}) => {
   //  - keys : this is the list of keys used to check that two items are the same
   const keys = options.keys ? options.keys : ['_id']
   log('debug', keys, 'keys')
-  const index = options.index ? options.index : cozy.data.defineIndex(doctype, keys)
-  return index
-  .then(i => {
+
+  const createHash = item => {
+    return keys.map(key => {
+      let result = item[key]
+      if (key === 'date') result = new Date(result)
+      return result
+    }).join('####')
+  }
+
+  const getIndex = () => {
+    const index = options.index ? options.index : cozy.data.defineIndex(doctype, keys)
+
+    return index
+  }
+
+  const getItems = index => {
+    log('debug', index, 'index')
+
     const selector = options.selector ? options.selector : keys.reduce((memo, key) => {
       memo[key] = {'$gt': null}
       return memo
     }, {})
+
     log('debug', selector, 'selector')
-    return cozy.data.query(i, {selector})
-  })
-  .then(dbitems => {
+
+    return cozy.data.query(index, {selector})
+  }
+
+  const getEntries = dbitems => {
     // create a hash for each db item
     const hashTable = dbitems.reduce((memo, dbitem) => {
       const hash = createHash(dbitem)
@@ -45,19 +63,21 @@ module.exports = (entries, doctype, options = {}) => {
     }, {})
 
     // filter out existing items
-    return bluebird.filter(entries, entry => !hashTable[createHash(entry)])
-  })
-  .then(entries => {
+    return bluebird.filter(entries, entry => {
+      return !hashTable[createHash(entry)]
+    })
+  }
+
+  const formatOutput = entries => {
     log('debug', String(entries.length), 'Number of items after filterData')
     // filter out wrong entries
     return entries.filter(entry => entry)
-  })
-
-  function createHash (item) {
-    return keys.map(key => {
-      let result = item[key]
-      if (key === 'date') result = new Date(result)
-      return result
-    }).join('####')
   }
+
+  return getIndex()
+    .then(getItems)
+    .then(getEntries)
+    .then(formatOutput)
 }
+
+module.exports = filterData

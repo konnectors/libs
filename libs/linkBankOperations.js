@@ -9,7 +9,11 @@
 
 const moment = require('moment')
 const bluebird = require('bluebird')
+const { findMatchingOperation } = require('./linker/billsToOperation')
+
 const DOCTYPE = 'io.cozy.bank.operations'
+const DEFAULT_AMOUNT_DELTA = 0.001
+const DEFAULT_DATE_DELTA = 15
 
 const reimbursedTypes = ['health_costs']
 
@@ -43,39 +47,6 @@ const getTotalReimbursements = operation => {
 }
 
 // DOES NOT NEED COZY CLIENT
-const findMatchingOperation = (bill, operations, options) => {
-  const identifiers = options.identifiers || []
-  let amount = Math.abs(bill.amount)
-
-  // By default, a bill is an expense. If it is not, it should be
-  // declared as a refund: isRefund=true.
-  if (bill.isRefund === true) amount *= -1
-
-  for (let operation of operations) {
-    let opAmount = Math.abs(operation.amount)
-
-    // By default, an bill is an expense. If it is not, it should be
-    // declared as a refund: isRefund=true.
-    if (bill.isRefund === true) opAmount *= -1
-
-    let amountDelta = Math.abs(opAmount - amount)
-
-    // Select the operation to link based on the minimal amount
-    // difference to the expected one and if the label matches one
-    // of the possible labels (identifier)
-    for (let identifier of identifiers) {
-      const hasIdentifier =
-        operation.label.toLowerCase().indexOf(identifier) >= 0
-      const similarAmount = amountDelta <= options.amountDelta
-      if (hasIdentifier && similarAmount) {
-        return operation
-      }
-    }
-  }
-  return null
-}
-
-// DOES NOT NEED COZY CLIENT
 const findReimbursedOperation = (bill, operations, options) => {
   if (!bill.isRefund) { return null }
 
@@ -102,31 +73,70 @@ const findReimbursedOperation = (bill, operations, options) => {
 }
 
 class Linker {
-  constructor (cozy) {
-    this.cozy = cozy
+  constructor (cozyClient) {
+    this.cozyClient = cozyClient
   }
 
   fetchNeighboringOperations (bill, options) {
-    if (typeof options.minDateDelta === 'undefined' || typeof options.maxDateDelta === 'undefined') {
-      return Promise.reject(new Error('Must have options.{min,max}DateDelta'))
-    }
-    let date = new Date(bill.originalDate || bill.date)
-    let startDate = moment(date).subtract(options.minDateDelta, 'days')
-    let endDate = moment(date).add(options.maxDateDelta, 'days')
+    const createDateSelector = () => {
+      const date = new Date(bill.originalDate || bill.date)
+      const startDate = moment(date).subtract(options.minDateDelta, 'days')
+      const endDate = moment(date).add(options.maxDateDelta, 'days')
 
-    // Get the operations corresponding to the date interval around the date of the bill
-    let startkey = `${startDate.format('YYYY-MM-DDT00:00:00.000')}Z`
-    let endkey = `${endDate.format('YYYY-MM-DDT00:00:00.000')}Z`
-    return this.cozy.data.defineIndex(DOCTYPE, ['date']).then(index =>
-      this.cozy.data.query(index, {
-        selector: {
-          date: {
-            $gt: startkey,
-            $lt: endkey
-          }
+      // Get the operations corresponding to the date interval around the date of the bill
+      return {
+        $gt: `${startDate.format('YYYY-MM-DDT00:00:00.000')}Z`,
+        $lt: `${endDate.format('YYYY-MM-DDT00:00:00.000')}Z`
+      }
+    }
+
+    const createAmountSelector = () => {
+      const amount = bill.isRefund ? bill.amount : -bill.amount
+      const min = amount - options.minAmountDelta
+      const max = amount + options.maxAmountDelta
+
+      return {
+        $gt: min,
+        $lt: max
+      }
+    }
+
+    let operations = []
+    // cozy-stack limit to 100 elements
+    const limit = 100
+
+    const getOptions = ids => {
+      const options = {
+          selector: {
+            date: createDateSelector(),
+            amount: createAmountSelector()
+          },
+          sort: [{date: 'desc'}, {amount: 'desc'}],
+          limit
+      }
+
+      if (ids.length > 0) {
+        options.skip = ids.length
+      }
+
+      return options
+    }
+
+    const fetchAll = (index, ids = []) => {
+      return this.cozyClient.data.query(index, getOptions(ids)).then(ops => {
+        operations = operations.concat(ops)
+        if (ops.length === limit) {
+          const newIds = ops.map(op => op._id)
+          return fetchAll(index, ids.concat(newIds))
+        } else {
+          return operations
         }
       })
-    )
+    }
+
+    return this.cozyClient.data.defineIndex(DOCTYPE, ['date', 'amount']).then(index => {
+      return fetchAll(index)
+    })
   }
 
   addBillToOperation (bill, operation) {
@@ -137,12 +147,12 @@ class Linker {
     const billIds = operation.billIds || []
     billIds.push(`io.cozy.bills:${bill._id}`)
 
-    return this.cozy.data.updateAttributes(DOCTYPE, operation._id, {
+    return this.cozyClient.data.updateAttributes(DOCTYPE, operation._id, {
       bills: billIds
     })
   }
 
-  addReimbursementToOperation (bill, operation, matchingOperation, cozy) {
+  addReimbursementToOperation (bill, operation, matchingOperation) {
     if (operation.reimbursements && operation.reimbursements.map(b => b._id).indexOf(bill._id) > -1) {
       return Promise.resolve()
     }
@@ -154,7 +164,7 @@ class Linker {
       operationId: matchingOperation && matchingOperation._id
     })
 
-    return this.cozy.data.updateAttributes(DOCTYPE, operation._id, {
+    return this.cozyClient.data.updateAttributes(DOCTYPE, operation._id, {
       reimbursements: reimbursements
     })
   }
@@ -221,8 +231,11 @@ module.exports = (bills, doctype, fields, options = {}) => {
     )
   }
 
-  options.amountDelta = options.amountDelta || 0.001
-  options.dateDelta = options.dateDelta || 15
+  options.amountDelta = options.amountDelta || DEFAULT_AMOUNT_DELTA
+  options.minAmountDelta = options.minAmountDelta || options.amountDelta
+  options.maxAmountDelta = options.maxAmountDelta || options.amountDelta
+
+  options.dateDelta = options.dateDelta || DEFAULT_DATE_DELTA
   options.minDateDelta = options.minDateDelta || options.dateDelta
   options.maxDateDelta = options.maxDateDelta || options.dateDelta
 
