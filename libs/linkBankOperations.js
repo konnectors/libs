@@ -102,8 +102,8 @@ const findReimbursedOperation = (bill, operations, options) => {
 }
 
 class Linker {
-  constructor (cozy) {
-    this.cozy = cozy
+  constructor (cozyClient) {
+    this.cozyClient = cozyClient
   }
 
   fetchNeighboringOperations (bill, options) {
@@ -117,8 +117,8 @@ class Linker {
     // Get the operations corresponding to the date interval around the date of the bill
     let startkey = `${startDate.format('YYYY-MM-DDT00:00:00.000')}Z`
     let endkey = `${endDate.format('YYYY-MM-DDT00:00:00.000')}Z`
-    return this.cozy.data.defineIndex(DOCTYPE, ['date']).then(index =>
-      this.cozy.data.query(index, {
+    return this.cozyClient.data.defineIndex(DOCTYPE, ['date']).then(index =>
+      this.cozyClient.data.query(index, {
         selector: {
           date: {
             $gt: startkey,
@@ -137,12 +137,12 @@ class Linker {
     const billIds = operation.billIds || []
     billIds.push(`io.cozy.bills:${bill._id}`)
 
-    return this.cozy.data.updateAttributes(DOCTYPE, operation._id, {
+    return this.cozyClient.data.updateAttributes(DOCTYPE, operation._id, {
       bills: billIds
     })
   }
 
-  addReimbursementToOperation (bill, operation, matchingOperation, cozy) {
+  addReimbursementToOperation (bill, operation, matchingOperation) {
     if (operation.reimbursements && operation.reimbursements.map(b => b._id).indexOf(bill._id) > -1) {
       return Promise.resolve()
     }
@@ -154,7 +154,7 @@ class Linker {
       operationId: matchingOperation && matchingOperation._id
     })
 
-    return this.cozy.data.updateAttributes(DOCTYPE, operation._id, {
+    return this.cozyClient.data.updateAttributes(DOCTYPE, operation._id, {
       reimbursements: reimbursements
     })
   }
