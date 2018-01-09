@@ -78,26 +78,41 @@ class Linker {
   }
 
   fetchNeighboringOperations (bill, options) {
-    if (typeof options.minDateDelta === 'undefined' || typeof options.maxDateDelta === 'undefined') {
-      return Promise.reject(new Error('Must have options.{min,max}DateDelta'))
-    }
-    let date = new Date(bill.originalDate || bill.date)
-    let startDate = moment(date).subtract(options.minDateDelta, 'days')
-    let endDate = moment(date).add(options.maxDateDelta, 'days')
+    const createDateSelector = () => {
+      const date = new Date(bill.originalDate || bill.date)
+      const startDate = moment(date).subtract(options.minDateDelta, 'days')
+      const endDate = moment(date).add(options.maxDateDelta, 'days')
 
-    // Get the operations corresponding to the date interval around the date of the bill
-    let startkey = `${startDate.format('YYYY-MM-DDT00:00:00.000')}Z`
-    let endkey = `${endDate.format('YYYY-MM-DDT00:00:00.000')}Z`
-    return this.cozyClient.data.defineIndex(DOCTYPE, ['date']).then(index =>
-      this.cozyClient.data.query(index, {
-        selector: {
-          date: {
-            $gt: startkey,
-            $lt: endkey
-          }
-        }
-      })
-    )
+      // Get the operations corresponding to the date interval around the date of the bill
+      return {
+        $gt: `${startDate.format('YYYY-MM-DDT00:00:00.000')}Z`,
+        $lt: `${endDate.format('YYYY-MM-DDT00:00:00.000')}Z`
+      }
+    }
+
+    let operations = []
+    const dateSelector = createDateSelector()
+
+    const limit = 100
+    const getOptions = () => {
+      const options = {
+          selector: {
+            date: dateSelector
+          },
+          sort: [{date: 'desc'}],
+          limit
+      }
+
+      if (ids.length > 0) {
+        options.skip = ids.length
+      }
+
+      return options
+    }
+
+    return this.cozyClient.data.defineIndex(DOCTYPE, ['date', 'amount']).then(index => {
+      return this.cozyClient.data.query(index, getOptions())
+    })
   }
 
   addBillToOperation (bill, operation) {
