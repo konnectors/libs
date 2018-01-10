@@ -1,7 +1,9 @@
 require('./libs/error')
 
 const requestFactory = require('./libs/request')
+const hydrateFilter = require('./libs/hydrateAndFilter')
 const log = require('./libs/logger').namespace('cozy-konnector-libs')
+
 
 module.exports = {
   BaseKonnector: require('./libs/BaseKonnector'),
@@ -12,7 +14,7 @@ module.exports = {
   saveBills: require('./libs/saveBills'),
   linkBankOperations: require('./libs/linkBankOperations'),
   addData: require('./libs/addData'),
-  hydrateAndFilter: require('./libs/hydrateAndFilter'),
+  hydrateAndFilter,
   filterData: deprecate(hydrateAndFilter, 'Use hydrateAndFilter now. filterData will be removed in cozy-konnector-libs@4'),
   updateOrCreate: require('./libs/updateOrCreate'),
   request: deprecate(requestFactory, 'Use requestFactory instead of request. It will be removed in cozy-konnector-libs@4'),

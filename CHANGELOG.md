@@ -25,10 +25,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - none yet
 
 
-## [3.1.3] - 2018-01-10
+## [3.1.4] - 2018-01-10
 ### Fixed
 - Linking with bank operations now works even if the bill has already been fetched
 
-[Unreleased]: https://github.com/cozy/cozy-konnector-libs/compare/v3.1.3...HEAD
-[3.1.3]: https://github.com/cozy/cozy-konnector-libs/compare/v3.1.3...8b00eda
+[Unreleased]: https://github.com/cozy/cozy-konnector-libs/compare/v3.1.4...HEAD
+[3.1.4]: https://github.com/cozy/cozy-konnector-libs/compare/v3.1.4...8b00eda
 
