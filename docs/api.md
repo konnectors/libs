@@ -50,10 +50,10 @@ req(&#39;http://github.com&#39;, $ =&gt; {
 </ul>
 </dd>
 <dt><a href="#module_saveBills">saveBills</a></dt>
-<dd><p>Combines the features of <code>saveFiles</code>, <code>filterData</code>, <code>addData</code> and  <code>linkBankOperations</code>.
+<dd><p>Combines the features of <code>saveFiles</code>, <code>hydrateAndFilter</code>, <code>addData</code> and  <code>linkBankOperations</code>.
 Will create <code>io.cozy.bills</code> objects. The default deduplication keys are
 <code>[&#39;date&#39;, &#39;amount&#39;, &#39;vendor&#39;]</code>.</p>
-<p><code>options</code> is passed directly to <code>saveFiles</code>, <code>filterData</code>, <code>addData</code> and <code>linkBankOperations</code>.</p>
+<p><code>options</code> is passed directly to <code>saveFiles</code>, <code>hydrateAndFilter</code>, <code>addData</code> and <code>linkBankOperations</code>.</p>
 </dd>
 <dt><a href="#module_saveFiles">saveFiles</a></dt>
 <dd><p>The goal of this function is to save the given files in the given folder via the Cozy API.</p>
@@ -123,6 +123,9 @@ It takes a fetch function in parameter that must return a <code>Promise</code>.<
 <dt><a href="#USER_ACTION_NEEDED">USER_ACTION_NEEDED</a> : <code>String</code></dt>
 <dd><p>There was an unexpected error, please take a look at the logs to know what happened</p>
 </dd>
+<dt><a href="#FILE_DOWNLOAD_FAILED">FILE_DOWNLOAD_FAILED</a> : <code>String</code></dt>
+<dd><p>There was a problem while downloading a file</p>
+</dd>
 </dl>
 
 ## Functions
@@ -147,7 +150,7 @@ Creates the records in the given doctype.
 
 <a name="module_cozy-client"></a>
 
-## cozyClient
+## cozy-client
 This is a [cozy-client-js](https://cozy.github.io/cozy-client-js/) instance already initialized and ready to use
 
 <a name="module_filterData"></a>
@@ -199,11 +202,11 @@ req('http://github.com', $ => {
 <a name="module_saveBills"></a>
 
 ## saveBills
-Combines the features of `saveFiles`, `filterData`, `addData` and  `linkBankOperations`.
+Combines the features of `saveFiles`, `hydrateAndFilter`, `addData` and  `linkBankOperations`.
 Will create `io.cozy.bills` objects. The default deduplication keys are
 `['date', 'amount', 'vendor']`.
 
-`options` is passed directly to `saveFiles`, `filterData`, `addData` and `linkBankOperations`.
+`options` is passed directly to `saveFiles`, `hydrateAndFilter`, `addData` and `linkBankOperations`.
 
 <a name="module_saveFiles"></a>
 
@@ -361,6 +364,12 @@ The vendor's website is down
 
 ## USER_ACTION_NEEDED : <code>String</code>
 There was an unexpected error, please take a look at the logs to know what happened
+
+**Kind**: global constant  
+<a name="FILE_DOWNLOAD_FAILED"></a>
+
+## FILE_DOWNLOAD_FAILED : <code>String</code>
+There was a problem while downloading a file
 
 **Kind**: global constant  
 <a name="log"></a>

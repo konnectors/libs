@@ -141,11 +141,15 @@ class Linker {
   }
 
   addBillToOperation (bill, operation) {
+    if (!bill._id) {
+      console.warn('bill has no id, impossible to add it to an operation')
+      return Promise.resolve()
+    }
     if (operation.bills && operation.bills.indexOf(bill._id) > -1) {
       return Promise.resolve()
     }
 
-    const billIds = operation.billIds || []
+    const billIds = operation.bills || []
     billIds.push(`io.cozy.bills:${bill._id}`)
 
     return this.cozyClient.data.updateAttributes(DOCTYPE, operation._id, {
@@ -154,11 +158,16 @@ class Linker {
   }
 
   addReimbursementToOperation (bill, operation, matchingOperation) {
+    if (!bill._id) {
+      console.warn('bill has no id, impossible to add it as a reimbursement')
+      return Promise.resolve()
+    }
     if (operation.reimbursements && operation.reimbursements.map(b => b._id).indexOf(bill._id) > -1) {
       return Promise.resolve()
     }
 
     const reimbursements = operation.reimbursements || []
+
     reimbursements.push({
       billId: `io.cozy.bills:${bill._id}`,
       amount: bill.amount,

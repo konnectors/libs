@@ -1,15 +1,15 @@
 /**
- * Combines the features of `saveFiles`, `filterData`, `addData` and  `linkBankOperations`.
+ * Combines the features of `saveFiles`, `hydrateAndFilter`, `addData` and  `linkBankOperations`.
  * Will create `io.cozy.bills` objects. The default deduplication keys are
  * `['date', 'amount', 'vendor']`.
  *
- * `options` is passed directly to `saveFiles`, `filterData`, `addData` and `linkBankOperations`.
+ * `options` is passed directly to `saveFiles`, `hydrateAndFilter`, `addData` and `linkBankOperations`.
  *
  *  @module  saveBills
  */
 
 const saveFiles = require('./saveFiles')
-const filterData = require('./filterData')
+const hydrateAndFilter = require('./hydrateAndFilter')
 const addData = require('./addData')
 const linkBankOperations = require('./linkBankOperations')
 const DOCTYPE = 'io.cozy.bills'
@@ -36,7 +36,7 @@ module.exports = (entries, fields, options = {}) => {
 
   const originalEntries = entries
   return saveFiles(entries, fields, options)
-    .then(entries => filterData(entries, DOCTYPE, options))
+    .then(entries => hydrateAndFilter(entries, DOCTYPE, options))
     .then(entries => addData(entries, DOCTYPE, options))
     .then(entries => linkBankOperations(originalEntries, DOCTYPE, fields, options))
 }
