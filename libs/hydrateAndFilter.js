@@ -10,12 +10,12 @@
  */
 
 const bluebird = require('bluebird')
-const log = require('./logger').namespace('filterData')
+const log = require('./logger').namespace('hydrateAndFilter')
 
-const filterData = (entries, doctype, options = {}) => {
+const hydrateAndFilter = (entries, doctype, options = {}) => {
   const cozy = require('./cozyclient')
 
-  log('debug', String(entries.length), 'Number of items before filterData')
+  log('debug', String(entries.length), 'Number of items before hydrateAndFilter')
   if (!doctype) return Promise.reject(new Error(`Doctype is mandatory to filter the connector data.`))
 
   // expected options:
@@ -25,6 +25,8 @@ const filterData = (entries, doctype, options = {}) => {
   //  get all the records
   //  - keys : this is the list of keys used to check that two items are the same
   const keys = options.keys ? options.keys : ['_id']
+  const store = {}
+
   log('debug', keys, 'keys')
 
   const createHash = item => {
@@ -54,30 +56,46 @@ const filterData = (entries, doctype, options = {}) => {
     return cozy.data.query(index, {selector})
   }
 
-  const getEntries = dbitems => {
-    // create a hash for each db item
-    const hashTable = dbitems.reduce((memo, dbitem) => {
-      const hash = createHash(dbitem)
-      memo[hash] = dbitem
-      return memo
-    }, {})
+  const populateStore = store => dbitems => {
+    dbitems.forEach(dbitem => {
+      store[createHash(dbitem)] = dbitem
+    })
+  }
 
+  // We add _id to `entries` that we find in the database.
+  // This is useful when linking with bank operations (a bill
+  // can already be in the database but not already matched
+  // to an operation) since the linking operation need the _id
+  // of the entry
+  const hydrateExistingEntries = store => () => {
+    entries.forEach(entry => {
+      const key = createHash(entry)
+      if (store[key]) {
+        entry._id = store[key]._id
+      }
+    })
+    return entries
+  }
+
+  const filterEntries = store => () => {
     // filter out existing items
     return bluebird.filter(entries, entry => {
-      return !hashTable[createHash(entry)]
+      return !store[createHash(entry)]
     })
   }
 
   const formatOutput = entries => {
-    log('debug', String(entries.length), 'Number of items after filterData')
+    log('debug', String(entries.length), 'Number of items after hydrateAndFilter')
     // filter out wrong entries
     return entries.filter(entry => entry)
   }
 
   return getIndex()
     .then(getItems)
-    .then(getEntries)
+    .then(populateStore(store))
+    .then(hydrateExistingEntries(store))
+    .then(filterEntries(store))
     .then(formatOutput)
 }
 
-module.exports = filterData
+module.exports = hydrateAndFilter
