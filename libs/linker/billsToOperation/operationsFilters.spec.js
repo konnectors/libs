@@ -15,7 +15,7 @@ describe('operationsFilters', () => {
     })
 
     test('filterByIdentifiers return empty array by default', () => {
-        expect(filterByIdentifiers([], [])).toEqual([])
+      expect(filterByIdentifiers([], [])).toEqual([])
     })
 
     test('filterByIdentifiers return operations', () => {
