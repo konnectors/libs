@@ -173,11 +173,7 @@ class Linker {
   linkMatchingOperation (bill, operations, options) {
     const matchingOp = findMatchingOperation(bill, operations, options)
     if (matchingOp) {
-        log('debug', 'Found matching ', bill, matchingOp)
-    }
-
-    if (matchingOp) {
-      if (!matchingOp) { return }
+      log('debug', 'Found matching ', bill, matchingOp)
       return this.addBillToOperation(bill, matchingOp).then(() => matchingOp)
     }
   }
