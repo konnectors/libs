@@ -142,7 +142,7 @@ class Linker {
 
   addBillToOperation (bill, operation) {
     if (!bill._id) {
-      console.warn('bill has no id, impossible to add it to an operation')
+      log('warn', 'bill has no id, impossible to add it to an operation')
       return Promise.resolve()
     }
     if (operation.bills && operation.bills.indexOf(bill._id) > -1) {
@@ -159,7 +159,7 @@ class Linker {
 
   addReimbursementToOperation (bill, operation, matchingOperation) {
     if (!bill._id) {
-      console.warn('bill has no id, impossible to add it as a reimbursement')
+      log('warn', 'bill has no id, impossible to add it as a reimbursement')
       return Promise.resolve()
     }
     if (operation.reimbursements && operation.reimbursements.map(b => b._id).indexOf(bill._id) > -1) {
