@@ -1,11 +1,10 @@
-const log = require('../../logger').namespace('operationsFilters')
 var isWithinRange = require('date-fns/is_within_range')
 var differenceInHours = require('date-fns/difference_in_hours')
 var { getIdentifiers, getDateRange, getAmountRange, getBillDate, getBillAmount } = require('./getterHelper')
 
 const assert = (pred, msg) => { if (!pred) { throw new Error(msg) } }
 
-export const filterByIdentifiers = (operations, identifiers) => {
+const filterByIdentifiers = (operations, identifiers) => {
   assert(Array.isArray(operations),
     'filterByIdentifiers cannot be called without "operations" array.'
   )
@@ -24,7 +23,7 @@ export const filterByIdentifiers = (operations, identifiers) => {
   })
 }
 
-export const filterByDates = (operations, startDate, endDate) => {
+const filterByDates = (operations, startDate, endDate) => {
   assert(Array.isArray(operations),
     'filterByDates cannot be called without "operations" array.'
   )
@@ -40,7 +39,7 @@ export const filterByDates = (operations, startDate, endDate) => {
   })
 }
 
-export const filterByAmount = (operations, startAmount, endAmount) => {
+const filterByAmount = (operations, startAmount, endAmount) => {
   assert(Array.isArray(operations),
     'filterByAmount cannot be called without "operations" array.'
   )
@@ -56,7 +55,7 @@ export const filterByAmount = (operations, startAmount, endAmount) => {
   })
 }
 
-export const order = (bill, operations) => {
+const order = (bill, operations) => {
   // it's not possible to sort with 2 parameters, so we create a weight list
   // with date diff & amount diff. I choise weight with 0.7 because date is more
   // important, but this value is random.
@@ -79,7 +78,7 @@ export const order = (bill, operations) => {
   return operations
 }
 
-export const operationsFilters = (bill, operations, options) => {
+const operationsFilters = (bill, operations, options) => {
   const identifiers = getIdentifiers(options)
   operations = filterByIdentifiers(operations, identifiers)
 
@@ -91,3 +90,5 @@ export const operationsFilters = (bill, operations, options) => {
 
   return operations
 }
+
+module.exports = {filterByIdentifiers, filterByDates, filterByAmount, order, operationsFilters}

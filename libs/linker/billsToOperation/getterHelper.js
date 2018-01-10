@@ -1,11 +1,11 @@
 const moment = require('moment')
 
-export const getBillDate = bill => new Date(bill.originalDate || bill.date)
-export const getBillAmount = bill => bill.isRefund ? bill.amount : -bill.amount
+const getBillDate = bill => new Date(bill.originalDate || bill.date)
+const getBillAmount = bill => bill.isRefund ? bill.amount : -bill.amount
 
-export const getIdentifiers = options => options.identifiers
+const getIdentifiers = options => options.identifiers
 
-export const getDateRange = (bill, options) => {
+const getDateRange = (bill, options) => {
   const date = getBillDate(bill)
   return {
     minDate: new Date(moment(date).subtract(options.minDateDelta || 0, 'days')),
@@ -13,11 +13,12 @@ export const getDateRange = (bill, options) => {
   }
 }
 
-
-export const getAmountRange = (bill, options) => {
+const getAmountRange = (bill, options) => {
   const amount = getBillAmount(bill)
   return {
     minAmount: amount - options.minAmountDelta,
     maxAmount: amount + options.minAmountDelta
   }
 }
+
+module.exports = {getBillDate, getBillAmount, getIdentifiers, getDateRange, getAmountRange}
