@@ -10,6 +10,7 @@
 const moment = require('moment')
 const bluebird = require('bluebird')
 const { findMatchingOperation } = require('./linker/billsToOperation')
+const log = require('./logger').namespace('linkBankOperations')
 
 const DOCTYPE = 'io.cozy.bank.operations'
 const DEFAULT_AMOUNT_DELTA = 0.001
@@ -107,12 +108,12 @@ class Linker {
 
     const getOptions = ids => {
       const options = {
-          selector: {
-            date: createDateSelector(),
-            amount: createAmountSelector()
-          },
-          sort: [{date: 'desc'}, {amount: 'desc'}],
-          limit
+        selector: {
+          date: createDateSelector(),
+          amount: createAmountSelector()
+        },
+        sort: [{date: 'desc'}, {amount: 'desc'}],
+        limit
       }
 
       if (ids.length > 0) {
@@ -171,6 +172,10 @@ class Linker {
 
   linkMatchingOperation (bill, operations, options) {
     const matchingOp = findMatchingOperation(bill, operations, options)
+    if (matchingOp) {
+        log('debug', 'Found matching ', bill, matchingOp)
+    }
+
     if (matchingOp) {
       if (!matchingOp) { return }
       return this.addBillToOperation(bill, matchingOp).then(() => matchingOp)
