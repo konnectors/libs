@@ -29,6 +29,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 - Linking with bank operations now works even if the bill has already been fetched
 
-[Unreleased]: https://github.com/cozy/cozy-ui/compare/v3.1.1...HEAD
-[3.1.1]: https://github.com/cozy/cozy-ui/compare/v3.1.1...8b00eda
+[Unreleased]: https://github.com/cozy/cozy-konnector-libs/compare/v3.1.1...HEAD
+[3.1.1]: https://github.com/cozy/cozy-konnector-libs/compare/v3.1.1...8b00eda
 
