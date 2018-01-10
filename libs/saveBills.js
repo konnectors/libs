@@ -34,8 +34,9 @@ module.exports = (entries, fields, options = {}) => {
     return entry
   }
 
+  const originalEntries = entries
   return saveFiles(entries, fields, options)
     .then(entries => filterData(entries, DOCTYPE, options))
     .then(entries => addData(entries, DOCTYPE, options))
-    .then(entries => linkBankOperations(entries, DOCTYPE, fields, options))
+    .then(entries => linkBankOperations(originalEntries, DOCTYPE, fields, options))
 }
