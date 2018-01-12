@@ -9,69 +9,12 @@
 
 const moment = require('moment')
 const bluebird = require('bluebird')
-const { findMatchingOperation } = require('./linker/billsToOperation')
+const { findMatchingOperation, findReimbursedOperation } = require('./linker/billsToOperation')
 const log = require('./logger').namespace('linkBankOperations')
 
 const DOCTYPE = 'io.cozy.bank.operations'
 const DEFAULT_AMOUNT_DELTA = 0.001
 const DEFAULT_DATE_DELTA = 15
-
-const reimbursedTypes = ['health_costs']
-
-const coerceToDate = function (d) {
-  if (!d) {
-    return d
-  } else if (typeof d === 'string') {
-    return new Date(d)
-  } else if (d.toDate) {
-    return d.toDate()
-  } else if (d.getYear) { return d } else {
-    throw new Error('Invalid date')
-  }
-}
-const equalDates = function (d1, d2) {
-  d1 = coerceToDate(d1)
-  d2 = coerceToDate(d2)
-  try {
-    return d1 && d2 &&
-    d1.getYear() === d2.getYear() &&
-    d1.getMonth() === d2.getMonth() &&
-    d1.getDate() === d2.getDate()
-  } catch (e) {
-    return false
-  }
-}
-
-const getTotalReimbursements = operation => {
-  if (!operation.reimbursements) { return 0 }
-  return operation.reimbursements.reduce((s, r) => s + r.amount, 0)
-}
-
-// DOES NOT NEED COZY CLIENT
-const findReimbursedOperation = (bill, operations, options) => {
-  if (!bill.isRefund) { return null }
-
-  // By default, an bill is an expense. If it is not, it should be
-  // declared as a refund: isRefund=true.
-  let billAmount = Math.abs(bill.originalAmount)
-
-  const canBeReimbursed = reimbursedTypes.indexOf(bill.type) > -1
-  if (!canBeReimbursed) {
-    return null
-  }
-
-  for (let operation of operations) {
-    const opAmount = operation.amount
-    const sameAmount = -billAmount === opAmount
-    const sameDate = equalDates(bill.originalDate, operation.date)
-    const totalReimbursements = getTotalReimbursements(operation)
-    const fitIntoReimbursements = totalReimbursements + -billAmount <= -opAmount
-    if (sameAmount && sameDate && fitIntoReimbursements) {
-      return operation
-    }
-  }
-  return null
-}
 
 class Linker {
   constructor (cozyClient) {
@@ -258,6 +201,5 @@ module.exports = (bills, doctype, fields, options = {}) => {
 
 Object.assign(module.exports, {
   findMatchingOperation,
-  findReimbursedOperation,
   Linker
 })
