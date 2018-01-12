@@ -12,7 +12,6 @@ const Secret = require('./Secret')
 
 const filterSecrets = function (level, type, message, label, namespace) {
   if (type !== 'secret' && message instanceof Secret) {
-    const err = new Error()
     throw new Error('You should log a secret with log.secret')
   }
 }
