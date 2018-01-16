@@ -145,12 +145,13 @@ class Linker {
       log('warn', 'bill has no id, impossible to add it to an operation')
       return Promise.resolve()
     }
-    if (operation.bills && operation.bills.indexOf(bill._id) > -1) {
+    const billId = `io.cozy.bills:${bill._id}`
+    if (operation.bills && operation.bills.indexOf(billId) > -1) {
       return Promise.resolve()
     }
 
     const billIds = operation.bills || []
-    billIds.push(`io.cozy.bills:${bill._id}`)
+    billIds.push(billId)
 
     return this.cozyClient.data.updateAttributes(DOCTYPE, operation._id, {
       bills: billIds
@@ -182,7 +183,8 @@ class Linker {
   linkMatchingOperation (bill, operations, options) {
     const matchingOp = findMatchingOperation(bill, operations, options)
     if (matchingOp) {
-      log('debug', 'Found matching ', bill, matchingOp)
+      log('debug', bill, 'Matching bill')
+      log('debug', matchingOp, 'Matching operation')
       return this.addBillToOperation(bill, matchingOp).then(() => matchingOp)
     }
   }
