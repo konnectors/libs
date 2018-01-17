@@ -1,94 +1,79 @@
-var isWithinRange = require('date-fns/is_within_range')
-var differenceInHours = require('date-fns/difference_in_hours')
-var { getIdentifiers, getDateRange, getAmountRange, getBillDate, getBillAmount } = require('./getterHelper')
+const every = require('lodash/every')
+const includes = require('lodash/includes')
+const some = require('lodash/some')
+const isWithinRange = require('date-fns/is_within_range')
 
-const assert = (pred, msg) => { if (!pred) { throw new Error(msg) } }
+const { getIdentifiers, getDateRangeFromBill, getAmountRangeFromBill } = require('./helpers')
 
-const filterByIdentifiers = (operations, identifiers) => {
-  assert(Array.isArray(operations),
-    'filterByIdentifiers cannot be called without "operations" array.'
-  )
-  assert(Array.isArray(identifiers),
-    'filterByIdentifiers cannot be called without "identifiers" array.'
-  )
+// constants
 
-  return operations.filter(operation => {
-    let hasIdentifier = false
-    for (const identifier of identifiers) {
-      if (operation.label.toLowerCase().indexOf(identifier) >= 0) {
-        hasIdentifier = true
-      }
-    }
-    return hasIdentifier
-  })
+const HEALTH_VENDORS = ['Ameli', 'Harmonie', 'Malakoff Mederic'] // TODO: to import from each konnector
+const HEALTH_CAT_ID_OPERATION = '400610' // TODO: import it from cozy-bank
+
+// helpers
+
+const getCategoryId = o => o.manualCategoryId || o.automaticCategoryId
+
+const isHealthOperation = operation => {
+  return HEALTH_CAT_ID_OPERATION === getCategoryId(operation)
 }
 
-const filterByDates = (operations, startDate, endDate) => {
-  assert(Array.isArray(operations),
-    'filterByDates cannot be called without "operations" array.'
-  )
-  assert(startDate instanceof Date,
-    'filterByDates cannot be called without valid "startDate" date.'
-  )
-  assert(endDate instanceof Date,
-    'filterByDates cannot be called without valid "endDate" date.'
-  )
-
-  return operations.filter(operation => {
-    return isWithinRange(operation.date, startDate, endDate)
-  })
+const isHealthBill = bill => {
+  return includes(HEALTH_VENDORS, bill.vendor)
 }
 
-const filterByAmount = (operations, startAmount, endAmount) => {
-  assert(Array.isArray(operations),
-    'filterByAmount cannot be called without "operations" array.'
-  )
-  assert(typeof startAmount === 'number',
-    'filterByAmount cannot be called without valid "startAmount" Number.'
-  )
-  assert(typeof endAmount === 'number',
-    'filterByAmount cannot be called without valid "endAmount" Number.'
-  )
+// filters
 
-  return operations.filter(operation => {
-    return operation.amount >= startAmount && operation.amount <= endAmount
-  })
-}
-
-const order = (bill, operations) => {
-  // it's not possible to sort with 2 parameters, so we create a weight list
-  // with date diff & amount diff. I choise weight with 0.7 because date is more
-  // important, but this value is random.
-  const weight = 0.7
-  const dateW = weight
-  const amountW = 1 - weight
-
-  const weights = {}
-  for (const operation of operations) {
-    const dateDiff = Math.abs(differenceInHours(getBillDate(bill), operation.date))
-    const amountDiff = Math.abs(getBillAmount(bill) - operation.amount)
-    weights[operation._id] = dateW * dateDiff + amountW * amountDiff
+const filterByIdentifiers = identifiers => {
+  identifiers = identifiers.map(i => i.toLowerCase())
+  return operation => {
+    const label = operation.label.toLowerCase()
+    return some(identifiers, identifier => includes(label, identifier))
   }
-
-  operations = operations.sort((a, b) => {
-    if (weights[b._id] === weights[a._id]) return 0
-    return weights[a._id] > weights[b._id] ? 1 : -1
-  })
-
-  return operations
 }
+
+const filterByDates = ({ minDate, maxDate }) => operation => {
+  return isWithinRange(operation.date, minDate, maxDate)
+}
+
+const filterByAmounts = ({ minAmount, maxAmount }) => operation => {
+  return operation.amount >= minAmount && operation.amount <= maxAmount
+}
+
+const filterByCategory = bill => operation => {
+  return isHealthBill(bill)
+    ? isHealthOperation(operation)
+    : !isHealthOperation(operation)
+}
+
+// combine filters
 
 const operationsFilters = (bill, operations, options) => {
-  const identifiers = getIdentifiers(options)
-  operations = filterByIdentifiers(operations, identifiers)
+  const filterByConditions = filters => op => {
+    return every(filters.map(f => f(op)))
+  }
 
-  const { minDate, maxDate } = getDateRange(bill, options)
-  operations = filterByDates(operations, minDate, maxDate)
+  const fByDates = filterByDates(getDateRangeFromBill(bill, options))
+  const fByAmounts = filterByAmounts(getAmountRangeFromBill(bill, options))
+  const fByCategory = filterByCategory(bill)
 
-  const { minAmount, maxAmount } = getAmountRange(bill, options)
-  operations = filterByAmount(operations, minAmount, maxAmount)
+  const conditions = [fByDates, fByAmounts, fByCategory]
 
-  return operations
+  // We filters with identifiers when
+  // - we search a credit operation
+  // - or when is bill is in the health category
+  if (options.credit || !isHealthBill(bill)) {
+    const fbyIdentifiers = filterByIdentifiers(getIdentifiers(options))
+    conditions.push(fbyIdentifiers)
+  }
+
+  return operations.filter(filterByConditions(conditions))
 }
 
-module.exports = {filterByIdentifiers, filterByDates, filterByAmount, order, operationsFilters}
+module.exports = {
+  filterByIdentifiers,
+  filterByDates,
+  filterByAmounts,
+  filterByCategory,
+  operationsFilters
+}

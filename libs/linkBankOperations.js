@@ -9,10 +9,10 @@
 
 const moment = require('moment')
 const bluebird = require('bluebird')
-const { findMatchingOperation, findReimbursedOperation } = require('./linker/billsToOperation')
 const log = require('./logger').namespace('linkBankOperations')
+const { findDebitOperation, findCreditOperation } = require('./linker/billsToOperation')
 
-const DOCTYPE = 'io.cozy.bank.operations'
+const DOCTYPE_OPERATIONS = 'io.cozy.bank.operations'
 const DEFAULT_AMOUNT_DELTA = 0.001
 const DEFAULT_DATE_DELTA = 15
 
@@ -21,68 +21,7 @@ class Linker {
     this.cozyClient = cozyClient
   }
 
-  fetchNeighboringOperations (bill, options) {
-    const createDateSelector = () => {
-      const date = new Date(bill.originalDate || bill.date)
-      const startDate = moment(date).subtract(options.minDateDelta, 'days')
-      const endDate = moment(date).add(options.maxDateDelta, 'days')
-
-      // Get the operations corresponding to the date interval around the date of the bill
-      return {
-        $gt: `${startDate.format('YYYY-MM-DDT00:00:00.000')}Z`,
-        $lt: `${endDate.format('YYYY-MM-DDT00:00:00.000')}Z`
-      }
-    }
-
-    const createAmountSelector = () => {
-      const amount = bill.isRefund ? bill.amount : -bill.amount
-      const min = amount - options.minAmountDelta
-      const max = amount + options.maxAmountDelta
-
-      return {
-        $gt: min,
-        $lt: max
-      }
-    }
-
-    let operations = []
-    // cozy-stack limit to 100 elements
-    const limit = 100
-
-    const getOptions = ids => {
-      const options = {
-        selector: {
-          date: createDateSelector(),
-          amount: createAmountSelector()
-        },
-        sort: [{date: 'desc'}, {amount: 'desc'}],
-        limit
-      }
-
-      if (ids.length > 0) {
-        options.skip = ids.length
-      }
-
-      return options
-    }
-
-    const fetchAll = (index, ids = []) => {
-      return this.cozyClient.data.query(index, getOptions(ids)).then(ops => {
-        operations = operations.concat(ops)
-        if (ops.length === limit) {
-          const newIds = ops.map(op => op._id)
-          return fetchAll(index, ids.concat(newIds))
-        } else {
-          return operations
-        }
-      })
-    }
-
-    return this.cozyClient.data.defineIndex(DOCTYPE, ['date', 'amount']).then(index => {
-      return fetchAll(index)
-    })
-  }
-
+  // TODO: to rename addBillToDebitOperation
   addBillToOperation (bill, operation) {
     if (!bill._id) {
       log('warn', 'bill has no id, impossible to add it to an operation')
@@ -95,48 +34,42 @@ class Linker {
 
     const billIds = operation.bills || []
     billIds.push(billId)
+    const attributes = { bills: billIds }
 
-    return this.cozyClient.data.updateAttributes(DOCTYPE, operation._id, {
-      bills: billIds
-    })
+    return this.cozyClient.data.updateAttributes(
+      DOCTYPE_OPERATIONS,
+      operation._id,
+      attributes
+    )
   }
 
+  // TODO: to rename addBillToCreditOperation
   addReimbursementToOperation (bill, operation, matchingOperation) {
     if (!bill._id) {
       log('warn', 'bill has no id, impossible to add it as a reimbursement')
       return Promise.resolve()
     }
-    if (operation.reimbursements && operation.reimbursements.map(b => b._id).indexOf(bill._id) > -1) {
+    const billId = `io.cozy.bills:${bill._id}`
+    if (
+      operation.reimbursements
+      && operation.reimbursements.map(b => b.billId).indexOf(billId) > -1
+    ) {
       return Promise.resolve()
     }
 
     const reimbursements = operation.reimbursements || []
 
     reimbursements.push({
-      billId: `io.cozy.bills:${bill._id}`,
+      billId,
       amount: bill.amount,
       operationId: matchingOperation && matchingOperation._id
     })
 
-    return this.cozyClient.data.updateAttributes(DOCTYPE, operation._id, {
-      reimbursements: reimbursements
-    })
-  }
-
-  linkMatchingOperation (bill, operations, options) {
-    const matchingOp = findMatchingOperation(bill, operations, options)
-    if (matchingOp) {
-      log('debug', bill, 'Matching bill')
-      log('debug', matchingOp, 'Matching operation')
-      return this.addBillToOperation(bill, matchingOp).then(() => matchingOp)
-    }
-  }
-
-  linkReimbursedOperation (bill, operations, options, matchingOp) {
-    const reimbursedOp = findReimbursedOperation(bill, operations, options)
-    if (!reimbursedOp) { return Promise.resolve() }
-    return this.addReimbursementToOperation(bill, reimbursedOp, matchingOp)
-      .then(() => reimbursedOp)
+    return this.cozyClient.data.updateAttributes(
+      DOCTYPE_OPERATIONS,
+      operation._id,
+      { reimbursements: reimbursements }
+    )
   }
 
   /**
@@ -147,24 +80,44 @@ class Linker {
   linkBillsToOperations (bills, options) {
     const result = {}
 
+    // when bill comes from a third party payer,
+    // no transaction is visible on the bank account
     bills = bills.filter(bill => !bill.isThirdPartyPayer === true)
 
     return bluebird.each(bills, bill => {
-      const res = result[bill._id] = {matching: [], reimbursed: []}
-      // Get all operations whose date is close to out bill
-      let operations
-      return this.fetchNeighboringOperations(bill, options)
-        .then(ops => {
-          operations = ops
-          return this.linkMatchingOperation(bill, operations, options)
-        }).then(matchingOp => {
-          if (matchingOp) { res.matching.push(matchingOp) }
-          return this.linkReimbursedOperation(bill, operations, options, matchingOp)
-            .then(reimbursedOp => {
-              if (reimbursedOp) { res.reimbursed.push(reimbursedOp) }
-            })
-        })
-    }).then(() => {
+      const res = result[bill._id] = {}
+
+      const linkBillToDebitOperation = () => {
+        return findDebitOperation(this.cozyClient, bill, options)
+          .then(operation => {
+            if (operation) {
+              res.debitOperation = operation
+              log('debug', bill, 'Matching bill')
+              log('debug', operation, 'Matching debit operation')
+              return this.addBillToOperation(bill, operation).then(() => operation)
+            }
+          })
+      }
+
+      const linkBillToCreditOperation = debitOperation => {
+        return findCreditOperation(this.cozyClient, bill, options)
+          .then(operation => {
+            if (operation) {
+              res.creditOperation = operation
+              log('debug', bill, 'Matching bill')
+              log('debug', operation, 'Matching credit operation')
+              return this.addReimbursementToOperation(bill, operation, debitOperation)
+            }
+          })
+      }
+
+      return linkBillToDebitOperation().then(debitOperation => {
+        if (bill.isRefund) {
+          return linkBillToCreditOperation(debitOperation)
+        }
+      })
+    })
+    .then(() => {
       return result
     })
   }
@@ -200,6 +153,5 @@ module.exports = (bills, doctype, fields, options = {}) => {
 }
 
 Object.assign(module.exports, {
-  findMatchingOperation,
   Linker
 })
