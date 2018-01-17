@@ -24,6 +24,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Security
 - none yet
 
+## [3.1.6] - 2018-01-17
+### Fixed
+- Linking with bank operations also works on first run
 
 ## [3.1.5] - 2018-01-10
 ### Fixed
