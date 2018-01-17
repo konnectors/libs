@@ -11,5 +11,11 @@ module.exports = (entries, doctype) => {
   return bluebird.mapSeries(entries, entry => {
     log('debug', entry, 'Adding this entry')
     return cozy.data.create(doctype, entry)
+    .then(dbEntry => {
+      // also update the original entry _id to allow saveBills' linkBankOperation entries to have
+      // an id
+      entry._id = dbEntry._id
+      return dbEntry
+    })
   })
 }
