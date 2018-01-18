@@ -1,124 +1,128 @@
 import {
   filterByIdentifiers,
   filterByDates,
-  filterByAmount,
-  order
+  filterByAmounts,
+  filterByCategory,
+  operationsFilters
 } from './operationsFilters'
 
 describe('operationsFilters', () => {
-  describe('filterByIdentifiers', () => {
-    test('throw Error when "operations" param is not an array', () => {
-      expect(() => filterByIdentifiers('mistake', [])).toThrowError(Error)
-    })
-    test('throw Error when "identifiers" param is not an array', () => {
-      expect(() => filterByIdentifiers([], 'mistake')).toThrowError(Error)
-    })
+  test('filterByIdentifiers', () => {
+    const identifiers = ['tRaInLiNe']
+    const fByIdentifiers = filterByIdentifiers(identifiers)
 
-    test('filterByIdentifiers return empty array by default', () => {
-      expect(filterByIdentifiers([], [])).toEqual([])
-    })
+    expect(fByIdentifiers({ label: 'Trainline !!!'})).toBeTruthy()
+    expect(fByIdentifiers({ label: 'Yes Trainline'})).toBeTruthy()
+    expect(fByIdentifiers({ label: 'CapitainTrain'})).toBeFalsy()
+  })
 
-    test('filterByIdentifiers return operations', () => {
-      const ops1 = [{label: 'yzoc'}, {label: 'cozy'}]
-      const ops2 = [{label: 'isssok'}, {label: 'kosssi'}]
+  test('filterByDates', () => {
+    const rangeDates = {
+      minDate: new Date(2018, 0, 16),
+      maxDate: new Date(2018, 0, 18)
+    }
+    const fByDates = filterByDates(rangeDates)
 
-      const identifiers1 = []
-      const identifiers2 = ['ok']
-      const identifiers3 = ['ko', 'ok']
+    expect(fByDates({ date: new Date(2018, 0, 15)})).toBeFalsy()
+    expect(fByDates({ date: new Date(2018, 0, 16)})).toBeTruthy()
+    expect(fByDates({ date: new Date(2018, 0, 17)})).toBeTruthy()
+    expect(fByDates({ date: new Date(2018, 0, 18)})).toBeTruthy()
+    expect(fByDates({ date: new Date(2018, 0, 19)})).toBeFalsy()
+  })
 
-      expect(filterByIdentifiers(ops1, identifiers1)).toEqual([])
-      expect(filterByIdentifiers(ops1, identifiers2)).toEqual([])
-      expect(filterByIdentifiers(ops2, identifiers2)).toEqual([ops2[0]])
-      expect(filterByIdentifiers(ops2, identifiers3)).toEqual(ops2)
+  describe('filterByAmounts', () => {
+    it('should pass when amount is within range', () => {
+      const rangeDates = {
+        minAmount: 16,
+        maxAmount: 18
+      }
+      const fByAmounts = filterByAmounts(rangeDates)
+
+      expect(fByAmounts({ amount: 15 })).toBeFalsy()
+      expect(fByAmounts({ amount: 16 })).toBeTruthy()
+      expect(fByAmounts({ amount: 17 })).toBeTruthy()
+      expect(fByAmounts({ amount: 18 })).toBeTruthy()
+      expect(fByAmounts({ amount: 19 })).toBeFalsy()
     })
   })
 
-  describe('filterByDates', () => {
-    const now = new Date()
-
-    test('throw Error when "operations" param is not an array', () => {
-      expect(() => filterByDates('mistake', now, now)).toThrowError(Error)
+  describe('filterByCategory', () => {
+    test('health bill', () => {
+      const fByCategory = filterByCategory({vendor: 'Ameli'})
+      expect(fByCategory({ manualCategoryId: '400610' })).toBeTruthy()
+      expect(fByCategory({ automaticCategoryId: '400610' })).toBeTruthy()
+      expect(fByCategory({ manualCategoryId: '400611' })).toBeFalsy()
+      expect(fByCategory({ automaticCategoryId: '400611' })).toBeFalsy()
     })
-    test('throw Error when "startDate" param is not a Date', () => {
-      expect(() => filterByDates([], 'mistake', now)).toThrowError(Error)
-    })
-    test('throw Error when "endDate" param is not a Date', () => {
-      expect(() => filterByDates([], now, 'mistake')).toThrowError(Error)
-    })
-
-    test('filterByDates return empty array by default', () => {
-      expect(filterByDates([], now, now)).toEqual([])
-    })
-
-    test('filterByDates return operations', () => {
-      const ops = [
-        { date: new Date(2018, 1, 1) },
-        { date: new Date(2018, 1, 2) },
-        { date: new Date(2018, 1, 3) },
-        { date: new Date(2018, 1, 4) }
-      ]
-      const beforeDate = new Date(2017, 10, 24)
-      const afterDate = new Date(2019, 1, 7)
-
-      // before
-      expect(filterByDates(ops, beforeDate, ops[1].date)).toEqual([ops[0], ops[1]])
-      // between
-      expect(filterByDates(ops, ops[1].date, ops[2].date)).toEqual([ops[1], ops[2]])
-      expect(filterByDates(ops, beforeDate, afterDate)).toEqual(ops)
-      // after
-      expect(filterByDates(ops, ops[2].date, afterDate)).toEqual([ops[2], ops[3]])
+    test('not health bill', () => {
+      const fByCategory = filterByCategory({vendor: 'SFR'})
+      expect(fByCategory({ manualCategoryId: '400610' })).toBeFalsy()
+      expect(fByCategory({ automaticCategoryId: '400610' })).toBeFalsy()
+      expect(fByCategory({ manualCategoryId: '400611' })).toBeTruthy()
+      expect(fByCategory({ automaticCategoryId: '400611' })).toBeTruthy()
     })
   })
 
-  describe('filterByAmount', () => {
-    const startA = 12.3
-    const endA = 12.5
-
-    test('throw Error when "operations" param is not an array', () => {
-      expect(() => filterByAmount('mistake', startA, endA)).toThrowError(Error)
-    })
-    test('throw Error when "startAmount" param is not an Number', () => {
-      expect(() => filterByAmount([], 'mistake', endA)).toThrowError(Error)
-    })
-    test('throw Error when "endAmount" param is not an Number', () => {
-      expect(() => filterByAmount([], startA, 'mistake')).toThrowError(Error)
-    })
-
-    test('filterByAmount return empty array by default', () => {
-      expect(filterByAmount([], startA, endA)).toEqual([])
-    })
-
-    const ops = [
-      { amount: 12 },
-      { amount: 12.3 },
-      { amount: 12.4 },
-      { amount: 12.5 },
-      { amount: 13 }
+  describe('operationsFilters', () => {
+    const operations = [
+      { amount: -20, label: 'Visite chez le médecin', _id: 'o1', date: new Date(2017, 11, 13), automaticCategoryId: '400610' },
+      { amount: 5, label: 'Remboursement CPAM', _id: 'o2', date: new Date(2017, 11, 15), automaticCategoryId: '400610' },
+      { amount: -120, label: 'Facture SFR', _id: 'o3', date: new Date(2017, 11, 8) },
+      { amount: -30, label: 'Facture SFR', _id: 'o4', date: new Date(2017, 11, 7) },
+      { amount: -80, label: "Matériel d'escalade", _id: 'o5', date: new Date(2017, 11, 7) },
+      { amount: -5.5, label: 'Burrito', _id: 'o6', date: new Date(2017, 11, 5) },
+      { amount: -2.6, label: 'Salade', _id: 'o7', date: new Date(2017, 11, 6) }
     ]
-    const beforeAmount = 10
-    const afterAmount = 14
 
-    // before
-    expect(filterByAmount(ops, beforeAmount, ops[1].amount)).toEqual([ops[0], ops[1]])
-    // between
-    expect(filterByAmount(ops, ops[1].amount, ops[2].amount)).toEqual([ops[1], ops[2]])
-    expect(filterByAmount(ops, beforeAmount, afterAmount)).toEqual(ops)
-    // after
-    expect(filterByAmount(ops, ops[3].amount, afterAmount)).toEqual([ops[3], ops[4]])
-  })
+    const defaultOptions = {
+      minAmountDelta: 1, maxAmountDelta: 1,
+      minDateDelta: 1, maxDateDelta: 1
+    }
 
-  describe('order', () => {
-    const bill1 = { amount: 13.5, date: new Date(2018, 1, 1) }
-    const op1 = { _id: 1, amount: -12, date: new Date(2018, 1, 1) }
-    const op2 = { _id: 2, amount: -13, date: new Date(2018, 1, 1) }
-    const op3 = { _id: 3, amount: -14, date: new Date(2018, 1, 1) }
-    const op4 = { _id: 4, amount: -15, date: new Date(2018, 1, 1) }
-    const op5 = { _id: 2, amount: -13, date: new Date(2018, 1, 2) }
+    describe('health bill', () => {
+      const bill = {
+        amount: 5,
+        originalAmount: 20,
+        type: 'health_costs',
+        originalDate: new Date(2017, 11, 13),
+        date: new Date(2017, 11, 15),
+        isRefund: true,
+        vendor: 'Ameli',
+      }
 
-    const order1 = order(bill1, [op1, op2, op3, op4])
-    expect(order1[0]).toEqual(op2)
+      const debitOptions = { ...defaultOptions, identifiers: ['CPAM'] }
+      const creditOptions = { ...debitOptions, credit: true }
 
-    const order2 = order(bill1, [op1, op5, op3, op4])
-    expect(order2[0]).toEqual(op3)
+      test('get debit operation associate to this bill', () => {
+        expect(operationsFilters(bill, operations, debitOptions))
+          .toEqual([operations[0]])
+      })
+
+      test('get credit operation associate to this bill', () => {
+        expect(operationsFilters(bill, operations, creditOptions))
+          .toEqual([operations[1]])
+      })
+    })
+
+    describe('not health bill', () => {
+      const bill = {
+        amount: 30,
+        date: new Date(2017, 11, 8),
+        vendor: 'SFR',
+      }
+
+      const debitOptions = { ...defaultOptions, identifiers: ['SFR'] }
+      const creditOptions = { ...debitOptions, credit: true }
+
+      test('get debit operation associate to this bill', () => {
+        expect(operationsFilters(bill, operations, debitOptions))
+          .toEqual([operations[3]])
+      })
+
+      test('get credit operation associate to this bill', () => {
+        expect(operationsFilters(bill, operations, creditOptions))
+          .toEqual([])
+      })
+    })
   })
 })

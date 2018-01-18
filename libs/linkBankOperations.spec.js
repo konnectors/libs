@@ -1,252 +1,170 @@
-/* eslint-env node, jest */
-import linkBankOperations, {
-  findMatchingOperation,
-  findReimbursedOperation,
-  Linker
-} from './linkBankOperations'
+import linkBankOperations, { Linker } from './linkBankOperations'
 
 jest.mock('./cozyclient')
-
 const cozyClient = require('./cozyclient')
 
-const matchOpts = {
-  identifiers: ['Harmonie Mutuelle'.toLowerCase()],
-  amountDelta: 0.1
-}
-
-const createUTCDate = function (y, m, d) {
-  const padLeft = function (v, s, l) {
-    let r = v + ''
-    while (r.length < l) {
-      r = s + r
-    }
-    return r
-  }
-
-  y = padLeft(y, '0', 4)
-  m = padLeft(m, '0', 2)
-  d = padLeft(d, '0', 2)
-
-  return new Date(`${y}-${m}-${d}T00:00:00.000Z`)
-}
-
-const searchOpts = {
-  minDateDelta: 10,
-  maxDateDelta: 15
-}
+let linker
 
 beforeEach(function () {
+  // We mock defineIndex/query so that fetchOperations returns the right operations
+  const INDEX = 'index'
+  cozyClient.data.defineIndex.mockReturnValue(Promise.resolve(INDEX))
   cozyClient.data.updateAttributes.mockReset()
-  cozyClient.data.updateAttributes.mockReturnValue(Promise.resolve({}))
+
+  linker = new Linker(cozyClient)
 })
 
-test('findMatchingOperation returns undefined if no operations', () => {
-  const bill = {}
-  const ops = []
-  expect(findMatchingOperation(bill, ops, matchOpts)).toBe(undefined)
-})
+describe('linker', () => {
+  const bill = { amount: 110, _id: 'b1' }
 
-test('addBillToOperation', () => {
-  const bill = {
-    amount: 110,
-    _id: 'b1'
-  }
-  const operation = {
-    _id: 123456
-  }
-  const linker = new Linker(cozyClient)
-  linker.addBillToOperation(bill, operation)
-  expect(
-    cozyClient.data.updateAttributes
-  ).lastCalledWith('io.cozy.bank.operations', 123456, {
-    bills: ['io.cozy.bills:b1']
-  })
-})
+  describe('addBillToOperation', () => {
 
-test('linkBankOperations match operations to bills', () => {
-  // We mock defineIndex/query so that fetchOperations returns the right operations
-  const INDEX = 'index'
+    test('operation witout bills', () => {
+      const operation = { _id: 123456 }
 
-  const bills = [
-    {
-      amount: 30,
-      date: createUTCDate(2017, 11, 12),
-      _id: 'b1'
-    },
-    {
-      amount: 120,
-      date: createUTCDate(2017, 11, 10),
-      fileobject: {
-        _id: 'f2'
-      },
-      _id: 'b2'
-    }
-  ]
+      linker.addBillToOperation(bill, operation)
 
-  const operations = [
-    { amount: -20, label: 'Billet de train', _id: 'o1', date: createUTCDate(2017, 11, 10) },
-    { amount: -120, label: 'Facture SFR', _id: 'o2', date: createUTCDate(2017, 11, 10) },
-    { amount: -30, label: 'Facture SFR', _id: 'o3', date: createUTCDate(2017, 11, 12) },
-    { amount: -80, label: "Matériel d'escalade", _id: 'o4', date: createUTCDate(2017, 11, 12) },
-    { amount: -5.5, label: 'Burrito', _id: 'o5', date: createUTCDate(2017, 11, 12) },
-    { amount: -2.6, label: 'Salade', _id: 'o6', date: createUTCDate(2017, 11, 12) }
-  ]
-
-  cozyClient.data.defineIndex.mockReturnValue(Promise.resolve(INDEX))
-  cozyClient.data.query.mockReturnValue(Promise.resolve(operations))
-
-  return linkBankOperations(
-    bills,
-    null,
-    {},
-    { ...searchOpts, ...matchOpts, identifiers: ['SFR'] }
-  ).then(function () {
-    expect(cozyClient.data.updateAttributes.mock.calls).toEqual([
-      ['io.cozy.bank.operations', 'o3', { bills: ['io.cozy.bills:b1'] }],
-      ['io.cozy.bank.operations', 'o2', { bills: ['io.cozy.bills:b2'] }]
-    ])
-  })
-})
-
-test('findReimbursedOperation', () => {
-  const bill = {
-    isRefund: true,
-    amount: 20,
-    originalAmount: 100,
-    type: 'health_costs',
-    originalDate: createUTCDate(2017, 11, 5)
-  }
-  const bill2 = { ...bill, isRefund: false } // not refund, cannot be a reimbursement
-  const bill3 = { ...bill, type: 'phone' } // is not a reimbursable type
-
-  const ops = [
-    // { amount: -20, label: 'Billet de train' },
-    // {
-    //   amount: 100,
-    //   label: 'Harmonie Mutuelle Remboursement',
-    //   date: new Date(2017, 10, 5)
-    // },
-    // { amount: -80, label: "Matériel d'escalade" },
-    // { amount: -5.5, label: 'Mexicain' },
-    // { amount: -2.6, label: 'Chips' },
-    {
-      amount: -100,
-      label: 'Visite chez le médecin',
-      date: createUTCDate(2017, 11, 5),
-      _id: 'o5'
-    }
-  ]
-
-  const reimbursedOp = findReimbursedOperation(bill, ops, matchOpts)
-  expect(reimbursedOp).not.toBe(null)
-  expect(reimbursedOp._id).toBe('o5')
-  expect(findReimbursedOperation(bill2, ops, matchOpts)).toBe(null)
-  expect(findReimbursedOperation(bill3, ops, matchOpts)).toBe(null)
-})
-
-test('linkBankOperations match operations to reimbursements bills', () => {
-  // We mock defineIndex/query so that fetchOperations returns the right operations
-  const INDEX = 'index'
-
-  const bills = [
-    // Remboursement du médecin
-    {
-      amount: 5,
-      originalAmount: 20,
-      type: 'health_costs',
-      originalDate: createUTCDate(2017, 11, 13),
-      date: createUTCDate(2017, 11, 15),
-      isRefund: true,
-      _id: 'b1'
-    },
-
-    // Facture SFR
-    {
-      amount: 120,
-      date: createUTCDate(2017, 11, 10),
-      _id: 'b2'
-    }
-  ]
-
-  const operations = [
-    {
-      amount: -20,
-      label: 'Visite chez le médecin',
-      _id: 'o1',
-      date: createUTCDate(2017, 11, 13)
-    },
-    {
-      amount: 5,
-      label: 'Remboursement CPAM',
-      _id: 'o2',
-      date: createUTCDate(2017, 11, 15)
-    },
-    {
-      amount: -120,
-      label: 'Facture SFR',
-      _id: 'o3',
-      date: createUTCDate(2017, 11, 8)
-    },
-    {
-      amount: -30,
-      label: 'Facture SFR',
-      _id: 'o4',
-      date: createUTCDate(2017, 11, 7)
-    },
-    {
-      amount: -80,
-      label: "Matériel d'escalade",
-      _id: 'o5',
-      date: createUTCDate(2017, 11, 7)
-    },
-    { amount: -5.5, label: 'Burrito', _id: 'o6', date: createUTCDate(2017, 11, 5) },
-    { amount: -2.6, label: 'Salade', _id: 'o7', date: createUTCDate(2017, 11, 6) }
-  ]
-
-  cozyClient.data.defineIndex.mockReturnValue(Promise.resolve(INDEX))
-  cozyClient.data.query.mockReturnValue(Promise.resolve(operations))
-
-  return linkBankOperations(
-    bills,
-    null,
-    {},
-    { ...searchOpts, ...matchOpts, identifiers: ['SFR'] }
-  ).then(function (result) {
-    expect(result).toEqual({
-      b1: {
-        matching: [],
-        reimbursed: [
-          {
-            amount: -20,
-            label: 'Visite chez le médecin',
-            _id: 'o1',
-            date: createUTCDate(2017, 11, 13)
-          }
-        ]
-      },
-      b2: {
-        matching: [
-          {
-            amount: -120,
-            label: 'Facture SFR',
-            _id: 'o3',
-            date: createUTCDate(2017, 11, 8)
-          }
-        ],
-        reimbursed: []
-      }
-    })
-    expect(cozyClient.data.updateAttributes.mock.calls).toEqual([
-      [
+      expect(cozyClient.data.updateAttributes).lastCalledWith(
         'io.cozy.bank.operations',
-        'o1',
+        123456,
         {
-          reimbursements: [
-            { billId: 'io.cozy.bills:b1', amount: 5, operationId: undefined }
-          ]
+          bills: ['io.cozy.bills:b1']
         }
-      ],
-      ['io.cozy.bank.operations', 'o3', { bills: ['io.cozy.bills:b2'] }]
-    ])
+      )
+    })
+
+    test('operation with bills', () => {
+      const operation = { _id: 12345, bills: ['bill1'] }
+
+      linker.addBillToOperation(bill, operation)
+
+      expect(cozyClient.data.updateAttributes).lastCalledWith(
+        'io.cozy.bank.operations',
+        12345,
+        {
+          bills: ['bill1', 'io.cozy.bills:b1']
+        }
+      )
+    })
+
+    test('operation have already this bill', () => {
+      const operation = { _id: 12345, bills: ['io.cozy.bills:b1'] }
+
+      linker.addBillToOperation(bill, operation)
+
+      expect(cozyClient.data.updateAttributes.mock.calls.length).toBe(0)
+    })
+  })
+
+  describe('addReimbursementToOperation', () => {
+
+    test('operation witout reimbursements', () => {
+      const operation = { _id: 123456 }
+
+      linker.addReimbursementToOperation(bill, operation, operation)
+
+      expect(cozyClient.data.updateAttributes).lastCalledWith(
+        'io.cozy.bank.operations',
+        123456,
+        {
+          reimbursements: [{
+            amount: 110,
+            billId: "io.cozy.bills:b1",
+            operationId: 123456
+          }]
+        }
+      )
+    })
+
+    test('operation with reimbursements', () => {
+      const operation = { _id: 123456, reimbursements: ['test'] }
+
+      linker.addReimbursementToOperation(bill, operation, operation)
+
+      expect(cozyClient.data.updateAttributes).lastCalledWith(
+        'io.cozy.bank.operations',
+        123456,
+        {
+          reimbursements: ['test', {
+            amount: 110,
+            billId: "io.cozy.bills:b1",
+            operationId: 123456
+          }]
+        }
+      )
+    })
+
+    test('operation have already the reimbursement', () => {
+      const operation = { _id: 123456, reimbursements: [{
+        amount: 110,
+        billId: "io.cozy.bills:b1",
+        operationId: 123456
+      }] }
+
+      linker.addReimbursementToOperation(bill, operation, operation)
+
+      expect(cozyClient.data.updateAttributes.mock.calls.length).toBe(0)
+    })
+  })
+
+  describe('linkBillsToOperations', () => {
+    const operations = [
+      { amount: -20, label: 'Visite chez le médecin', _id: 'o1', date: new Date(2017, 11, 13), automaticCategoryId: '400610' },
+      { amount: 5, label: 'Remboursement CPAM', _id: 'o2', date: new Date(2017, 11, 15), automaticCategoryId: '400610' },
+      { amount: -120, label: 'Facture SFR', _id: 'o3', date: new Date(2017, 11, 8) },
+      { amount: -30, label: 'Facture SFR', _id: 'o4', date: new Date(2017, 11, 7) },
+      { amount: +30, label: "Remboursemet Matériel d'escalade", _id: 'o5', date: new Date(2017, 11, 7) },
+      { amount: -5.5, label: 'Burrito', _id: 'o6', date: new Date(2017, 11, 5) },
+      { amount: -2.6, label: 'Salade', _id: 'o7', date: new Date(2017, 11, 6) }
+    ]
+
+    cozyClient.data.query.mockReturnValue(Promise.resolve(operations))
+
+    const defaultOptions = {
+      minAmountDelta: 1, maxAmountDelta: 1,
+      minDateDelta: 1, maxDateDelta: 1
+    }
+
+    test('health bills', () => {
+      cozyClient.data.updateAttributes.mockReturnValue(Promise.resolve())
+      const healthBills = [
+        {
+          _id: 'b1',
+          amount: 5,
+          originalAmount: 20,
+          type: 'health_costs',
+          originalDate: new Date(2017, 11, 13),
+          date: new Date(2017, 11, 15),
+          isRefund: true,
+          vendor: 'Ameli',
+        }
+      ]
+      const options = { ...defaultOptions, identifiers: ['CPAM'] }
+      return linker.linkBillsToOperations(healthBills, options)
+      .then(result => {
+        expect(result).toEqual({
+          b1: { creditOperation: operations[1], debitOperation: operations[0] },
+        })
+      })
+    })
+
+    test('not health bills', () => {
+      cozyClient.data.updateAttributes.mockReturnValue(Promise.resolve())
+      const noHealthBills = [
+        {
+          _id: 'b2',
+          amount: 30,
+          date: new Date(2017, 11, 8),
+          vendor: 'SFR',
+        }
+      ]
+      const options = { ...defaultOptions, identifiers: ['SFR'] }
+      return linker.linkBillsToOperations(noHealthBills, options)
+      .then(result => {
+        expect(result).toEqual({
+          b2: { debitOperation: operations[3] }
+        })
+      })
+    })
   })
 })
