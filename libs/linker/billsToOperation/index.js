@@ -18,7 +18,8 @@ const findOperation = (cozyClient, bill, options) => {
 
 const findDebitOperation = findOperation
 const findCreditOperation = (cozyClient, bill, options) => {
-  return findOperation(cozyClient, bill, { ...options, credit: true })
+  const creditOptions = Object.assign({}, options, {credit: true})
+  return findOperation(cozyClient, bill, creditOptions)
 }
 
 module.exports = {
