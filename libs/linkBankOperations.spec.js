@@ -122,7 +122,7 @@ describe('linker', () => {
 
     const defaultOptions = {
       minAmountDelta: 1, maxAmountDelta: 1,
-      minDateDelta: 1, maxDateDelta: 1
+      pastWindow: 1, futureWindow: 1
     }
 
     test('health bills', () => {
