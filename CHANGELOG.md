@@ -25,6 +25,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - none yet
 
 
+## [3.2.2] - 2018-01-19
+### Fixed
+- Add invoice even if file has already been downloaded
+
 ## [3.2.1] - 2018-01-18
 ### Fixed
 - Remove spread es6 syntax
@@ -49,6 +53,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
 [Unreleased]: https://github.com/cozy/cozy-konnector-libs/compare/v3.2.1...HEAD
+[3.2.2]: https://github.com/cozy/cozy-konnector-libs/compare/v3.2.1...v3.2.2
 [3.2.1]: https://github.com/cozy/cozy-konnector-libs/compare/v3.2.0...v3.2.1
 [3.2.0]: https://github.com/cozy/cozy-konnector-libs/compare/v3.1.6...v3.2.0
 [3.1.6]: https://github.com/cozy/cozy-konnector-libs/compare/176b49b...v3.1.6
