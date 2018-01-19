@@ -48,13 +48,13 @@ describe('getterHelper', () => {
   })
 
   describe('getDateRangeFromBill', () => {
-    const minDateDelta = 1
-    const maxDateDelta = 1
+    const pastWindow = 1
+    const futureWindow = 1
     const date = '2018-01-08'
     const originalDate = '2018-01-03'
 
     const bill = { date, originalDate }
-    const options = { minDateDelta, maxDateDelta }
+    const options = { pastWindow, futureWindow }
     const creditOptions = { ...options, credit: true }
 
     it('should find debit date range', () => {
