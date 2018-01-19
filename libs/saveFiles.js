@@ -77,10 +77,11 @@ const downloadEntry = function (entry, options) {
       checkFileSize(fileDocument)
       return fileDocument
     })
-    .then(fileDocument => {
-      entry.fileDocument = fileDocument
-      return entry
-    })
+}
+
+const attachFileToEntry = function (entry, fileDocument) {
+  entry.fileDocument = fileDocument
+  return entry
 }
 
 const saveEntry = function (entry, options) {
@@ -103,16 +104,18 @@ const saveEntry = function (entry, options) {
         return cozy.files.trashById(file._id)
         .then(() => Promise.reject(new Error('BAD_DOWNLOADED_FILE')))
       }
+      return file
     })
-    .then(() => true, () => false)
-    .then(fileExists => {
-      if (fileExists) {
-        return entry
-      } else {
-        log('debug', entry)
-        log('debug', `File ${filepath} does not exist yet or is not valid`)
-        return downloadEntry(entry, options)
-      }
+    .then(file => {
+      return file
+    }, () =>  {
+      log('debug', entry)
+      log('debug', `File ${filepath} does not exist yet or is not valid`)
+      return downloadEntry(entry, options)
+    })
+    .then(file => {
+      attachFileToEntry(entry, file)
+      return entry
     })
     .then(sanitizeEntry)
     .then(entry => {
