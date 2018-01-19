@@ -27,10 +27,10 @@ module.exports = (entries, fields, options = {}) => {
   options.keys = ['date', 'amount', 'vendor']
 
   options.postProcess = function (entry) {
-    if (entry.fileobject) {
-      entry.invoice = `io.cozy.files:${entry.fileobject._id}`
+    if (entry.fileDocument) {
+      entry.invoice = `io.cozy.files:${entry.fileDocument._id}`
     }
-    delete entry.fileobject
+    delete entry.fileDocument
     return entry
   }
 

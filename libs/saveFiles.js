@@ -71,14 +71,14 @@ const downloadEntry = function (entry, options) {
 
       return cozy.files.create(filePromise, createFileOptions)
     })
-    .then(fileobject => {
+    .then(fileDocument => {
       // This allows us to have the warning message at the first run
-      checkMimeWithPath(fileobject.attributes.mime, fileobject.attributes.name)
-      checkFileSize(fileobject)
-      return fileobject
+      checkMimeWithPath(fileDocument.attributes.mime, fileDocument.attributes.name)
+      checkFileSize(fileDocument)
+      return fileDocument
     })
-    .then(fileobject => {
-      entry.fileobject = fileobject
+    .then(fileDocument => {
+      entry.fileDocument = fileDocument
       return entry
     })
 }
