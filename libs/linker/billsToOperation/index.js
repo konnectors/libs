@@ -1,9 +1,9 @@
 const { operationsFilters } = require('./operationsFilters')
-const { fetchNeighboringOperations } = require('./fetchNeighboringOperations')
+const { fetchNeighboringOperations } = require('./fetchNeighboringOperations')
 const { sortedOperations } = require('./helpers')
 
 const findOperation = (cozyClient, bill, options) => {
-  // By default, an bill is an expense. If it is not, it should be
+  // By default, a bill is an expense. If it is not, it should be
   // declared as a refund: isRefund=true.
   if (options.credit && !bill.isRefund) return
 

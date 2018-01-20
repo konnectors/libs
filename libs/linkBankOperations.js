@@ -7,7 +7,6 @@
  * @module linkBankOperations
  */
 
-const moment = require('moment')
 const bluebird = require('bluebird')
 const log = require('./logger').namespace('linkBankOperations')
 const { findDebitOperation, findCreditOperation } = require('./linker/billsToOperation')
@@ -45,20 +44,20 @@ class Linker {
   }
 
   // TODO: to rename addBillToCreditOperation
-  addReimbursementToOperation (bill, operation, matchingOperation) {
+  addReimbursementToOperation (bill, debitOperation, matchingOperation) {
     if (!bill._id) {
       log('warn', 'bill has no id, impossible to add it as a reimbursement')
       return Promise.resolve()
     }
     const billId = `io.cozy.bills:${bill._id}`
     if (
-      operation.reimbursements
-      && operation.reimbursements.map(b => b.billId).indexOf(billId) > -1
+      debitOperation.reimbursements &&
+      debitOperation.reimbursements.map(b => b.billId).indexOf(billId) > -1
     ) {
       return Promise.resolve()
     }
 
-    const reimbursements = operation.reimbursements || []
+    const reimbursements = debitOperation.reimbursements || []
 
     reimbursements.push({
       billId,
@@ -68,7 +67,7 @@ class Linker {
 
     return this.cozyClient.data.updateAttributes(
       DOCTYPE_OPERATIONS,
-      operation._id,
+      debitOperation._id,
       { reimbursements: reimbursements }
     )
   }
@@ -102,12 +101,13 @@ class Linker {
 
       const linkBillToCreditOperation = debitOperation => {
         return findCreditOperation(this.cozyClient, bill, options)
-          .then(operation => {
-            if (operation) {
-              res.creditOperation = operation
+          .then(creditOperation => {
+            if (creditOperation && debitOperation) {
+              res.creditOperation = creditOperation
               log('debug', bill, 'Matching bill')
-              log('debug', operation, 'Matching credit operation')
-              return this.addReimbursementToOperation(bill, operation, debitOperation)
+              log('debug', creditOperation, 'Matching credit creditOperation')
+              return this.addReimbursementToOperation(bill, debitOperation, creditOperation)
+              .then(() => this.addBillToOperation(bill, creditOperation))
             }
           })
       }
