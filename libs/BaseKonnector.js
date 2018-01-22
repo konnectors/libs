@@ -3,6 +3,7 @@
 const cozy = require('./cozyclient')
 const log = require('./logger').namespace('BaseKonnector')
 const Secret = require('./Secret')
+const errors = require('../helpers/errors')
 
 /**
  * @class
@@ -66,7 +67,13 @@ class baseKonnector {
    */
   fail (err) {
     log('warn', 'Error caught by BaseKonnector')
-    this.terminate(err.message || err)
+
+    const error = err.message || err
+
+    // if we have an unexpected error, display the stack trace
+    if (!errors[error]) console.log(err, 'unexpected error detail')
+
+    this.terminate(error)
   }
 
   /**
