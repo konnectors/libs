@@ -125,6 +125,7 @@ describe('linker', () => {
       // reset operations to operationsInit values
       operations = operationsInit.map(op => ({ ...op }))
       cozyClient.data.query.mockReturnValue(Promise.resolve(operations))
+      cozyClient.data.updateAttributes.mockImplementation(updateOperation)
     })
 
     const defaultOptions = {
@@ -141,7 +142,6 @@ describe('linker', () => {
     }
 
     test('health bills', () => {
-      cozyClient.data.updateAttributes.mockImplementation(updateOperation)
       const healthBills = [
         {
           _id: 'b1',
@@ -169,8 +169,30 @@ describe('linker', () => {
       })
     })
 
+    test('health bills with not debit operation found should associate credit operation', () => {
+      const healthBills = [
+        {
+          _id: 'b1',
+          amount: 5,
+          originalAmount: 999,
+          type: 'health_costs',
+          originalDate: new Date(2017, 11, 13),
+          date: new Date(2017, 11, 15),
+          isRefund: true,
+          vendor: 'Ameli'
+        }
+      ]
+      const options = { ...defaultOptions, identifiers: ['CPAM'] }
+      return linker.linkBillsToOperations(healthBills, options)
+      .then(result => {
+        expect(result).toEqual({
+          b1: { creditOperation: operations[1], debitOperation: undefined }
+        })
+        expect(operations[1]).toMatchObject({bills: ['io.cozy.bills:b1']})
+      })
+    })
+
     test('not health bills', () => {
-      cozyClient.data.updateAttributes.mockReturnValue(Promise.resolve())
       const noHealthBills = [
         {
           _id: 'b2',
