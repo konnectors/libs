@@ -9,13 +9,20 @@ const { getIdentifiers, getDateRangeFromBill, getAmountRangeFromBill } = require
 
 const HEALTH_VENDORS = ['Ameli', 'Harmonie', 'Malakoff Mederic', 'MGEN'] // TODO: to import from each konnector
 const HEALTH_CAT_ID_OPERATION = '400610' // TODO: import it from cozy-bank
+const UNCATEGORIZED_CAT_ID_OPERATION = '0' // TODO: import it from cozy-bank
 
 // helpers
 
 const getCategoryId = o => o.manualCategoryId || o.automaticCategoryId
 
+const checkOperationCategory = (operation, categoryId) => {
+  return categoryId === getCategoryId(operation)
+}
 const isHealthOperation = operation => {
-  return HEALTH_CAT_ID_OPERATION === getCategoryId(operation)
+  return checkOperationCategory(operation, HEALTH_CAT_ID_OPERATION)
+}
+const isUncategorizedOperation = operation => {
+  return checkOperationCategory(operation, UNCATEGORIZED_CAT_ID_OPERATION)
 }
 
 const isHealthBill = bill => {
@@ -42,8 +49,8 @@ const filterByAmounts = ({ minAmount, maxAmount }) => operation => {
 
 const filterByCategory = bill => operation => {
   return isHealthBill(bill)
-    ? isHealthOperation(operation)
-    : !isHealthOperation(operation)
+    ? isHealthOperation(operation) || isUncategorizedOperation(operation)
+    : !isHealthOperation(operation) || isUncategorizedOperation(operation)
 }
 
 // combine filters
