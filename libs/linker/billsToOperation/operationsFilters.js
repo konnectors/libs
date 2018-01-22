@@ -13,7 +13,11 @@ const UNCATEGORIZED_CAT_ID_OPERATION = '0' // TODO: import it from cozy-bank
 
 // helpers
 
-const getCategoryId = o => o.manualCategoryId || o.automaticCategoryId
+const getCategoryId = o => {
+  return o.manualCategoryId
+    || o.automaticCategoryId
+    || UNCATEGORIZED_CAT_ID_OPERATION
+}
 
 const checkOperationCategory = (operation, categoryId) => {
   return categoryId === getCategoryId(operation)
