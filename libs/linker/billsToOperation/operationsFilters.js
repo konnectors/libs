@@ -7,7 +7,7 @@ const { getIdentifiers, getDateRangeFromBill, getAmountRangeFromBill } = require
 
 // constants
 
-const HEALTH_VENDORS = ['Ameli', 'Harmonie', 'Malakoff Mederic'] // TODO: to import from each konnector
+const HEALTH_VENDORS = ['Ameli', 'Harmonie', 'Malakoff Mederic', 'MGEN'] // TODO: to import from each konnector
 const HEALTH_CAT_ID_OPERATION = '400610' // TODO: import it from cozy-bank
 
 // helpers
@@ -62,7 +62,7 @@ const operationsFilters = (bill, operations, options) => {
   // We filters with identifiers when
   // - we search a credit operation
   // - or when is bill is in the health category
-  if (options.credit || !isHealthBill(bill)) {
+  if (options.credit || !isHealthBill(bill)) {
     const fbyIdentifiers = filterByIdentifiers(getIdentifiers(options))
     conditions.push(fbyIdentifiers)
   }

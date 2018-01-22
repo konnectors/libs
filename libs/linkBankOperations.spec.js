@@ -1,4 +1,4 @@
-import linkBankOperations, { Linker } from './linkBankOperations'
+import { Linker } from './linkBankOperations'
 
 jest.mock('./cozyclient')
 const cozyClient = require('./cozyclient')
@@ -18,7 +18,6 @@ describe('linker', () => {
   const bill = { amount: 110, _id: 'b1' }
 
   describe('addBillToOperation', () => {
-
     test('operation witout bills', () => {
       const operation = { _id: 123456 }
 
@@ -57,8 +56,7 @@ describe('linker', () => {
   })
 
   describe('addReimbursementToOperation', () => {
-
-    test('operation witout reimbursements', () => {
+    test('operation without reimbursements', () => {
       const operation = { _id: 123456 }
 
       linker.addReimbursementToOperation(bill, operation, operation)
@@ -69,7 +67,7 @@ describe('linker', () => {
         {
           reimbursements: [{
             amount: 110,
-            billId: "io.cozy.bills:b1",
+            billId: 'io.cozy.bills:b1',
             operationId: 123456
           }]
         }
@@ -87,7 +85,7 @@ describe('linker', () => {
         {
           reimbursements: ['test', {
             amount: 110,
-            billId: "io.cozy.bills:b1",
+            billId: 'io.cozy.bills:b1',
             operationId: 123456
           }]
         }
@@ -95,11 +93,14 @@ describe('linker', () => {
     })
 
     test('operation have already the reimbursement', () => {
-      const operation = { _id: 123456, reimbursements: [{
-        amount: 110,
-        billId: "io.cozy.bills:b1",
-        operationId: 123456
-      }] }
+      const operation = {
+        _id: 123456,
+        reimbursements: [{
+          amount: 110,
+          billId: 'io.cozy.bills:b1',
+          operationId: 123456
+        }]
+      }
 
       linker.addReimbursementToOperation(bill, operation, operation)
 
@@ -108,7 +109,7 @@ describe('linker', () => {
   })
 
   describe('linkBillsToOperations', () => {
-    const operations = [
+    const operationsInit = [
       { amount: -20, label: 'Visite chez le médecin', _id: 'o1', date: new Date(2017, 11, 13), automaticCategoryId: '400610' },
       { amount: 5, label: 'Remboursement CPAM', _id: 'o2', date: new Date(2017, 11, 15), automaticCategoryId: '400610' },
       { amount: -120, label: 'Facture SFR', _id: 'o3', date: new Date(2017, 11, 8) },
@@ -118,15 +119,29 @@ describe('linker', () => {
       { amount: -2.6, label: 'Salade', _id: 'o7', date: new Date(2017, 11, 6) }
     ]
 
-    cozyClient.data.query.mockReturnValue(Promise.resolve(operations))
+    let operations
+
+    beforeEach(function () {
+      // reset operations to operationsInit values
+      operations = operationsInit.map(op => ({ ...op }))
+      cozyClient.data.query.mockReturnValue(Promise.resolve(operations))
+    })
 
     const defaultOptions = {
-      minAmountDelta: 1, maxAmountDelta: 1,
-      pastWindow: 1, futureWindow: 1
+      minAmountDelta: 1,
+      maxAmountDelta: 1,
+      pastWindow: 1,
+      futureWindow: 1
+    }
+
+    function updateOperation (doctype, id, attributes) {
+      const operation = operations.find(operation => operation._id === id)
+      Object.assign(operation, attributes)
+      return Promise.resolve(operation)
     }
 
     test('health bills', () => {
-      cozyClient.data.updateAttributes.mockReturnValue(Promise.resolve())
+      cozyClient.data.updateAttributes.mockImplementation(updateOperation)
       const healthBills = [
         {
           _id: 'b1',
@@ -136,15 +151,21 @@ describe('linker', () => {
           originalDate: new Date(2017, 11, 13),
           date: new Date(2017, 11, 15),
           isRefund: true,
-          vendor: 'Ameli',
+          vendor: 'Ameli'
         }
       ]
       const options = { ...defaultOptions, identifiers: ['CPAM'] }
       return linker.linkBillsToOperations(healthBills, options)
       .then(result => {
         expect(result).toEqual({
-          b1: { creditOperation: operations[1], debitOperation: operations[0] },
+          b1: { creditOperation: operations[1], debitOperation: operations[0] }
         })
+        expect(operations[0]).toMatchObject({reimbursements: [{
+          billId: 'io.cozy.bills:b1',
+          amount: 5,
+          operationId: 'o2'
+        }]})
+        expect(operations[1]).toMatchObject({bills: ['io.cozy.bills:b1']})
       })
     })
 
@@ -155,7 +176,7 @@ describe('linker', () => {
           _id: 'b2',
           amount: 30,
           date: new Date(2017, 11, 8),
-          vendor: 'SFR',
+          vendor: 'SFR'
         }
       ]
       const options = { ...defaultOptions, identifiers: ['SFR'] }

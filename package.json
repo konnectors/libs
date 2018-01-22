@@ -51,5 +51,8 @@
     "lint": "standard --fix commands/* helpers/* libs/* index.js",
     "test": "jest",
     "doc": "jsdoc2md --template jsdoc2md/README.hbs libs/*.js helpers/*.js > docs/api.md"
+  },
+  "standard": {
+    "globals": ["jest", "describe", "test", "beforeEach", "expect", "it"]
   }
 }

@@ -3,8 +3,6 @@ const addDays = require('date-fns/add_days')
 const subDays = require('date-fns/sub_days')
 const differenceInDays = require('date-fns/difference_in_days')
 
-const assert = require('../../../helpers/assert')
-
 const getOperationAmountFromBill = (bill, options) => {
   const isCredit = options && options.credit
   return isCredit ? bill.amount : -(bill.originalAmount || bill.amount)
