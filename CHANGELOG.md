@@ -25,6 +25,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - none yet
 
 
+## [3.2.4] - 2018-01-23
+### Changed
+- Fixed linking of health bills to their credit operation when no debit operation found
+
 ## [3.2.4] - 2018-01-22
 ### Changed
 - Fixed linking of health bills to operations
@@ -58,7 +62,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Linking with bank operations now works even if the bill has already been fetched
 
 
-[Unreleased]: https://github.com/cozy/cozy-konnector-libs/compare/v3.2.4...HEAD
+[Unreleased]: https://github.com/cozy/cozy-konnector-libs/compare/v3.2.5...HEAD
+[3.2.4]: https://github.com/cozy/cozy-konnector-libs/compare/v3.2.4...v3.2.5
 [3.2.4]: https://github.com/cozy/cozy-konnector-libs/compare/v3.2.3...v3.2.4
 [3.2.3]: https://github.com/cozy/cozy-konnector-libs/compare/v3.2.2...v3.2.3
 [3.2.2]: https://github.com/cozy/cozy-konnector-libs/compare/v3.2.1...v3.2.2
