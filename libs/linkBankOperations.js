@@ -102,13 +102,18 @@ class Linker {
       const linkBillToCreditOperation = debitOperation => {
         return findCreditOperation(this.cozyClient, bill, options)
           .then(creditOperation => {
-            if (creditOperation && debitOperation) {
+            const creditPromise = Promise.resolve()
+            if (creditOperation) {
               res.creditOperation = creditOperation
+              creditPromise.then(() => this.addBillToOperation(bill, creditOperation))
+            }
+            const debitPromise = Promise.resolve()
+            if (creditOperation && debitOperation) {
               log('debug', bill, 'Matching bill')
               log('debug', creditOperation, 'Matching credit creditOperation')
-              return this.addReimbursementToOperation(bill, debitOperation, creditOperation)
-              .then(() => this.addBillToOperation(bill, creditOperation))
+              debitPromise.then(() => this.addReimbursementToOperation(bill, debitOperation, creditOperation))
             }
+            return Promise.all([creditOperation, debitOperation])
           })
       }
 
