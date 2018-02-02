@@ -31,7 +31,7 @@ const errors = require('../helpers/errors')
  * this.terminate('LOGIN_FAILED')
  * ```
  */
-class baseKonnector {
+class BaseKonnector {
   /**
    * Constructor
    *
@@ -178,3 +178,5 @@ class baseKonnector {
 }
 
 module.exports = baseKonnector
+
+module.exports = BaseKonnector
