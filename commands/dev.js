@@ -2,12 +2,12 @@ process.env.NODE_ENV = 'development'
 if (!process.env.DEBUG) process.env.DEBUG = '*'
 
 const program = require('commander')
+const config = require('../helpers/init-konnector-config')()
+process.env.COZY_URL = config.COZY_URL
 const authenticate = require('../helpers/cozy-authenticate')
 const initDevAccount = require('../helpers/init-dev-account')
-const config = require('../helpers/init-konnector-config')()
 const path = require('path')
 
-process.env.COZY_URL = config.COZY_URL
 
 let useFolder = false
 
