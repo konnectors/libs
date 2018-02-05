@@ -2,7 +2,8 @@ const log = require('../libs/logger')
 const Raven = require('raven')
 const getDomain = require('./cozy-domain')
 
-let ravenOK = false
+let isRavenConfigured = false
+
 
 const domainToEnv = {
   'cozy.tools': 'development',
@@ -41,7 +42,7 @@ const setupSentry = function () {
     const environment = getEnvironmentFromDomain(domain)
     Raven.config(SENTRY_DSN, { release, environment }).install(afterFatalError)
     Raven.mergeContext({ extra: {domain} })
-    ravenOK = true
+    isRavenConfigured = true
     log('info', 'Raven configured !')
   } catch (e) {
     log('warn', 'Could not load Raven, errors will not be sent to Sentry')
@@ -51,7 +52,7 @@ const setupSentry = function () {
 
 module.exports.captureExceptionAndDie = function (err) {
   log('info', 'Capture exception and die')
-  if (!ravenOK) {
+  if (!isRavenConfigured) {
     process.exit(1)
   } else {
     try {
