@@ -49,9 +49,6 @@ function log (type, message, label, namespace) {
     return
   }
   console.log(format(type, message, label, namespace))
-
-  // Try to stop the connector after current running io before the stack
-  if (type === 'critical') setImmediate(() => process.exit(1))
 }
 
 log.addFilter = function (filter) {
