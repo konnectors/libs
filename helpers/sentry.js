@@ -44,7 +44,7 @@ const setupSentry = function () {
     const domain = getDomain()
     const environment = getEnvironmentFromDomain(domain)
     Raven.config(SENTRY_DSN, { release, environment }).install(afterFatalError)
-    Raven.mergeContext({ extra: {domain} })
+    Raven.mergeContext({ tags: {domain} })
     isRavenConfigured = true
     log('info', 'Raven configured !')
   } catch (e) {
