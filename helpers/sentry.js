@@ -21,7 +21,8 @@ const setupSentry = function () {
   try {
     log('info', 'process.env.SENTRY_DSN found, setting up Raven')
     const release = typeof GIT_SHA !== 'undefined' ? GIT_SHA : 'dev'
-    Raven.config(SENTRY_DSN, { release }).install(afterFatalError)
+    const environment = process.env.NODE_ENV
+    Raven.config(SENTRY_DSN, { release, environment }).install(afterFatalError)
     log('info', 'Raven configured !')
   } catch (e) {
     log('warn', 'Could not load Raven, errors will not be sent to Sentry')
