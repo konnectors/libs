@@ -4,16 +4,19 @@ const getDomain = require('./cozy-domain')
 
 let isRavenConfigured = false
 
+const ENV_DEV = 'development'
+const ENV_SELF = 'selfhost'
+const ENV_PROD = 'production'
 
 const domainToEnv = {
-  'cozy.tools': 'development',
-  'cozy.works': 'development',
-  'cozy.rocks': 'production',
-  'mycozy.cloud': 'production'
+  'cozy.tools': ENV_DEV,
+  'cozy.works': ENV_DEV,
+  'cozy.rocks': ENV_PROD,
+  'mycozy.cloud': ENV_PROD
 }
 
 const getEnvironmentFromDomain = domain => {
-  return domainToEnv[domain] || 'selfhost'
+  return domainToEnv[domain] || ENV_SELF
 }
 
 // Available in Projet > Settings > Client Keys
