@@ -60,6 +60,7 @@ module.exports.captureExceptionAndDie = function (err) {
     } catch (e) {
       log('warn', 'Could not send error to Sentry, exiting...')
       log('warn', e)
+      log('warn', err)
       process.exit(1)
     }
   }
