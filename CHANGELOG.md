@@ -24,6 +24,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Security
 - none yet
 
+## [3.3.0] - 2018-01-23
+
+### Added
+- Automatic exception handling via Sentry if `process.env.SENTRY_DSN` is set
+
+### Fixed
+- Correct status codes are used when exiting from an error
+- Yarn dev
 
 ## [3.2.4] - 2018-01-23
 ### Changed
@@ -62,8 +70,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Linking with bank operations now works even if the bill has already been fetched
 
 
-[Unreleased]: https://github.com/cozy/cozy-konnector-libs/compare/v3.2.5...HEAD
-[3.2.4]: https://github.com/cozy/cozy-konnector-libs/compare/v3.2.4...v3.2.5
+[Unreleased]: https://github.com/cozy/cozy-konnector-libs/compare/v3.3.0...HEAD
+[3.3.0]: https://github.com/cozy/cozy-konnector-libs/compare/v3.2.5...v3.3.0
+[3.2.5]: https://github.com/cozy/cozy-konnector-libs/compare/v3.2.4...v3.2.5
 [3.2.4]: https://github.com/cozy/cozy-konnector-libs/compare/v3.2.3...v3.2.4
 [3.2.3]: https://github.com/cozy/cozy-konnector-libs/compare/v3.2.2...v3.2.3
 [3.2.2]: https://github.com/cozy/cozy-konnector-libs/compare/v3.2.1...v3.2.2
