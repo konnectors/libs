@@ -159,7 +159,7 @@ async function shouldSave (entry, existingDocument, cozy) => {
   return Promise.resolve(!existingDocument)
 }
 ```
-When calling this function, it is assumed that `cozy-konnector-libs` first queries the database for an exisring document, based on synchronization data and pass the document resulting the query to the `shouldSave` function, event if this document is `null`.
+When calling this function, it is assumed that `cozy-konnector-libs` first queries the database for an exisring document, based on synchronization data and pass the document resulting the query to the `shouldSave` function, event if this document is `null`. We pass the whole document, and not only synchronization data, to let the contributors free on their way they are determining it a document should be saved.
 
 As a third parameter, a cozyClient instance is passed, it may be used by a konnector to perform another query.
 
@@ -215,6 +215,3 @@ Every synchronized document will contain:
   }
 }
 ```
-
-## Remaining questions
-Do we need to pass as second parameter to `shouldSave`, and `shouldDelete` the whole existing document or just the existing synchronzation data ?
