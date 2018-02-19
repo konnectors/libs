@@ -15,7 +15,7 @@ const {
  * It takes a fetch function in parameter that must return a `Promise`.
  *
  * @example
- * ```
+ * ```javascript
  * const { BaseKonnector } = require('cozy-konnector-libs')
  *
  * module.exports = new BaseKonnector(function fetch () {

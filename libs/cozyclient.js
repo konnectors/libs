@@ -1,6 +1,18 @@
 /**
  * This is a [cozy-client-js](https://cozy.github.io/cozy-client-js/) instance already initialized and ready to use
- * @module  cozy-client
+ *
+ * If you want to access cozy-client-js directly, this method gives you directly an instance of it,
+ * initialized according to `COZY_URL` and `COZY_CREDENTIALS` environment variable given by cozy-stack
+ * You can refer to the [cozy-client-js documentation](https://cozy.github.io/cozy-client-js/) for more information.
+ *
+ * Example :
+ *
+ * ```javascript
+ * const {cozyClient} = require('cozy-konnector-libs')
+ *
+ * cozyClient.data.defineIndex('my.doctype', ['_id'])
+ * ```
+ * @module cozy-client
  */
 
 const {Client, MemoryStorage} = require('cozy-client-js')

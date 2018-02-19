@@ -14,14 +14,15 @@
  *
  * - `options` (object) is optional. Possible options :
  *
- *   + `timeout` (timestamp) can be used if your connector
- *   needs to fetch a lot of files and if the the stack does not give enough time to your connector to
- *   fetch it all. It could happen that the connector is stopped right in the middle of the download of
- *   the file and the file will be broken. With the `timeout` option, the `saveFiles` function will check
- *   if the timeout has passed right after downloading each file and then will be sure to be stopped
- *   cleanly if the timeout is not too long. And since it is really fast to check that a file has
- *   already been downloaded, on the next run of the connector, it will be able to download some more
- *   files, and so on. If you want the timeout to be in 10s, do `Date.now() + 10*1000`. You can try it in the previous code.
+ *   + `timeout` (timestamp) can be used if your connector needs to fetch a lot of files and if the
+ *   stack does not give enough time to your connector to fetch it all. It could happen that the
+ *   connector is stopped right in the middle of the download of the file and the file will be
+ *   broken. With the `timeout` option, the `saveFiles` function will check if the timeout has
+ *   passed right after downloading each file and then will be sure to be stopped cleanly if the
+ *   timeout is not too long. And since it is really fast to check that a file has already been
+ *   downloaded, on the next run of the connector, it will be able to download some more
+ *   files, and so on. If you want the timeout to be in 10s, do `Date.now() + 10*1000`.
+ *   You can try it in the previous code.
  *
  * @module saveFiles
  */
@@ -108,7 +109,7 @@ const saveEntry = function (entry, options) {
     })
     .then(file => {
       return file
-    }, () =>  {
+    }, () => {
       log('debug', entry)
       log('debug', `File ${filepath} does not exist yet or is not valid`)
       return downloadEntry(entry, options)

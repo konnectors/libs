@@ -12,17 +12,36 @@
  * })
  * ```
  *
- * - `cheerio`  will parse automatically the `response.body` in a cheerio instance
+ * Options :
  *
- * ```js
+ * - `cheerio`:  will parse automatically the `response.body` in a cheerio instance
+ *
+ * ```javascript
  * req = request({ cheerio: true })
  * req('http://github.com', $ => {
  *   const repos = $('#repo_listing .repo')
  * })
  * ```
  *
- * - `jar` is passed to `request` options. Remembers cookies for future use.
- * - `json` will parse the `response.body` as JSON
+ * - `jar`: is passed to `request` options. Remembers cookies for future use.
+ * - `json`: will parse the `response.body` as JSON
+ * - `json`: will parse the `response.body` as JSON
+ * - `resolveWithFullResponse`: The full response will be return in the promise. It is compatible
+ *   with cheerio and json options.
+ *
+ * ```javascript
+ * req = request({
+ *    resolveWithFullResponse: true,
+ *    cheerio: true
+ * })
+ * req('http://github.com', response => {
+ *   console.log(response.statusCode)
+ *   const $ = response.body
+ *   const repos = $('#repo_listing .repo')
+ * })
+ * ```
+ *
+ * You can find the full list of available options in [request-promise](https://github.com/request/request-promise) and [request](https://github.com/request/request) documentations.
  *
  * @module request
  */

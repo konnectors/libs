@@ -1,12 +1,33 @@
 /**
- * Used not to duplicate data.
+ * This function filters the passed array from data already present in the cozy so that there is
+ * not duplicated data in the cozy.
  *
- * `options`:
- * - `index` : As returned by `cozy.data.defineIndex`. Default corresponds
- *   to all documents of the selected doctype
- * - `selector` : Mango query. Default one is `{selector: {_id: {"$gt": null}}}` to
- *    get all the records.
- * - `keys` : List of keys used to check that two items are the same. Default is `['_id']`
+ * Parameters:
+ *
+ * * `documents`: an array of objects corresponding to the data you want to save in the cozy
+ * * `doctype` (string): the doctype where you want to save data (ex: 'io.cozy.bills')
+ * * `options` :
+ *    - `keys` (array) : List of keys used to check that two items are the same. By default it is set to `['id']'.
+ *    - `index` (optionnal) : Return value returned by `cozy.data.defineIndex`, the default will correspond to all documents of the selected doctype.
+ *    - `selector` (optionnal object) : Mango request to get records. Default is built from the keys `{selector: {_id: {"$gt": null}}}` to get all the records.
+ *
+ * ```javascript
+ * const documents = [
+ *   {
+ *     name: 'toto',
+ *     height: 1.8
+ *   },
+ *   {
+ *     name: 'titi',
+ *     height: 1.7
+ *   }
+ * ]
+ *
+ * return filterData(documents, 'io.cozy.height', {
+ *   keys: ['name']
+ * }).then(filteredDocuments => addData(filteredDocuments, 'io.cozy.height'))
+ *
+ * ```
  *
  * @module filterData
  */
@@ -37,10 +58,10 @@ const suitableCall = (funcOrMethod, ...args) => {
   }
 }
 
-const hydrateAndFilter = (entries, doctype, options = {}) => {
+const hydrateAndFilter = (documents, doctype, options = {}) => {
   const cozy = require('./cozyclient')
 
-  log('debug', String(entries.length), 'Number of items before hydrateAndFilter')
+  log('debug', String(documents.length), 'Number of items before hydrateAndFilter')
   if (!doctype) return Promise.reject(new Error(`Doctype is mandatory to filter the connector data.`))
 
   const keys = options.keys ? options.keys : ['_id']
@@ -80,20 +101,20 @@ const hydrateAndFilter = (entries, doctype, options = {}) => {
     })
   }
 
-  // We add `_id` to `entries` that we find in the database.
+  // We add _id to `documents` that we find in the database.
   // This is useful when linking with bank operations (a bill
   // can already be in the database but not already matched
   // to an operation) since the linking operation need the _id
-  // of the entry
+  // of the document
   const hydrateExistingEntries = store => () => {
-    entries.forEach(entry => {
-      const key = createHash(entry)
+    documents.forEach(document => {
+      const key = createHash(document)
       if (store[key]) {
-        entry._id = store[key]._id
-        entry._rev = store[key]._rev
+        document._id = store[key]._id
+        document._rev = store[key]._rev
       }
     })
-    return entries
+    return documents
   }
 
   const defaultShouldSave = () => true
@@ -102,7 +123,7 @@ const hydrateAndFilter = (entries, doctype, options = {}) => {
   const filterEntries = store => async () => {
     // Filter out items according to shouldSave / shouldUpdate.
     // Both can be passed as option or can be part of the entry.
-    return uniqBy(await bluebird.filter(entries, entry => {
+    return uniqBy(await bluebird.filter(documents, entry => {
       const shouldSave = entry.shouldSave || options.shouldSave || defaultShouldSave
       const shouldUpdate = entry.shouldUpdate || options.shouldUpdate || defaultShouldUpdate
       const existing = store[createHash(entry)]

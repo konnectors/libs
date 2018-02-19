@@ -4,21 +4,66 @@
 
 <dl>
 <dt><a href="#module_addData">addData</a></dt>
-<dd><p>Creates the records in the given doctype.</p>
+<dd><p>This function saves the data into the cozy blindly without check</p>
+<p>Parameters:</p>
+<ul>
+<li><code>documents</code>: an array of objects corresponding to the data you want to save in the cozy</li>
+<li><code>doctype</code> (string): the doctype where you want to save data (ex: &#39;io.cozy.bills&#39;)</li>
+</ul>
+<pre><code class="lang-javascript">const documents = [
+  {
+    name: &#39;toto&#39;,
+    height: 1.8
+  },
+  {
+    name: &#39;titi&#39;,
+    height: 1.7
+  }
+]
+
+return addData(documents, &#39;io.cozy.height&#39;)
+</code></pre>
 </dd>
-<dt><a href="#module_cozy-client">cozyClient</a></dt>
+<dt><a href="#module_cozy-client">cozy-client</a></dt>
 <dd><p>This is a <a href="https://cozy.github.io/cozy-client-js/">cozy-client-js</a> instance already initialized and ready to use</p>
+<p>If you want to access cozy-client-js directly, this method gives you directly an instance of it,
+initialized according to <code>COZY_URL</code> and <code>COZY_CREDENTIALS</code> environment variable given by cozy-stack
+You can refer to the <a href="https://cozy.github.io/cozy-client-js/">cozy-client-js documentation</a> for more information.</p>
+<p>Example :</p>
+<pre><code class="lang-javascript">const {clientClient} = require(&#39;cozy-konnector-libs&#39;)
+
+cozyClient.data.defineIndex(&#39;my.doctype&#39;, [&#39;_id&#39;])
+</code></pre>
 </dd>
 <dt><a href="#module_filterData">filterData</a></dt>
-<dd><p>Used not to duplicate data.</p>
+<dd><p>This function filters the passed array from data already present in the cozy so that there is
+not displicated data in the cozy.</p>
+<p>Parameters:</p>
 <ul>
+<li><code>documents</code>: an array of objects corresponding to the data you want to save in the cozy</li>
+<li><code>doctype</code> (string): the doctype where you want to save data (ex: &#39;io.cozy.bills&#39;)</li>
 <li><code>options</code> :<ul>
-<li><code>keys</code> : List of keys used to check that two items are the same. By default it is set to `[&#39;id&#39;]&#39;.</li>
-<li><code>index</code> : Return value returned by <code>cozy.data.defineIndex</code>, the default will correspond to all documents of the selected doctype.</li>
-<li><code>selector</code> : Mango request to get records. Default is built from the keys <code>{selector: {_id: {&quot;$gt&quot;: null}}}</code> to get all the records.</li>
+<li><code>keys</code> (array) : List of keys used to check that two items are the same. By default it is set to `[&#39;id&#39;]&#39;.</li>
+<li><code>index</code> (optionnal) : Return value returned by <code>cozy.data.defineIndex</code>, the default will correspond to all documents of the selected doctype.</li>
+<li><code>selector</code> (optionnal object) : Mango request to get records. Default is built from the keys <code>{selector: {_id: {&quot;$gt&quot;: null}}}</code> to get all the records.</li>
 </ul>
 </li>
 </ul>
+<pre><code class="lang-javascript">const documents = [
+  {
+    name: &#39;toto&#39;,
+    height: 1.8
+  },
+  {
+    name: &#39;titi&#39;,
+    height: 1.7
+  }
+]
+
+return filterData(documents, &#39;io.cozy.height&#39;, {
+  keys: [&#39;name&#39;]
+}).then(filteredDocuments =&gt; addData(filteredDocuments, &#39;io.cozy.height&#39;))
+</code></pre>
 </dd>
 <dt><a href="#module_linkBankOperations">linkBankOperations</a></dt>
 <dd><h3 id="linkbankoperations-entries-doctype-fields-options-">linkBankOperations ( entries, doctype, fields, options = {} )</h3>
@@ -36,24 +81,54 @@ req = request({
   json: true
 })
 </code></pre>
+<p>Options :</p>
 <ul>
-<li><code>cheerio</code>  will parse automatically the <code>response.body</code> in a cheerio instance</li>
+<li><code>cheerio</code>:  will parse automatically the <code>response.body</code> in a cheerio instance</li>
 </ul>
-<pre><code class="lang-js">req = request({ cheerio: true })
+<pre><code class="lang-javascript">req = request({ cheerio: true })
 req(&#39;http://github.com&#39;, $ =&gt; {
   const repos = $(&#39;#repo_listing .repo&#39;)
 })
 </code></pre>
 <ul>
-<li><code>jar</code> is passed to <code>request</code> options. Remembers cookies for future use.</li>
-<li><code>json</code> will parse the <code>response.body</code> as JSON</li>
+<li><code>jar</code>: is passed to <code>request</code> options. Remembers cookies for future use.</li>
+<li><code>json</code>: will parse the <code>response.body</code> as JSON</li>
+<li><code>json</code>: will parse the <code>response.body</code> as JSON</li>
+<li><code>resolveWithFullResponse</code>: The full response will be return in the promise. It is compatible
+with cheerio and json options.</li>
 </ul>
+<pre><code class="lang-javascript">req = request({
+   resolveWithFullResponse: true,
+   cheerio: true
+})
+req(&#39;http://github.com&#39;, response =&gt; {
+  console.log(response.statusCode)
+  const $ = response.body
+  const repos = $(&#39;#repo_listing .repo&#39;)
+})
+</code></pre>
+<p>You can find the full list of available options in <a href="https://github.com/request/request-promise">request-promise</a> and <a href="https://github.com/request/request">request</a> documentations.</p>
 </dd>
 <dt><a href="#module_saveBills">saveBills</a></dt>
-<dd><p>Combines the features of <code>saveFiles</code>, <code>hydrateAndFilter</code>, <code>addData</code> and  <code>linkBankOperations</code>.
-Will create <code>io.cozy.bills</code> objects. The default deduplication keys are
-<code>[&#39;date&#39;, &#39;amount&#39;, &#39;vendor&#39;]</code>.</p>
-<p><code>options</code> is passed directly to <code>saveFiles</code>, <code>hydrateAndFilter</code>, <code>addData</code> and <code>linkBankOperations</code>.</p>
+<dd><p>Combines the features of <code>saveFiles</code>, <code>filterData</code>, <code>addData</code> and <code>linkBankOperations</code> for a
+common case: bills.
+Will create <code>io.cozy.bills</code> objects. The default deduplication keys are <code>[&#39;date&#39;, &#39;amount&#39;, &#39;vendor&#39;]</code>.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>documents</code> is an array of objects with any attributes :</li>
+<li><code>fields</code> (object) this is the first parameter given to BaseKonnector&#39;s constructor</li>
+<li><code>options</code> is passed directly to <code>saveFiles</code>, <code>hydrateAndFilter</code>, <code>addData</code> and <code>linkBankOperations</code>.</li>
+</ul>
+<pre><code class="lang-javascript">const { BaseKonnector, saveBills } = require(&#39;cozy-konnector-libs&#39;)
+
+module.exports = new BaseKonnector(function fetch (fields) {
+  const documents = []
+  // some code which fills documents
+  return saveBills(documents, fields, {
+    identifiers: [&#39;vendorj&#39;]
+  })
+})
+</code></pre>
 </dd>
 <dt><a href="#module_saveFiles">saveFiles</a></dt>
 <dd><p>The goal of this function is to save the given files in the given folder via the Cozy API.</p>
@@ -72,14 +147,15 @@ in standalone mode, the main path is the path of the connector.</p>
 </li>
 <li><p><code>options</code> (object) is optional. Possible options :</p>
 <ul>
-<li><code>timeout</code> (timestamp) can be used if your connector
-needs to fetch a lot of files and if the the stack does not give enough time to your connector to
-fetch it all. It could happen that the connector is stopped right in the middle of the download of
-the file and the file will be broken. With the <code>timeout</code> option, the <code>saveFiles</code> function will check
-if the timeout has passed right after downloading each file and then will be sure to be stopped
-cleanly if the timeout is not too long. And since it is really fast to check that a file has
-already been downloaded, on the next run of the connector, it will be able to download some more
-files, and so on. If you want the timeout to be in 10s, do <code>Date.now() + 10*1000</code>. You can try it in the previous code.</li>
+<li><code>timeout</code> (timestamp) can be used if your connector needs to fetch a lot of files and if the
+stack does not give enough time to your connector to fetch it all. It could happen that the
+connector is stopped right in the middle of the download of the file and the file will be
+broken. With the <code>timeout</code> option, the <code>saveFiles</code> function will check if the timeout has
+passed right after downloading each file and then will be sure to be stopped cleanly if the
+timeout is not too long. And since it is really fast to check that a file has already been
+downloaded, on the next run of the connector, it will be able to download some more
+files, and so on. If you want the timeout to be in 10s, do <code>Date.now() + 10*1000</code>.
+You can try it in the previous code.</li>
 </ul>
 </li>
 </ul>
@@ -87,14 +163,12 @@ files, and so on. If you want the timeout to be in 10s, do <code>Date.now() + 10
 <dt><a href="#module_updateOrCreate">updateOrCreate</a></dt>
 <dd><p>The goal of this function is create or update the given entries according to if they already
 exist in the cozy or not</p>
+<p>Parameters:</p>
 <ul>
-<li><p><code>entries</code> is an array of objects with any attributes :</p>
-</li>
-<li><p><code>doctype</code> (string) is the cozy doctype where the entries should be saved</p>
-</li>
-<li><p><code>filters</code> (array) is the list of attributes in each entry should be used to check if an entry
-is already saved in the cozy</p>
-</li>
+<li><code>entries</code> is an array of objects with any attributes :</li>
+<li><code>doctype</code> (string) is the cozy doctype where the entries should be saved</li>
+<li><code>matchingAttributes</code> (array of strings) is the list of attributes in each entry should be used to check if an entry
+is already saved in the cozy</li>
 </ul>
 </dd>
 </dl>
@@ -102,7 +176,7 @@ is already saved in the cozy</p>
 ## Classes
 
 <dl>
-<dt><a href="#baseKonnector">baseKonnector</a></dt>
+<dt><a href="#BaseKonnector">BaseKonnector</a></dt>
 <dd><p>The class from which all the connectors must inherit.
 It takes a fetch function in parameter that must return a <code>Promise</code>.</p>
 </dd>
@@ -146,22 +220,77 @@ It takes a fetch function in parameter that must return a <code>Promise</code>.<
 <a name="module_addData"></a>
 
 ## addData
-Creates the records in the given doctype.
+This function saves the data into the cozy blindly without check
+
+Parameters:
+
+* `documents`: an array of objects corresponding to the data you want to save in the cozy
+* `doctype` (string): the doctype where you want to save data (ex: 'io.cozy.bills')
+
+```javascript
+const documents = [
+  {
+    name: 'toto',
+    height: 1.8
+  },
+  {
+    name: 'titi',
+    height: 1.7
+  }
+]
+
+return addData(documents, 'io.cozy.height')
+```
 
 <a name="module_cozy-client"></a>
 
-## cozyClient
+## cozy-client
 This is a [cozy-client-js](https://cozy.github.io/cozy-client-js/) instance already initialized and ready to use
+
+If you want to access cozy-client-js directly, this method gives you directly an instance of it,
+initialized according to `COZY_URL` and `COZY_CREDENTIALS` environment variable given by cozy-stack
+You can refer to the [cozy-client-js documentation](https://cozy.github.io/cozy-client-js/) for more information.
+
+Example :
+
+```javascript
+const {clientClient} = require('cozy-konnector-libs')
+
+cozyClient.data.defineIndex('my.doctype', ['_id'])
+```
 
 <a name="module_filterData"></a>
 
 ## filterData
-Used not to duplicate data.
+This function filters the passed array from data already present in the cozy so that there is
+not displicated data in the cozy.
 
+Parameters:
+
+* `documents`: an array of objects corresponding to the data you want to save in the cozy
+* `doctype` (string): the doctype where you want to save data (ex: 'io.cozy.bills')
 * `options` :
-   - `keys` : List of keys used to check that two items are the same. By default it is set to `['id']'.
-   - `index` : Return value returned by `cozy.data.defineIndex`, the default will correspond to all documents of the selected doctype.
-   - `selector` : Mango request to get records. Default is built from the keys `{selector: {_id: {"$gt": null}}}` to get all the records.
+   - `keys` (array) : List of keys used to check that two items are the same. By default it is set to `['id']'.
+   - `index` (optionnal) : Return value returned by `cozy.data.defineIndex`, the default will correspond to all documents of the selected doctype.
+   - `selector` (optionnal object) : Mango request to get records. Default is built from the keys `{selector: {_id: {"$gt": null}}}` to get all the records.
+
+```javascript
+const documents = [
+  {
+    name: 'toto',
+    height: 1.8
+  },
+  {
+    name: 'titi',
+    height: 1.7
+  }
+]
+
+return filterData(documents, 'io.cozy.height', {
+  keys: ['name']
+}).then(filteredDocuments => addData(filteredDocuments, 'io.cozy.height'))
+
+```
 
 <a name="module_linkBankOperations"></a>
 
@@ -187,26 +316,61 @@ req = request({
 })
 ```
 
-- `cheerio`  will parse automatically the `response.body` in a cheerio instance
+Options :
 
-```js
+- `cheerio`:  will parse automatically the `response.body` in a cheerio instance
+
+```javascript
 req = request({ cheerio: true })
 req('http://github.com', $ => {
   const repos = $('#repo_listing .repo')
 })
 ```
 
-- `jar` is passed to `request` options. Remembers cookies for future use.
-- `json` will parse the `response.body` as JSON
+- `jar`: is passed to `request` options. Remembers cookies for future use.
+- `json`: will parse the `response.body` as JSON
+- `json`: will parse the `response.body` as JSON
+- `resolveWithFullResponse`: The full response will be return in the promise. It is compatible
+  with cheerio and json options.
+
+```javascript
+req = request({
+   resolveWithFullResponse: true,
+   cheerio: true
+})
+req('http://github.com', response => {
+  console.log(response.statusCode)
+  const $ = response.body
+  const repos = $('#repo_listing .repo')
+})
+```
+
+You can find the full list of available options in [request-promise](https://github.com/request/request-promise) and [request](https://github.com/request/request) documentations.
 
 <a name="module_saveBills"></a>
 
 ## saveBills
-Combines the features of `saveFiles`, `hydrateAndFilter`, `addData` and  `linkBankOperations`.
-Will create `io.cozy.bills` objects. The default deduplication keys are
-`['date', 'amount', 'vendor']`.
+Combines the features of `saveFiles`, `filterData`, `addData` and `linkBankOperations` for a
+common case: bills.
+Will create `io.cozy.bills` objects. The default deduplication keys are `['date', 'amount', 'vendor']`.
 
-`options` is passed directly to `saveFiles`, `hydrateAndFilter`, `addData` and `linkBankOperations`.
+Parameters:
+
+- `documents` is an array of objects with any attributes :
+- `fields` (object) this is the first parameter given to BaseKonnector's constructor
+- `options` is passed directly to `saveFiles`, `hydrateAndFilter`, `addData` and `linkBankOperations`.
+
+```javascript
+const { BaseKonnector, saveBills } = require('cozy-konnector-libs')
+
+module.exports = new BaseKonnector(function fetch (fields) {
+  const documents = []
+  // some code which fills documents
+  return saveBills(documents, fields, {
+    identifiers: ['vendorj']
+  })
+})
+```
 
 <a name="module_saveFiles"></a>
 
@@ -226,14 +390,15 @@ in standalone mode, the main path is the path of the connector.
 
 - `options` (object) is optional. Possible options :
 
-  + `timeout` (timestamp) can be used if your connector
-  needs to fetch a lot of files and if the the stack does not give enough time to your connector to
-  fetch it all. It could happen that the connector is stopped right in the middle of the download of
-  the file and the file will be broken. With the `timeout` option, the `saveFiles` function will check
-  if the timeout has passed right after downloading each file and then will be sure to be stopped
-  cleanly if the timeout is not too long. And since it is really fast to check that a file has
-  already been downloaded, on the next run of the connector, it will be able to download some more
-  files, and so on. If you want the timeout to be in 10s, do `Date.now() + 10*1000`. You can try it in the previous code.
+  + `timeout` (timestamp) can be used if your connector needs to fetch a lot of files and if the
+  stack does not give enough time to your connector to fetch it all. It could happen that the
+  connector is stopped right in the middle of the download of the file and the file will be
+  broken. With the `timeout` option, the `saveFiles` function will check if the timeout has
+  passed right after downloading each file and then will be sure to be stopped cleanly if the
+  timeout is not too long. And since it is really fast to check that a file has already been
+  downloaded, on the next run of the connector, it will be able to download some more
+  files, and so on. If you want the timeout to be in 10s, do `Date.now() + 10*1000`.
+  You can try it in the previous code.
 
 <a name="module_updateOrCreate"></a>
 
@@ -241,32 +406,32 @@ in standalone mode, the main path is the path of the connector.
 The goal of this function is create or update the given entries according to if they already
 exist in the cozy or not
 
+Parameters:
+
 - `entries` is an array of objects with any attributes :
-
 - `doctype` (string) is the cozy doctype where the entries should be saved
-
-- `filters` (array) is the list of attributes in each entry should be used to check if an entry
+- `matchingAttributes` (array of strings) is the list of attributes in each entry should be used to check if an entry
   is already saved in the cozy
 
-<a name="baseKonnector"></a>
+<a name="BaseKonnector"></a>
 
-## baseKonnector
+## BaseKonnector
 The class from which all the connectors must inherit.
 It takes a fetch function in parameter that must return a `Promise`.
 
 **Kind**: global class  
 
-* [baseKonnector](#baseKonnector)
-    * [new baseKonnector(fetch)](#new_baseKonnector_new)
-    * [.end()](#baseKonnector+end)
-    * [.fail()](#baseKonnector+fail)
-    * [.init()](#baseKonnector+init) ⇒ <code>Promise</code>
-    * [.saveAccountData(data, options)](#baseKonnector+saveAccountData) ⇒ <code>Promise</code>
-    * [.terminate(message)](#baseKonnector+terminate)
+* [BaseKonnector](#BaseKonnector)
+    * [new BaseKonnector(fetch)](#new_BaseKonnector_new)
+    * [.end()](#BaseKonnector+end)
+    * [.fail()](#BaseKonnector+fail)
+    * [.init()](#BaseKonnector+init) ⇒ <code>Promise</code>
+    * [.saveAccountData(data, options)](#BaseKonnector+saveAccountData) ⇒ <code>Promise</code>
+    * [.terminate(message)](#BaseKonnector+terminate)
 
-<a name="new_baseKonnector_new"></a>
+<a name="new_BaseKonnector_new"></a>
 
-### new baseKonnector(fetch)
+### new BaseKonnector(fetch)
 Its role is twofold :
 
 - Make the link between account data and konnector
@@ -282,7 +447,7 @@ this.terminate('LOGIN_FAILED')
 | fetch | <code>function</code> | Function to be run automatically after account data is fetched. This function will be binded to the current connector. If not fetch function is given. The connector will have to handle itself it's own exection and error handling |
 
 **Example**  
-```
+```javascript
 const { BaseKonnector } = require('cozy-konnector-libs')
 
 module.exports = new BaseKonnector(function fetch () {
@@ -291,26 +456,26 @@ module.exports = new BaseKonnector(function fetch () {
  // different stages of the konnector
 })
 ```
-<a name="baseKonnector+end"></a>
+<a name="BaseKonnector+end"></a>
 
 ### baseKonnector.end()
 Hook called when the connector is ended
 
-**Kind**: instance method of [<code>baseKonnector</code>](#baseKonnector)  
-<a name="baseKonnector+fail"></a>
+**Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)  
+<a name="BaseKonnector+fail"></a>
 
 ### baseKonnector.fail()
 Hook called when the connector fails
 
-**Kind**: instance method of [<code>baseKonnector</code>](#baseKonnector)  
-<a name="baseKonnector+init"></a>
+**Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)  
+<a name="BaseKonnector+init"></a>
 
 ### baseKonnector.init() ⇒ <code>Promise</code>
 Initializes the current connector with data comming from the associated account
 
-**Kind**: instance method of [<code>baseKonnector</code>](#baseKonnector)  
+**Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)  
 **Returns**: <code>Promise</code> - with the fields as an object  
-<a name="baseKonnector+saveAccountData"></a>
+<a name="BaseKonnector+saveAccountData"></a>
 
 ### baseKonnector.saveAccountData(data, options) ⇒ <code>Promise</code>
 Saves data to the account that is passed to the konnector.
@@ -323,20 +488,20 @@ By default, the data is merged to the remote data, use
 The data is saved under the `.data` attribute of the cozy
 account.
 
-**Kind**: instance method of [<code>baseKonnector</code>](#baseKonnector)  
+**Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | data | <code>object</code> | Attributes to be merged |
 | options | <code>object</code> | { merge: true|false } |
 
-<a name="baseKonnector+terminate"></a>
+<a name="BaseKonnector+terminate"></a>
 
 ### baseKonnector.terminate(message)
 Send a special error code which is interpreted by the cozy stack to terminate the execution of the
 connector now
 
-**Kind**: instance method of [<code>baseKonnector</code>](#baseKonnector)  
+**Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)  
 
 | Param | Type | Description |
 | --- | --- | --- |
