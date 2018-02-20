@@ -21,7 +21,6 @@ class Linker {
     this.cozyClient = cozyClient
   }
 
-  // TODO: to rename addBillToDebitOperation
   addBillToOperation (bill, operation) {
     if (!bill._id) {
       log('warn', 'bill has no id, impossible to add it to an operation')
@@ -43,7 +42,6 @@ class Linker {
     )
   }
 
-  // TODO: to rename addBillToCreditOperation
   addReimbursementToOperation (bill, debitOperation, matchingOperation) {
     if (!bill._id) {
       log('warn', 'bill has no id, impossible to add it as a reimbursement')
