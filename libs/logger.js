@@ -2,10 +2,10 @@
 const { env2formats } = require('./log-formats')
 const { filterLevel, filterSecrets } = require('./log-filters')
 
-const { DEBUG, NODE_ENV, LOG_LEVEL } = process.env
+const { NODE_ENV, LOG_LEVEL } = process.env
 const env = (env2formats[NODE_ENV] && NODE_ENV) || 'production'
 
-let level = LOG_LEVEL || (DEBUG && DEBUG.length ? 'debug' : 'info')
+let level = LOG_LEVEL || 'debug'
 const format = env2formats[env]
 const filters = [filterLevel, filterSecrets]
 

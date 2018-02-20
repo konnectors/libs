@@ -1,11 +1,11 @@
 const levels = {
-  debug: 0,
   secret: 0,
-  info: 10,
-  warn: 20,
-  error: 30,
-  ok: 40,
-  critical: 40
+  debug: 10,
+  info: 20,
+  warn: 30,
+  error: 40,
+  ok: 50,
+  critical: 50
 }
 
 const Secret = require('./Secret')
