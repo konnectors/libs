@@ -21,7 +21,6 @@ class Linker {
     this.cozyClient = cozyClient
   }
 
-  // TODO: to rename addBillToDebitOperation
   addBillToOperation (bill, operation) {
     if (!bill._id) {
       log('warn', 'bill has no id, impossible to add it to an operation')
@@ -43,7 +42,6 @@ class Linker {
     )
   }
 
-  // TODO: to rename addBillToCreditOperation
   addReimbursementToOperation (bill, debitOperation, matchingOperation) {
     if (!bill._id) {
       log('warn', 'bill has no id, impossible to add it as a reimbursement')
@@ -102,18 +100,17 @@ class Linker {
       const linkBillToCreditOperation = debitOperation => {
         return findCreditOperation(this.cozyClient, bill, options)
           .then(creditOperation => {
-            const creditPromise = Promise.resolve()
+            const promises = []
             if (creditOperation) {
               res.creditOperation = creditOperation
-              creditPromise.then(() => this.addBillToOperation(bill, creditOperation))
+              promises.push(this.addBillToOperation(bill, creditOperation))
             }
-            const debitPromise = Promise.resolve()
             if (creditOperation && debitOperation) {
               log('debug', bill, 'Matching bill')
               log('debug', creditOperation, 'Matching credit creditOperation')
-              debitPromise.then(() => this.addReimbursementToOperation(bill, debitOperation, creditOperation))
+              promises.push(this.addReimbursementToOperation(bill, debitOperation, creditOperation))
             }
-            return Promise.all([creditOperation, debitOperation])
+            return Promise.all(promises)
           })
       }
 

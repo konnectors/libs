@@ -24,7 +24,7 @@ module.exports = (entries, fields, options = {}) => {
   }
 
   // Deduplicate on this keys
-  options.keys = ['date', 'amount', 'vendor']
+  options.keys = options.keys || ['date', 'amount', 'vendor']
 
   options.postProcess = function (entry) {
     if (entry.fileDocument) {

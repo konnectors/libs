@@ -160,16 +160,18 @@ describe('linker', () => {
         expect(result).toEqual({
           b1: { creditOperation: operations[1], debitOperation: operations[0] }
         })
-        expect(operations[0]).toMatchObject({reimbursements: [{
-          billId: 'io.cozy.bills:b1',
-          amount: 5,
-          operationId: 'o2'
-        }]})
+        expect(operations[0]).toMatchObject({
+          reimbursements: [{
+            billId: 'io.cozy.bills:b1',
+            amount: 5,
+            operationId: 'o2'
+          }
+        ]})
         expect(operations[1]).toMatchObject({bills: ['io.cozy.bills:b1']})
       })
     })
 
-    test('health bills with not debit operation found should associate credit operation', () => {
+    test('health bills with not debit operation found should be associated with a credit operation', () => {
       const healthBills = [
         {
           _id: 'b1',
@@ -191,6 +193,70 @@ describe('linker', () => {
         expect(operations[1]).toMatchObject({bills: ['io.cozy.bills:b1']})
       })
     })
+
+    describe('health bill with group amount', () => {
+      // Bills that have been reimbursed at the same date in the same
+      // "bundle" have a "groupAmount" that is matched against
+      // the debit operation
+      const healthBills = [
+        {
+          _id: 'b1',
+          amount: 3.5,
+          groupAmount: 5,
+          originalAmount: 20,
+          type: 'health_costs',
+          originalDate: new Date(2017, 11, 13),
+          date: new Date(2017, 11, 15),
+          isRefund: true,
+          vendor: 'Ameli'
+        },
+        {
+          _id: 'b2',
+          amount: 1.5,
+          groupAmount: 5,
+          originalAmount: 20,
+          type: 'health_costs',
+          originalDate: new Date(2017, 11, 14),
+          date: new Date(2017, 11, 16),
+          isRefund: true,
+          vendor: 'Ameli'
+        }
+      ]
+
+      describe('with corresponding credit operation', () => {
+        it('should be associated with the right credit operation', () => {
+
+          const options = { ...defaultOptions, identifiers: ['CPAM'] }
+          return linker.linkBillsToOperations(healthBills, options)
+            .then(result => {
+              const debitOperation = expect.any(Object)
+              expect(result).toMatchObject({
+                b1: { creditOperation: operations[1], debitOperation },
+                b2: { creditOperation: operations[1], debitOperation  }
+              })
+              expect(operations[1]).toMatchObject({bills: ['io.cozy.bills:b1', 'io.cozy.bills:b2']})
+              expect(result.b1.debitOperation).toBe(result.b2.debitOperation)
+              expect(result.b1.debitOperation.reimbursements.length).toBe(2)
+            })
+        })
+      })
+
+      describe('without corresponding credit operation', () => {
+        it('should be associated with the right credit operation', () => {
+          const healthBills2 = healthBills.map(x => ({...x, originalAmount: 999}))
+          const options = { ...defaultOptions, identifiers: ['CPAM'] }
+          return linker.linkBillsToOperations(healthBills2, options)
+            .then(result => {
+              expect(result).toEqual({
+                b1: { creditOperation: operations[1], debitOperation: undefined },
+                b2: { creditOperation: operations[1], debitOperation: undefined }
+              })
+              expect(operations[1]).toMatchObject({bills: ['io.cozy.bills:b1', 'io.cozy.bills:b2']})
+            })
+        })
+      })
+    })
+
 
     test('not health bills', () => {
       const noHealthBills = [
