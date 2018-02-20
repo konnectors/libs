@@ -116,8 +116,7 @@ const hydrateAndFilter = (entries, doctype, options = {}) => {
 
   const formatOutput = entries => {
     log('debug', String(entries.length), 'Number of items after hydrateAndFilter')
-    // filter out wrong entries
-    return entries.filter(entry => entry)
+    return entries
   }
 
   return getIndex()
@@ -125,6 +124,7 @@ const hydrateAndFilter = (entries, doctype, options = {}) => {
     .then(populateStore(store))
     .then(hydrateExistingEntries(store))
     .then(filterEntries(store))
+    .then(entries => entries.filter(Boolean)) // Filter out wrong entries
     .then(formatOutput)
 }
 
