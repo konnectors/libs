@@ -169,7 +169,7 @@ describe('linker', () => {
       })
     })
 
-    test('health bills with not debit operation found should associate credit operation', () => {
+    test('health bills with not debit operation found should be associated with a credit operation', () => {
       const healthBills = [
         {
           _id: 'b1',
