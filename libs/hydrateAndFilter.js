@@ -13,6 +13,7 @@
 
 const bluebird = require('bluebird')
 const log = require('./logger').namespace('hydrateAndFilter')
+const get = require('lodash/get')
 const uniqBy = require('lodash/uniqBy')
 
 /**
@@ -49,7 +50,7 @@ const hydrateAndFilter = (entries, doctype, options = {}) => {
 
   const createHash = item => {
     return keys.map(key => {
-      let result = item[key]
+      let result = get(item, key)
       if (key === 'date') result = new Date(result)
       return result
     }).join('####')
@@ -57,7 +58,6 @@ const hydrateAndFilter = (entries, doctype, options = {}) => {
 
   const getIndex = () => {
     const index = options.index ? options.index : cozy.data.defineIndex(doctype, keys)
-
     return index
   }
 
