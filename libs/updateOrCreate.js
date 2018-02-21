@@ -2,11 +2,11 @@
  * The goal of this function is create or update the given entries according to if they already
  * exist in the cozy or not
  *
+ * Parameters:
+ *
  * - `entries` is an array of objects with any attributes :
- *
  * - `doctype` (string) is the cozy doctype where the entries should be saved
- *
- * - `filters` (array) is the list of attributes in each entry should be used to check if an entry
+ * - `matchingAttributes` (array of strings) is the list of attributes in each entry should be used to check if an entry
  *   is already saved in the cozy
  *
  * @module updateOrCreate

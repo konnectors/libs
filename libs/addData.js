@@ -1,5 +1,25 @@
 /**
- * Creates the records in the given doctype.
+ * This function saves the data into the cozy blindly without check
+ *
+ * Parameters:
+ *
+ * * `documents`: an array of objects corresponding to the data you want to save in the cozy
+ * * `doctype` (string): the doctype where you want to save data (ex: 'io.cozy.bills')
+ *
+ * ```javascript
+ * const documents = [
+ *   {
+ *     name: 'toto',
+ *     height: 1.8
+ *   },
+ *   {
+ *     name: 'titi',
+ *     height: 1.7
+ *   }
+ * ]
+ *
+ * return addData(documents, 'io.cozy.height')
+ * ```
  *
  * @module addData
  */
