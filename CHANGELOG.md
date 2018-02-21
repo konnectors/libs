@@ -24,6 +24,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Security
 - none yet
 
+## [3.4.0] - 2018-02-21
+
+### Fixed
+
+- Default log level is not "debug" instead of "info". The stack filters out
+debug logs but "info" are kept.
+
+### Added
+
+- `shouldSave` and `shouldUpdate` functions  can be passed to hydrateAndFilter. It allows for finer grained control over what is saved/updated.
+
+### Deprecated
+
+- `updateOrCreate` is now deprecated. Prefer to use `shouldSave`/`shouldUpdate`.
+
 ## [3.3.0] - 2018-01-23
 
 ### Added
@@ -70,7 +85,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Linking with bank operations now works even if the bill has already been fetched
 
 
-[Unreleased]: https://github.com/cozy/cozy-konnector-libs/compare/v3.3.0...HEAD
+[Unreleased]: https://github.com/cozy/cozy-konnector-libs/compare/v3.4.0...HEAD
+[3.4.0]: https://github.com/cozy/cozy-konnector-libs/compare/v3.3.0...v3.4.0
 [3.3.0]: https://github.com/cozy/cozy-konnector-libs/compare/v3.2.5...v3.3.0
 [3.2.5]: https://github.com/cozy/cozy-konnector-libs/compare/v3.2.4...v3.2.5
 [3.2.4]: https://github.com/cozy/cozy-konnector-libs/compare/v3.2.3...v3.2.4
