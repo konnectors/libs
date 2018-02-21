@@ -1,3 +1,27 @@
+# Table of contents
+- [Konnector synchronisation data and options](#konnector-synchronisation-data-and-options)
+  * [Problems](#problems)
+  * [Current usage](#current-usage)
+  * [Objectives of this document](#objectives-of-this-document)
+  * [Storing synchronization data in documents](#storing-synchronization-data-in-documents)
+    + [Simple case, by id](#simple-case--by-id)
+    + [By multiple attributes](#by-multiple-attributes)
+    + [By custom method](#by-custom-method)
+  * [Saving document based on synchronization strategy](#saving-document-based-on-synchronization-strategy)
+    + [Adding synchronization data](#adding-synchronization-data)
+    + [Filtering entries](#filtering-entries)
+  * [Synchronization strategy](#synchronization-strategy)
+    + [findLegacyDocument](#findlegacydocument)
+    + [getSyncData](#getsyncdata)
+      - [Array](#array)
+        * [Example](#example)
+      - [function](#function)
+        * [Example](#example-1)
+    + [konnector](#konnector)
+    + [shouldSave](#shouldsave)
+    + [shouldUpdate](#shouldupdate)
+  * [Whole example](#whole-example)
+
 # Konnector synchronisation data and options
 
 ## Problems
@@ -13,17 +37,30 @@ This process has at least two major flows :
 
 Another side effect could be that in a very large set of documents to synchronize, the whole process may take more than 3 minutes and never synchronize documents at the end of the list.
 
+## Current usage
+
+When saving bills, `cozy-konnector-libs` provides a filtering and hydratation mechanism, to avoid overriding existing bills. It is done in function [`hydrateAndFilters`](https://github.com/cozy/cozy-konnector-libs/blob/master/libs/hydrateAndFilter.js).
+
+This method performs two actions :
+* hydrate entries retrieved from service with usable data from couchDB (like existing bill id)
+* filter entries retrieved from service and returns only entries that need to be save/synchronized.
+
 ## Objectives of this document
 
 The goals of this document are:
 
 * Define a common way to store synchronization data for all konnector
 * Propose a naive implementation for an abstract synchronisation data storing mechanism, provided by `cozy-konnector-libs`
+* Propose a solution to synchronize every type of data or file, not only bills
+* Taking the `hydrateAndFilter` function as basis, split it in three functions performing the following tasks : actual filtering, synchronization data hydratation and saving/updating current database document with correspondig external entries (the part done by the actual _hydratation_)
 
 ## Storing synchronization data in documents
 
+Before saving any data or file, we will add in the relying document every synchronization data we will need. The added data will depend on how the service the konnector connects to retrieve entries and which information they gave us.
+
 ### Simple case, by id
 
+We suppose that in the most cases, we will face to entries provinding their own `id` attribute. The idea is to store it as synchronization data to be able to easily retrieve them later.
 To store synchronization data, we are using a `sync` attribute in document `metadata` attribute. Example:
 
 ```json
@@ -48,7 +85,7 @@ The expected information to be save is:
 
 ### By multiple attributes
 
-If the external service does not provide any id attribute, we may need to use instead a list of attributes, for example `firstname`, `lastname`, `dateofbirth`.
+If the external service does not provide any `id` attribute, we may need to use instead a list of attributes, for example `firstname`, `lastname`, `dateofbirth`.
 
 ```json
 {
@@ -79,11 +116,66 @@ It could be for example the filename or a hash generated with the document conte
 }
 ```
 
-## Saving document based on synchronzation options
+## Saving document based on synchronization strategy
 
-cozy-konnector-libs must provide some way to easily and transparently save synchronization data. The idea is to provide additional options to the method [`saveEntry`](https://github.com/cozy/cozy-konnector-libs/blob/master/libs/saveFiles.js#L87) for files, and by encapsulation to the method [`saveFiles`](https://github.com/cozy/cozy-konnector-libs/blob/master/libs/saveFiles.js#L149). Also, to be able to deal with any kind of data, we have to provides the same options to the [`addData`](https://github.com/gregorylegarec/cozy-konnector-libs/blob/feat/konnector-history-rfc/libs/addData.js#L9) method.
+To solve the synchronization process weed need to:
+* be able to add synchronization data on any type of document
+* be able to compare external entries to current database state
+* provide a default implementation while letting the contributors to define their own ones
 
-These options are:
+### Adding synchronization data
+
+We should provide an `addSyncData` function could, which look like this (naive implementation, this piece of code needs to be improved to handle cases where `synchronizationStrategy.idAttribute` is an array or a function):
+
+```js
+const addSyncData = (document, entry, synchronizationStrategy) => {
+  return {
+    ...document,
+    metadata: {
+      ...document.metadata,
+      id: entry[synchronizationStrategy.idAttribute]
+    }
+}
+````
+
+Where `document` is the future document to save, `entry` the corresponding external entry, and `synchronizationStrategy` and object defining the synchronization properties and methods (see below).
+
+### Filtering entries
+
+Now we have saved our documents in database with consistent synchronization metadata, we need to provide a way to filter external entries.
+
+We should provide a `filterEntriesToSynchronize` which returns a list of entries with new data or data to update.
+
+As `addSyncData`, this method will receive a `synchronizationStrategy`. The filtering algorithm should be based on the returned value of `synchronizationStrategy.shouldSave` and `synchronizationStrategy.shouldUpdate`.
+
+> ⚠️ As the `synchronizationStrategy.shouldSave` and `synchronizationStrategy.shouldUpdate` will be asynchronous methods, `filterEntriesToSynchronize` should also be asynchronous.
+
+A naive example of `filterEntriesToSynchronize` implementation should be:
+
+```js
+const filterEntriesToSynchronize = async (cozy, entries, synchronizationStrategy) = {
+  const filtered = []
+
+  // getExistingSynchronizedDocument needs to be implemented, it should retrieve
+  // existing document from database, based on synchronization data.
+  const existingDocument = cozy.getExistingSynchronizedDocument(entry, synchronizationStrategy)
+
+  entries.forEach(entry => {
+    const toSave = await synchronizationStrategy.shouldSave(entry, existingDocument)
+    const toUpdate = await synchronizationStrategy.shouldUpdate(entry, existingDocument)
+
+    if (toSave || toUpdate) filtered.push(entry)
+  })
+
+  return filtered
+}
+```
+
+## Synchronization strategy
+
+For our functions or methods dealing with synchronization, we pass a `synchronizationStrategy` object. Internally, we will use a default one but let the ability to contributors to pass their own ones.
+
+It is a simple object containing the following properties:
 
 | Option | Role |
 |--------|---------|
@@ -97,26 +189,30 @@ These options are:
 
 ### findLegacyDocument
 If a document has not been saved yet with actual synchronization data, we will have no way to retrieve it, except by providing a `findLegacyDocument` function to `saveEntry` options. This signature of a `findLegacyDocument` function is:
+
 ```js
 async function (entry, cozy) => { /* look for your document */ }
-```
+````
+
 The `cozy` parameter is an instance of Cozy-Client.
 
 The idea is for example to retrive a document by its file path or any other accurate information.
 
 ### getSyncData
 This method returns any addtional synchronization data the konnector should need. Default method should be something returning an empty object or `null`.
+
 ```js
 (entry) => ({})
 ```
+
 A konnector should provide its own method:
+
 ```js
 {
   getSyncData: (entry) => ({
     filename: entry.name
   })
-}
-```
+}```
 
 ### idAttribute
 #### String
@@ -141,7 +237,7 @@ When an entry does not provide an unique identifer, it is possible to use a func
 
 ##### Example
 ```js
-saveFiles(files, {idAttribute: (entry) => hash(entry)})
+addData(file, {idAttribute: (entry) => hash(entry)})
 // hash() is a custom method  hashing the current file.
 ```
 
@@ -176,14 +272,27 @@ async function shouldUpdate (entry, existingDocument, cozy) {
   const hasSyncData = !!existingDocument && !!existingDocument.metadata && !! existingDocument.metadata.sync
   return Promise.resolve(!hasSyncData)
 }
-```
+````
 
 ## Whole example
 
-Here is a whole and naive example of how synchronization data and synchronization options could be used.
+As the way data are saved from `cozy-konnector-libs` differs based on data type, we let the saving mechanism to others functions or methods. For example, in existing codebase, bills are saved in a specific way, resulting in two documents in database. However, we could provide top-level functions or methods, like `synchronizeBills` or a more generic `synchronizeData`.
+
+Here is a whole and naive example of how `synchronizeBills` could be implemebted:
 
 ```js
-saveFiles(files, {
+const synchronizeBills = async (cozy, entries, synchronizationStrategy) => {
+  return await filteredEntries = await filterEntriesToSynchronize(cozy, entries, synchronizationStrategy)
+    .then(filteredEntries => filteredEntries.map(entry => addSyncData(entry, synchronizationStrategy)))
+    // existing saveBills method (with maybe some little changes)
+    .saveBills(synchronizedDocuments)
+}
+```
+
+Usage could be:
+
+```
+synchronizeBills(cozy, entries, {
   findLegacyDocument: (entry, cozy) => {
     return cozy.files.statByPath(getEntryPath(entry))
   },
