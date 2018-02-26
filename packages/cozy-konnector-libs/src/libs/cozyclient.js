@@ -76,8 +76,35 @@ const getCozyClient = function(environment = 'production') {
   return cozyClient
 }
 
-// webpack 4 now changes the NODE_ENV environment variable when you change its 'mode' option
-// since we do not want to minimize the built file, we recognize the 'none' mode as production mode
-module.exports = getCozyClient(
-  process.env.NODE_ENV === 'none' ? 'production' : process.env.NODE_ENV
-)
+class LazyClient {
+  setupClient() {
+    try {
+      // webpack 4 now changes the NODE_ENV environment variable when you change its 'mode' option
+      // since we do not want to minimize the built file, we recognize the 'none' mode as production mode
+      this.client = getCozyClient(process.env.NODE_ENV === 'none' ? 'production' : process.env.NODE_ENV)
+    } catch (e) {
+      throw new Error('Could not setup Cozy client. Are you sure that you passed correct COZY_URL and COZY_CREDENTIALS environment variables ?')
+    }
+  }
+  ensureClient () {
+    this.client || this.setupClient()
+  }
+  get data () {
+    this.ensureClient()
+    return this.client.data
+  }
+  get files () {
+    this.ensureClient()
+    return this.client.files
+  }
+  get jobs () {
+    this.ensureClient()
+    return this.client.jobs
+  }
+  get fetchJSON () {
+    this.ensureClient()
+    return this.client.fetchJSON.bind(this.client)
+  }
+}
+
+module.exports = new LazyClient()
