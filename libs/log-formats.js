@@ -4,6 +4,8 @@ util.inspect.defaultOptions.maxArrayLength = null
 util.inspect.defaultOptions.depth = null
 util.inspect.defaultOptions.colors = true
 
+const LOG_LENGTH_LIMIT = 64 * 1024 - 1
+
 const type2color = {
   debug: 'cyan',
   warn: 'yellow',
@@ -19,7 +21,8 @@ function prodFormat (type, message, label, namespace) {
   if (message.stack) message = message.stack
   if (message.toString) message = message.toString()
 
-  return JSON.stringify({ time: new Date(), type, message, label, namespace })
+  // cut the string to avoid a fail in the stack
+  return JSON.stringify({ time: new Date(), type, message, label, namespace }).substr(0, LOG_LENGTH_LIMIT)
 }
 
 function devFormat (type, message, label, namespace) {
