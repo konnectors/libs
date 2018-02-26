@@ -19,7 +19,6 @@ const type2color = {
 function prodFormat (type, message, label, namespace) {
   // properly display error messages
   if (message.stack) message = message.stack
-  if (message.toString) message = message.toString()
 
   // cut the string to avoid a fail in the stack
   return JSON.stringify({ time: new Date(), type, message, label, namespace }).substr(0, LOG_LENGTH_LIMIT)
