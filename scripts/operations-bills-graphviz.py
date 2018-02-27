@@ -1,6 +1,14 @@
 """
 Used to debug linkBankOperations.
 
+## Dependencies
+
+```
+pip install graphviz
+```
+
+## Usage
+
 Save result of linkBankOperations during a konnector run with the
 environment variable `LINK_RESULTS_FILENAME`:
 
@@ -8,10 +16,16 @@ environment variable `LINK_RESULTS_FILENAME`:
 env LINK_RESULTS_FILENAME=/tmp/result-link-bills.json yarn dev
 ```
 
+Now that the results of the linking has been saved to a JSON file, you
+can use this script to output a graphviz compatible format and pipe
+it to `dot`.
+
 ```
 python operations-bills-graphviz.py /tmp/results-link-bills.json \
   | dot -Grankdir=LR  -Tpng -o output.png; and open output.png
 ```
+
+
 """
 
 import json
