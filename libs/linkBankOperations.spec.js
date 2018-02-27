@@ -233,7 +233,9 @@ describe('linker', () => {
                 b1: { creditOperation: operations[1], debitOperation },
                 b2: { creditOperation: operations[1], debitOperation  }
               })
-              expect(operations[1]).toMatchObject({bills: ['io.cozy.bills:b1', 'io.cozy.bills:b2']})
+              expect(operations[1]).toMatchObject({
+                bills: ['io.cozy.bills:b1', 'io.cozy.bills:b2']
+              })
               expect(result.b1.debitOperation).toBe(result.b2.debitOperation)
               expect(result.b1.debitOperation.reimbursements.length).toBe(2)
             })

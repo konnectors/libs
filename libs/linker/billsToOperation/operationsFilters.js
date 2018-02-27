@@ -1,6 +1,7 @@
 const every = require('lodash/every')
 const includes = require('lodash/includes')
 const some = require('lodash/some')
+const sumBy = require('lodash/sumBy')
 const isWithinRange = require('date-fns/is_within_range')
 
 const { getIdentifiers, getDateRangeFromBill, getAmountRangeFromBill } = require('./helpers')
@@ -68,18 +69,40 @@ const filterByCategory = bill => {
   return categoryFilter
 }
 
+/**
+ * Check that the sum of the reimbursements + the amount of the bill is not
+ * greater that the amount of the operation
+ */
+const filterByReimbursements = (bill, options={}) => {
+  const reimbursementFilter = operation => {
+    const sumReimbursements = sumBy(operation.reimbursements, 'amount')
+    return (sumReimbursements + bill.amount) <= -operation.amount
+  }
+  return reimbursementFilter
+}
+
 // combine filters
 
 const operationsFilters = (bill, operations, options) => {
   const filterByConditions = filters => op => {
-    return every(filters.map(f => f(op)))
+    for (let f of filters) {
+      const res = f(op)
+      if (!res) {
+        return res
+      }
+    }
+    return true
   }
 
   const fByDates = filterByDates(getDateRangeFromBill(bill, options))
   const fByAmounts = filterByAmounts(getAmountRangeFromBill(bill, options))
   const fByCategory = filterByCategory(bill)
+  const fByReimbursements = filterByReimbursements(bill, options)
 
   const conditions = [fByDates, fByAmounts, fByCategory]
+  if (!options.credit) {
+    conditions.push(fByReimbursements)
+  }
 
   // We filters with identifiers when
   // - we search a credit operation
@@ -97,5 +120,6 @@ module.exports = {
   filterByDates,
   filterByAmounts,
   filterByCategory,
+  filterByReimbursements,
   operationsFilters
 }
