@@ -30,14 +30,14 @@ return addData(documents, &#39;io.cozy.height&#39;)
 initialized according to <code>COZY_URL</code> and <code>COZY_CREDENTIALS</code> environment variable given by cozy-stack
 You can refer to the <a href="https://cozy.github.io/cozy-client-js/">cozy-client-js documentation</a> for more information.</p>
 <p>Example :</p>
-<pre><code class="lang-javascript">const {clientClient} = require(&#39;cozy-konnector-libs&#39;)
+<pre><code class="lang-javascript">const {cozyClient} = require(&#39;cozy-konnector-libs&#39;)
 
 cozyClient.data.defineIndex(&#39;my.doctype&#39;, [&#39;_id&#39;])
 </code></pre>
 </dd>
 <dt><a href="#module_filterData">filterData</a></dt>
 <dd><p>This function filters the passed array from data already present in the cozy so that there is
-not displicated data in the cozy.</p>
+not duplicated data in the cozy.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>documents</code>: an array of objects corresponding to the data you want to save in the cozy</li>
@@ -70,7 +70,7 @@ return filterData(documents, &#39;io.cozy.height&#39;, {
 <p>This function will soon move to a dedicated service. You should not use it.
 The goal of this function is to find links between bills and bank operations.</p>
 </dd>
-<dt><a href="#module_request">request</a></dt>
+<dt><a href="#module_requestFactory">requestFactory</a></dt>
 <dd><p>This is a function which returns an instance of
 <a href="https://www.npmjs.com/package/request-promise">request-promise</a> initialized with
 defaults often used in connector development.</p>
@@ -254,7 +254,7 @@ You can refer to the [cozy-client-js documentation](https://cozy.github.io/cozy-
 Example :
 
 ```javascript
-const {clientClient} = require('cozy-konnector-libs')
+const {cozyClient} = require('cozy-konnector-libs')
 
 cozyClient.data.defineIndex('my.doctype', ['_id'])
 ```
@@ -263,7 +263,7 @@ cozyClient.data.defineIndex('my.doctype', ['_id'])
 
 ## filterData
 This function filters the passed array from data already present in the cozy so that there is
-not displicated data in the cozy.
+not duplicated data in the cozy.
 
 Parameters:
 
@@ -292,6 +292,19 @@ return filterData(documents, 'io.cozy.height', {
 
 ```
 
+<a name="module_filterData..suitableCall"></a>
+
+### filterData~suitableCall()
+Since we can use methods or basic functions for
+`shouldSave` and `shouldUpdate` we pass the
+appropriate `this` and `arguments`.
+
+If `funcOrMethod` is a method, it will be called
+with args[0] as `this` and the rest as `arguments`
+Otherwise, `this` will be null and `args` will be passed
+as `arguments`.
+
+**Kind**: inner method of [<code>filterData</code>](#module_filterData)  
 <a name="module_linkBankOperations"></a>
 
 ## linkBankOperations
@@ -300,9 +313,9 @@ return filterData(documents, 'io.cozy.height', {
 This function will soon move to a dedicated service. You should not use it.
 The goal of this function is to find links between bills and bank operations.
 
-<a name="module_request"></a>
+<a name="module_requestFactory"></a>
 
-## request
+## requestFactory
 This is a function which returns an instance of
 [request-promise](https://www.npmjs.com/package/request-promise) initialized with
 defaults often used in connector development.
