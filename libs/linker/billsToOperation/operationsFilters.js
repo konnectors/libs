@@ -37,24 +37,35 @@ const isHealthBill = bill => {
 
 const filterByIdentifiers = identifiers => {
   identifiers = identifiers.map(i => i.toLowerCase())
-  return operation => {
+  const identifierFilter = operation => {
     const label = operation.label.toLowerCase()
     return some(identifiers, identifier => includes(label, identifier))
   }
+  return identifierFilter
 }
 
-const filterByDates = ({ minDate, maxDate }) => operation => {
-  return isWithinRange(operation.date, minDate, maxDate)
+const filterByDates = ({ minDate, maxDate }) => {
+  const dateFilter = operation => {
+    return isWithinRange(operation.date, minDate, maxDate)
+  }
+  return dateFilter
 }
 
-const filterByAmounts = ({ minAmount, maxAmount }) => operation => {
-  return operation.amount >= minAmount && operation.amount <= maxAmount
+const filterByAmounts = ({ minAmount, maxAmount }) => {
+  const amountFilter = operation => {
+    return operation.amount >= minAmount && operation.amount <= maxAmount
+  }
+  return amountFilter
 }
 
-const filterByCategory = bill => operation => {
-  return isHealthBill(bill)
-    ? isHealthOperation(operation) || isUncategorizedOperation(operation)
-    : !isHealthOperation(operation) || isUncategorizedOperation(operation)
+const filterByCategory = bill => {
+  const isHealth = isHealthBill(bill)
+  const categoryFilter = operation => {
+    return isHealth
+      ? isHealthOperation(operation) || isUncategorizedOperation(operation)
+      : !isHealthOperation(operation) || isUncategorizedOperation(operation)
+  }
+  return categoryFilter
 }
 
 // combine filters
