@@ -2,6 +2,8 @@
  * Combines the features of `saveFiles`, `filterData`, `addData` and `linkBankOperations` for a
  * common case: bills.
  * Will create `io.cozy.bills` objects. The default deduplication keys are `['date', 'amount', 'vendor']`.
+ * You need the full permission on `io.cozy.bills`, full permission on `io.cozy.files` and also
+ * full permission on `io.cozy.bank.operations` in your manifest, to be able to * use this function.
  *
  * Parameters:
  *

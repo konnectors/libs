@@ -1,6 +1,8 @@
 /**
  * The goal of this function is create or update the given entries according to if they already
  * exist in the cozy or not
+ * You need the full permission for the given doctype in your manifest, to be able to
+ * use this function.
  *
  * Parameters:
  *

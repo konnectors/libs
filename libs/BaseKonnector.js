@@ -13,6 +13,8 @@ const {
  * @class
  * The class from which all the connectors must inherit.
  * It takes a fetch function in parameter that must return a `Promise`.
+ * You need at least the `GET` permission on `io.cozy.accounts` in your manifest to allow it to
+ * fetch account information for your connector.
  *
  * @example
  * ```javascript
