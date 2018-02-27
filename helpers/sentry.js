@@ -1,6 +1,6 @@
 const log = require('../libs/logger')
 const Raven = require('raven')
-const getDomain = require('./cozy-domain')
+const {getDomain, getInstance} = require('./cozy-domain')
 
 let isRavenConfigured = false
 
@@ -43,8 +43,9 @@ const setupSentry = function () {
     const release = typeof GIT_SHA !== 'undefined' ? GIT_SHA : 'dev'
     const domain = getDomain()
     const environment = getEnvironmentFromDomain(domain)
+    const instance = getInstance()
     Raven.config(SENTRY_DSN, { release, environment }).install(afterFatalError)
-    Raven.mergeContext({ tags: {domain} })
+    Raven.mergeContext({ tags: {domain, instance} })
     isRavenConfigured = true
     log('info', 'Raven configured !')
   } catch (e) {
