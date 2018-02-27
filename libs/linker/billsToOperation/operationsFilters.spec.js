@@ -141,12 +141,12 @@ describe('operationsFilters', () => {
       const debitOptions = { ...defaultOptions, identifiers: ['CPAM'] }
       const creditOptions = { ...debitOptions, credit: true }
 
-      test('get debit operation associate to this bill', () => {
+      test('get debit operation', () => {
         expect(operationsFilters(bill, operations, debitOptions))
           .toEqual([operations[0]])
       })
 
-      test('get credit operation associate to this bill', () => {
+      test('get credit operation', () => {
         expect(operationsFilters(bill, operations, creditOptions))
           .toEqual([operations[1]])
       })
@@ -162,12 +162,12 @@ describe('operationsFilters', () => {
       const debitOptions = { ...defaultOptions, identifiers: ['SFR'] }
       const creditOptions = { ...debitOptions, credit: true }
 
-      test('get debit operation associate to this bill', () => {
+      test('get debit operation', () => {
         expect(operationsFilters(bill, operations, debitOptions))
           .toEqual([operations[3]])
       })
 
-      test('get credit operation associate to this bill', () => {
+      test('get credit operation', () => {
         expect(operationsFilters(bill, operations, creditOptions))
           .toEqual([])
       })

@@ -4,8 +4,10 @@ const subDays = require('date-fns/sub_days')
 const differenceInDays = require('date-fns/difference_in_days')
 
 const getOperationAmountFromBill = (bill, options) => {
-  const isCredit = options && options.credit
-  return isCredit ? (bill.groupAmount || bill.amount) : -(bill.originalAmount || bill.amount)
+  const searchingCredit = options && options.credit
+  return searchingCredit
+    ? (bill.groupAmount || bill.amount)
+    : -(bill.originalAmount || bill.amount)
 }
 
 const getOperationDateFromBill = (bill, options) => {
