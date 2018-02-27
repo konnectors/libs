@@ -63,6 +63,7 @@ not duplicated data in the cozy.</p>
 return filterData(documents, &#39;io.cozy.height&#39;, {
   keys: [&#39;name&#39;]
 }).then(filteredDocuments =&gt; addData(filteredDocuments, &#39;io.cozy.height&#39;))
+
 </code></pre>
 </dd>
 <dt><a href="#module_linkBankOperations">linkBankOperations</a></dt>
