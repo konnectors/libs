@@ -50,7 +50,7 @@
   },
   "scripts": {
     "lint": "standard --fix commands/* helpers/* libs/* index.js",
-    "test": "jest",
+    "test": "env LOG_LEVEL=info jest",
     "doc": "jsdoc2md --template jsdoc2md/README.hbs libs/*.js helpers/*.js > docs/api.md"
   },
   "standard": {
