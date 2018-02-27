@@ -43,7 +43,7 @@
  *
  * You can find the full list of available options in [request-promise](https://github.com/request/request-promise) and [request](https://github.com/request/request) documentations.
  *
- * @module request
+ * @module requestFactory
  */
 
 let request = require('request-promise')
