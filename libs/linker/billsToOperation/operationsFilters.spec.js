@@ -3,6 +3,7 @@ import {
   filterByDates,
   filterByAmounts,
   filterByCategory,
+  filterByReimbursements,
   operationsFilters
 } from './operationsFilters'
 
@@ -69,6 +70,13 @@ describe('operationsFilters', () => {
     })
   })
 
+  describe('filterByReimbursements', () => {
+    const fReimbursements = filterByReimbursements({ amount: 10 })
+    expect(fReimbursements({ reimbursements: [{ amount: 10}], amount: -10})).toBe(false)
+    expect(fReimbursements({ reimbursements: [{ amount: 7}, { amount: 3}], amount: -10})).toBe(false)
+    expect(fReimbursements({ reimbursements: [{ amount: 7}, { amount: 3}], amount: -20})).toBe(true)
+  })
+
   describe('operationsFilters', () => {
     const operations = [
       { amount: -20, label: 'Visite chez le médecin', _id: 'o1', date: new Date(2017, 11, 13), automaticCategoryId: '400610' },
@@ -77,7 +85,41 @@ describe('operationsFilters', () => {
       { amount: -30, label: 'Facture SFR', _id: 'o4', date: new Date(2017, 11, 7) },
       { amount: -80, label: "Matériel d'escalade", _id: 'o5', date: new Date(2017, 11, 7) },
       { amount: -5.5, label: 'Burrito', _id: 'o6', date: new Date(2017, 11, 5) },
-      { amount: -2.6, label: 'Salade', _id: 'o7', date: new Date(2017, 11, 6) }
+      { amount: -2.6, label: 'Salade', _id: 'o7', date: new Date(2017, 11, 6) },
+      {
+        amount: 50,
+        label: 'Remboursement CPAM',
+        _id: 'o8',
+        date: new Date(2017, 11, 15),
+        automaticCategoryId: '400610',
+        reimbursements: [
+          {amount: 50}
+        ]
+      },
+      {
+        amount: -50,
+        label: 'Visite chez le dentiste',
+        _id: 'o9',
+        automaticCategoryId: '400610',
+        date: new Date(2017, 11, 16),
+        reimbursements: []
+      },
+      {
+        amount: -7.50,
+        label: 'Dafalgan',
+        _id: 'o10',
+        automaticCategoryId: '400610',
+        date: new Date(2017, 11, 16),
+        reimbursements: []
+      },
+      {
+        amount: 57.50,
+        label: 'Remboursement CPAM',
+        _id: 'o11',
+        automaticCategoryId: '400610',
+        date: new Date(2017, 11, 16),
+        reimbursements: []
+      },
     ]
 
     const defaultOptions = {
@@ -99,12 +141,12 @@ describe('operationsFilters', () => {
       const debitOptions = { ...defaultOptions, identifiers: ['CPAM'] }
       const creditOptions = { ...debitOptions, credit: true }
 
-      test('get debit operation associate to this bill', () => {
+      test('get debit operation', () => {
         expect(operationsFilters(bill, operations, debitOptions))
           .toEqual([operations[0]])
       })
 
-      test('get credit operation associate to this bill', () => {
+      test('get credit operation', () => {
         expect(operationsFilters(bill, operations, creditOptions))
           .toEqual([operations[1]])
       })
@@ -120,14 +162,36 @@ describe('operationsFilters', () => {
       const debitOptions = { ...defaultOptions, identifiers: ['SFR'] }
       const creditOptions = { ...debitOptions, credit: true }
 
-      test('get debit operation associate to this bill', () => {
+      test('get debit operation', () => {
         expect(operationsFilters(bill, operations, debitOptions))
           .toEqual([operations[3]])
       })
 
-      test('get credit operation associate to this bill', () => {
+      test('get credit operation', () => {
         expect(operationsFilters(bill, operations, creditOptions))
           .toEqual([])
+      })
+    })
+
+    describe('group amount', () => {
+      const bill = {
+        amount: 50,
+        groupAmount: 57.5,
+        date: new Date(2017, 11, 16),
+        vendor: 'Ameli',
+        type: 'health_costs',
+        isRefund: true
+      }
+      const debitOptions = { ...defaultOptions, identifiers: ['CPAM'] }
+      const creditOptions = { ...debitOptions, credit: true }
+      it('get debit operation', () => {
+        expect(operationsFilters(bill, operations, debitOptions))
+          .toEqual([operations[8]])
+      })
+
+      test('get credit operation', () => {
+        expect(operationsFilters(bill, operations, creditOptions))
+          .toEqual([operations[10]])
       })
     })
   })

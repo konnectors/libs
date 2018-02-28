@@ -157,7 +157,7 @@ describe('linker', () => {
       const options = { ...defaultOptions, identifiers: ['CPAM'] }
       return linker.linkBillsToOperations(healthBills, options)
       .then(result => {
-        expect(result).toEqual({
+        expect(result).toMatchObject({
           b1: { creditOperation: operations[1], debitOperation: operations[0] }
         })
         expect(operations[0]).toMatchObject({
@@ -171,7 +171,7 @@ describe('linker', () => {
       })
     })
 
-    test('health bills with not debit operation found should be associated with a credit operation', () => {
+    test('health bills with no debit operation found should be associated with a credit operation', () => {
       const healthBills = [
         {
           _id: 'b1',
@@ -187,9 +187,10 @@ describe('linker', () => {
       const options = { ...defaultOptions, identifiers: ['CPAM'] }
       return linker.linkBillsToOperations(healthBills, options)
       .then(result => {
-        expect(result).toEqual({
-          b1: { creditOperation: operations[1], debitOperation: undefined }
+        expect(result).toMatchObject({
+          b1: { creditOperation: operations[1] }
         })
+        expect(result.b1.debitOperation).toBe(undefined)
         expect(operations[1]).toMatchObject({bills: ['io.cozy.bills:b1']})
       })
     })
@@ -231,9 +232,11 @@ describe('linker', () => {
               const debitOperation = expect.any(Object)
               expect(result).toMatchObject({
                 b1: { creditOperation: operations[1], debitOperation },
-                b2: { creditOperation: operations[1], debitOperation  }
+                b2: { creditOperation: operations[1], debitOperation }
               })
-              expect(operations[1]).toMatchObject({bills: ['io.cozy.bills:b1', 'io.cozy.bills:b2']})
+              expect(operations[1]).toMatchObject({
+                bills: ['io.cozy.bills:b1', 'io.cozy.bills:b2']
+              })
               expect(result.b1.debitOperation).toBe(result.b2.debitOperation)
               expect(result.b1.debitOperation.reimbursements.length).toBe(2)
             })
@@ -246,11 +249,15 @@ describe('linker', () => {
           const options = { ...defaultOptions, identifiers: ['CPAM'] }
           return linker.linkBillsToOperations(healthBills2, options)
             .then(result => {
-              expect(result).toEqual({
-                b1: { creditOperation: operations[1], debitOperation: undefined },
-                b2: { creditOperation: operations[1], debitOperation: undefined }
+              expect(result).toMatchObject({
+                b1: { creditOperation: operations[1] },
+                b2: { creditOperation: operations[1] }
               })
-              expect(operations[1]).toMatchObject({bills: ['io.cozy.bills:b1', 'io.cozy.bills:b2']})
+              expect(result.b1.debitOperation).toBe(undefined)
+              expect(result.b2.debitOperation).toBe(undefined)
+              expect(operations[1]).toMatchObject({
+                bills: ['io.cozy.bills:b1', 'io.cozy.bills:b2']
+              })
             })
         })
       })
@@ -269,7 +276,7 @@ describe('linker', () => {
       const options = { ...defaultOptions, identifiers: ['SFR'] }
       return linker.linkBillsToOperations(noHealthBills, options)
       .then(result => {
-        expect(result).toEqual({
+        expect(result).toMatchObject({
           b2: { debitOperation: operations[3] }
         })
       })

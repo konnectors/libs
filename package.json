@@ -1,6 +1,6 @@
 {
   "name": "cozy-konnector-libs",
-  "version": "3.5.0",
+  "version": "3.5.1",
   "description": "All the libs needed by a cozy v3 konnector",
   "main": "index.js",
   "repository": {
@@ -50,7 +50,7 @@
   },
   "scripts": {
     "lint": "standard --fix commands/* helpers/* libs/* index.js",
-    "test": "jest",
+    "test": "env LOG_LEVEL=info jest",
     "doc": "jsdoc2md --template jsdoc2md/README.hbs libs/*.js helpers/*.js > docs/api.md"
   },
   "standard": {

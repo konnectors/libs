@@ -10,6 +10,7 @@
 const bluebird = require('bluebird')
 const log = require('./logger').namespace('linkBankOperations')
 const { findDebitOperation, findCreditOperation } = require('./linker/billsToOperation')
+const fs = require('fs')
 
 const DOCTYPE_OPERATIONS = 'io.cozy.bank.operations'
 const DEFAULT_AMOUNT_DELTA = 0.001
@@ -83,7 +84,7 @@ class Linker {
     bills = bills.filter(bill => !bill.isThirdPartyPayer === true)
 
     return bluebird.each(bills, bill => {
-      const res = result[bill._id] = {}
+      const res = result[bill._id] = { bill:bill }
 
       const linkBillToDebitOperation = () => {
         return findDebitOperation(this.cozyClient, bill, options)
@@ -126,6 +127,11 @@ class Linker {
   }
 }
 
+const jsonTee = filename => res => {
+  fs.writeFileSync(filename, JSON.stringify(res, null, 2))
+  return res
+}
+
 module.exports = (bills, doctype, fields, options = {}) => {
   // Use the custom bank identifier from user if any
   if (fields.bank_identifier && fields.bank_identifier.length) {
@@ -151,7 +157,11 @@ module.exports = (bills, doctype, fields, options = {}) => {
 
   const cozyClient = require('./cozyclient')
   const linker = new Linker(cozyClient)
-  return linker.linkBillsToOperations(bills, options)
+  const prom = linker.linkBillsToOperations(bills, options)
+  if (process.env.LINK_RESULTS_FILENAME) {
+    prom.then(jsonTee(process.env.LINK_RESULTS_FILENAME))
+  }
+  return prom
 }
 
 Object.assign(module.exports, {
