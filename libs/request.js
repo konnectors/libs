@@ -30,7 +30,7 @@
  *   with cheerio and json options.
  *
  * ```javascript
- * req = request({
+ * req = requestFactory({
  *    resolveWithFullResponse: true,
  *    cheerio: true
  * })

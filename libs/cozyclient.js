@@ -12,7 +12,7 @@
  *
  * cozyClient.data.defineIndex('my.doctype', ['_id'])
  * ```
- * @module cozy-client
+ * @module cozyClient
  */
 
 const {Client, MemoryStorage} = require('cozy-client-js')
