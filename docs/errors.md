@@ -26,7 +26,7 @@ const login = function () {
 |`NOT_EXISTING_DIRECTORY`|The folder specified as folder_to_save does not exist (checked by base_konnector)|
 |`VENDOR_DOWN`|The vendor's website is down|
 |`USER_ACTION_NEEDED`|The user needs to go to the vendor's website to fix something
-|`UNKNOWN_ERROR`|There was an unexpected error, please take a look at the logs to know what appened|
+|`UNKNOWN_ERROR`|There was an unexpected error, please take a look at the logs to know what happened|
 
 Sentry
 ======
