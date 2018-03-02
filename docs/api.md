@@ -24,7 +24,7 @@
 return addData(documents, &#39;io.cozy.height&#39;)
 </code></pre>
 </dd>
-<dt><a href="#module_cozy-client">cozy-client</a></dt>
+<dt><a href="#module_cozy-client">cozyClient</a></dt>
 <dd><p>This is a <a href="https://cozy.github.io/cozy-client-js/">cozy-client-js</a> instance already initialized and ready to use</p>
 <p>If you want to access cozy-client-js directly, this method gives you directly an instance of it,
 initialized according to <code>COZY_URL</code> and <code>COZY_CREDENTIALS</code> environment variable given by cozy-stack
@@ -76,7 +76,7 @@ The goal of this function is to find links between bills and bank operations.</p
 <a href="https://www.npmjs.com/package/request-promise">request-promise</a> initialized with
 defaults often used in connector development.</p>
 <pre><code class="language-javascript">// Showing defaults
-req = request({
+req = requestFactory({
   cheerio: false,
   jar: true,
   json: true
@@ -245,7 +245,7 @@ return addData(documents, 'io.cozy.height')
 
 <a name="module_cozy-client"></a>
 
-## cozy-client
+## cozyClient
 This is a [cozy-client-js](https://cozy.github.io/cozy-client-js/) instance already initialized and ready to use
 
 If you want to access cozy-client-js directly, this method gives you directly an instance of it,
