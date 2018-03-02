@@ -3,6 +3,8 @@ Communication with the outside
 
 Konnectors communicate with the stack via its stdout. Each line is parsed by the stack as JSON.
 
+When an error is thrown by the konnector, it is catched and translated to JSON.
+
 ### Message types
 
 This is the list of error codes that your konnector can `throw` and which will be translated by the `collect` application.
