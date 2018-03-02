@@ -4,7 +4,9 @@
 
 <dl>
 <dt><a href="#module_addData">addData</a></dt>
-<dd><p>This function saves the data into the cozy blindly without check</p>
+<dd><p>This function saves the data into the cozy blindly without check
+You need at least the <code>POST</code> permission for the given doctype in your manifest, to be able to
+use this function.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>documents</code>: an array of objects corresponding to the data you want to save in the cozy</li>
@@ -37,7 +39,9 @@ cozyClient.data.defineIndex(&#39;my.doctype&#39;, [&#39;_id&#39;])
 </dd>
 <dt><a href="#module_filterData">filterData</a></dt>
 <dd><p>This function filters the passed array from data already present in the cozy so that there is
-not duplicated data in the cozy.</p>
+not duplicated data in the cozy.
+You need at least the <code>GET</code> permission for the given doctype in your manifest, to be able to
+use this function.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>documents</code>: an array of objects corresponding to the data you want to save in the cozy</li>
@@ -113,7 +117,9 @@ req(&#39;http://github.com&#39;, response =&gt; {
 <dt><a href="#module_saveBills">saveBills</a></dt>
 <dd><p>Combines the features of <code>saveFiles</code>, <code>filterData</code>, <code>addData</code> and <code>linkBankOperations</code> for a
 common case: bills.
-Will create <code>io.cozy.bills</code> objects. The default deduplication keys are <code>[&#39;date&#39;, &#39;amount&#39;, &#39;vendor&#39;]</code>.</p>
+Will create <code>io.cozy.bills</code> objects. The default deduplication keys are <code>[&#39;date&#39;, &#39;amount&#39;, &#39;vendor&#39;]</code>.
+You need the full permission on <code>io.cozy.bills</code>, full permission on <code>io.cozy.files</code> and also
+full permission on <code>io.cozy.bank.operations</code> in your manifest, to be able to * use this function.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>documents</code> is an array of objects with any attributes :</li>
@@ -132,7 +138,8 @@ module.exports = new BaseKonnector(function fetch (fields) {
 </code></pre>
 </dd>
 <dt><a href="#module_saveFiles">saveFiles</a></dt>
-<dd><p>The goal of this function is to save the given files in the given folder via the Cozy API.</p>
+<dd><p>The goal of this function is to save the given files in the given folder via the Cozy API.
+You need the full permission on <code>io.cozy.files</code> in your manifest to use this function.</p>
 <ul>
 <li><p><code>files</code> is an array of <code>{ fileurl, filename }</code> :</p>
 <ul>
@@ -163,7 +170,9 @@ You can try it in the previous code.</li>
 </dd>
 <dt><a href="#module_updateOrCreate">updateOrCreate</a></dt>
 <dd><p>The goal of this function is create or update the given entries according to if they already
-exist in the cozy or not</p>
+exist in the cozy or not
+You need the full permission for the given doctype in your manifest, to be able to
+use this function.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>entries</code> is an array of objects with any attributes :</li>
@@ -179,7 +188,9 @@ is already saved in the cozy</li>
 <dl>
 <dt><a href="#BaseKonnector">BaseKonnector</a></dt>
 <dd><p>The class from which all the connectors must inherit.
-It takes a fetch function in parameter that must return a <code>Promise</code>.</p>
+It takes a fetch function in parameter that must return a <code>Promise</code>.
+You need at least the <code>GET</code> permission on <code>io.cozy.accounts</code> in your manifest to allow it to
+fetch account information for your connector.</p>
 </dd>
 </dl>
 
@@ -222,6 +233,8 @@ It takes a fetch function in parameter that must return a <code>Promise</code>.<
 
 ## addData
 This function saves the data into the cozy blindly without check
+You need at least the `POST` permission for the given doctype in your manifest, to be able to
+use this function.
 
 Parameters:
 
@@ -265,6 +278,8 @@ cozyClient.data.defineIndex('my.doctype', ['_id'])
 ## filterData
 This function filters the passed array from data already present in the cozy so that there is
 not duplicated data in the cozy.
+You need at least the `GET` permission for the given doctype in your manifest, to be able to
+use this function.
 
 Parameters:
 
@@ -367,6 +382,8 @@ You can find the full list of available options in [request-promise](https://git
 Combines the features of `saveFiles`, `filterData`, `addData` and `linkBankOperations` for a
 common case: bills.
 Will create `io.cozy.bills` objects. The default deduplication keys are `['date', 'amount', 'vendor']`.
+You need the full permission on `io.cozy.bills`, full permission on `io.cozy.files` and also
+full permission on `io.cozy.bank.operations` in your manifest, to be able to * use this function.
 
 Parameters:
 
@@ -390,6 +407,7 @@ module.exports = new BaseKonnector(function fetch (fields) {
 
 ## saveFiles
 The goal of this function is to save the given files in the given folder via the Cozy API.
+You need the full permission on `io.cozy.files` in your manifest to use this function.
 
 - `files` is an array of `{ fileurl, filename }` :
 
@@ -419,6 +437,8 @@ in standalone mode, the main path is the path of the connector.
 ## updateOrCreate
 The goal of this function is create or update the given entries according to if they already
 exist in the cozy or not
+You need the full permission for the given doctype in your manifest, to be able to
+use this function.
 
 Parameters:
 
@@ -432,6 +452,8 @@ Parameters:
 ## BaseKonnector
 The class from which all the connectors must inherit.
 It takes a fetch function in parameter that must return a `Promise`.
+You need at least the `GET` permission on `io.cozy.accounts` in your manifest to allow it to
+fetch account information for your connector.
 
 **Kind**: global class  
 

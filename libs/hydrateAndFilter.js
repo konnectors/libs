@@ -1,6 +1,8 @@
 /**
  * This function filters the passed array from data already present in the cozy so that there is
  * not duplicated data in the cozy.
+ * You need at least the `GET` permission for the given doctype in your manifest, to be able to
+ * use this function.
  *
  * Parameters:
  *

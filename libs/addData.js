@@ -1,5 +1,7 @@
 /**
  * This function saves the data into the cozy blindly without check
+ * You need at least the `POST` permission for the given doctype in your manifest, to be able to
+ * use this function.
  *
  * Parameters:
  *

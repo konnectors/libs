@@ -1,5 +1,6 @@
 /**
  * The goal of this function is to save the given files in the given folder via the Cozy API.
+ * You need the full permission on `io.cozy.files` in your manifest to use this function.
  *
  * - `files` is an array of `{ fileurl, filename }` :
  *
