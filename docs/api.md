@@ -24,7 +24,7 @@
 return addData(documents, &#39;io.cozy.height&#39;)
 </code></pre>
 </dd>
-<dt><a href="#module_cozy-client">cozy-client</a></dt>
+<dt><a href="#module_cozyClient">cozyClient</a></dt>
 <dd><p>This is a <a href="https://cozy.github.io/cozy-client-js/">cozy-client-js</a> instance already initialized and ready to use</p>
 <p>If you want to access cozy-client-js directly, this method gives you directly an instance of it,
 initialized according to <code>COZY_URL</code> and <code>COZY_CREDENTIALS</code> environment variable given by cozy-stack
@@ -76,7 +76,7 @@ The goal of this function is to find links between bills and bank operations.</p
 <a href="https://www.npmjs.com/package/request-promise">request-promise</a> initialized with
 defaults often used in connector development.</p>
 <pre><code class="language-javascript">// Showing defaults
-req = request({
+req = requestFactory({
   cheerio: false,
   jar: true,
   json: true
@@ -86,7 +86,7 @@ req = request({
 <ul>
 <li><code>cheerio</code>:  will parse automatically the <code>response.body</code> in a cheerio instance</li>
 </ul>
-<pre><code class="lang-javascript">req = request({ cheerio: true })
+<pre><code class="lang-javascript">req = requestFactory({ cheerio: true })
 req(&#39;http://github.com&#39;, $ =&gt; {
   const repos = $(&#39;#repo_listing .repo&#39;)
 })
@@ -98,7 +98,7 @@ req(&#39;http://github.com&#39;, $ =&gt; {
 <li><code>resolveWithFullResponse</code>: The full response will be return in the promise. It is compatible
 with cheerio and json options.</li>
 </ul>
-<pre><code class="lang-javascript">req = request({
+<pre><code class="lang-javascript">req = requestFactory({
    resolveWithFullResponse: true,
    cheerio: true
 })
@@ -243,9 +243,9 @@ const documents = [
 return addData(documents, 'io.cozy.height')
 ```
 
-<a name="module_cozy-client"></a>
+<a name="module_cozyClient"></a>
 
-## cozy-client
+## cozyClient
 This is a [cozy-client-js](https://cozy.github.io/cozy-client-js/) instance already initialized and ready to use
 
 If you want to access cozy-client-js directly, this method gives you directly an instance of it,
@@ -323,7 +323,7 @@ defaults often used in connector development.
 
 ```js
 // Showing defaults
-req = request({
+req = requestFactory({
   cheerio: false,
   jar: true,
   json: true
@@ -335,7 +335,7 @@ Options :
 - `cheerio`:  will parse automatically the `response.body` in a cheerio instance
 
 ```javascript
-req = request({ cheerio: true })
+req = requestFactory({ cheerio: true })
 req('http://github.com', $ => {
   const repos = $('#repo_listing .repo')
 })
@@ -348,7 +348,7 @@ req('http://github.com', $ => {
   with cheerio and json options.
 
 ```javascript
-req = request({
+req = requestFactory({
    resolveWithFullResponse: true,
    cheerio: true
 })
