@@ -5,7 +5,7 @@
  *
  * ```js
  * // Showing defaults
- * req = request({
+ * req = requestFactory({
  *   cheerio: false,
  *   jar: true,
  *   json: true
@@ -17,7 +17,7 @@
  * - `cheerio`:  will parse automatically the `response.body` in a cheerio instance
  *
  * ```javascript
- * req = request({ cheerio: true })
+ * req = requestFactory({ cheerio: true })
  * req('http://github.com', $ => {
  *   const repos = $('#repo_listing .repo')
  * })
@@ -30,7 +30,7 @@
  *   with cheerio and json options.
  *
  * ```javascript
- * req = request({
+ * req = requestFactory({
  *    resolveWithFullResponse: true,
  *    cheerio: true
  * })
