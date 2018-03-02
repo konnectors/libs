@@ -451,6 +451,9 @@ Its role is twofold :
 - Make the link between account data and konnector
 - Handle errors
 
+⚠️  A promise should be returned from the `fetch` function otherwise
+the konnector cannot know that asynchronous code has been called.
+
 ```
 this.terminate('LOGIN_FAILED')
 ```
@@ -468,6 +471,9 @@ module.exports = new BaseKonnector(function fetch () {
  // use this to access the instance of the konnector to
  // store any information that needs to be passed to
  // different stages of the konnector
+ return request('http://ameli.fr')
+   .then(computeReimbursements)
+   .then(saveBills)
 })
 ```
 <a name="BaseKonnector+end"></a>
