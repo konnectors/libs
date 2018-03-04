@@ -50,7 +50,7 @@
   },
   "scripts": {
     "lint": "standard --fix commands/* helpers/* libs/* index.js",
-    "test": "env LOG_LEVEL=info jest",
+    "test": "cross-env LOG_LEVEL=info jest",
     "doc": "jsdoc2md --template jsdoc2md/README.hbs libs/*.js helpers/*.js > docs/api.md"
   },
   "standard": {
@@ -62,5 +62,8 @@
       "expect",
       "it"
     ]
+  },
+  "devDependencies": {
+    "cross-env": "^5.1.3"
   }
 }
