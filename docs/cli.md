@@ -17,7 +17,7 @@ the `scripts` section of your package.json file
 and run:
 
 ```sh
-npm run standalone
+yarn standalone
 ```
 
 The requests to the cozy-stack will be stubbed using the [./fixture.json] file as source of data
@@ -41,7 +41,7 @@ in the `scripts` section of your package.json file:
 and run:
 
 ```sh
-npm run dev
+yarn dev
 ```
 
 This command will register your konnector as an OAuth application to the cozy-stack and then set the `COZY_CREDENTIALS` and `COZY_FIELDS` environment variable. By default,
