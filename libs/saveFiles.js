@@ -167,6 +167,7 @@ function getFileName (entry) {
   if (entry.filename) {
     filename = entry.filename
   } else if (entry.filestream) {
+    log('debug', entry)
     throw new Error('Missing filename property')
   } else {
     // try to get the file name from the url
