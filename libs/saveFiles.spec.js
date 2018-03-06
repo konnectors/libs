@@ -156,8 +156,8 @@ describe('saveFiles', function () {
     vendor: 'Free Mobile',
     type: 'phone'
   }]
-  describe('when filestream is used without filename', () => {
-    it('should throw an error', async () => {
+  describe('when entry doesn\'t have file creation information', () => {
+    it('should do nothing', async () => {
       expect.assertions(1)
       await saveFiles(billWithoutStreamUrlAndRequestOptions, options)
       expect(cozyClient.files.create).not.toHaveBeenCalled()
