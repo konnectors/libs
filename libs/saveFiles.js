@@ -73,11 +73,8 @@ const createFile = function (entry, options) {
         contentType: options.contentType
       }
 
-      if (entry.filestream) {
-        return cozy.files.create(entry.filestream, createFileOptions)
-      }
-
-      return cozy.files.create(downloadEntry(entry, options), createFileOptions)
+      const toCreate = entry.filestream || downloadEntry(entry, options)
+      return cozy.files.create(toCreate, createFileOptions)
     })
     .then(fileDocument => {
       // This allows us to have the warning message at the first run
@@ -93,7 +90,9 @@ const attachFileToEntry = function (entry, fileDocument) {
 }
 
 const saveEntry = function (entry, options) {
-  if (!entry.fileurl && !entry.requestOptions && !entry.filestream) return entry
+  const canBeSaved = entry => entry.fileurl || entry.requestOptions || entry.filestream
+
+  if (!canBeSaved(entry)) { return entry }
 
   if (options.timeout && Date.now() > options.timeout) {
     const remainingTime = Math.floor((options.timeout - Date.now()) / 1000)
