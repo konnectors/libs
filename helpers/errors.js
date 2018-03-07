@@ -42,6 +42,12 @@ const USER_ACTION_NEEDED = 'USER_ACTION_NEEDED'
  */
 const FILE_DOWNLOAD_FAILED = 'FILE_DOWNLOAD_FAILED'
 
+/**
+ * There was a problem while saving a file
+ * @type {String}
+ */
+const SAVE_FILE_FAILED = 'SAVE_FILE_FAILED'
+
 module.exports = {
   MSG: MSG,
   LOGIN_FAILED,
@@ -49,5 +55,6 @@ module.exports = {
   VENDOR_DOWN,
   USER_ACTION_NEEDED,
   FILE_DOWNLOAD_FAILED,
-  requireTwoFactor: requireTwoFactor
+  requireTwoFactor: requireTwoFactor,
+  SAVE_FILE_FAILED
 }
