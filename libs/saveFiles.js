@@ -129,7 +129,7 @@ const saveEntry = function (entry, options) {
       return options.postProcess ? options.postProcess(entry) : entry
     })
     .catch(err => {
-      log('warn', errors.FILE_DOWNLOAD_FAILED)
+      log('warn', errors.SAVE_FILE_FAILED)
       log('warn', err.message, `Error caught while trying to save the file ${entry.fileurl ? entry.fileurl : entry.filename}`)
       return entry
     })
