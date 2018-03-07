@@ -40,6 +40,14 @@ const billFixtures = [
     fileurl:
       'https://mobile.free.fr/moncompte/index.php?page=suiviconso&action=getFacture&format=dl&l=14730097&id=0ca5e5537786bc548a87a89eba2a804a&date=20170113&multi=0',
     filename: '201701_freemobile.pdf'
+  },
+  {
+    amount: 49.32,
+    date: '2018-03-03T23:00:00.000Z',
+    vendor: 'Free Mobile',
+    type: 'phone',
+    filestream: 'mock stream',
+    filename: '201701_freemobile.pdf'
   }
 ]
 
@@ -47,7 +55,7 @@ const FOLDER_PATH = '/testfolder'
 const options = { folderPath: FOLDER_PATH }
 let bills
 
-beforeEach(async function() {
+beforeEach(async function () {
   const INDEX = 'index'
   bills = billFixtures
   cozyClient.data.defineIndex.mockReturnValue(() => asyncResolve(INDEX))
@@ -58,7 +66,7 @@ beforeEach(async function() {
   })
 })
 
-describe('saveFiles', function() {
+describe('saveFiles', function () {
   const makeFile = (_id, attributes) => ({ _id, attributes })
   const rightMimeFile = makeFile('existingFileId', {
     name: '201701_freemobile.pdf',
@@ -98,15 +106,15 @@ describe('saveFiles', function() {
       beforeEach(async () => {
         cozyClient.files.statByPath.mockImplementation(path => {
           // Must check if we are stating on the folder or on the file
-          return path == FOLDER_PATH ?
-            asyncResolve({ _id: 'folderId' }) :
-            asyncResolve(existingFile)
+          return path === FOLDER_PATH
+            ? asyncResolve({ _id: 'folderId' })
+            : asyncResolve(existingFile)
         })
         await saveFiles(bills, options)
       })
 
       // Whether a file should be created or not
-      it(`should${expectCreation ? ' ' : ' not ' }create a file`, async function() {
+      it(`should${expectCreation ? ' ' : ' not '}create a file`, async function () {
         if (expectCreation) {
           expect(cozyClient.files.create).toHaveBeenCalledTimes(bills.length)
         } else {
@@ -122,4 +130,37 @@ describe('saveFiles', function() {
       })
     })
   }
+
+  const billWithoutFilename = [{
+    amount: 62.93,
+    date: '2018-03-03T23:00:00.000Z',
+    vendor: 'Free Mobile',
+    type: 'phone',
+    filestream: 'mock stream'
+  }]
+  describe('when filestream is used without filename', () => {
+    it('should throw an error', async () => {
+      expect.assertions(2)
+      try {
+        await saveFiles(billWithoutFilename, options)
+      } catch (error) {
+        expect(error).toEqual(new Error('Missing filename property'))
+      }
+      expect(cozyClient.files.create).not.toHaveBeenCalled()
+    })
+  })
+
+  const billWithoutStreamUrlAndRequestOptions = [{
+    amount: 62.93,
+    date: '2018-03-03T23:00:00.000Z',
+    vendor: 'Free Mobile',
+    type: 'phone'
+  }]
+  describe('when entry doesn\'t have file creation information', () => {
+    it('should do nothing', async () => {
+      expect.assertions(1)
+      await saveFiles(billWithoutStreamUrlAndRequestOptions, options)
+      expect(cozyClient.files.create).not.toHaveBeenCalled()
+    })
+  })
 })

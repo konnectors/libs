@@ -53,25 +53,29 @@ const downloadEntry = function (entry, options) {
     jar: true
   }, entry.requestOptions)
 
+  let filePromise = rq(reqOptions)
+
+  // we have to do this since the result of filePromise is not a stream and cannot be taken by
+  // cozy.files.create
+  if (options.postProcessFile) {
+    return filePromise
+      .then(data => options.postProcessFile(data))
+  }
+  return filePromise
+}
+
+const createFile = function (entry, options) {
   return cozy.files
     .statByPath(options.folderPath)
     .then(folder => {
-      let filePromise = rq(reqOptions)
       const createFileOptions = {
         name: getFileName(entry),
         dirID: folder._id,
         contentType: options.contentType
       }
 
-      // we have to do this since the result of filePromise is not a stream and cannot be taken by
-      // cozy.files.create
-      if (options.postProcessFile) {
-        return filePromise
-        .then(data => options.postProcessFile(data))
-        .then(data => cozy.files.create(data, createFileOptions))
-      }
-
-      return cozy.files.create(filePromise, createFileOptions)
+      const toCreate = entry.filestream || downloadEntry(entry, options)
+      return cozy.files.create(toCreate, createFileOptions)
     })
     .then(fileDocument => {
       // This allows us to have the warning message at the first run
@@ -87,7 +91,9 @@ const attachFileToEntry = function (entry, fileDocument) {
 }
 
 const saveEntry = function (entry, options) {
-  if (!entry.fileurl && !entry.requestOptions) return entry
+  const canBeSaved = entry => entry.fileurl || entry.requestOptions || entry.filestream
+
+  if (!canBeSaved(entry)) { return entry }
 
   if (options.timeout && Date.now() > options.timeout) {
     const remainingTime = Math.floor((options.timeout - Date.now()) / 1000)
@@ -104,7 +110,7 @@ const saveEntry = function (entry, options) {
       const mime = file.attributes.mime
       if (!checkMimeWithPath(mime, filepath) || !checkFileSize(file)) {
         return cozy.files.trashById(file._id)
-        .then(() => Promise.reject(new Error('BAD_DOWNLOADED_FILE')))
+          .then(() => Promise.reject(new Error('BAD_DOWNLOADED_FILE')))
       }
       return file
     })
@@ -113,7 +119,7 @@ const saveEntry = function (entry, options) {
     }, () => {
       log('debug', entry)
       log('debug', `File ${filepath} does not exist yet or is not valid`)
-      return downloadEntry(entry, options)
+      return createFile(entry, options)
     })
     .then(file => {
       attachFileToEntry(entry, file)
@@ -124,8 +130,8 @@ const saveEntry = function (entry, options) {
       return options.postProcess ? options.postProcess(entry) : entry
     })
     .catch(err => {
-      log('warn', errors.FILE_DOWNLOAD_FAILED)
-      log('warn', err.message, `Error caught while trying to save the file ${entry.fileurl}`)
+      log('warn', errors.SAVE_FILE_FAILED)
+      log('warn', err.message, `Error caught while trying to save the file ${entry.fileurl ? entry.fileurl : entry.filename}`)
       return entry
     })
 }
@@ -160,6 +166,9 @@ function getFileName (entry) {
   let filename
   if (entry.filename) {
     filename = entry.filename
+  } else if (entry.filestream) {
+    log('debug', entry)
+    throw new Error('Missing filename property')
   } else {
     // try to get the file name from the url
     const parsed = require('url').parse(entry.fileurl)
