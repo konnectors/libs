@@ -19,7 +19,8 @@ module.exports = {
   request: deprecate(requestFactory, 'Use requestFactory instead of request. It will be removed in cozy-konnector-libs@4'),
   requestFactory,
   retry: require('bluebird-retry'),
-  wrapIfSentrySetUp: require('./helpers/sentry').wrapIfSentrySetUp
+  wrapIfSentrySetUp: require('./helpers/sentry').wrapIfSentrySetUp,
+  Document: require('./libs/document')
 }
 
 function deprecate (wrapped, message) {
