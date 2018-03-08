@@ -24,6 +24,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Security
 - none yet
 
+## [3.5.3] - 2018-03-08
+
+### Added
+
+- Document class
+- saveFiles handles filestreams (Thanks [Jérémie](https://github.com/laedit) !)
+- `fetch` function return value is checked to be a Promise
+
 ## [3.5.2] - 2018-02-28
 
 ### Fixed
@@ -90,7 +98,8 @@ debug logs but "info" are kept.
 - Linking with bank operations now works even if the bill has already been fetched
 
 
-[Unreleased]: https://github.com/cozy/cozy-konnector-libs/compare/v3.5.2...HEAD
+[Unreleased]: https://github.com/cozy/cozy-konnector-libs/compare/v3.5.3...HEAD
+[3.5.3]: https://github.com/cozy/cozy-konnector-libs/compare/v3.5.2...v3.5.3
 [3.5.2]: https://github.com/cozy/cozy-konnector-libs/compare/v3.5.1...v3.5.2
 [3.5.1]: https://github.com/cozy/cozy-konnector-libs/compare/v3.3.0...v3.5.1
 [3.3.0]: https://github.com/cozy/cozy-konnector-libs/compare/v3.2.5...v3.3.0
