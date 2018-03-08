@@ -1,6 +1,6 @@
 'use strict'
 
-const log = require('../libs/logger')
+const log = require('cozy-logger')
 
 const MSG = {
   TWOFACTOR: '2FA token requested'

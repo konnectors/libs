@@ -36,7 +36,7 @@ const rq = request({
     'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:36.0) Gecko/20100101 Firefox/36.0'
   }
 })
-const log = require('./logger').namespace('saveFiles')
+const log = require('cozy-logger').namespace('saveFiles')
 const cozy = require('./cozyclient')
 const mimetypes = require('mime-types')
 const errors = require('../helpers/errors')

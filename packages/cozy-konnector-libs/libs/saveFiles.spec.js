@@ -1,6 +1,6 @@
 jest.mock('./cozyclient')
 const cozyClient = require('./cozyclient')
-const logger = require('./logger')
+const logger = require('cozy-logger')
 const saveFiles = require('./saveFiles')
 const asyncResolve = val => {
   return new Promise(resolve => {

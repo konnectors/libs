@@ -27,7 +27,7 @@
  */
 const bluebird = require('bluebird')
 const omit = require('lodash/omit')
-const log = require('./logger').namespace('addData')
+const log = require('cozy-logger').namespace('addData')
 
 module.exports = (entries, doctype) => {
   const cozy = require('./cozyclient')

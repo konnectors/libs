@@ -1,4 +1,4 @@
-const log = require('../libs/logger')
+const log = require('cozy-logger')
 const Raven = require('raven')
 const {getDomain, getInstance} = require('./cozy-domain')
 

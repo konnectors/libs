@@ -1,0 +1,11 @@
+{
+  "name": "cozy-logger",
+  "version": "1.0.0",
+  "description": "Logger for Cozy konnector and services",
+  "main": "src/index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "chalk": "^2.3.2",
+    "util": "^0.10.3"
+  }
+}
