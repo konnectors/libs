@@ -62,8 +62,8 @@ class BaseKonnector {
 
   run () {
     return this.init()
-    .then(requiredFields => this.fetch(requiredFields))
-    .then(prom => {
+    .then(requiredFields =>  {
+      const prom = this.fetch(requiredFields)
       if (!prom || !prom.then) {
         log('warn', `A promise should be returned from the \`fetch\` function. Here ${prom} was returned`)
         throw new Error('`fetch` should return a Promise')
