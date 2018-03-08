@@ -7,23 +7,7 @@ jest.mock('./cozyclient', () => ({
 
 const cozy = require('./cozyclient')
 const hydrateAndFilter = require('./hydrateAndFilter')
-
-class Document {
-  constructor (attributes) {
-    if (this.validate) {
-      this.validate(attributes)
-    }
-    Object.assign(this, attributes, {
-      metadata: {
-        version: this.constructor.version
-      }
-    })
-  }
-
-  toJSON () {
-    return this
-  }
-}
+const Document = require('./document')
 
 const asyncResolve = data => (
   new Promise(resolve => setImmediate(() => resolve(data)))
