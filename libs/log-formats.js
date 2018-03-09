@@ -21,7 +21,27 @@ function prodFormat (type, message, label, namespace) {
   if (message.stack) message = message.stack
 
   // cut the string to avoid a fail in the stack
-  return JSON.stringify({ time: new Date(), type, message, label, namespace }).substr(0, LOG_LENGTH_LIMIT)
+  return JSON.stringify({
+    time: new Date(),
+    type,
+    message: convertCriticalMessage(type, message),
+    label,
+    namespace
+  }).substr(0, LOG_LENGTH_LIMIT)
+}
+
+function convertCriticalMessage(type, message) {
+  if (type !== 'critical') return message
+
+  let result = message
+  if (Array.isArray(result)) {
+    // clean non string items and remove '-' in items
+    result = result
+      .filter(item => typeof item === 'string')
+      .map(item => item.replace(/-/g, ''))
+      .join('-')
+  }
+  return result
 }
 
 function devFormat (type, message, label, namespace) {
