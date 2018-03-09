@@ -43,7 +43,7 @@ When saving bills, `cozy-konnector-libs` provides a filtering and hydratation me
 
 This method performs two actions :
 * hydrate entries retrieved from service with usable data from couchDB (like existing bill id)
-* filter entries retrieved from service and returns only entries that need to be saved/synchronized.
+* filter entries retrieved from service and return only entries that need to be saved/synchronized.
 
 ## Objectives of this document
 
