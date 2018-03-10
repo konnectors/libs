@@ -10,7 +10,7 @@ process.env.COZY_FIELDS = JSON.stringify({
 const config = require('../helpers/init-konnector-config')()
 process.env.COZY_URL = config.COZY_URL
 
-const filename = process.argv[2] || 'index.js'
+const filename = process.argv[2] || process.env.npm_package_main || 'index.js'
 
 // assign default value of replay to bloody which cancels it
 process.env.REPLAY = process.env.REPLAY ? process.env.REPLAY : 'bloody'

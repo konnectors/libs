@@ -25,7 +25,7 @@ and when cozy-client-js is asked to create or update data, the data will be outp
 The bills (or any file) will be saved in the . directory.
 
 It is also possible to add an argument to this command which tells which file to run. Default is
-./index.js
+defined in `package.json` `main` section or ./index.js
 
 #### cozy-konnector-dev
 
@@ -52,6 +52,10 @@ After that, your konnector is running but should not work since you did not spec
 the target service. You can do this also in [./konnector-dev-config.json] in the "fields" section.
 
 The files are saved in the root directory of your cozy by default.
+
+It is also possible to add an argument to this command which tells which file to run. Default is
+defined in `package.json` `main` section or ./index.js
+
 
 ##### Arguments
 
