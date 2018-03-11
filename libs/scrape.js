@@ -37,7 +37,7 @@ const scrape = ($, specs, childSelector) => {
 
   // Several items shorthand
   if (childSelector !== undefined) {
-    return ($.find || $)(childSelector).map((i, e) => scrape($(e), specs));
+    return Array.from(($.find || $)(childSelector)).map(e => scrape($(e), specs));
   }
 
   // Several properties "normal" case
