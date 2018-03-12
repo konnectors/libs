@@ -221,7 +221,7 @@ fetch account information for your connector.</p>
 <dd><p>Use it to log messages in your konnector. Typical types are</p>
 <ul>
 <li><code>debug</code></li>
-<li><code>warning</code></li>
+<li><code>warn</code></li>
 <li><code>info</code></li>
 <li><code>error</code></li>
 <li><code>ok</code></li>
