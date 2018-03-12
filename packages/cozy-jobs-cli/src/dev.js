@@ -32,7 +32,7 @@ authenticate({ tokenPath: program.token, manifestPath: program.manifest })
     account: accountId,
     folder_to_save: useFolder ? 'io.cozy.files.root-dir' : ''
   })
-  const filename = program.args[0] || 'index.js'
+  const filename = program.args[0] || process.env.npm_package_main || 'index.js'
   const filepath = path.resolve(filename)
   return require(filepath)
 })

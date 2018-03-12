@@ -7,12 +7,12 @@ const getOperationAmountFromBill = (bill, options) => {
   const searchingCredit = options && options.credit
   return searchingCredit
     ? (bill.groupAmount || bill.amount)
-    : -(bill.originalAmount || bill.amount)
+    : -(bill.originalAmount || bill.amount)
 }
 
 const getOperationDateFromBill = (bill, options) => {
   const isCredit = options && options.credit
-  return new Date(isCredit ? bill.date : bill.originalDate || bill.date)
+  return new Date(isCredit ? bill.date : bill.originalDate || bill.date)
 }
 
 const getIdentifiers = options => options.identifiers
