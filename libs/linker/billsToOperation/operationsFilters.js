@@ -17,7 +17,7 @@ const UNCATEGORIZED_CAT_ID_OPERATION = '0' // TODO: import it from cozy-bank
 const getCategoryId = o => {
   return o.manualCategoryId
     || o.automaticCategoryId
-    || UNCATEGORIZED_CAT_ID_OPERATION
+    || UNCATEGORIZED_CAT_ID_OPERATION
 }
 
 const checkOperationCategory = (operation, categoryId) => {
