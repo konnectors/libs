@@ -20,7 +20,8 @@ module.exports = {
   requestFactory,
   retry: require('bluebird-retry'),
   wrapIfSentrySetUp: require('./helpers/sentry').wrapIfSentrySetUp,
-  Document: require('./libs/document')
+  Document: require('./libs/document'),
+  scrape: require('./libs/scrape')
 }
 
 function deprecate (wrapped, message) {
