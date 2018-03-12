@@ -24,6 +24,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Security
 - none yet
 
+## [3.6.0] - 2018-03-12
+
+### Added
+
+- `scrape` function.
+
 ## [3.5.3] - 2018-03-08
 
 ### Added
@@ -98,7 +104,8 @@ debug logs but "info" are kept.
 - Linking with bank operations now works even if the bill has already been fetched
 
 
-[Unreleased]: https://github.com/cozy/cozy-konnector-libs/compare/v3.5.3...HEAD
+[Unreleased]: https://github.com/cozy/cozy-konnector-libs/compare/v3.6.0...HEAD
+[3.6.0]: https://github.com/cozy/cozy-konnector-libs/compare/v3.5.3...v3.6.0
 [3.5.3]: https://github.com/cozy/cozy-konnector-libs/compare/v3.5.2...v3.5.3
 [3.5.2]: https://github.com/cozy/cozy-konnector-libs/compare/v3.5.1...v3.5.2
 [3.5.1]: https://github.com/cozy/cozy-konnector-libs/compare/v3.3.0...v3.5.1
