@@ -84,6 +84,7 @@ module.exports = function (options = {}) {
   requestOptions.headers = options.headers
   requestOptions.followAllRedirects = options.followAllRedirects
   requestOptions.strictSSL = options.strictSSL
+  requestOptions.encoding = options.encoding
 
   if (options.cheerio) {
     // a lot of web service do not want to be called by robots and then check the user agent to
