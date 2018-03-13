@@ -43,6 +43,7 @@ const errors = require('../helpers/errors')
 
 const sanitizeEntry = function (entry) {
   delete entry.requestOptions
+  delete entry.filestream
   return entry
 }
 

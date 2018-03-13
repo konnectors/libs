@@ -13,7 +13,7 @@ const asyncResolve = val => {
 logger.setLevel('critical')
 
 // TODO put in fixture file
-const billFixtures = [
+function getBillFixtures() { return [
   {
     amount: 20.09,
     date: '2017-12-12T23:00:00.000Z',
@@ -50,6 +50,7 @@ const billFixtures = [
     filename: '201701_freemobile.pdf'
   }
 ]
+}
 
 const FOLDER_PATH = '/testfolder'
 const options = { folderPath: FOLDER_PATH }
@@ -57,7 +58,7 @@ let bills
 
 beforeEach(async function () {
   const INDEX = 'index'
-  bills = billFixtures
+  bills = getBillFixtures()
   cozyClient.data.defineIndex.mockReturnValue(() => asyncResolve(INDEX))
   cozyClient.files.create.mockReset()
   cozyClient.files.statByPath.mockReset()
@@ -127,6 +128,15 @@ describe('saveFiles', function () {
         const bill = bills[0]
         expect(bill.fileDocument).not.toBe(undefined)
         expect(bill.fileDocument._id).toBe(expectedBillFileId)
+      })
+
+      // Bill shouldn't have sanitized attributes
+      it('should have been sanitized', () => {
+        expect.assertions(2 * bills.length)
+        bills.map(bill => {
+          expect(bill.requestOptions).toBeUndefined()
+          expect(bill.filestream).toBeUndefined()
+        })
       })
     })
   }
