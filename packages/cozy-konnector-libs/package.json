@@ -35,7 +35,7 @@
     "cozy-client-js": "^0.3.17",
     "date-fns": "^1.29.0",
     "isomorphic-fetch": "^2.2.1",
-    "jest": "^21.1.0",
+    "jest": "^22.0.0",
     "jsdoc-to-markdown": "^4.0.1",
     "lodash": "^4.17.4",
     "moment": "^2.18.1",
