@@ -24,8 +24,25 @@ The requests to the cozy-stack will be stubbed using the [./fixture.json] file a
 and when cozy-client-js is asked to create or update data, the data will be output to the console.
 The bills (or any file) will be saved in the . directory.
 
-It is also possible to add an argument to this command which tells which file to run. Default is
+It is possible to add an argument to this command which tells which file to run. Default is
 defined in `package.json` `main` section or ./index.js
+
+It is possible to record and replay the requests done by the standalone command using the
+[replay](https://github.com/assaf/node-replay) module.
+
+##### Arguments
+
+```
+Usage: cozy-konnector-standalone [options] <file>
+
+
+Options:
+
+  --record  Record all the requests in the ./fixtures directory using the replay module
+  --replay  Replay all the recorded requests
+  -h, --help  output usage information
+```
+
 
 #### cozy-konnector-dev
 
