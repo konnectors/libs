@@ -11,7 +11,7 @@ module.exports = function () {
 }
 
 function ensureAccount () {
-  const cozy = require('../libs/cozyclient')
+  const cozy = require('cozy-konnector-libs').cozyClient
 
   return getAccountId()
     .then(id => {
