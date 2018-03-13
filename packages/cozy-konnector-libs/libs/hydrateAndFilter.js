@@ -35,7 +35,7 @@
  */
 
 const bluebird = require('bluebird')
-const log = require('./logger').namespace('hydrateAndFilter')
+const log = require('cozy-logger').namespace('hydrateAndFilter')
 const get = require('lodash/get')
 const uniqBy = require('lodash/uniqBy')
 

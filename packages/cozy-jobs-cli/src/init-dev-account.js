@@ -2,7 +2,7 @@
 
 const fs = require('fs')
 const path = require('path')
-const log = require('../libs/logger').namespace('init-dev-account')
+const log = require('cozy-logger').namespace('init-dev-account')
 
 const accountIdPath = path.resolve('.account')
 

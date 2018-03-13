@@ -1,4 +1,4 @@
-const log = require('./logger').namespace('Error Interception')
+const log = require('cozy-logger').namespace('Error Interception')
 
 // This will catch exception which would be uncaught by the connector script itself
 process.on('uncaughtException', err => {

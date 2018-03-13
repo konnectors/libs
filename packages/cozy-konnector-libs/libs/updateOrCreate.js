@@ -14,7 +14,7 @@
  * @module updateOrCreate
  */
 const bluebird = require('bluebird')
-const log = require('./logger').namespace('updateOrCreate')
+const log = require('cozy-logger').namespace('updateOrCreate')
 const cozy = require('./cozyclient')
 
 module.exports = (entries = [], doctype, matchingAttributes = []) => {

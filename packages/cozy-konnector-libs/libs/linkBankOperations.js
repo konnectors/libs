@@ -8,7 +8,7 @@
  */
 
 const bluebird = require('bluebird')
-const log = require('./logger').namespace('linkBankOperations')
+const log = require('cozy-logger').namespace('linkBankOperations')
 const { findDebitOperation, findCreditOperation } = require('./linker/billsToOperation')
 const fs = require('fs')
 

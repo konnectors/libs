@@ -2,7 +2,7 @@
 
 const fs = require('fs')
 const path = require('path')
-const log = require('../libs/logger')
+const log = require('cozy-logger')
 
 module.exports = getKonnectorConfig
 

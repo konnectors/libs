@@ -1,5 +1,5 @@
 const fs = require('fs')
-const log = require('../libs/logger').namespace('manifest')
+const log = require('cozy-logger').namespace('manifest')
 
 module.exports = {
   getScopes (manifestPath) {

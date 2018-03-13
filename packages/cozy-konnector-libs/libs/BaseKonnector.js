@@ -1,8 +1,8 @@
 'use strict'
 
 const cozy = require('./cozyclient')
-const log = require('./logger').namespace('BaseKonnector')
-const Secret = require('./Secret')
+const log = require('cozy-logger').namespace('BaseKonnector')
+const Secret = require('cozy-logger/Secret')
 const errors = require('../helpers/errors')
 const {
   wrapIfSentrySetUp,
