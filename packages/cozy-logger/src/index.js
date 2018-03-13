@@ -1,7 +1,7 @@
 
 const { env2formats } = require('./log-formats')
 const { filterLevel, filterSecrets } = require('./log-filters')
-
+const Secret = require('./Secret')
 const { NODE_ENV, LOG_LEVEL } = process.env
 const env = (env2formats[NODE_ENV] && NODE_ENV) || 'production'
 
@@ -69,6 +69,7 @@ methods.forEach(level => {
 
 module.exports = log
 
+log.Secret = Secret
 log.namespace = function (namespace) {
   return function (type, message, label, ns = namespace) {
     log(type, message, label, ns)

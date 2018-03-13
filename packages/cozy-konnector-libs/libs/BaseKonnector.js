@@ -2,7 +2,7 @@
 
 const cozy = require('./cozyclient')
 const log = require('cozy-logger').namespace('BaseKonnector')
-const Secret = require('cozy-logger/Secret')
+const { Secret } = require('cozy-logger')
 const errors = require('../helpers/errors')
 const {
   wrapIfSentrySetUp,
