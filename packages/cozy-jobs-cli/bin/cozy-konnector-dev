@@ -1,0 +1,4 @@
+#!/usr/bin/env node
+
+console.warn('cozy-konnector-dev is deprecated, you should use cozy-run-dev')
+require(require('path').join(__dirname, '../src', 'dev'))

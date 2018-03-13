@@ -1,0 +1,4 @@
+#!/usr/bin/env node
+
+console.warn('cozy-konnector-standalone is deprecated, you should use cozy-run-standalone')
+require(require('path').join(__dirname, '../src', 'standalone'))
