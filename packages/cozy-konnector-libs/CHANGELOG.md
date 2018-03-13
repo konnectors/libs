@@ -24,6 +24,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Security
 - none yet
 
+## [3.7.0] - 2018-03-13
+
+- Update cozy-client-js
+- Use lerna
+
 ## [3.6.0] - 2018-03-12
 
 ### Added
@@ -104,7 +109,8 @@ debug logs but "info" are kept.
 - Linking with bank operations now works even if the bill has already been fetched
 
 
-[Unreleased]: https://github.com/cozy/cozy-konnector-libs/compare/v3.6.0...HEAD
+[Unreleased]: https://github.com/cozy/cozy-konnector-libs/compare/v3.7.0...HEAD
+[3.7.0]: https://github.com/cozy/cozy-konnector-libs/compare/v3.6.0...v3.7.0
 [3.6.0]: https://github.com/cozy/cozy-konnector-libs/compare/v3.5.3...v3.6.0
 [3.5.3]: https://github.com/cozy/cozy-konnector-libs/compare/v3.5.2...v3.5.3
 [3.5.2]: https://github.com/cozy/cozy-konnector-libs/compare/v3.5.1...v3.5.2
