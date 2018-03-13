@@ -1,8 +1,10 @@
 process.env.NODE_ENV = 'development'
+
+const config = require('./init-konnector-config')()
+
 if (!process.env.DEBUG) process.env.DEBUG = '*'
 process.env.COZY_URL = config.COZY_URL
 
-const config = require('./init-konnector-config')()
 const program = require('commander')
 const path = require('path')
 
