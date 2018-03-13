@@ -1,6 +1,6 @@
 {
   "name": "cozy-jobs-cli",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Manage cozy jobs",
   "main": "index.js",
   "repository": {
@@ -20,7 +20,7 @@
   "dependencies": {
     "cheerio": "^1.0.0-rc.2",
     "commander": "^2.12.2",
-    "cozy-logger": "^1.0.2-0",
+    "cozy-logger": "^1.0.3",
     "opn": "^5.1.0"
   },
   "scripts": {
