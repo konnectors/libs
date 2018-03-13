@@ -12,7 +12,6 @@ module.exports = function () {
 
 function ensureAccount () {
   const cozy = require('cozy-konnector-libs').cozyClient
-
   return getAccountId()
     .then(id => {
       log('debug', 'Found .account file')
@@ -34,7 +33,7 @@ function getAccountId () {
 }
 
 function createAccount () {
-  const cozy = require('../libs/cozyclient')
+  const cozy = require('cozy-konnector-libs').cozyClient
   log('info', 'Creating a new dev account')
   return cozy.data.create('io.cozy.accounts', {
     name: 'dev_account',
