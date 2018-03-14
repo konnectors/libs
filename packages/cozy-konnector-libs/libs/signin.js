@@ -4,7 +4,7 @@
  * failure, it throws a `LOGIN_FAILED` error.
  *
  * It does not submit values provided through `select` tags, except if populated
- * by user with `population`.
+ * by user with `formData`.
  * Limit between `baseUrl` and `page` is important. The form `action` will be
  * concatenated the same way `page` is, to constitute the submission url. For
  * now, a form with an absolute `action` is not comptabile with this function.
@@ -14,7 +14,7 @@
  * - `formSelector` is used by cheerio to uniquely identify the form in which to
  *   log in
  *
- * - `population` is an object of { name: value, … }. It is used to populate the
+ * - `formData` is an object of { name: value, … }. It is used to populate the
  *   form, in the proper inputs with the same name as the properties of this
  *   object, before submitting it.
  *
@@ -39,7 +39,7 @@ const url = require('url')
 module.exports = function signin (
   pageUrl,
   formSelector,
-  population,
+  formData,
   parseStrategy = 'cheerio',
   validate = defaultValidate,
   opts = {}) {
@@ -56,8 +56,8 @@ module.exports = function signin (
   return rq(pageUrl)
   .then($ => {
     const [action, inputs] = parseForm($, formSelector)
-    for (let name in population) {
-      inputs[name] = population[name]
+    for (let name in formData) {
+      inputs[name] = formData[name]
     }
 
     return submitForm(rq, url.resolve(pageUrl, action), inputs, parseBody)
