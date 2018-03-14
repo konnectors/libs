@@ -20,7 +20,7 @@
  *   form, in the proper inputs with the same name as the properties of this
  *   object, before submitting it.
  *
- * - `parseStrategy` allow the user to resolve `signon` with a preparsed body.
+ * - `parseStrategy` allow the user to resolve `signin` with a preparsed body.
  *   The choice of the strategy for the parsing is one of : `raw`, `json` or
  *   `cheerio`. `cheerio` being the default.
  *
@@ -28,16 +28,16 @@
  *   `parsedBody`. If it is false, `LOGIN_FAILED` is thrown, otherwise the
  *   konnector continues.
  *
- * - `opts` allows to pass eventual options to the `signon`'s `requestFactory`.
+ * - `opts` allows to pass eventual options to the `signin`'s `requestFactory`.
  *   It could be useful for pages using `latin1` `encoding` for instance.
  *
- * @module signon
+ * @module signin
  */
 const errors = require('../helpers/errors')
 const log = require('cozy-logger').namespace('cozy-konnector-libs')
 const requestFactory = require('./request')
 
-module.exports = function signon (
+module.exports = function signin (
   baseUrl,
   page,
   formSelector,

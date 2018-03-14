@@ -21,7 +21,7 @@ module.exports = {
   retry: require('bluebird-retry'),
   wrapIfSentrySetUp: require('./helpers/sentry').wrapIfSentrySetUp,
   Document: require('./libs/document'),
-  signon: require('./libs/signon'),
+  signin: require('./libs/signin'),
   scrape: require('./libs/scrape')
 }
 
