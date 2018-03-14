@@ -43,23 +43,31 @@ const scrape = ($, specs, childSelector) => {
   // Several properties "normal" case
   const res = {};
   Object.keys(specs).forEach(specName => {
-    const spec = mkSpec(specs[specName]);
-    let data = spec.sel ? $.find(spec.sel) : $;
-    if (spec.index) {
-      data = data.get(spec.index);
+
+    try {
+      const spec = mkSpec(specs[specName]);
+      let data = spec.sel ? $.find(spec.sel) : $;
+      if (spec.index) {
+        data = data.get(spec.index);
+      }
+      let val;
+      if (spec.fn) {
+        val = spec.fn(data);
+      } else if (spec.attr) {
+        val = data.attr(spec.attr);
+      } else {
+        val = data
+        val = val && val.text()
+        val = val && val.trim();
+      }
+      if (spec.parse) {
+        val = spec.parse(val);
+      }
+      res[specName] = val;
+    } catch (e) {
+      console.warn('Could not parse for', specName)
+      console.log(e)
     }
-    let val;
-    if (spec.fn) {
-      val = spec.fn(data);
-    } else if (spec.attr) {
-      val = data.attr(spec.attr);
-    } else {
-      val = data.text().trim();
-    }
-    if (spec.parse) {
-      val = spec.parse(val);
-    }
-    res[specName] = val;
   });
   return res;
 };
