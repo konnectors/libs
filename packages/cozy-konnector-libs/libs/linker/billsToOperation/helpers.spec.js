@@ -1,4 +1,3 @@
-const moment = require('moment')
 import {
   getIdentifiers,
   getOperationAmountFromBill,

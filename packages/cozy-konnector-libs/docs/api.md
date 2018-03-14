@@ -192,6 +192,11 @@ It takes a fetch function in parameter that must return a <code>Promise</code>.
 You need at least the <code>GET</code> permission on <code>io.cozy.accounts</code> in your manifest to allow it to
 fetch account information for your connector.</p>
 </dd>
+<dt><a href="#Document">Document</a></dt>
+<dd><p>Simple Model for Documents. Allows to specify
+<code>shouldSave</code>, <code>shouldUpdate</code> as methods.</p>
+<p>Has useful <code>isEqual</code> method</p>
+</dd>
 </dl>
 
 ## Constants
@@ -212,20 +217,22 @@ fetch account information for your connector.</p>
 <dt><a href="#FILE_DOWNLOAD_FAILED">FILE_DOWNLOAD_FAILED</a> : <code>String</code></dt>
 <dd><p>There was a problem while downloading a file</p>
 </dd>
+<dt><a href="#SAVE_FILE_FAILED">SAVE_FILE_FAILED</a> : <code>String</code></dt>
+<dd><p>There was a problem while saving a file</p>
+</dd>
 </dl>
 
 ## Functions
 
 <dl>
-<dt><a href="#log">log(type, message, label, namespace)</a></dt>
-<dd><p>Use it to log messages in your konnector. Typical types are</p>
-<ul>
-<li><code>debug</code></li>
-<li><code>warn</code></li>
-<li><code>info</code></li>
-<li><code>error</code></li>
-<li><code>ok</code></li>
-</ul>
+<dt><a href="#mkSpec">mkSpec()</a></dt>
+<dd><p>Declarative scraping.</p>
+<p>Describe your items attributes and where to find/parse them
+instead of imperatively building them.</p>
+<p>Heavily inspired by <a href="https://medialab.github.io/artoo/">artoo</a> scraping method.</p>
+</dd>
+<dt><a href="#scrape">scrape($, spec(s), [childSelector])</a> ⇒ <code>object</code> | <code>array</code></dt>
+<dd><p>Scrape a cheerio object for properties</p>
 </dd>
 </dl>
 
@@ -549,6 +556,27 @@ connector now
 | --- | --- | --- |
 | message | <code>string</code> | The error code to be saved as connector result see [docs/ERROR_CODES.md] |
 
+<a name="Document"></a>
+
+## Document
+Simple Model for Documents. Allows to specify
+`shouldSave`, `shouldUpdate` as methods.
+
+Has useful `isEqual` method
+
+**Kind**: global class  
+<a name="Document+isEqual"></a>
+
+### document.isEqual()
+Compares to another document deeply.
+
+`_id` and `_rev` are by default ignored in the comparison.
+
+By default, will compare dates loosely since you often
+compare existing documents (dates in ISO string) with documents
+that just have been scraped where dates are `Date`s.
+
+**Kind**: instance method of [<code>Document</code>](#Document)  
 <a name="LOGIN_FAILED"></a>
 
 ## LOGIN_FAILED : <code>String</code>
@@ -579,36 +607,39 @@ There was an unexpected error, please take a look at the logs to know what happe
 There was a problem while downloading a file
 
 **Kind**: global constant  
-<a name="log"></a>
+<a name="SAVE_FILE_FAILED"></a>
 
-## log(type, message, label, namespace)
-Use it to log messages in your konnector. Typical types are
+## SAVE_FILE_FAILED : <code>String</code>
+There was a problem while saving a file
 
-- `debug`
-- `warning`
-- `info`
-- `error`
-- `ok`
+**Kind**: global constant  
+<a name="mkSpec"></a>
+
+## mkSpec()
+Declarative scraping.
+
+Describe your items attributes and where to find/parse them
+instead of imperatively building them.
+
+Heavily inspired by [artoo] scraping method.
+
+[artoo]: https://medialab.github.io/artoo/
 
 **Kind**: global function  
+<a name="scrape"></a>
 
-| Param | Type |
-| --- | --- |
-| type | <code>string</code> | 
-| message | <code>string</code> | 
-| label | <code>string</code> | 
-| namespace | <code>string</code> | 
+## scrape($, spec(s), [childSelector]) ⇒ <code>object</code> \| <code>array</code>
+Scrape a cheerio object for properties
 
-**Example**  
-They will be colored in development mode. In production mode, those logs are formatted in JSON to be interpreted by the stack and possibly sent to the client. `error` will stop the konnector.
+**Kind**: global function  
+**Returns**: <code>object</code> \| <code>array</code> - - Item(s) scraped  
 
-```js
-logger = log('my-namespace')
-logger('debug', '365 bills')
-// my-namespace : debug : 365 bills
-logger('info', 'Page fetched')
-// my-namespace : info : Page fetched
-```
+| Param | Type | Description |
+| --- | --- | --- |
+| $ | <code>cheerio</code> | Cheerio node which will be scraped |
+| spec(s) | <code>object</code> \| <code>string</code> | Options object describing what you want to scrape |
+| [childSelector] | <code>string</code> | If passed, scrape will return an array of items |
+
 
 
 ### ⚠ Permissions

@@ -33,9 +33,6 @@ describe('hydrate and filter', () => {
     cozy.data.defineIndex.mockReturnValue(asyncResolve())
   })
 
-  const setup = async _entries => {
-  }
-
   it('should hydrate entries with info from db', async () => {
     entries = copy(basicEntries)
     filtered = await hydrateAndFilter(entries, 'io.cozy.simpsons', { keys: ['name'] })
@@ -57,8 +54,8 @@ describe('hydrate and filter', () => {
         return entry.name === 'Marge'
       }
     })
-    expect(filtered.filter(x => x.name == 'Bart').length).toBe(0)
-    expect(filtered.filter(x => x.name == 'Marge').length).toBe(1)
+    expect(filtered.filter(x => x.name === 'Bart').length).toBe(0)
+    expect(filtered.filter(x => x.name === 'Marge').length).toBe(1)
   })
 
   it('should support shouldSave / shouldUpdate in the entries', async () => {
@@ -76,7 +73,7 @@ describe('hydrate and filter', () => {
     filtered = await hydrateAndFilter(entries, 'io.cozy.simpsons', {
       keys: ['name']
     })
-    expect(filtered.filter(x => x.name == 'Bart').length).toBe(0)
-    expect(filtered.filter(x => x.name == 'Marge').length).toBe(1)
+    expect(filtered.filter(x => x.name === 'Bart').length).toBe(0)
+    expect(filtered.filter(x => x.name === 'Marge').length).toBe(1)
   })
 })

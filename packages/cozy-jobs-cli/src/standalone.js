@@ -40,11 +40,9 @@ function initReplay() {
   const replayOption = ['record', 'replay'].find(opt => program[opt] === true)
   if (replayOption) process.env.REPLAY = replayOption
 
-  process.env.REPLAY = replayOption
-    ? replayOption
-    : process.env.REPLAY
+  process.env.REPLAY = replayOption || (process.env.REPLAY
         ? process.env.REPLAY
-        : 'bloody'
+        : 'bloody')
 
   require('replay')
 }

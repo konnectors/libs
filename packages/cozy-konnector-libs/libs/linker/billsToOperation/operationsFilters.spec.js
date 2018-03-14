@@ -12,9 +12,9 @@ describe('operationsFilters', () => {
     const identifiers = ['tRaInLiNe']
     const fByIdentifiers = filterByIdentifiers(identifiers)
 
-    expect(fByIdentifiers({ label: 'Trainline !!!'})).toBeTruthy()
-    expect(fByIdentifiers({ label: 'Yes Trainline'})).toBeTruthy()
-    expect(fByIdentifiers({ label: 'CapitainTrain'})).toBeFalsy()
+    expect(fByIdentifiers({label: 'Trainline !!!'})).toBeTruthy()
+    expect(fByIdentifiers({label: 'Yes Trainline'})).toBeTruthy()
+    expect(fByIdentifiers({label: 'CapitainTrain'})).toBeFalsy()
   })
 
   test('filterByDates', () => {
@@ -24,11 +24,11 @@ describe('operationsFilters', () => {
     }
     const fByDates = filterByDates(rangeDates)
 
-    expect(fByDates({ date: new Date(2018, 0, 15)})).toBeFalsy()
-    expect(fByDates({ date: new Date(2018, 0, 16)})).toBeTruthy()
-    expect(fByDates({ date: new Date(2018, 0, 17)})).toBeTruthy()
-    expect(fByDates({ date: new Date(2018, 0, 18)})).toBeTruthy()
-    expect(fByDates({ date: new Date(2018, 0, 19)})).toBeFalsy()
+    expect(fByDates({date: new Date(2018, 0, 15)})).toBeFalsy()
+    expect(fByDates({date: new Date(2018, 0, 16)})).toBeTruthy()
+    expect(fByDates({date: new Date(2018, 0, 17)})).toBeTruthy()
+    expect(fByDates({date: new Date(2018, 0, 18)})).toBeTruthy()
+    expect(fByDates({date: new Date(2018, 0, 19)})).toBeFalsy()
   })
 
   describe('filterByAmounts', () => {
@@ -72,9 +72,9 @@ describe('operationsFilters', () => {
 
   describe('filterByReimbursements', () => {
     const fReimbursements = filterByReimbursements({ amount: 10 })
-    expect(fReimbursements({ reimbursements: [{ amount: 10}], amount: -10})).toBe(false)
-    expect(fReimbursements({ reimbursements: [{ amount: 7}, { amount: 3}], amount: -10})).toBe(false)
-    expect(fReimbursements({ reimbursements: [{ amount: 7}, { amount: 3}], amount: -20})).toBe(true)
+    expect(fReimbursements({reimbursements: [{amount: 10}], amount: -10})).toBe(false)
+    expect(fReimbursements({reimbursements: [{amount: 7}, {amount: 3}], amount: -10})).toBe(false)
+    expect(fReimbursements({reimbursements: [{amount: 7}, {amount: 3}], amount: -20})).toBe(true)
   })
 
   describe('operationsFilters', () => {

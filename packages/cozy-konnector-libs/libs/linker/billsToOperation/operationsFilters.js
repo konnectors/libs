@@ -1,4 +1,3 @@
-const every = require('lodash/every')
 const includes = require('lodash/includes')
 const some = require('lodash/some')
 const sumBy = require('lodash/sumBy')
