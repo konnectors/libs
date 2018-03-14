@@ -1,70 +1,15 @@
 {
-  "name": "cozy-konnector-libs",
-  "version": "3.6.0",
-  "description": "All the libs needed by a cozy v3 konnector",
+  "name": "cozy-konnector-monorepo",
+  "name": "babel",
+  "private": true,
   "main": "index.js",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/cozy/cozy-konnector-libs.git"
-  },
-  "keywords": [
-    "cozy-v3",
-    "konnector"
-  ],
-  "author": "doubleface",
-  "license": "MIT",
-  "bin": {
-    "cozy-konnector-shell": "bin/cozy-konnector-shell",
-    "cozy-konnector-standalone": "bin/cozy-konnector-standalone",
-    "cozy-konnector-dev": "bin/cozy-konnector-dev"
-  },
-  "bugs": {
-    "url": "https://github.com/cozy/cozy-konnector-libs/issues"
-  },
-  "homepage": "https://github.com/cozy/cozy-konnector-libs#readme",
-  "dependencies": {
-    "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "babel-preset-env": "^1.6.0",
-    "bluebird": "^3.5.0",
-    "bluebird-retry": "^0.11.0",
-    "btoa": "^1.1.2",
-    "chalk": "^2.3.2",
-    "cheerio": "^1.0.0-rc.2",
-    "commander": "^2.12.2",
-    "core-js": "^2.4.1",
-    "cozy-client-js": "^0.7.0",
-    "date-fns": "^1.29.0",
-    "isomorphic-fetch": "^2.2.1",
-    "jest": "^22.0.0",
+  "devDependencies": {
     "jsdoc-to-markdown": "^4.0.1",
-    "lodash": "^4.17.4",
-    "moment": "^2.18.1",
-    "opn": "^5.1.0",
-    "raven": "^2.4.0",
-    "regenerator-runtime": "^0.11.0",
-    "replay": "^2.1.2",
-    "request": "^2.81.0",
-    "request-debug": "^0.2.0",
-    "request-promise": "^4.2.1",
-    "uuid": "^3.1.0"
+    "lerna": "2.9.0"
   },
   "scripts": {
-    "lint": "standard --fix commands/* helpers/* libs/* index.js",
     "test": "cross-env LOG_LEVEL=info jest",
-    "doc": "cd packages/cozy-konnector-libs && jsdoc2md --template jsdoc2md/README.hbs libs/*.js helpers/*.js > docs/api.md"
-  },
-  "standard": {
-    "globals": [
-      "jest",
-      "describe",
-      "test",
-      "beforeEach",
-      "expect",
-      "it"
-    ]
-  },
-  "devDependencies": {
-    "cross-env": "5.1.4",
-    "lerna": "2.9.0"
+    "doc": "cd packages/cozy-konnector-libs && jsdoc2md --template jsdoc2md/README.hbs libs/*.js helpers/*.js > docs/api.md",
+    "bootstrap": "lerna bootstrap"
   }
 }
