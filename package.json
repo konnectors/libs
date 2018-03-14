@@ -5,15 +5,19 @@
   "devDependencies": {
     "cross-env": "^5.1.4",
     "jsdoc-to-markdown": "^4.0.1",
-    "lerna": "2.9.0"
+    "lerna": "2.9.0",
+    "prettier": "^1.11.1"
   },
   "eslintConfig": {
-    "extends": [
-      "eslint-config-cozy-app"
-    ]
+    "extends": ["eslint-config-cozy-app"]
+  },
+  "prettier": {
+    "semi": false,
+    "singleQuote": true
   },
   "scripts": {
     "bootstrap": "lerna bootstrap",
+    "format": "prettier --write '**/*.{js,json}'",
     "doc": "cd packages/cozy-konnector-libs && jsdoc2md --template jsdoc2md/README.hbs libs/*.js helpers/*.js > docs/api.md",
     "lint": "eslint .",
     "test": "cross-env LOG_LEVEL=info jest"

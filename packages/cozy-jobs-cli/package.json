@@ -29,5 +29,9 @@
   "devDependencies": {
     "cross-env": "5.1.4",
     "lerna": "2.9.0"
+  },
+  "prettier": {
+    "semi": false,
+    "singleQuote": true
   }
 }

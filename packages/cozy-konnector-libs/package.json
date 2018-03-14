@@ -7,10 +7,7 @@
     "type": "git",
     "url": "git+https://github.com/cozy/cozy-konnector-libs.git"
   },
-  "keywords": [
-    "cozy-v3",
-    "konnector"
-  ],
+  "keywords": ["cozy-v3", "konnector"],
   "author": "doubleface",
   "license": "MIT",
   "bin": {
@@ -55,17 +52,14 @@
     "doc": "jsdoc2md --template jsdoc2md/README.hbs libs/*.js helpers/*.js > docs/api.md"
   },
   "standard": {
-    "globals": [
-      "jest",
-      "describe",
-      "test",
-      "beforeEach",
-      "expect",
-      "it"
-    ]
+    "globals": ["jest", "describe", "test", "beforeEach", "expect", "it"]
   },
   "devDependencies": {
     "cross-env": "^5.1.4",
     "lerna": "2.9.0"
+  },
+  "prettier": {
+    "semi": false,
+    "singleQuote": true
   }
 }
