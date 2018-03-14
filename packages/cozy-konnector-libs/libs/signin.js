@@ -53,7 +53,7 @@ module.exports = function signin (
     ...defaultOpts
   })
 
-  const parseBody = defineStrategy(parseStrategy)
+  const parseBody = getStrategy(parseStrategy)
 
   return rq(`${baseUrl}/${page}`)
   .then($ => {
@@ -77,7 +77,7 @@ function defaultValidate (statusCode, body) {
   return statusCode === 200
 }
 
-function defineStrategy (parseStrategy) {
+function getStrategy (parseStrategy) {
   switch (parseStrategy) {
     case 'cheerio':
       return require('cheerio').load
