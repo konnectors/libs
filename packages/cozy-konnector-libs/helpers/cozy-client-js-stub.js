@@ -54,7 +54,8 @@ module.exports = {
       // exeption for "io.cozy.accounts" doctype where we return konnector-dev-config.json content
       let result = null
       if (doctype === 'io.cozy.accounts') {
-        const config = require('./init-konnector-config')()
+        const configPath = path.resolve('konnector-dev-config.json')
+        const config = require(configPath)
         result = {auth: config.fields}
       } else {
         return Promise.reject(new Error('find is not implemented yet in cozy-client-js stub'))
