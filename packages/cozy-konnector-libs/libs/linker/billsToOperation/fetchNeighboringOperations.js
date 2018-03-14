@@ -55,7 +55,7 @@ const fetchNeighboringOperations = (cozyClient, bill, options) => {
         operations = operations.concat(ops)
         if (ops.length === COZY_STACK_QUERY_LIMIT) {
           const newIds = ops.map(op => op._id)
-          return fetchAll(index, ids.concat(ops))
+          return fetchAll(index, ids.concat(newIds))
         } else {
           return operations
         }

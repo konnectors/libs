@@ -1,5 +1,4 @@
 {
-  "name": "cozy-konnector-monorepo",
   "name": "babel",
   "private": true,
   "main": "index.js",
@@ -7,9 +6,15 @@
     "jsdoc-to-markdown": "^4.0.1",
     "lerna": "2.9.0"
   },
+  "eslintConfig": {
+    "extends": [
+      "eslint-config-cozy-app"
+    ]
+  },
   "scripts": {
-    "test": "cross-env LOG_LEVEL=info jest",
+    "bootstrap": "lerna bootstrap",
     "doc": "cd packages/cozy-konnector-libs && jsdoc2md --template jsdoc2md/README.hbs libs/*.js helpers/*.js > docs/api.md",
-    "bootstrap": "lerna bootstrap"
+    "lint": "eslint .",
+    "test": "cross-env LOG_LEVEL=info jest"
   }
 }

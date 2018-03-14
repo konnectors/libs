@@ -1,4 +1,3 @@
-const omit = require("lodash/omit");
 const Document = require('./document')
 
 class Simpson extends Document {}
