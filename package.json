@@ -1,5 +1,5 @@
 {
-  "name": "babel",
+  "name": "cozy-konnector-libs-monorepo",
   "private": true,
   "main": "index.js",
   "devDependencies": {
