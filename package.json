@@ -3,6 +3,7 @@
   "private": true,
   "main": "index.js",
   "devDependencies": {
+    "cross-env": "^5.1.4",
     "jsdoc-to-markdown": "^4.0.1",
     "lerna": "2.9.0"
   },
