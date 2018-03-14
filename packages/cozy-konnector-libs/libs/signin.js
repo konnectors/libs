@@ -83,12 +83,12 @@ function getStrategy (parseStrategy) {
       return require('cheerio').load
     case 'json':
       return JSON.parse
-    default:
-      let err = `connection: parsing strategy ${parseStrategy} unknown. `
-      let fallback = 'Falling back to `raw`. Use one of `raw`, `cheerio` or `json`'
-      log('warn', err + fallback)
     case 'raw':
       return (body) => body
+    default:
+      const err = `signin: parsing strategy ${parseStrategy} unknown. `
+      const hint = 'Use one of `raw`, `cheerio` or `json`'
+      log('error', err + hint)
   }
 }
 
