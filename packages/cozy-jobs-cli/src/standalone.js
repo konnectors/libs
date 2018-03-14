@@ -14,7 +14,7 @@ process.env.COZY_FIELDS = JSON.stringify({
   folder_to_save: '.'
 })
 
-const config = require('cozy-konnector-libs/helpers/init-konnector-config')()
+const config = require('./init-konnector-config')()
 process.env.COZY_URL = config.COZY_URL
 
 const filename = program.args[0] || process.env.npm_package_main || 'index.js'
