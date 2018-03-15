@@ -32,6 +32,7 @@
  * @module signin
  */
 const errors = require('../helpers/errors')
+const rerrors = require('request-promise/errors')
 const log = require('cozy-logger').namespace('cozy-konnector-libs')
 const requestFactory = require('./request')
 const url = require('url')
@@ -54,6 +55,7 @@ module.exports = function signin (
   const parseBody = getStrategy(parseStrategy)
 
   return rq(pageUrl)
+  .catch(handleRequestErrors)
   .then($ => {
     const [action, inputs] = parseForm($, formSelector)
     for (let name in formData) {
@@ -84,16 +86,30 @@ function getStrategy (parseStrategy) {
     case 'raw':
       return (body) => body
     default:
-      const err = `signin: parsing strategy ${parseStrategy} unknown. `
+      const err = `signin: parsing strategy \`${parseStrategy}\` unknown. `
       const hint = 'Use one of `raw`, `cheerio` or `json`'
       log('error', err + hint)
+      throw new Error('UNKNOWN_PARSING_STRATEGY')
   }
 }
 
 function parseForm ($, formSelector) {
-  const action = $(formSelector).attr('action')
+  const form = $(formSelector).first()
+  const action = form.attr('action')
+
+  if (!form.is('form')) {
+    const err = 'element matching `'+formSelector+'` is not a `form`'
+    log('error', err)
+    throw new Error('INVALID_FORM')
+  }
+  if (action === undefined) {
+    const err = 'form matching `'+formSelector+'` has no `action` attribute'
+    log('error', err)
+    throw new Error('INVALID_FORM')
+  }
+
   const inputs = {}
-  const arr = $(formSelector).serializeArray()
+  const arr = form.serializeArray()
   for (let input of arr) {
     inputs[input.name] = input.value
   }
@@ -109,4 +125,14 @@ function submitForm (rq, uri, inputs, parseBody) {
     },
     transform: (body, response) => [response.statusCode, parseBody(body)]
   })
+  .catch(handleRequestErrors)
+}
+
+function handleRequestErrors (err) {
+  if (err instanceof rerrors.RequestError) {
+    log('error', err)
+    throw errors.VENDOR_DOWN
+  } else {
+    return Promise.reject(err)
+  }
 }
