@@ -7,19 +7,35 @@ process.env.COZY_URL = config.COZY_URL
 
 const program = require('commander')
 const path = require('path')
+const fs = require('fs')
 
 const authenticate = require('./cozy-authenticate')
 const initDevAccount = require('./init-dev-account')
 
 let useFolder = false
+let file, manifest
 
 program
   .usage('[options] <file>')
+  .arguments('<file>')
+  .action(_file => {
+    _file = _file || process.env.npm_package_main || 'index.js'
+    file = abspath(_file)
+  })
   .option('-t, --token [value]', 'Token file location (will be created if does not exist)', abspath)
   .option('-m, --manifest [value]', 'Manifest file for permissions (manifest.webapp or manifest.konnector)', abspath)
   .parse(process.argv)
 
-authenticate({ tokenPath: program.token, manifestPath: program.manifest })
+// Check for a .konnector file next to the launched file
+manifest = program.manifest
+if (!manifest && file) {
+  const possibleManifestFile = file.replace(/\.js$/, '.konnector')
+  if (fs.existsSync(possibleManifestFile)) {
+    manifest = possibleManifestFile
+  }
+}
+
+authenticate({ tokenPath: program.token, manifestPath: manifest })
 .then(result => {
   const credentials = result.creds
   const scopes = result.scopes
@@ -34,9 +50,7 @@ authenticate({ tokenPath: program.token, manifestPath: program.manifest })
     account: accountId,
     folder_to_save: useFolder ? 'io.cozy.files.root-dir' : ''
   })
-  const filename = program.args[0] || process.env.npm_package_main || 'index.js'
-  const filepath = path.resolve(filename)
-  return require(filepath)
+  return require(file)
 })
 .catch(err => {
   console.log(err, 'unexpected error')
