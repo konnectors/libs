@@ -88,7 +88,7 @@ describe('signin', () => {
   })
 
   describe('connection failure', () => {
-    const errors = require('request-promise/errors');
+    const errors = require('request-promise/errors')
 
     for (let RErr of [errors.RequestError, errors.StatusCodeError]) {
       describe('at first request', () => {
@@ -115,8 +115,7 @@ describe('signin', () => {
             request.mockResolvedValueOnce(cheerio.load(form))
             request.mockResolvedValueOnce(new Promise(() => {
               throw new RErr('dumb')
-            })
-            )
+            }))
             requestFactory.mockReturnValue(request)
           })
 

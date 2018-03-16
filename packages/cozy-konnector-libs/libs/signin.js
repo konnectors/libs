@@ -51,8 +51,8 @@ module.exports = function signin (
   formData,
   parseStrategy = 'cheerio',
   validate = defaultValidate,
-  opts = {}) {
-
+  opts = {})
+{
   const defaultOpts = { jar: true, cheerio: true, json: false }
 
   const rq = requestFactory({
@@ -63,22 +63,22 @@ module.exports = function signin (
   const parseBody = getStrategy(parseStrategy)
 
   return rq(pageUrl)
-  .catch(handleRequestErrors)
-  .then($ => {
-    const [action, inputs] = parseForm($, formSelector)
-    for (let name in formData) {
-      inputs[name] = formData[name]
-    }
+    .catch(handleRequestErrors)
+    .then($ => {
+      const [action, inputs] = parseForm($, formSelector)
+      for (let name in formData) {
+        inputs[name] = formData[name]
+      }
 
-    return submitForm(rq, url.resolve(pageUrl, action), inputs, parseBody)
-  })
-  .then(([statusCode, parsedBody]) => {
-    if (!validate(statusCode, parsedBody)) {
-      throw new Error(errors.LOGIN_FAILED)
-    } else {
-      return Promise.resolve(parsedBody)
-    }
-  })
+      return submitForm(rq, url.resolve(pageUrl, action), inputs, parseBody)
+    })
+    .then(([statusCode, parsedBody]) => {
+      if (!validate(statusCode, parsedBody)) {
+        throw new Error(errors.LOGIN_FAILED)
+      } else {
+        return Promise.resolve(parsedBody)
+      }
+    })
 }
 
 function defaultValidate (statusCode, body) {
@@ -106,12 +106,12 @@ function parseForm ($, formSelector) {
   const action = form.attr('action')
 
   if (!form.is('form')) {
-    const err = 'element matching `'+formSelector+'` is not a `form`'
+    const err = 'element matching `' + formSelector + '` is not a `form`'
     log('error', err)
     throw new Error('INVALID_FORM')
   }
   if (action === undefined) {
-    const err = 'form matching `'+formSelector+'` has no `action` attribute'
+    const err = 'form matching `' + formSelector + '` has no `action` attribute'
     log('error', err)
     throw new Error('INVALID_FORM')
   }
@@ -133,7 +133,7 @@ function submitForm (rq, uri, inputs, parseBody) {
     },
     transform: (body, response) => [response.statusCode, parseBody(body)]
   })
-  .catch(handleRequestErrors)
+    .catch(handleRequestErrors)
 }
 
 function handleRequestErrors (err) {
