@@ -137,7 +137,7 @@ function submitForm (rq, uri, inputs, parseBody) {
 }
 
 function handleRequestErrors (err) {
-  if (err instanceof rerrors.RequestError) {
+  if (err instanceof rerrors.RequestError || err instanceof rerrors.StatusCodeError) {
     log('error', err)
     throw errors.VENDOR_DOWN
   } else {

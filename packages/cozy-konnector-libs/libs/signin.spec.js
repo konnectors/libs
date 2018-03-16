@@ -90,37 +90,42 @@ describe('signin', () => {
   describe('connection failure', () => {
     const errors = require('request-promise/errors');
 
-    describe('at first request', () => {
-      beforeEach(() => {
-        const request = jest.fn()
-        request.mockResolvedValueOnce(new Promise(() => {
-            throw new errors.RequestError()
+    for (let RErr of [errors.RequestError, errors.StatusCodeError]) {
+      describe('at first request', () => {
+        describe(RErr.name, () => {
+          beforeEach(() => {
+            const request = jest.fn()
+            request.mockReturnValue(new Promise(() => {
+              throw new RErr('dumb')
+            }))
+            requestFactory.mockReturnValue(request)
           })
-        )
-        requestFactory.mockReturnValue(request)
-      })
 
-      it('throws a VENDOR_DOWN error', () => {
-        return expect(signin(url, '#login', {}, 'raw'))
-          .rejects.toThrow('VENDOR_DOWN')
-      })
-    })
-
-    describe('at second request', () => {
-      beforeEach(() => {
-        const request = jest.fn()
-        request.mockResolvedValueOnce(cheerio.load(form))
-        request.mockResolvedValueOnce(new Promise(() => {
-            throw new errors.RequestError()
+          it('rethrows a VENDOR_DOWN error', () => {
+            return expect(signin(url, '#login', {}, 'raw'))
+              .rejects.toThrow('VENDOR_DOWN')
           })
-        )
-        requestFactory.mockReturnValue(request)
+        })
       })
 
-      it('throws a VENDOR_DOWN error', () => {
-        return expect(signin(url, '#login', {}, 'raw'))
-          .rejects.toThrow('VENDOR_DOWN')
+      describe('at second request', () => {
+        describe(RErr.name, () => {
+          beforeEach(() => {
+            const request = jest.fn()
+            request.mockResolvedValueOnce(cheerio.load(form))
+            request.mockResolvedValueOnce(new Promise(() => {
+              throw new RErr('dumb')
+            })
+            )
+            requestFactory.mockReturnValue(request)
+          })
+
+          it('rethrows a VENDOR_DOWN error', () => {
+            return expect(signin(url, '#login', {}, 'raw'))
+              .rejects.toThrow('VENDOR_DOWN')
+          })
+        })
       })
-    })
+    }
   })
 })
