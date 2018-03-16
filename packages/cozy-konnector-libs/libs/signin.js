@@ -1,7 +1,15 @@
 /**
  * The goal of this function is to provide an handy method to log the user in,
- * on html form pages. On success, it resolves a promise with a parsed body. On
- * failure, it throws a `LOGIN_FAILED` error.
+ * on html form pages. On success, it resolves a promise with a parsed body.
+ *
+ * Errors:
+ *
+ * - LOGIN_FAILED if the validate predicate is false
+ * - INVALID_FORM if the element matched by `formSelector` is not a form or has
+ *   no `action` attribute
+ * - UNKNOWN_PARSING_STRATEGY if `parseStrategy` is not one of the accepted
+ *   values : `raw`, `cheerio`, `json`.
+ * - VENDOR_DOWN if a request throws a RequestError
  *
  * It does not submit values provided through `select` tags, except if populated
  * by user with `formData`.
