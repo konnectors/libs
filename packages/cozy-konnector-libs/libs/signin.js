@@ -49,7 +49,7 @@ module.exports = function signin (
   pageUrl,
   formSelector,
   formData,
-  parseStrategy = 'cheerio',
+  parse = 'cheerio',
   validate = defaultValidate,
   opts = {})
 {
@@ -60,7 +60,7 @@ module.exports = function signin (
     ...defaultOpts
   })
 
-  const parseBody = getStrategy(parseStrategy)
+  const parseBody = getStrategy(parse)
 
   return rq(pageUrl)
     .catch(handleRequestErrors)
