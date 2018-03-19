@@ -63,15 +63,16 @@ const filterByAmounts = ({ minAmount, maxAmount }) => {
   return amountFilter
 }
 
-const filterByCategory = (bill, options={}) => {
-  const opShouldBeHealth = isHealthBill(bill)
+const filterByCategory = (bill, options) => {
+  const isHealth = isHealthBill(bill)
   const categoryFilter = operation => {
-    if (options.allowUncategorized === true
+    if (options.allowUncategorized !== false
       && isUncategorizedOperation(operation)) {
       return true
     }
-    const isHealthOp = isHealthOperation(operation)
-    return opShouldBeHealth ? isHealthOp : !isHealthOp
+    return isHealth
+      ? isHealthOperation(operation)
+      : !isHealthOperation(operation)
   }
   return categoryFilter
 }
