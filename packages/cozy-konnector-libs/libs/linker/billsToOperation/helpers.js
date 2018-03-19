@@ -19,7 +19,6 @@ const getIdentifiers = options => options.identifiers
 
 const getDateRangeFromBill = (bill, options) => {
   const date = getOperationDateFromBill(bill, options)
-
   return {
     minDate: subDays(date, options.pastWindow),
     maxDate: addDays(date, options.futureWindow)
