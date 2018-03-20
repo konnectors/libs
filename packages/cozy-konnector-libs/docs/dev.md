@@ -23,7 +23,7 @@ The requests to the cozy-stack will be stubbed using the [./fixture.json] file a
 and when cozy-client is asked to create or update data, the data will be output to the console.
 The bills (or any file) will be saved in the . directory.
 
-### Run the connector linked to a cozy-stack
+### With the cozy-stack
 
 If you do not want to have to install the konnector on a cozy v3 to test it, you can register the
 konnector as an OAuth application with the following commands :
