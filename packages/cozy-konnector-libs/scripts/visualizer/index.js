@@ -17,9 +17,7 @@ class DryLinker extends Linker {
 
 const generate = async options => {
   const bills = (await fetchAll('io.cozy.bills'))
-    .filter(x => x.vendor == 'Harmonie')
     .filter(x => x._id.length > 30)
-    .filter(x => x.groupAmount == 29.52)
 
   const linker = new DryLinker(cozyClient)
   const results = await linker.linkBillsToOperations(bills, options)
