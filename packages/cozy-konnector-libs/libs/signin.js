@@ -34,7 +34,7 @@
  *   `parsedBody`. If it is false, `LOGIN_FAILED` is thrown, otherwise the
  *   konnector continues.
  *
- * - `opts` allows to pass eventual options to the `signin`'s `requestFactory`.
+ * - `requestOpts` allows to pass eventual options to the `signin`'s `requestFactory`.
  *   It could be useful for pages using `latin1` `encoding` for instance.
  *
  * @module signin
@@ -52,12 +52,12 @@ module.exports = function signin (
   {
     parse = 'cheerio',
     validate = defaultValidate,
-    ...opts
+    ...requestOpts
   } = {})
 {
   const rq = requestFactory({
     jar: true,
-    ...opts
+    ...requestOpt
   })
 
   const parseBody = getStrategy(parse)
