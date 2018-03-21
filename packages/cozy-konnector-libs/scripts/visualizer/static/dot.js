@@ -63,23 +63,28 @@ function renderOp(dot, op) {
   })
 }
 
+const comparison = selector => (a, b) => {
+  return selector(a) > selector(b) ? 1 : -1
+}
+
 function outputGraphviz(data) {
   dot = new Dot()
-  for (let k in data) {
-    const item = data[k]
-    debit = item['debitOperation']
-    credit = item['creditOperation']
-    bill = item['bill']
+
+  const matchings = Object.values(data).sort(comparison(x => x.bill.date))
+  for (let matching of matchings) {
+    debit = matching['debitOperation']
+    credit = matching['creditOperation']
+    bill = matching['bill']
 
     renderBill(dot, bill)
     if (debit) {
-      renderOp(dot, op)
+      renderOp(dot, debit)
       dot.edge(bill['_id'], debit['_id'], {
         label: 'paid by'
       })
     }
     if (credit) {
-      renderOp(dot, op)
+      renderOp(dot, credit)
       dot.edge(bill['_id'], credit['_id'], {
         label: 'reimbursed by'
       })
