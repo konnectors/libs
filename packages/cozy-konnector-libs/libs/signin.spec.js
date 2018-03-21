@@ -15,7 +15,7 @@ const form = `
     <input name="password" type="password" />
     <input type="submit" />
   </form>`
-const resp = '<p>Successfull login</p>'
+const resp = '<p>Successful login</p>'
 
 beforeEach(() => {
   const request = jest.fn()
