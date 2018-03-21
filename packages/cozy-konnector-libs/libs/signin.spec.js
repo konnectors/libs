@@ -91,8 +91,8 @@ describe('signin', () => {
     const errors = require('request-promise/errors')
 
     for (let RErr of [errors.RequestError, errors.StatusCodeError]) {
-      describe('at first request', () => {
-        describe(RErr.name, () => {
+      describe(RErr.name, () => {
+        describe('at first request', () => {
           beforeEach(() => {
             const request = jest.fn()
             request.mockReturnValue(new Promise(() => {
@@ -106,10 +106,8 @@ describe('signin', () => {
               .rejects.toThrow('VENDOR_DOWN')
           })
         })
-      })
 
-      describe('at second request', () => {
-        describe(RErr.name, () => {
+        describe('at second request', () => {
           beforeEach(() => {
             const request = jest.fn()
             request.mockResolvedValueOnce(cheerio.load(form))
