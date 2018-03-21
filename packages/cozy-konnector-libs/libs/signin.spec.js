@@ -28,29 +28,29 @@ const url = 'https://espace-client.lanef.com/templates/logon/logon.cfm'
 describe('signin', () => {
   describe('happy path', () => {
     it('works', () => {
-      return expect(signin(url, '#login', {}, 'raw'))
+      return expect(signin(url, '#login', {}, {parse: 'raw'}))
         .resolves.toEqual(resp)
     })
   })
 
   describe('formSelector', () => {
     it('throws when matching something else than a form', () => {
-      return expect(signin(url, '#im-no-form', {}, 'raw'))
+      return expect(signin(url, '#im-no-form', {}, {parse: 'raw'}))
         .rejects.toThrow('INVALID_FORM')
     })
 
     it('throws when matching a form without action', () => {
-      return expect(signin(url, '#got-no-action', {}, 'raw'))
+      return expect(signin(url, '#got-no-action', {}, {parse: 'raw'}))
         .rejects.toThrow('INVALID_FORM')
     })
 
     it('throws when matching no element', () => {
-      return expect(signin(url, '#no-match', {}, 'raw'))
+      return expect(signin(url, '#no-match', {}, {parse: 'raw'}))
         .rejects.toThrow('INVALID_FORM')
     })
 
     it('continues execution when matched form has action attribute', () => {
-      return expect(signin(url, '#login', {}, 'raw'))
+      return expect(signin(url, '#login', {}, {parse: 'raw'}))
         .resolves.toEqual(resp)
     })
   })
@@ -60,26 +60,26 @@ describe('signin', () => {
     const alwaysValid = () => true
 
     it('throws LOGIN_FAILED when invalidates', () => {
-      return expect(signin(url, '#login', {}, 'raw', alwaysInvalid))
+      return expect(signin(url, '#login', {}, {parse: 'raw', validate: alwaysInvalid}))
         .rejects.toThrow('LOGIN_FAILED')
     })
 
     it('continues execution when validates', () => {
-      return expect(signin(url, '#login', {}, 'raw', alwaysValid))
+      return expect(signin(url, '#login', {}, {parse: 'raw', validate: alwaysValid}))
         .resolves.toEqual(resp)
     })
   })
 
   describe('parsing strategy', () => {
     it('throws UNKNOWN_PARSING_STRATEGY when unknown', () => {
-      expect(() => signin(url, '#login', {}, 'unknown'))
+      expect(() => signin(url, '#login', {}, {parse: 'unknown'}))
         .toThrow('UNKNOWN_PARSING_STRATEGY')
     })
 
     describe('is one of the valid ones', () => {
       for (let strategy of ['raw', 'cheerio', 'json']) {
         it(`resolves when '${strategy}'`, () => {
-          return expect(signin(url, '#login', {}, strategy))
+          return expect(signin(url, '#login', {}, {parse: strategy}))
             .resolves.toEqual(resp)
           // As request is mocked, resolution is always the same
         })
@@ -102,7 +102,7 @@ describe('signin', () => {
           })
 
           it('rethrows a VENDOR_DOWN error', () => {
-            return expect(signin(url, '#login', {}, 'raw'))
+            return expect(signin(url, '#login', {}))
               .rejects.toThrow('VENDOR_DOWN')
           })
         })
@@ -118,7 +118,7 @@ describe('signin', () => {
           })
 
           it('rethrows a VENDOR_DOWN error', () => {
-            return expect(signin(url, '#login', {}, 'raw'))
+            return expect(signin(url, '#login', {}))
               .rejects.toThrow('VENDOR_DOWN')
           })
         })

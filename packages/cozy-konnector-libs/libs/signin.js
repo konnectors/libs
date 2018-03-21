@@ -49,9 +49,11 @@ module.exports = function signin (
   pageUrl,
   formSelector,
   formData,
-  parse = 'cheerio',
-  validate = defaultValidate,
-  opts = {})
+  {
+    parse = 'cheerio',
+    validate = defaultValidate,
+    ...opts
+  } = {})
 {
   const rq = requestFactory({
     jar: true,
