@@ -53,17 +53,17 @@ module.exports = function signin (
   validate = defaultValidate,
   opts = {})
 {
-  const defaultOpts = { jar: true, cheerio: true, json: false }
-
   const rq = requestFactory({
-    ...opts,
-    ...defaultOpts
+    jar: true,
+    ...opts
   })
 
   const parseBody = getStrategy(parse)
 
-  return rq(pageUrl)
-    .catch(handleRequestErrors)
+  return rq({
+    uri: pageUrl,
+    cheerio: true
+  }).catch(handleRequestErrors)
     .then($ => {
       const [action, inputs] = parseForm($, formSelector)
       for (let name in formData) {
