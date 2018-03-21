@@ -13,7 +13,7 @@ function getBillLabel(bill) {
 ${bill['vendor']}
 ${bill['beneficiary'] || ''}
 ${bill['subtype'] || ''}
-${bill['amount']}`
+${bill['amount']} ; O ${bill['originalAmount']} ; G ${bill['groupAmount']}`
 }
 
 const maybeQuote = x => {
