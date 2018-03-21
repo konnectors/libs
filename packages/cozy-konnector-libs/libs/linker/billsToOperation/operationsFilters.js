@@ -8,7 +8,8 @@ const { getIdentifiers, getDateRangeFromBill, getAmountRangeFromBill } = require
 // constants
 
 const HEALTH_VENDORS = ['Ameli', 'Harmonie', 'Malakoff Mederic', 'MGEN'] // TODO: to import from each konnector
-const HEALTH_CAT_ID_OPERATION = '400610' // TODO: import it from cozy-bank
+const HEALTH_EXPENSE_CAT = '400610'
+const HEALTH_INSURANCE_CAT = '400620'
 const UNCATEGORIZED_CAT_ID_OPERATION = '0' // TODO: import it from cozy-bank
 
 // helpers
@@ -19,14 +20,18 @@ const getCategoryId = o => {
     || UNCATEGORIZED_CAT_ID_OPERATION
 }
 
-const checkOperationCategory = (operation, categoryId) => {
-  return categoryId === getCategoryId(operation)
-}
 const isHealthOperation = operation => {
-  return checkOperationCategory(operation, HEALTH_CAT_ID_OPERATION)
+  const catId = getCategoryId(operation)
+  if (operation.amount < 0) {
+    return catId === HEALTH_EXPENSE_CAT
+  } else {
+    return catId === HEALTH_EXPENSE_CAT || catId === HEALTH_INSURANCE_CAT
+  }
 }
+
 const isUncategorizedOperation = operation => {
-  return checkOperationCategory(operation, UNCATEGORIZED_CAT_ID_OPERATION)
+  const catId = getCategoryId(operation)
+  return catId == UNCATEGORIZED_CAT_ID_OPERATION
 }
 
 const isHealthBill = bill => {
@@ -59,11 +64,10 @@ const filterByAmounts = ({ minAmount, maxAmount }) => {
 }
 
 const filterByCategory = bill => {
-  const isHealth = isHealthBill(bill)
+  const opShouldBeHealth = isHealthBill(bill)
   const categoryFilter = operation => {
-    return isHealth
-      ? isHealthOperation(operation) || isUncategorizedOperation(operation)
-      : !isHealthOperation(operation) || isUncategorizedOperation(operation)
+    const isHealthOp = isHealthOperation(operation)
+    return opShouldBeHealth ? isHealthOp : !isHealthOp
   }
   return categoryFilter
 }

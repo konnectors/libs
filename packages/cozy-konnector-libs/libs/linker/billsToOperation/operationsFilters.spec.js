@@ -7,8 +7,8 @@ import {
   operationsFilters
 } from './operationsFilters'
 
-describe('operationsFilters', () => {
-  test('filterByIdentifiers', () => {
+describe('operations filters', () => {
+  test('filtering by identifiers', () => {
     const identifiers = ['tRaInLiNe']
     const fByIdentifiers = filterByIdentifiers(identifiers)
 
@@ -17,7 +17,7 @@ describe('operationsFilters', () => {
     expect(fByIdentifiers({label: 'CapitainTrain'})).toBeFalsy()
   })
 
-  test('filterByDates', () => {
+  test('filtering by date period', () => {
     const rangeDates = {
       minDate: new Date(2018, 0, 16),
       maxDate: new Date(2018, 0, 18)
@@ -31,7 +31,7 @@ describe('operationsFilters', () => {
     expect(fByDates({date: new Date(2018, 0, 19)})).toBeFalsy()
   })
 
-  describe('filterByAmounts', () => {
+  describe('filtering by amount range', () => {
     it('should pass when amount is within range', () => {
       const rangeDates = {
         minAmount: 16,
@@ -47,21 +47,41 @@ describe('operationsFilters', () => {
     })
   })
 
-  describe('filterByCategory', () => {
-    test('health bill', () => {
+  const HEALTH_EXPENSE_CAT = '400610'
+  const HEALTH_INSURANCE_CAT = '400620'
+
+  describe('filtering by category', () => {
+    fit('should only match bills with the right categoryId when the vendor is known to be a health insurance provider', () => {
       const fByCategory = filterByCategory({vendor: 'Ameli'})
-      expect(fByCategory({ manualCategoryId: '400610' })).toBeTruthy()
-      expect(fByCategory({ automaticCategoryId: '400610' })).toBeTruthy()
-      expect(fByCategory({ manualCategoryId: '0' })).toBeTruthy()
-      expect(fByCategory({ automaticCategoryId: '0' })).toBeTruthy()
-      expect(fByCategory({})).toBeTruthy()
+      expect(fByCategory({ manualCategoryId: HEALTH_EXPENSE_CAT })).toBeTruthy()
+      expect(fByCategory({ automaticCategoryId: HEALTH_EXPENSE_CAT })).toBeTruthy()
+      expect(fByCategory({ manualCategoryId: '0' })).toBeFalsy()
+      expect(fByCategory({ automaticCategoryId: '0' })).toBeFalsy()
+      expect(fByCategory({})).toBeFalsy()
+    })
+
+    it('should not match bills with categoryId that are not health insurance/expense', () => {
+      const fByCategory = filterByCategory({vendor: 'Ameli'})
       expect(fByCategory({ manualCategoryId: '400611' })).toBeFalsy()
       expect(fByCategory({ automaticCategoryId: '400611' })).toBeFalsy()
     })
+
+    it('should match check debits against health expense category', () => {
+      const fByCategory = filterByCategory({vendor: 'Ameli'})
+      expect(fByCategory({ manualCategoryId: HEALTH_INSURANCE_CAT, amount: -10 })).toBeFalsy()
+      expect(fByCategory({ manualCategoryId: HEALTH_EXPENSE_CAT, amount: -10 })).toBeTruthy()
+    })
+
+    it('should match check credits against health insurance category and health expense category', () => {
+      const fByCategory = filterByCategory({vendor: 'Ameli'})
+      expect(fByCategory({ manualCategoryId: HEALTH_INSURANCE_CAT, amount: 10 })).toBeTruthy()
+      expect(fByCategory({ manualCategoryId: HEALTH_EXPENSE_CAT, amount: 10 })).toBeTruthy()
+    })
+
     test('not health bill', () => {
       const fByCategory = filterByCategory({vendor: 'SFR'})
-      expect(fByCategory({ manualCategoryId: '400610' })).toBeFalsy()
-      expect(fByCategory({ automaticCategoryId: '400610' })).toBeFalsy()
+      expect(fByCategory({ manualCategoryId: HEALTH_EXPENSE_CAT })).toBeFalsy()
+      expect(fByCategory({ automaticCategoryId: HEALTH_EXPENSE_CAT })).toBeFalsy()
       expect(fByCategory({ manualCategoryId: '0' })).toBeTruthy()
       expect(fByCategory({ automaticCategoryId: '0' })).toBeTruthy()
       expect(fByCategory({})).toBeTruthy()
