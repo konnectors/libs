@@ -1,6 +1,6 @@
 {
   "name": "cozy-konnector-libs",
-  "version": "3.7.3",
+  "version": "3.7.4",
   "description": "All the libs needed by a cozy v3 konnector",
   "main": "index.js",
   "repository": {
@@ -33,7 +33,7 @@
     "commander": "^2.12.2",
     "core-js": "^2.4.1",
     "cozy-client-js": "^0.8.0",
-    "cozy-logger": "^1.0.3",
+    "cozy-logger": "^1.0.4",
     "date-fns": "^1.29.0",
     "isomorphic-fetch": "^2.2.1",
     "jest": "^22.0.0",
