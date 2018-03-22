@@ -45,10 +45,10 @@ const log = require('cozy-logger').namespace('cozy-konnector-libs')
 const requestFactory = require('./request')
 
 module.exports = function signin (
-  url,
-  formSelector,
-  formData,
   {
+    url,
+    formSelector,
+    formData = {},
     parse = 'cheerio',
     validate = defaultValidate,
     ...requestOpts
