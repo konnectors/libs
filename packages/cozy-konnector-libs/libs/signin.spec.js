@@ -33,7 +33,21 @@ describe('signin', () => {
     })
   })
 
+  describe('url', () => {
+    it('throws if missing', () => {
+      return expect(() => {
+        signin({formSelector: '#login', parse: 'raw'})
+      }).toThrow(/must be defined/)
+    })
+  })
+
   describe('formSelector', () => {
+    it('throws if missing', () => {
+      return expect(() => {
+        signin({url, parse: 'raw'})
+      }).toThrow(/must be defined/)
+    })
+
     it('throws when matching something else than a form', () => {
       return expect(signin({url, formSelector: '#im-no-form', parse: 'raw'}))
         .rejects.toThrow('INVALID_FORM')

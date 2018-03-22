@@ -54,6 +54,14 @@ module.exports = function signin (
     ...requestOpts
   } = {})
 {
+  // Check for mandatory arguments
+  if (url === undefined) {
+    throw 'signin: `url` must be defined'
+  }
+  if (formSelector === undefined) {
+    throw 'signin: `formSelector` must be defined'
+  }
+
   const rq = requestFactory({
     jar: true,
     ...requestOpts
