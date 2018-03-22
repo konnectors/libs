@@ -7,35 +7,33 @@
  * - LOGIN_FAILED if the validate predicate is false
  * - INVALID_FORM if the element matched by `formSelector` is not a form or has
  *   no `action` attribute
- * - UNKNOWN_PARSING_STRATEGY if `parseStrategy` is not one of the accepted
- *   values : `raw`, `cheerio`, `json`.
- * - VENDOR_DOWN if a request throws a RequestError
+ * - UNKNOWN_PARSING_STRATEGY if `parse` is not one of the accepted values:
+ *   `raw`, `cheerio`, `json`.
+ * - VENDOR_DOWN if a request throws a RequestError, or StatusCodeError
  *
  * It does not submit values provided through `select` tags, except if populated
  * by user with `formData`.
- * Limit between `baseUrl` and `page` is important. The form `action` will be
- * concatenated the same way `page` is, to constitute the submission url. For
- * now, a form with an absolute `action` is not comptabile with this function.
  *
  * - `url` is the url to access the html form
  *
  * - `formSelector` is used by cheerio to uniquely identify the form in which to
  *   log in
  *
- * - `formData` is an object of { name: value, … }. It is used to populate the
+ * - `formData` is an object `{ name: value, … }`. It is used to populate the
  *   form, in the proper inputs with the same name as the properties of this
  *   object, before submitting it.
  *
- * - `parseStrategy` allow the user to resolve `signin` with a preparsed body.
- *   The choice of the strategy for the parsing is one of : `raw`, `json` or
+ * - `parse` allow the user to resolve `signin` with a preparsed body. The
+ *   choice of the strategy for the parsing is one of : `raw`, `json` or
  *   `cheerio`. `cheerio` being the default.
  *
- * - `validate` is a predicate takin two arguments `statusCode` and
+ * - `validate` is a predicate taking two arguments `statusCode` and
  *   `parsedBody`. If it is false, `LOGIN_FAILED` is thrown, otherwise the
- *   konnector continues.
+ *   signin resolves with `parsedBody` value.
  *
- * - `requestOpts` allows to pass eventual options to the `signin`'s `requestFactory`.
- *   It could be useful for pages using `latin1` `encoding` for instance.
+ * - `requestOpts` allows to pass eventual options to the `signin`'s
+ *   `requestFactory`. It could be useful for pages using `latin1` `encoding`
+ *   for instance.
  *
  * @module signin
  */
