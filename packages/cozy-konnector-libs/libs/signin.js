@@ -17,7 +17,7 @@
  * concatenated the same way `page` is, to constitute the submission url. For
  * now, a form with an absolute `action` is not comptabile with this function.
  *
- * - `pageUrl` is the url to access the html form
+ * - `url` is the url to access the html form
  *
  * - `formSelector` is used by cheerio to uniquely identify the form in which to
  *   log in
@@ -43,10 +43,9 @@ const errors = require('../helpers/errors')
 const rerrors = require('request-promise/errors')
 const log = require('cozy-logger').namespace('cozy-konnector-libs')
 const requestFactory = require('./request')
-const url = require('url')
 
 module.exports = function signin (
-  pageUrl,
+  url,
   formSelector,
   formData,
   {
@@ -57,13 +56,13 @@ module.exports = function signin (
 {
   const rq = requestFactory({
     jar: true,
-    ...requestOpt
+    ...requestOpts
   })
 
   const parseBody = getStrategy(parse)
 
   return rq({
-    uri: pageUrl,
+    uri: url,
     cheerio: true
   }).catch(handleRequestErrors)
     .then($ => {
@@ -72,7 +71,7 @@ module.exports = function signin (
         inputs[name] = formData[name]
       }
 
-      return submitForm(rq, url.resolve(pageUrl, action), inputs, parseBody)
+      return submitForm(rq, require('url').resolve(url, action), inputs, parseBody)
     })
     .then(([statusCode, parsedBody]) => {
       if (!validate(statusCode, parsedBody)) {
