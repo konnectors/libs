@@ -58,12 +58,16 @@ const filterByAmounts = ({ minAmount, maxAmount }) => {
   return amountFilter
 }
 
-const filterByCategory = bill => {
+const filterByCategory = (bill, options) => {
   const isHealth = isHealthBill(bill)
   const categoryFilter = operation => {
+    if (options.allowUncategorized !== false
+      && isUncategorizedOperation(operation)) {
+      return true
+    }
     return isHealth
-      ? isHealthOperation(operation) || isUncategorizedOperation(operation)
-      : !isHealthOperation(operation) || isUncategorizedOperation(operation)
+      ? isHealthOperation(operation)
+      : !isHealthOperation(operation)
   }
   return categoryFilter
 }
@@ -95,7 +99,7 @@ const operationsFilters = (bill, operations, options) => {
 
   const fByDates = filterByDates(getDateRangeFromBill(bill, options))
   const fByAmounts = filterByAmounts(getAmountRangeFromBill(bill, options))
-  const fByCategory = filterByCategory(bill)
+  const fByCategory = filterByCategory(bill, options)
   const fByReimbursements = filterByReimbursements(bill, options)
 
   const conditions = [fByDates, fByAmounts, fByCategory]

@@ -11,6 +11,7 @@ const bluebird = require('bluebird')
 const log = require('cozy-logger').namespace('linkBankOperations')
 const { findDebitOperation, findCreditOperation } = require('./linker/billsToOperation')
 const fs = require('fs')
+const { fetchAll } = require('./utils')
 
 const DOCTYPE_OPERATIONS = 'io.cozy.bank.operations'
 const DEFAULT_AMOUNT_DELTA = 0.001
@@ -20,6 +21,7 @@ const DEFAULT_FUTURE_WINDOW = 29
 class Linker {
   constructor (cozyClient) {
     this.cozyClient = cozyClient
+    this.toUpdate = []
   }
 
   addBillToOperation (bill, operation) {
@@ -36,9 +38,9 @@ class Linker {
     billIds.push(billId)
     const attributes = { bills: billIds }
 
-    return this.cozyClient.data.updateAttributes(
+    return this.updateAttributes(
       DOCTYPE_OPERATIONS,
-      operation._id,
+      operation,
       attributes
     )
   }
@@ -64,11 +66,50 @@ class Linker {
       operationId: matchingOperation && matchingOperation._id
     })
 
-    return this.cozyClient.data.updateAttributes(
+    return this.updateAttributes(
       DOCTYPE_OPERATIONS,
-      debitOperation._id,
+      debitOperation,
       { reimbursements: reimbursements }
     )
+  }
+
+  /* Buffer update operations */
+  updateAttributes (doc, attrs) {
+    Object.assign(doc, attrs)
+    this.toUpdate.push(doc)
+    return Promise.resolve()
+  }
+
+  commitChanges () {
+    return cozyClient.fetchJSON(
+      'POST',
+      `data/${DOCTYPE_OPERATIONS}/_bulk_docs`,
+      {
+        data: JSON.stringify
+      }
+    )
+  }
+
+  getOptions (opts={}) {
+    const options = {...opts}
+
+    if (typeof options.identifiers === 'string') {
+      options.identifiers = [options.identifiers.toLowerCase()]
+    } else if (Array.isArray(options.identifiers)) {
+      options.identifiers = options.identifiers.map(id => id.toLowerCase())
+    } else {
+      throw new Error(
+        'linkBankOperations cannot be called without "identifiers" option'
+      )
+    }
+
+    options.amountDelta = options.amountDelta || DEFAULT_AMOUNT_DELTA
+    options.minAmountDelta = options.minAmountDelta || options.amountDelta
+    options.maxAmountDelta = options.maxAmountDelta || options.amountDelta
+
+    options.pastWindow = options.pastWindow || DEFAULT_PAST_WINDOW
+    options.futureWindow = options.futureWindow || DEFAULT_FUTURE_WINDOW
+    return options
   }
 
   /**
@@ -76,8 +117,11 @@ class Linker {
    *   - their matching banking operation (debit)
    *   - to their reimbursement (credit)
    */
-  linkBillsToOperations (bills, options) {
+  async linkBillsToOperations (bills, options) {
+    options = this.getOptions(options)
     const result = {}
+
+    const allOperations = await fetchAll('io.cozy.bank.operations')
 
     // when bill comes from a third party payer,
     // no transaction is visible on the bank account
@@ -87,9 +131,10 @@ class Linker {
       const res = result[bill._id] = { bill:bill }
 
       const linkBillToDebitOperation = () => {
-        return findDebitOperation(this.cozyClient, bill, options)
+        return findDebitOperation(this.cozyClient, bill, options, allOperations)
           .then(operation => {
             if (operation) {
+              console.log('found debit operation', operation)
               res.debitOperation = operation
               log('debug', bill, 'Matching bill')
               log('debug', operation, 'Matching debit operation')
@@ -99,10 +144,11 @@ class Linker {
       }
 
       const linkBillToCreditOperation = debitOperation => {
-        return findCreditOperation(this.cozyClient, bill, options)
+        return findCreditOperation(this.cozyClient, bill, options, allOperations)
           .then(creditOperation => {
             const promises = []
             if (creditOperation) {
+              console.log('found credit operation')
               res.creditOperation = creditOperation
               promises.push(this.addBillToOperation(bill, creditOperation))
             }
@@ -133,31 +179,16 @@ const jsonTee = filename => res => {
 }
 
 module.exports = (bills, doctype, fields, options = {}) => {
-  // Use the custom bank identifier from user if any
   if (fields.bank_identifier && fields.bank_identifier.length) {
     options.identifiers = [fields.bank_identifier]
   }
-
-  if (typeof options.identifiers === 'string') {
-    options.identifiers = [options.identifiers.toLowerCase()]
-  } else if (Array.isArray(options.identifiers)) {
-    options.identifiers = options.identifiers.map(id => id.toLowerCase())
-  } else {
-    throw new Error(
-      'linkBankOperations cannot be called without "identifiers" option'
-    )
-  }
-
-  options.amountDelta = options.amountDelta || DEFAULT_AMOUNT_DELTA
-  options.minAmountDelta = options.minAmountDelta || options.amountDelta
-  options.maxAmountDelta = options.maxAmountDelta || options.amountDelta
-
-  options.pastWindow = options.pastWindow || DEFAULT_PAST_WINDOW
-  options.futureWindow = options.futureWindow || DEFAULT_FUTURE_WINDOW
-
+  // Use the custom bank identifier from user if any
   const cozyClient = require('./cozyclient')
   const linker = new Linker(cozyClient)
   const prom = linker.linkBillsToOperations(bills, options)
+    .catch(err => {
+      console.log(err)
+    })
   if (process.env.LINK_RESULTS_FILENAME) {
     prom.then(jsonTee(process.env.LINK_RESULTS_FILENAME))
   }
