@@ -9,7 +9,7 @@ process.env.COZY_FIELDS = JSON.stringify({
   folder_to_save: '.'
 })
 
-const libs = require('../index')
+const libs = require('cozy-konnector-libs')
 
 const cozyRepl = repl.start({
   useColors: true,
