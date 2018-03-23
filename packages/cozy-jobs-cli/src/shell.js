@@ -1,6 +1,7 @@
 const repl = require('repl')
 const util = require('util')
 const cheerio = require('cheerio')
+const fs = require('fs')
 
 process.env.NODE_ENV = 'standalone'
 if (!process.env.DEBUG) process.env.DEBUG = '*'
@@ -38,4 +39,16 @@ function writer (output) {
   return util.inspect(output)
 }
 
-global.rq = libs.request({ debug: true })
+
+// allows to directly load a HTML file in the shell
+loadFile(process.argv[2])
+function loadFile (filepath) {
+  if (!fs.existsSync(filepath)) return
+
+  const text = fs.readFileSync(filepath, 'utf-8')
+  global.response = {body: text}
+  global.$ = cheerio.load(text)
+  console.log(`${filepath} loaded`)
+}
+
+global.request = libs.requestFactory()
