@@ -12,6 +12,7 @@ const log = require('cozy-logger').namespace('linkBankOperations')
 const { findDebitOperation, findCreditOperation } = require('./linker/billsToOperation')
 const fs = require('fs')
 const { fetchAll } = require('./utils')
+const defaults = require('lodash/defaults')
 
 const DOCTYPE_OPERATIONS = 'io.cozy.bank.operations'
 const DEFAULT_AMOUNT_DELTA = 0.001
@@ -103,12 +104,14 @@ class Linker {
       )
     }
 
-    options.amountDelta = options.amountDelta || DEFAULT_AMOUNT_DELTA
-    options.minAmountDelta = options.minAmountDelta || options.amountDelta
-    options.maxAmountDelta = options.maxAmountDelta || options.amountDelta
+    defaults(options, { amountDelta: DEFAULT_AMOUNT_DELTA })
+    defaults(options, {
+      minAmountDelta: options.amountDelta,
+      maxAmountDelta: options.amountDelta,
+      pastWindow: DEFAULT_PAST_WINDOW,
+      futureWindow: DEFAULT_FUTURE_WINDOW
+    })
 
-    options.pastWindow = options.pastWindow || DEFAULT_PAST_WINDOW
-    options.futureWindow = options.futureWindow || DEFAULT_FUTURE_WINDOW
     return options
   }
 
