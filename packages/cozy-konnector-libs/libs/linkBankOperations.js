@@ -81,12 +81,13 @@ class Linker {
     return Promise.resolve()
   }
 
+  /* Commit updates */
   commitChanges () {
     return cozyClient.fetchJSON(
       'POST',
       `data/${DOCTYPE_OPERATIONS}/_bulk_docs`,
       {
-        data: JSON.stringify
+        data: JSON.stringify(this.toUpdate)
       }
     )
   }
