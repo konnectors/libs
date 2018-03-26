@@ -142,7 +142,6 @@ class Linker {
         return findDebitOperation(this.cozyClient, bill, options, allOperations)
           .then(operation => {
             if (operation) {
-              console.log('found debit operation', operation)
               res.debitOperation = operation
               log('debug', `bills: Matching bill ${bill.subtype} (${fmtDate(bill.date)}) with debit operation ${operation.label} (${fmtDate(operation.date)})`)
               return this.addBillToOperation(bill, operation).then(() => operation)
@@ -155,7 +154,6 @@ class Linker {
           .then(creditOperation => {
             const promises = []
             if (creditOperation) {
-              console.log('found credit operation')
               res.creditOperation = creditOperation
               promises.push(this.addBillToOperation(bill, creditOperation))
             }

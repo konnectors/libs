@@ -76,10 +76,7 @@ const findByMangoQuerySimple = (docs, query) => {
 }
 
 const findNeighboringOperations = (cozyClient, bill, options, allOperations) => {
-  let operations = []
-
   const queryOptions = getQueryOptions(bill, options, [])
-  // allOperations = sortBy(queryOptions.sort)
   return Promise.resolve(findByMangoQuerySimple(allOperations, queryOptions))
 }
 
