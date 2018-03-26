@@ -137,7 +137,6 @@ class Linker {
         return findDebitOperation(this.cozyClient, bill, options, allOperations)
           .then(operation => {
             if (operation) {
-              console.log('found debit operation', operation)
               res.debitOperation = operation
               log('debug', bill, 'Matching bill')
               log('debug', operation, 'Matching debit operation')
@@ -151,7 +150,6 @@ class Linker {
           .then(creditOperation => {
             const promises = []
             if (creditOperation) {
-              console.log('found credit operation')
               res.creditOperation = creditOperation
               promises.push(this.addBillToOperation(bill, creditOperation))
             }
@@ -190,7 +188,7 @@ module.exports = (bills, doctype, fields, options = {}) => {
   const linker = new Linker(cozyClient)
   const prom = linker.linkBillsToOperations(bills, options)
     .catch(err => {
-      console.log(err)
+      log('warn', err, 'Problem when linking operations')
     })
   if (process.env.LINK_RESULTS_FILENAME) {
     prom.then(jsonTee(process.env.LINK_RESULTS_FILENAME))
