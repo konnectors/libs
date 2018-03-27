@@ -1,8 +1,4 @@
-# Change Log
-All notable changes to this project will be documented in this file.
-
-The format is based on [Keep a Changelog](http://keepachangelog.com/)
-and this project adheres to [Semantic Versioning](http://semver.org/).
+# Changelog
 
 ## [Unreleased]
 
@@ -15,14 +11,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - none yet
 
-### Removed
-- none yet
+## [3.8.0] - 2018-03-27
 
-### Deprecated
-- none yet
-
-### Security
-- none yet
+### Added
+- `cozy-konnector-libs`: `signin` helper. Should make sign in process to websites easier [#138](https://github.com/cozy/cozy-konnector-libs/pull/138). Big thank you to @carrieje :+1: !
+- `cozy-konnector-libs`: banking operation categorized as "health insurance" can be considered for linking with an health bill if its amount is greater than 0 (previously only operation categorized as "health expenses" were considered for linking)
+- `cozy-konnector-libs`: bill matching logs are tinier
+- `cozy-jobs-cli`: allow to parse an HTML file from the shell
 
 ## [3.7.0] - 2018-03-13
 
@@ -108,8 +103,13 @@ debug logs but "info" are kept.
 ### Fixed
 - Linking with bank operations now works even if the bill has already been fetched
 
+## Details
 
-[Unreleased]: https://github.com/cozy/cozy-konnector-libs/compare/v3.7.0...HEAD
+The format is based on [Keep a Changelog](http://keepachangelog.com/)
+and this project adheres to [Semantic Versioning](http://semver.org/).
+
+[Unreleased]: https://github.com/cozy/cozy-konnector-libs/compare/v3.8.0...HEAD
+[3.8.0]: https://github.com/cozy/cozy-konnector-libs/compare/v3.7.0...v3.8.0
 [3.7.0]: https://github.com/cozy/cozy-konnector-libs/compare/v3.6.0...v3.7.0
 [3.6.0]: https://github.com/cozy/cozy-konnector-libs/compare/v3.5.3...v3.6.0
 [3.5.3]: https://github.com/cozy/cozy-konnector-libs/compare/v3.5.2...v3.5.3
