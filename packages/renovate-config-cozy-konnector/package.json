@@ -1,11 +1,13 @@
 {
   "name": "renovate-config-cozy-konnector",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "main": "index.js",
   "license": "MIT",
   "renovate-config": {
     "default": {
-      "extends": ["config:base"],
+      "extends": [
+        "config:base"
+      ],
       "patch": {
         "automerge": true
       }
