@@ -7,7 +7,7 @@ const { getIdentifiers, getDateRangeFromBill, getAmountRangeFromBill } = require
 
 // constants
 
-const HEALTH_VENDORS = ['Ameli', 'Harmonie', 'Malakoff Mederic', 'MGEN'] // TODO: to import from each konnector
+const HEALTH_VENDORS = ['Ameli', 'Harmonie', 'Malakoff Mederic', 'MGEN', 'Generali'] // TODO: to import from each konnector
 const HEALTH_EXPENSE_CAT = '400610'
 const HEALTH_INSURANCE_CAT = '400620'
 const UNCATEGORIZED_CAT_ID_OPERATION = '0' // TODO: import it from cozy-bank
