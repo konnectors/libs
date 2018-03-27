@@ -17,6 +17,10 @@ const DEFAULT_AMOUNT_DELTA = 0.001
 const DEFAULT_PAST_WINDOW = 15
 const DEFAULT_FUTURE_WINDOW = 29
 
+const fmtDate = function (x) {
+  return new Date(x).toISOString().substr(0,10)
+}
+
 class Linker {
   constructor (cozyClient) {
     this.cozyClient = cozyClient
@@ -91,8 +95,7 @@ class Linker {
           .then(operation => {
             if (operation) {
               res.debitOperation = operation
-              log('debug', bill, 'Matching bill')
-              log('debug', operation, 'Matching debit operation')
+              log('debug', `bills: Matching bill ${bill.subtype} (${fmtDate(bill.date)}) with debit operation ${operation.label} (${fmtDate(operation.date)})`)
               return this.addBillToOperation(bill, operation).then(() => operation)
             }
           })
@@ -107,8 +110,7 @@ class Linker {
               promises.push(this.addBillToOperation(bill, creditOperation))
             }
             if (creditOperation && debitOperation) {
-              log('debug', bill, 'Matching bill')
-              log('debug', creditOperation, 'Matching credit creditOperation')
+              log('debug', `reimbursement: Matching bill ${bill.subtype} (${fmtDate(bill.date)}) with credit operation ${creditOperation.label} (${fmtDate(creditOperation.date)})`)
               promises.push(this.addReimbursementToOperation(bill, debitOperation, creditOperation))
             }
             return Promise.all(promises)

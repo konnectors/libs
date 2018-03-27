@@ -57,7 +57,13 @@ describe('operations filters', () => {
       expect(fByCategory({ automaticCategoryId: HEALTH_EXPENSE_CAT })).toBeTruthy()
       expect(fByCategory({ manualCategoryId: '0' })).toBeFalsy()
       expect(fByCategory({ automaticCategoryId: '0' })).toBeFalsy()
-      expect(fByCategory({})).toBeFalsy()
+    })
+
+    it('should match uncategorized only if specified in options', () => {
+      const fByCategory = filterByCategory({vendor: 'Ameli'}, {allowUncategorized: true})
+      expect(fByCategory({ manualCategoryId: '0' })).toBeTruthy()
+      expect(fByCategory({ automaticCategoryId: '0' })).toBeTruthy()
+      expect(fByCategory({})).toBeTruthy()
     })
 
     it('should not match bills with categoryId that are not health insurance/expense', () => {
