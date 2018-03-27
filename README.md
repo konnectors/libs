@@ -34,7 +34,7 @@ focused packages that rely on each other.
 * `cozy-konnector-libs` has tools to scrape and save data to your cozy
 * `cozy-jobs-cli` lets your run a konnector/service while being authenticated to a cozy
 * `cozy-logger` logs message in a human friendly way while developing and logs in JSON when in production. It can be used by konnector and services alike.
-* `renovate-config-cozy-konnector` is the [Renovate preset][https://renovateapp.com/docs/configuration-reference/config-presets] for cozy konnectors.
+* `renovate-config-cozy-konnector` is the [Renovate preset] for cozy konnectors.
 
 To start developing :
 
@@ -80,3 +80,4 @@ Cozy Konnector Libs is developed by Cozy Cloud and distributed under the [MIT li
 [github]: https://github.com/cozy/
 [twitter]: https://twitter.com/cozycloud
 [lerna]: https://lernajs.io
+[Renovate preset]: https://renovateapp.com/docs/configuration-reference/config-presets
