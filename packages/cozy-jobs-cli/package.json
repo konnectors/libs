@@ -23,6 +23,7 @@
     "commander": "^2.12.2",
     "core-js": "^2.5.3",
     "cozy-client-js": "^0.8.0",
+    "cozy-konnector-libs": "^3.7.4",
     "cozy-logger": "^1.0.4",
     "isomorphic-fetch": "^2.2.1",
     "opn": "^5.1.0",
