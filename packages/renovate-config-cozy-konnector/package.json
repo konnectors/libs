@@ -8,9 +8,15 @@
       "extends": [
         "config:base"
       ],
+      "timezone": "Europe/Paris",
       "minor": {
         "automerge": true
-      }
+      },
+      "packageRules": [{
+        "excludePackageNames": ["cozy-konnector-libs"],
+        "schedule": "before 5am every monday"
+      }],
+      "prHourlyLimit": 0
     }
   }
 }
