@@ -8,7 +8,7 @@
       "extends": [
         "config:base"
       ],
-      "patch": {
+      "minor": {
         "automerge": true
       }
     }
