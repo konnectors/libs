@@ -8,6 +8,8 @@
       "extends": [
         "config:base"
       ],
+      "timezone": "Europe/Paris",
+      "schedule": "before 5am every monday",
       "minor": {
         "automerge": true
       }
