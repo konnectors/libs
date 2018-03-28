@@ -41,6 +41,7 @@ const errors = require('../helpers/errors')
 const rerrors = require('request-promise/errors')
 const log = require('cozy-logger').namespace('cozy-konnector-libs')
 const requestFactory = require('./request')
+const cheerio = require('cheerio')
 
 module.exports = function signin (
   {
@@ -69,7 +70,7 @@ module.exports = function signin (
 
   return rq({
     uri: url,
-    cheerio: true
+    transform: (body) => cheerio.load(body)
   }).catch(handleRequestErrors)
     .then($ => {
       const [action, inputs] = parseForm($, formSelector)
@@ -95,7 +96,7 @@ function defaultValidate (statusCode, body) {
 function getStrategy (parseStrategy) {
   switch (parseStrategy) {
     case 'cheerio':
-      return require('cheerio').load
+      return cheerio.load
     case 'json':
       return JSON.parse
     case 'raw':
