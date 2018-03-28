@@ -21,7 +21,9 @@
  *
  * - `formData` is an object `{ name: value, … }`. It is used to populate the
  *   form, in the proper inputs with the same name as the properties of this
- *   object, before submitting it.
+ *   object, before submitting it. It can also be a function that returns this
+ *   object. The page at `url` would be given as argument, right after having
+ *   been parsed through `cheerio`.
  *
  * - `parse` allow the user to resolve `signin` with a preparsed body. The
  *   choice of the strategy for the parsing is one of : `raw`, `json` or
@@ -72,9 +74,10 @@ module.exports = function signin (
     cheerio: true
   }).catch(handleRequestErrors)
     .then($ => {
+      const data = (typeof formData === 'function' ? formData($) : formData)
       const [action, inputs] = parseForm($, formSelector)
-      for (let name in formData) {
-        inputs[name] = formData[name]
+      for (let name in data) {
+        inputs[name] = data[name]
       }
 
       return submitForm(rq, require('url').resolve(url, action), inputs, parseBody)
