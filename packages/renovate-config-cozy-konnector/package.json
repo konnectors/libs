@@ -9,10 +9,14 @@
         "config:base"
       ],
       "timezone": "Europe/Paris",
-      "schedule": "before 5am every monday",
       "minor": {
         "automerge": true
-      }
+      },
+      "packageRules": [{
+        "excludePackageNames": ["cozy-konnector-libs"],
+        "schedule": "before 5am every monday"
+      }],
+      "prHourlyLimit": 0
     }
   }
 }
