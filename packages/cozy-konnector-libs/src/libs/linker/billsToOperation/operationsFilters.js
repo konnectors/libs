@@ -63,7 +63,7 @@ const filterByAmounts = ({ minAmount, maxAmount }) => {
   return amountFilter
 }
 
-const filterByCategory = (bill, options) => {
+const filterByCategory = (bill, options={}) => {
   const isHealth = isHealthBill(bill)
   const categoryFilter = operation => {
     if (options.allowUncategorized !== false
