@@ -13,6 +13,7 @@ const { findDebitOperation, findCreditOperation } = require('./linker/billsToOpe
 const fs = require('fs')
 const { fetchAll } = require('./utils')
 const defaults = require('lodash/defaults')
+const groupBy = require('lodash/groupBy')
 
 const DOCTYPE_OPERATIONS = 'io.cozy.bank.operations'
 const DEFAULT_AMOUNT_DELTA = 0.001
@@ -182,6 +183,10 @@ class Linker {
     )
 
     return notLinkedBills
+  }
+
+  groupBillsByOriginalDate (bills) {
+    return groupBy(bills, bill => bill.originalDate)
   }
 }
 

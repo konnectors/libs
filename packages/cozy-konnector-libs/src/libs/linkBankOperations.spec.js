@@ -316,5 +316,29 @@ describe('linker', () => {
         expect(linker.getNotLinkedBills(allBills, [])).toEqual(expected)
       })
     })
+
+    describe('groupBillsByOriginalDate', () => {
+      const bills = [
+        { _id: 'b1', originalDate: '2018-03-10T00:00:00Z' },
+        { _id: 'b2', originalDate: '2018-03-10T00:00:00Z' },
+        { _id: 'b3', originalDate: '2018-03-10T00:00:00Z' },
+        { _id: 'b4', originalDate: '2018-03-15T00:00:00Z' },
+        { _id: 'b5', originalDate: '2018-03-15T00:00:00Z' },
+        { _id: 'b6', originalDate: '2018-03-20T00:00:00Z' },
+        { _id: 'b7', originalDate: '2018-03-20T00:00:00Z' },
+        { _id: 'b8', originalDate: '2018-03-20T00:00:00Z' },
+        { _id: 'b9', originalDate: '2018-03-20T00:00:00Z' },
+        { _id: 'b10', originalDate: '2018-03-30T00:00:00Z' }
+      ]
+
+      test('it groups bills by their originalDate property', () => {
+        const result = linker.groupBillsByOriginalDate(bills)
+
+        expect(result['2018-03-10T00:00:00Z']).toHaveLength(3)
+        expect(result['2018-03-15T00:00:00Z']).toHaveLength(2)
+        expect(result['2018-03-20T00:00:00Z']).toHaveLength(4)
+        expect(result['2018-03-30T00:00:00Z']).toHaveLength(1)
+      })
+    })
   })
 })
