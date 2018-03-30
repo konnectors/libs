@@ -340,5 +340,30 @@ describe('linker', () => {
         expect(result['2018-03-30T00:00:00Z']).toHaveLength(1)
       })
     })
+
+    describe('generateBillsCombinations', () => {
+      const bills = [
+        { _id: 'b1' },
+        { _id: 'b2' },
+        { _id: 'b3' },
+        { _id: 'b4' }
+      ]
+
+      test('it generates the right combinations', () => {
+        const result = linker.generateBillsCombinations(bills)
+
+        expect(result).toContainEqual([bills[0], bills[1]])
+        expect(result).toContainEqual([bills[0], bills[2]])
+        expect(result).toContainEqual([bills[0], bills[3]])
+        expect(result).toContainEqual([bills[1], bills[2]])
+        expect(result).toContainEqual([bills[1], bills[3]])
+        expect(result).toContainEqual([bills[2], bills[3]])
+        expect(result).toContainEqual([bills[0], bills[1], bills[2]])
+        expect(result).toContainEqual([bills[0], bills[1], bills[3]])
+        expect(result).toContainEqual([bills[0], bills[2], bills[3]])
+        expect(result).toContainEqual([bills[1], bills[2], bills[3]])
+        expect(result).toContainEqual([bills[0], bills[1], bills[2], bills[3]])
+      })
+    })
   })
 })

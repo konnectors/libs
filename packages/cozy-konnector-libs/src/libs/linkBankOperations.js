@@ -14,6 +14,7 @@ const fs = require('fs')
 const { fetchAll } = require('./utils')
 const defaults = require('lodash/defaults')
 const groupBy = require('lodash/groupBy')
+const geco = require('geco')
 
 const DOCTYPE_OPERATIONS = 'io.cozy.bank.operations'
 const DEFAULT_AMOUNT_DELTA = 0.001
@@ -187,6 +188,29 @@ class Linker {
 
   groupBillsByOriginalDate (bills) {
     return groupBy(bills, bill => bill.originalDate)
+  }
+
+  generateBillsCombinations(bills) {
+    const combinations = Array.from({ length: bills.length })
+      .reduce((combinations, item, index) => {
+        if (index === 0) {
+          return combinations
+        }
+
+        const newCombinations = []
+
+        const iter = geco.gen(bills.length, index + 1, bills)
+        for (const combination of iter) {
+          newCombinations.push(combination)
+        }
+
+        return [
+          ...combinations,
+          ...newCombinations
+        ]
+    }, [])
+
+    return combinations
   }
 }
 
