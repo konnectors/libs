@@ -175,6 +175,14 @@ class Linker {
       return result
     })
   }
+
+  getNotLinkedBills (allBills, linkedBillsIds) {
+    const notLinkedBills = allBills.filter(
+      bill => !linkedBillsIds.includes(bill._id)
+    )
+
+    return notLinkedBills
+  }
 }
 
 const jsonTee = filename => res => {
