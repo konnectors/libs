@@ -119,6 +119,7 @@ const operationsFilters = (bill, operations, options) => {
     conditions.push(fbyIdentifiers)
   }
 
+  console.log('operation filters starts with', operations.length, 'operations')
   return operations.filter(filterByConditions(conditions))
 }
 
