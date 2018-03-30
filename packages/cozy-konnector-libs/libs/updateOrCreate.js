@@ -18,7 +18,6 @@ const log = require('cozy-logger').namespace('updateOrCreate')
 const cozy = require('./cozyclient')
 
 module.exports = (entries = [], doctype, matchingAttributes = []) => {
-  log('warn', 'updateOrCreate is deprecated, define shouldSave/shouldUpdate')
   return cozy.data.findAll(doctype)
     .then(existings => bluebird.mapSeries(entries, entry => {
       log('debug', entry)
