@@ -11,6 +11,18 @@
 ### Added
 - none yet
 
+## [3.8.2] - 2018-03-30
+
+## Changed
+
+- `cozy-konnector-libs`. `updateOrCreate` is no longer deprecated.
+
+## [3.8.1] - 2018-03-29
+
+### Fixed
+
+- `cozy-konnector-libs` No longer has bin in package.json. Moved to cozy-konnector-libs.
+
 ## [3.8.0] - 2018-03-27
 
 ### Added
@@ -108,7 +120,9 @@ debug logs but "info" are kept.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-[Unreleased]: https://github.com/cozy/cozy-konnector-libs/compare/v3.8.0...HEAD
+[Unreleased]: https://github.com/cozy/cozy-konnector-libs/compare/v3.8.1...HEAD
+[3.8.2]: https://github.com/cozy/cozy-konnector-libs/compare/v3.8.1...v3.8.2
+[3.8.1]: https://github.com/cozy/cozy-konnector-libs/compare/v3.8.0...v3.8.1
 [3.8.0]: https://github.com/cozy/cozy-konnector-libs/compare/v3.7.0...v3.8.0
 [3.7.0]: https://github.com/cozy/cozy-konnector-libs/compare/v3.6.0...v3.7.0
 [3.6.0]: https://github.com/cozy/cozy-konnector-libs/compare/v3.5.3...v3.6.0
