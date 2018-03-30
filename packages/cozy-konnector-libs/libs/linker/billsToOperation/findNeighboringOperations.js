@@ -10,11 +10,9 @@ const DOCTYPE_OPERATIONS = 'io.cozy.bank.operations'
 // around the date of the bill
 const createDateSelector = (bill, options) => {
   const { minDate, maxDate } = getDateRangeFromBill(bill, options)
-  const dateFormat = 'YYYY-MM-DDT00:00:00.000[Z]'
-
   return {
-    $gt: format(minDate, dateFormat),
-    $lt: format(maxDate, dateFormat)
+    $gt: minDate.toISOString(),
+    $lt: maxDate.toISOString()
   }
 }
 
@@ -75,9 +73,10 @@ const findByMangoQuerySimple = (docs, query) => {
   return docs.filter(and(filters))
 }
 
-const findNeighboringOperations = (cozyClient, bill, options, allOperations) => {
+const findNeighboringOperations = async (cozyClient, bill, options, allOperations) => {
   const queryOptions = getQueryOptions(bill, options, [])
-  return Promise.resolve(findByMangoQuerySimple(allOperations, queryOptions))
+  const neighboringOperations = findByMangoQuerySimple(allOperations, queryOptions)
+  return neighboringOperations
 }
 
 module.exports = {

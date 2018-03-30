@@ -2,6 +2,7 @@ import { Linker } from './linkBankOperations'
 
 jest.mock('./cozyclient')
 const cozyClient = require('./cozyclient')
+const indexBy = require('lodash/keyBy')
 
 let linker
 
@@ -9,27 +10,31 @@ beforeEach(function () {
   // We mock defineIndex/query so that fetchOperations returns the right operations
   const INDEX = 'index'
   cozyClient.data.defineIndex.mockReturnValue(Promise.resolve(INDEX))
-  cozyClient.data.updateAttributes.mockReset()
 
   linker = new Linker(cozyClient)
+  linker.updateAttributes = jest.fn().mockReturnValue(Promise.resolve())
 })
+
+const wrapAsFetchJSONResult = documents => {
+  return {
+    rows: documents.map(x => ({ id: x._id, doc: x}))
+  }
+}
 
 describe('linker', () => {
   const bill = { amount: 110, _id: 'b1' }
 
   describe('addBillToOperation', () => {
-    test('operation witout bills', () => {
+    test('operation without bills', () => {
       const operation = { _id: 123456 }
 
       linker.addBillToOperation(bill, operation)
 
-      expect(cozyClient.data.updateAttributes).lastCalledWith(
+      expect(linker.updateAttributes).lastCalledWith(
         'io.cozy.bank.operations',
-        123456,
-        {
-          bills: ['io.cozy.bills:b1']
-        }
-      )
+        operation, {
+         bills: ['io.cozy.bills:b1']
+        })
     })
 
     test('operation with bills', () => {
@@ -37,13 +42,11 @@ describe('linker', () => {
 
       linker.addBillToOperation(bill, operation)
 
-      expect(cozyClient.data.updateAttributes).lastCalledWith(
+      expect(linker.updateAttributes).lastCalledWith(
         'io.cozy.bank.operations',
-        12345,
-        {
+        operation, {
           bills: ['bill1', 'io.cozy.bills:b1']
-        }
-      )
+        })
     })
 
     test('operation have already this bill', () => {
@@ -61,9 +64,9 @@ describe('linker', () => {
 
       linker.addReimbursementToOperation(bill, operation, operation)
 
-      expect(cozyClient.data.updateAttributes).lastCalledWith(
+      expect(linker.updateAttributes).lastCalledWith(
         'io.cozy.bank.operations',
-        123456,
+        operation,
         {
           reimbursements: [{
             amount: 110,
@@ -79,9 +82,9 @@ describe('linker', () => {
 
       linker.addReimbursementToOperation(bill, operation, operation)
 
-      expect(cozyClient.data.updateAttributes).lastCalledWith(
+      expect(linker.updateAttributes).lastCalledWith(
         'io.cozy.bank.operations',
-        123456,
+        operation,
         {
           reimbursements: ['test', {
             amount: 110,
@@ -110,38 +113,39 @@ describe('linker', () => {
 
   describe('linkBillsToOperations', () => {
     const operationsInit = [
-      { amount: -20, label: 'Visite chez le médecin', _id: 'o1', date: new Date(2017, 11, 13), automaticCategoryId: '400610' },
-      { amount: 5, label: 'Remboursement CPAM', _id: 'o2', date: new Date(2017, 11, 15), automaticCategoryId: '400610' },
-      { amount: -120, label: 'Facture SFR', _id: 'o3', date: new Date(2017, 11, 8) },
-      { amount: -30, label: 'Facture SFR', _id: 'o4', date: new Date(2017, 11, 7) },
-      { amount: +30, label: "Remboursemet Matériel d'escalade", _id: 'o5', date: new Date(2017, 11, 7) },
-      { amount: -5.5, label: 'Burrito', _id: 'o6', date: new Date(2017, 11, 5) },
-      { amount: -2.6, label: 'Salade', _id: 'o7', date: new Date(2017, 11, 6) }
-    ]
+      { amount: -20, label: 'Visite chez le médecin', _id: 'medecin', date: new Date(2017, 11, 13), automaticCategoryId: '400610' },
+      { amount: 5, label: 'Remboursement CPAM', _id: 'cpam', date: new Date(2017, 11, 15), automaticCategoryId: '400610' },
+      { amount: -120, label: 'Facture SFR', _id: 'big_sfr', date: new Date(2017, 11, 8) },
+      { amount: -30, label: 'Facture SFR', _id: 'small_sfr', date: new Date(2017, 11, 7) },
+      { amount: +30, label: "Remboursemet Matériel d'escalade", _id: 'escalade', date: new Date(2017, 11, 7) },
+      { amount: -5.5, label: 'Burrito', _id: 'burrito', date: new Date(2017, 11, 5) },
+      { amount: -2.6, label: 'Salade', _id: 'salade', date: new Date(2017, 11, 6) }
+    ].map(x => ({ ...x, date: x.date.toISOString() }))
 
-    let operations
+    let operations, operationsById
 
     beforeEach(function () {
       // reset operations to operationsInit values
       operations = operationsInit.map(op => ({ ...op }))
-      cozyClient.data.query.mockReturnValue(Promise.resolve(operations))
-      cozyClient.data.updateAttributes.mockImplementation(updateOperation)
+      operationsById = indexBy(operations, '_id')
+      cozyClient.fetchJSON = jest.fn().mockReturnValue(Promise.resolve(wrapAsFetchJSONResult(operations)))
+      linker.updateAttributes.mockImplementation(updateOperation)
     })
 
     const defaultOptions = {
       minAmountDelta: 1,
       maxAmountDelta: 1,
-      pastWindow: 1,
-      futureWindow: 1
+      pastWindow: 2,
+      futureWindow: 2
     }
 
-    function updateOperation (doctype, id, attributes) {
-      const operation = operations.find(operation => operation._id === id)
+    function updateOperation (doctype, needleOp, attributes) {
+      const operation = operations.find(operation => operation._id === needleOp._id)
       Object.assign(operation, attributes)
       return Promise.resolve(operation)
     }
 
-    test('health bills', () => {
+    it('should match health bills correctly', () => {
       const healthBills = [
         {
           _id: 'b1',
@@ -157,21 +161,22 @@ describe('linker', () => {
       const options = { ...defaultOptions, identifiers: ['CPAM'] }
       return linker.linkBillsToOperations(healthBills, options)
       .then(result => {
-        expect(result).toMatchObject({
-          b1: { creditOperation: operations[1], debitOperation: operations[0] }
-        })
+        expect(result.b1.creditOperation).toEqual(operationsById.cpam)
+        expect(result.b1.debitOperation).toEqual(operations[0])
         expect(operations[0]).toMatchObject({
           reimbursements: [{
             billId: 'io.cozy.bills:b1',
             amount: 5,
-            operationId: 'o2'
+            operationId: 'cpam'
           }
         ]})
-        expect(operations[1]).toMatchObject({bills: ['io.cozy.bills:b1']})
+        expect(operationsById.cpam).toMatchObject({
+          bills: ['io.cozy.bills:b1']
+        })
       })
     })
 
-    test('health bills with no debit operation found should be associated with a credit operation', () => {
+    it('should match health bills with no debit operation with a credit operation', () => {
       const healthBills = [
         {
           _id: 'b1',
@@ -188,10 +193,10 @@ describe('linker', () => {
       return linker.linkBillsToOperations(healthBills, options)
       .then(result => {
         expect(result).toMatchObject({
-          b1: { creditOperation: operations[1] }
+          b1: { creditOperation: operationsById.cpam }
         })
         expect(result.b1.debitOperation).toBe(undefined)
-        expect(operations[1]).toMatchObject({bills: ['io.cozy.bills:b1']})
+        expect(operationsById.cpam).toMatchObject({bills: ['io.cozy.bills:b1']})
       })
     })
 
@@ -231,10 +236,10 @@ describe('linker', () => {
             .then(result => {
               const debitOperation = expect.any(Object)
               expect(result).toMatchObject({
-                b1: { creditOperation: operations[1], debitOperation },
-                b2: { creditOperation: operations[1], debitOperation }
+                b1: { creditOperation: operationsById.cpam, debitOperation },
+                b2: { creditOperation: operationsById.cpam, debitOperation }
               })
-              expect(operations[1]).toMatchObject({
+              expect(operationsById.cpam).toMatchObject({
                 bills: ['io.cozy.bills:b1', 'io.cozy.bills:b2']
               })
               expect(result.b1.debitOperation).toBe(result.b2.debitOperation)
@@ -249,13 +254,11 @@ describe('linker', () => {
           const options = { ...defaultOptions, identifiers: ['CPAM'] }
           return linker.linkBillsToOperations(healthBills2, options)
             .then(result => {
-              expect(result).toMatchObject({
-                b1: { creditOperation: operations[1] },
-                b2: { creditOperation: operations[1] }
-              })
+              expect(result.b1.creditOperation).toBe(operationsById.cpam)
+              expect(result.b2.creditOperation).toBe(operationsById.cpam)
               expect(result.b1.debitOperation).toBe(undefined)
               expect(result.b2.debitOperation).toBe(undefined)
-              expect(operations[1]).toMatchObject({
+              expect(operationsById.cpam).toMatchObject({
                 bills: ['io.cozy.bills:b1', 'io.cozy.bills:b2']
               })
             })
@@ -264,7 +267,7 @@ describe('linker', () => {
     })
 
 
-    test('not health bills', () => {
+    it('not health bills', () => {
       const noHealthBills = [
         {
           _id: 'b2',
@@ -277,7 +280,7 @@ describe('linker', () => {
       return linker.linkBillsToOperations(noHealthBills, options)
       .then(result => {
         expect(result).toMatchObject({
-          b2: { debitOperation: operations[3] }
+          b2: { debitOperation: operationsById.small_sfr }
         })
       })
     })

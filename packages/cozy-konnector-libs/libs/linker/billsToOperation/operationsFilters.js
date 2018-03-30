@@ -58,7 +58,7 @@ const filterByAmounts = ({ minAmount, maxAmount }) => {
   return amountFilter
 }
 
-const filterByCategory = (bill, options) => {
+const filterByCategory = (bill, options={}) => {
   const isHealth = isHealthBill(bill)
   const categoryFilter = operation => {
     if (options.allowUncategorized !== false
@@ -115,6 +115,7 @@ const operationsFilters = (bill, operations, options) => {
     conditions.push(fbyIdentifiers)
   }
 
+  console.log('operation filters starts with', operations.length, 'operations')
   return operations.filter(filterByConditions(conditions))
 }
 

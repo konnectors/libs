@@ -6,7 +6,6 @@ const findOperation = (cozyClient, bill, options, allOperations) => {
   // By default, a bill is an expense. If it is not, it should be
   // declared as a refund: isRefund=true.
   if (options.credit && !bill.isRefund) return
-
   return findNeighboringOperations(cozyClient, bill, options, allOperations)
   .then(operations => {
     operations = operationsFilters(bill, operations, options)
