@@ -1,11 +1,11 @@
 # Changelog
 
-## [Unreleased]
+## [Unreleased] - 4.0.0
 
 ## Changed
 
-- `cozy-konnector-libs`: `updateOrCreate` is no longer deprecated.
 - `cozy-konnector-libs` : Changed linking mechanism to in-memory
+- `cozy-konnector-libs`: `updateOrCreate` is no longer deprecated.
 
 ### Fixed
 - none yet
