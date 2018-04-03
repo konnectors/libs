@@ -212,6 +212,13 @@ class Linker {
 
     return combinations
   }
+
+  combineBills(...bills) {
+    return {
+      amount: bills.reduce((sum, bill) => sum + bill.originalAmount, 0),
+      originalDate: bills[0].originalDate
+    }
+  }
 }
 
 const jsonTee = filename => res => {
