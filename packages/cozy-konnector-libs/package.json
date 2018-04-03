@@ -60,9 +60,9 @@
     ]
   },
   "devDependencies": {
-    "body-parser": "^1.18.2",
+    "body-parser": "1.18.2",
     "cross-env": "5.1.4",
-    "express": "^4.16.3",
+    "express": "4.16.3",
     "lerna": "2.9.0"
   },
   "prettier": {
