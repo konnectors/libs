@@ -288,32 +288,25 @@ describe('linker', () => {
 
   describe('linking with combinations', () => {
     describe('getNotLinkedBills', () => {
-      const allBills = [
-        { _id: 'b1' },
-        { _id: 'b2' },
-        { _id: 'b3' },
-        { _id: 'b4' }
-      ]
 
       test('it returns the bills that are not linked', () => {
-        const linkedBillsIds = ['b1', 'b3']
-        const expected = expect.arrayContaining([
-          allBills[1],
-          allBills[3]
-        ])
+        const linkingResult = {
+          b1: { bill: { _id: 'b1' }, debitOperation: {} },
+          b2: { bill: { _id: 'b2' } }
+        }
 
-        expect(linker.getNotLinkedBills(allBills, linkedBillsIds)).toEqual(expected)
+        const expected = expect.arrayContaining([linkingResult.b2.bill])
+
+        expect(linker.getNotLinkedBills(linkingResult)).toEqual(expected)
       })
 
       test('it returns an empty array if all bills are linked', () => {
-        const linkedBillsIds = allBills.map(bill => bill._id)
+        const linkingResult = {
+          b1: { bill: { _id: 'b1' }, debitOperation: {} },
+          b2: { bill: { _id: 'b2' }, debitOperation: {} }
+        }
 
-        expect(linker.getNotLinkedBills(allBills, linkedBillsIds)).toHaveLength(0)
-      })
-
-      test('it returns all the bills if no bill is linked', () => {
-        const expected = expect.arrayContaining(allBills)
-        expect(linker.getNotLinkedBills(allBills, [])).toEqual(expected)
+        expect(linker.getNotLinkedBills(linkingResult)).toHaveLength(0)
       })
     })
 

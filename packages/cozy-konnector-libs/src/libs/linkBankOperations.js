@@ -178,10 +178,10 @@ class Linker {
     })
   }
 
-  getNotLinkedBills (allBills, linkedBillsIds) {
-    const notLinkedBills = allBills.filter(
-      bill => !linkedBillsIds.includes(bill._id)
-    )
+  getNotLinkedBills (bills) {
+    const notLinkedBills = Object.values(bills)
+      .filter(bill => !bill.debitOperation)
+      .map(bill => bill.bill)
 
     return notLinkedBills
   }
