@@ -14,6 +14,7 @@ const fs = require('fs')
 const { fetchAll } = require('./utils')
 const defaults = require('lodash/defaults')
 const groupBy = require('lodash/groupBy')
+const flatten = require('lodash/flatten')
 const geco = require('geco')
 
 const DOCTYPE_OPERATIONS = 'io.cozy.bank.operations'
@@ -174,7 +175,34 @@ class Linker {
       })
     })
     .then(() => {
-      return result
+      const notLinkedBills = this.getNotLinkedBills(result)
+      const billsGroups = this.groupBillsByOriginalDate(notLinkedBills)
+      const combinations = flatten(
+        Object
+          .values(billsGroups)
+          .map(billsGroup => this.generateBillsCombinations(billsGroup))
+      )
+      const combinedBills = combinations.map(
+        combination => this.combineBills(...combination)
+      )
+
+      return Promise.all(combinedBills.map(bill => {
+        return findDebitOperation(this.cozyClient, bill, options, allOperations)
+      }))
+        .then(debitOperations => debitOperations.filter(Boolean))
+        .then(debitOperations => {
+          debitOperations.forEach((debitOperation, index) => {
+            const originalBills = combinedBills[index].originalBills
+            originalBills.forEach(originalBill => {
+              const res = result[originalBill._id]
+              res.debitOperation = debitOperation
+
+              this.addBillToOperation(originalBill, debitOperation)
+            })
+          })
+        })
+        .then(() => result)
+        .catch(err => console.log(err))
     })
   }
 
@@ -190,7 +218,7 @@ class Linker {
     return groupBy(bills, bill => bill.originalDate)
   }
 
-  generateBillsCombinations(bills) {
+  generateBillsCombinations (bills) {
     const combinations = Array.from({ length: bills.length })
       .reduce((combinations, item, index) => {
         if (index === 0) {
@@ -213,10 +241,13 @@ class Linker {
     return combinations
   }
 
-  combineBills(...bills) {
+  combineBills (...bills) {
     return {
-      amount: bills.reduce((sum, bill) => sum + bill.originalAmount, 0),
-      originalDate: bills[0].originalDate
+      ...bills[0],
+      _id: ['combined', ...bills.map(bill => bill._id)].join(':'),
+      amount: bills.reduce((sum, bill) => sum + bill.amount, 0),
+      originalAmount: bills.reduce((sum, bill) => sum + bill.originalAmount, 0),
+      originalBills: bills
     }
   }
 }
