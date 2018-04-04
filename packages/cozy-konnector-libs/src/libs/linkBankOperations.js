@@ -177,11 +177,13 @@ class Linker {
     .then(() => {
       const notLinkedBills = this.getNotLinkedBills(result)
       const billsGroups = this.groupBillsByOriginalDate(notLinkedBills)
+
       const combinations = flatten(
         Object
           .values(billsGroups)
           .map(billsGroup => this.generateBillsCombinations(billsGroup))
       )
+
       const combinedBills = combinations.map(
         combination => this.combineBills(...combination)
       )
@@ -192,16 +194,16 @@ class Linker {
         .then(debitOperations => debitOperations.filter(Boolean))
         .then(debitOperations => {
           debitOperations.forEach((debitOperation, index) => {
-            const originalBills = combinedBills[index].originalBills
-            originalBills.forEach(originalBill => {
+            combinedBills[index].originalBills.forEach(originalBill => {
               const res = result[originalBill._id]
               res.debitOperation = debitOperation
 
               this.addBillToOperation(originalBill, debitOperation)
             })
           })
+
+          return result
         })
-        .then(() => result)
         .catch(err => console.log(err))
     })
   }

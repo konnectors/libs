@@ -361,13 +361,28 @@ describe('linker', () => {
 
     describe('combineBills', () => {
       const bills = [
-        { _id: 'b1', originalAmount: 20, originalDate: '2018-03-10T00:00:00Z' },
-        { _id: 'b2', originalAmount: 10, originalDate: '2018-03-10T00:00:00Z' }
+        {
+          _id: 'b1',
+          amount: 10,
+          originalAmount: 20,
+          originalDate: '2018-03-10T00:00:00Z'
+        },
+        {
+          _id: 'b2',
+          amount: 10,
+          originalAmount: 10,
+          originalDate: '2018-03-10T00:00:00Z'
+        }
       ]
 
       test('it generate a bill with the right amount', () => {
         const combinedBill = linker.combineBills(...bills)
-        expect(combinedBill.amount).toBe(30)
+        expect(combinedBill.amount).toBe(20)
+      })
+
+      test('it generates a bill with the right originalAmount', () => {
+        const combinedBill = linker.combineBills(...bills)
+        expect(combinedBill.originalAmount).toBe(30)
       })
 
       test('it generates a bill with the right originalDate', () => {
