@@ -52,7 +52,7 @@ const parseOptions = parser({
   allowUncategorized: htmlFormBoolean,
   minDateDelta: float,
   maxDateDelta: float,
-  amountDelta: float,
+  amountDateDelta: float,
   identifiers: commaSeparatedArray
 })
 
