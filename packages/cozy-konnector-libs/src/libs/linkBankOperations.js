@@ -210,7 +210,9 @@ class Linker {
               const res = result[originalBill._id]
               res.debitOperation = debitOperation
 
-              await this.addBillToOperation(originalBill, debitOperation)
+              if (res.creditOperation && res.debitOperation) {
+                await this.addReimbursementToOperation(originalBill, debitOperation, res.creditOperation)
+              }
             })
 
             break;
