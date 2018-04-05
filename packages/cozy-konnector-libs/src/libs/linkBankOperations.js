@@ -190,22 +190,22 @@ class Linker {
         combination => this.combineBills(...combination)
       )
 
-      return Promise.all(combinedBills.map(bill => {
-        return findDebitOperation(this.cozyClient, bill, options, allOperations)
-      }))
-        .then(debitOperations => debitOperations.filter(Boolean))
-        .then(debitOperations => {
-          debitOperations.forEach((debitOperation, index) => {
-            combinedBills[index].originalBills.forEach(originalBill => {
+      const promises = combinedBills.map(combinedBill => {
+        return findDebitOperation(this.cozyClient, combinedBill, options, allOperations)
+          .then(debitOperation => {
+            if (!debitOperation) return
+
+            combinedBill.originalBills.forEach(originalBill => {
               const res = result[originalBill._id]
               res.debitOperation = debitOperation
 
               this.addBillToOperation(originalBill, debitOperation)
             })
           })
+      })
 
-          return result
-        })
+      return Promise.all(promises)
+        .then(() => result)
         .catch(err => console.log(err))
     })
   }
