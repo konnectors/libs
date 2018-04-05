@@ -310,27 +310,29 @@ describe('linker', () => {
       })
     })
 
-    describe('groupBillsByOriginalDate', () => {
+    describe('groupBills', () => {
       const bills = [
-        { _id: 'b1', originalDate: '2018-03-10T00:00:00Z' },
-        { _id: 'b2', originalDate: '2018-03-10T00:00:00Z' },
-        { _id: 'b3', originalDate: '2018-03-10T00:00:00Z' },
-        { _id: 'b4', originalDate: '2018-03-15T00:00:00Z' },
-        { _id: 'b5', originalDate: '2018-03-15T00:00:00Z' },
-        { _id: 'b6', originalDate: '2018-03-20T00:00:00Z' },
-        { _id: 'b7', originalDate: '2018-03-20T00:00:00Z' },
-        { _id: 'b8', originalDate: '2018-03-20T00:00:00Z' },
-        { _id: 'b9', originalDate: '2018-03-20T00:00:00Z' },
-        { _id: 'b10', originalDate: '2018-03-30T00:00:00Z' }
+        { _id: 'b1', originalDate: new Date(2018, 2, 10), type: 'health_costs' },
+        { _id: 'b2', originalDate: new Date(2018, 2, 10), type: 'phone' },
+        { _id: 'b3', originalDate: new Date(2018, 2, 10), type: 'health_costs' },
+        { _id: 'b4', originalDate: new Date(2018, 2, 15), type: 'health_costs' },
+        { _id: 'b5', originalDate: new Date(2018, 2, 15), type: 'health_costs' },
+        { _id: 'b6', originalDate: new Date(2018, 2, 20), type: 'phone' },
+        { _id: 'b7', originalDate: new Date(2018, 2, 20), type: 'health_costs' },
+        { _id: 'b8', originalDate: new Date(2018, 2, 20), type: 'phone' },
+        { _id: 'b9', originalDate: new Date(2018, 2, 20), type: 'health_costs' },
+        { _id: 'b10', originalDate: new Date(2018, 2, 30), type: 'phone' }
       ]
 
-      it('groups bills by their originalDate property', () => {
-        const result = linker.groupBillsByOriginalDate(bills)
+      it('groups bills by type and originalDate', () => {
+        const result = linker.groupBills(bills)
 
-        expect(result['2018-03-10']).toHaveLength(3)
-        expect(result['2018-03-15']).toHaveLength(2)
-        expect(result['2018-03-20']).toHaveLength(4)
-        expect(result['2018-03-30']).toHaveLength(1)
+        expect(result).toContainEqual([bills[0], bills[2]])
+        expect(result).toContainEqual([bills[1]])
+        expect(result).toContainEqual([bills[3], bills[4]])
+        expect(result).toContainEqual([bills[5], bills[7]])
+        expect(result).toContainEqual([bills[6], bills[8]])
+        expect(result).toContainEqual([bills[9]])
       })
     })
 

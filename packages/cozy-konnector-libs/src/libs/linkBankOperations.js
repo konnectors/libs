@@ -178,7 +178,7 @@ class Linker {
     })
     .then(() => {
       const unlinkedBills = this.getUnlinkedBills(result)
-      const billsGroups = this.groupBillsByOriginalDate(unlinkedBills)
+      const billsGroups = this.groupBills(unlinkedBills)
 
       const combinations = flatten(
         Object
@@ -221,8 +221,13 @@ class Linker {
     return unlinkedBills
   }
 
-  groupBillsByOriginalDate (bills) {
-    return groupBy(bills, bill => moment(bill.originalDate).format().split('T')[0])
+  groupBills (bills) {
+    const groups = groupBy(bills, bill => ([
+      moment(bill.originalDate).format().split('T')[0],
+      bill.type
+    ]))
+
+    return Object.values(groups)
   }
 
   generateBillsCombinations (bills) {
