@@ -287,7 +287,7 @@ describe('linker', () => {
   })
 
   describe('linking with combinations', () => {
-    describe('getNotLinkedBills', () => {
+    describe('getUnlinkedBills', () => {
 
       test('it returns the bills that are not linked', () => {
         const linkingResult = {
@@ -297,7 +297,7 @@ describe('linker', () => {
 
         const expected = expect.arrayContaining([linkingResult.b2.bill])
 
-        expect(linker.getNotLinkedBills(linkingResult)).toEqual(expected)
+        expect(linker.getUnlinkedBills(linkingResult)).toEqual(expected)
       })
 
       test('it returns an empty array if all bills are linked', () => {
@@ -306,7 +306,7 @@ describe('linker', () => {
           b2: { bill: { _id: 'b2' }, debitOperation: {} }
         }
 
-        expect(linker.getNotLinkedBills(linkingResult)).toHaveLength(0)
+        expect(linker.getUnlinkedBills(linkingResult)).toHaveLength(0)
       })
     })
 

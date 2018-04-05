@@ -175,8 +175,8 @@ class Linker {
       })
     })
     .then(() => {
-      const notLinkedBills = this.getNotLinkedBills(result)
-      const billsGroups = this.groupBillsByOriginalDate(notLinkedBills)
+      const unlinkedBills = this.getUnlinkedBills(result)
+      const billsGroups = this.groupBillsByOriginalDate(unlinkedBills)
 
       const combinations = flatten(
         Object
@@ -208,12 +208,12 @@ class Linker {
     })
   }
 
-  getNotLinkedBills (bills) {
-    const notLinkedBills = Object.values(bills)
+  getUnlinkedBills (bills) {
+    const unlinkedBills = Object.values(bills)
       .filter(bill => !bill.debitOperation)
       .map(bill => bill.bill)
 
-    return notLinkedBills
+    return unlinkedBills
   }
 
   groupBillsByOriginalDate (bills) {
