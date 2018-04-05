@@ -327,10 +327,10 @@ describe('linker', () => {
       it('groups bills by their originalDate property', () => {
         const result = linker.groupBillsByOriginalDate(bills)
 
-        expect(result['2018-03-10T00:00:00Z']).toHaveLength(3)
-        expect(result['2018-03-15T00:00:00Z']).toHaveLength(2)
-        expect(result['2018-03-20T00:00:00Z']).toHaveLength(4)
-        expect(result['2018-03-30T00:00:00Z']).toHaveLength(1)
+        expect(result['2018-03-10']).toHaveLength(3)
+        expect(result['2018-03-15']).toHaveLength(2)
+        expect(result['2018-03-20']).toHaveLength(4)
+        expect(result['2018-03-30']).toHaveLength(1)
       })
     })
 

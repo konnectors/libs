@@ -17,6 +17,7 @@ const groupBy = require('lodash/groupBy')
 const flatten = require('lodash/flatten')
 const sumBy = require('lodash/sumBy')
 const geco = require('geco')
+const moment = require('moment')
 
 const DOCTYPE_OPERATIONS = 'io.cozy.bank.operations'
 const DEFAULT_AMOUNT_DELTA = 0.001
@@ -218,7 +219,7 @@ class Linker {
   }
 
   groupBillsByOriginalDate (bills) {
-    return groupBy(bills, bill => bill.originalDate)
+    return groupBy(bills, bill => moment(bill.originalDate).format().split('T')[0])
   }
 
   generateBillsCombinations (bills) {
