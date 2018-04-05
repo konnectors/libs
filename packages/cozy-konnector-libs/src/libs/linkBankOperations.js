@@ -15,6 +15,7 @@ const { fetchAll } = require('./utils')
 const defaults = require('lodash/defaults')
 const groupBy = require('lodash/groupBy')
 const flatten = require('lodash/flatten')
+const sumBy = require('lodash/sumBy')
 const geco = require('geco')
 
 const DOCTYPE_OPERATIONS = 'io.cozy.bank.operations'
@@ -240,8 +241,8 @@ class Linker {
     return {
       ...bills[0],
       _id: ['combined', ...bills.map(bill => bill._id)].join(':'),
-      amount: bills.reduce((sum, bill) => sum + bill.amount, 0),
-      originalAmount: bills.reduce((sum, bill) => sum + bill.originalAmount, 0),
+      amount: sumBy(bills, bill => bill.amount),
+      originalAmount: sumBy(bills, bill => bill.originalAmount),
       originalBills: bills
     }
   }
