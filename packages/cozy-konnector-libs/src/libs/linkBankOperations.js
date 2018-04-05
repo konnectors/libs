@@ -176,40 +176,49 @@ class Linker {
         }
       })
     })
-    .then(() => {
-      const unlinkedBills = this.getUnlinkedBills(result)
-      const billsGroups = this.groupBills(unlinkedBills)
+    .then(async () => {
+      let found
 
-      const combinations = flatten(
-        Object
-          .values(billsGroups)
-          .map(billsGroup => this.generateBillsCombinations(billsGroup))
-      )
+      do {
+        found = false
 
-      const combinedBills = combinations.map(
-        combination => this.combineBills(...combination)
-      )
+        const unlinkedBills = this.getUnlinkedBills(result)
+        const billsGroups = this.groupBills(unlinkedBills)
 
-      const promises = combinedBills.map(combinedBill => {
-        return findDebitOperation(this.cozyClient, combinedBill, options, allOperations)
-          .then(debitOperation => {
-            if (!debitOperation) return
+        const combinations = flatten(billsGroups.map(
+          billsGroup => this.generateBillsCombinations(billsGroup)
+        ))
 
+        const combinedBills = combinations.map(
+          combination => this.combineBills(...combination)
+        )
+
+        for (const combinedBill of combinedBills) {
+          const debitOperation = await findDebitOperation(
+            this.cozyClient,
+            combinedBill,
+            options,
+            allOperations
+          )
+
+          if (debitOperation) {
+            found = true
             log('debug', combinedBill, 'Matching bills combination')
             log('debug', debitOperation, 'Matching debit debitOperation')
 
-            combinedBill.originalBills.forEach(originalBill => {
+            combinedBill.originalBills.forEach(async originalBill => {
               const res = result[originalBill._id]
               res.debitOperation = debitOperation
 
-              this.addBillToOperation(originalBill, debitOperation)
+              await this.addBillToOperation(originalBill, debitOperation)
             })
-          })
-      })
 
-      return Promise.all(promises)
-        .then(() => result)
-        .catch(err => console.log(err))
+            break;
+          }
+        }
+      } while (found)
+
+      return result
     })
   }
 
