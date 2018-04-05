@@ -221,24 +221,17 @@ class Linker {
   }
 
   generateBillsCombinations (bills) {
-    const combinations = Array.from({ length: bills.length })
-      .reduce((combinations, item, index) => {
-        if (index === 0) {
-          return combinations
-        }
+    const MIN_ITEMS_IN_COMBINATION = 2
+    let combinations = []
 
-        const newCombinations = []
 
-        const iter = geco.gen(bills.length, index + 1, bills)
-        for (const combination of iter) {
-          newCombinations.push(combination)
-        }
+    for (let n = MIN_ITEMS_IN_COMBINATION; n <= bills.length; ++n) {
+      const combinationsIterator = geco.gen(bills.length, n, bills)
 
-        return [
-          ...combinations,
-          ...newCombinations
-        ]
-    }, [])
+      for (const combination of combinationsIterator) {
+        combinations = combinations.concat([combination])
+      }
+    }
 
     return combinations
   }
