@@ -195,6 +195,9 @@ class Linker {
           .then(debitOperation => {
             if (!debitOperation) return
 
+            log('debug', combinedBill, 'Matching bills combination')
+            log('debug', debitOperation, 'Matching debit debitOperation')
+
             combinedBill.originalBills.forEach(originalBill => {
               const res = result[originalBill._id]
               res.debitOperation = debitOperation
