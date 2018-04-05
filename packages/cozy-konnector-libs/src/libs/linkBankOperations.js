@@ -228,11 +228,8 @@ class Linker {
 
 
     for (let n = MIN_ITEMS_IN_COMBINATION; n <= bills.length; ++n) {
-      const combinationsIterator = geco.gen(bills.length, n, bills)
-
-      for (const combination of combinationsIterator) {
-        combinations = combinations.concat([combination])
-      }
+      const combinationsN = geco.gen(bills.length, n, bills)
+      combinations = combinations.concat([...combinationsN])
     }
 
     return combinations
