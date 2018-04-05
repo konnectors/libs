@@ -289,7 +289,7 @@ describe('linker', () => {
   describe('linking with combinations', () => {
     describe('getUnlinkedBills', () => {
 
-      test('it returns the bills that are not linked', () => {
+      it('returns the bills that are not linked', () => {
         const linkingResult = {
           b1: { bill: { _id: 'b1' }, debitOperation: {} },
           b2: { bill: { _id: 'b2' } }
@@ -300,7 +300,7 @@ describe('linker', () => {
         expect(linker.getUnlinkedBills(linkingResult)).toEqual(expected)
       })
 
-      test('it returns an empty array if all bills are linked', () => {
+      it('returns an empty array if all bills are linked', () => {
         const linkingResult = {
           b1: { bill: { _id: 'b1' }, debitOperation: {} },
           b2: { bill: { _id: 'b2' }, debitOperation: {} }
@@ -324,7 +324,7 @@ describe('linker', () => {
         { _id: 'b10', originalDate: '2018-03-30T00:00:00Z' }
       ]
 
-      test('it groups bills by their originalDate property', () => {
+      it('groups bills by their originalDate property', () => {
         const result = linker.groupBillsByOriginalDate(bills)
 
         expect(result['2018-03-10T00:00:00Z']).toHaveLength(3)
@@ -342,7 +342,7 @@ describe('linker', () => {
         { _id: 'b4' }
       ]
 
-      test('it generates the right combinations', () => {
+      it('generates the right combinations', () => {
         const result = linker.generateBillsCombinations(bills)
 
         expect(result).toContainEqual([bills[0], bills[1]])
@@ -375,17 +375,17 @@ describe('linker', () => {
         }
       ]
 
-      test('it generate a bill with the right amount', () => {
+      it('generate a bill with the right amount', () => {
         const combinedBill = linker.combineBills(...bills)
         expect(combinedBill.amount).toBe(20)
       })
 
-      test('it generates a bill with the right originalAmount', () => {
+      it('generates a bill with the right originalAmount', () => {
         const combinedBill = linker.combineBills(...bills)
         expect(combinedBill.originalAmount).toBe(30)
       })
 
-      test('it generates a bill with the right originalDate', () => {
+      it('generates a bill with the right originalDate', () => {
         const combinedBill = linker.combineBills(...bills)
         expect(combinedBill.originalDate).toBe('2018-03-10T00:00:00Z')
       })
