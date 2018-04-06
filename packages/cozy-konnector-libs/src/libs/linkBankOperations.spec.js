@@ -285,4 +285,112 @@ describe('linker', () => {
       })
     })
   })
+
+  describe('linking with combinations', () => {
+    describe('getUnlinkedBills', () => {
+
+      it('returns the bills that are not linked', () => {
+        const linkingResult = {
+          b1: { bill: { _id: 'b1' }, debitOperation: {} },
+          b2: { bill: { _id: 'b2' } }
+        }
+
+        const expected = expect.arrayContaining([linkingResult.b2.bill])
+
+        expect(linker.getUnlinkedBills(linkingResult)).toEqual(expected)
+      })
+
+      it('returns an empty array if all bills are linked', () => {
+        const linkingResult = {
+          b1: { bill: { _id: 'b1' }, debitOperation: {} },
+          b2: { bill: { _id: 'b2' }, debitOperation: {} }
+        }
+
+        expect(linker.getUnlinkedBills(linkingResult)).toHaveLength(0)
+      })
+    })
+
+    describe('groupBills', () => {
+      const bills = [
+        { _id: 'b1', originalDate: new Date(2018, 2, 10), type: 'health_costs' },
+        { _id: 'b2', originalDate: new Date(2018, 2, 10), type: 'phone' },
+        { _id: 'b3', originalDate: new Date(2018, 2, 10), type: 'health_costs' },
+        { _id: 'b4', originalDate: new Date(2018, 2, 15), type: 'health_costs' },
+        { _id: 'b5', originalDate: new Date(2018, 2, 15), type: 'health_costs' },
+        { _id: 'b6', originalDate: new Date(2018, 2, 20), type: 'phone' },
+        { _id: 'b7', originalDate: new Date(2018, 2, 20), type: 'health_costs' },
+        { _id: 'b8', originalDate: new Date(2018, 2, 20), type: 'phone' },
+        { _id: 'b9', originalDate: new Date(2018, 2, 20), type: 'health_costs' },
+        { _id: 'b10', originalDate: new Date(2018, 2, 30), type: 'phone' }
+      ]
+
+      it('groups bills by type and originalDate', () => {
+        const result = linker.groupBills(bills)
+
+        expect(result).toContainEqual([bills[0], bills[2]])
+        expect(result).toContainEqual([bills[1]])
+        expect(result).toContainEqual([bills[3], bills[4]])
+        expect(result).toContainEqual([bills[5], bills[7]])
+        expect(result).toContainEqual([bills[6], bills[8]])
+        expect(result).toContainEqual([bills[9]])
+      })
+    })
+
+    describe('generateBillsCombinations', () => {
+      const bills = [
+        { _id: 'b1' },
+        { _id: 'b2' },
+        { _id: 'b3' },
+        { _id: 'b4' }
+      ]
+
+      it('generates the right combinations', () => {
+        const result = linker.generateBillsCombinations(bills)
+
+        expect(result).toContainEqual([bills[0], bills[1]])
+        expect(result).toContainEqual([bills[0], bills[2]])
+        expect(result).toContainEqual([bills[0], bills[3]])
+        expect(result).toContainEqual([bills[1], bills[2]])
+        expect(result).toContainEqual([bills[1], bills[3]])
+        expect(result).toContainEqual([bills[2], bills[3]])
+        expect(result).toContainEqual([bills[0], bills[1], bills[2]])
+        expect(result).toContainEqual([bills[0], bills[1], bills[3]])
+        expect(result).toContainEqual([bills[0], bills[2], bills[3]])
+        expect(result).toContainEqual([bills[1], bills[2], bills[3]])
+        expect(result).toContainEqual([bills[0], bills[1], bills[2], bills[3]])
+      })
+    })
+
+    describe('combineBills', () => {
+      const bills = [
+        {
+          _id: 'b1',
+          amount: 10,
+          originalAmount: 20,
+          originalDate: '2018-03-10T00:00:00Z'
+        },
+        {
+          _id: 'b2',
+          amount: 10,
+          originalAmount: 10,
+          originalDate: '2018-03-10T00:00:00Z'
+        }
+      ]
+
+      it('generate a bill with the right amount', () => {
+        const combinedBill = linker.combineBills(...bills)
+        expect(combinedBill.amount).toBe(20)
+      })
+
+      it('generates a bill with the right originalAmount', () => {
+        const combinedBill = linker.combineBills(...bills)
+        expect(combinedBill.originalAmount).toBe(30)
+      })
+
+      it('generates a bill with the right originalDate', () => {
+        const combinedBill = linker.combineBills(...bills)
+        expect(combinedBill.originalDate).toBe('2018-03-10T00:00:00Z')
+      })
+    })
+  })
 })

@@ -13,6 +13,11 @@ const { findDebitOperation, findCreditOperation } = require('./linker/billsToOpe
 const fs = require('fs')
 const { fetchAll } = require('./utils')
 const defaults = require('lodash/defaults')
+const groupBy = require('lodash/groupBy')
+const flatten = require('lodash/flatten')
+const sumBy = require('lodash/sumBy')
+const geco = require('geco')
+const moment = require('moment')
 
 const DOCTYPE_OPERATIONS = 'io.cozy.bank.operations'
 const DEFAULT_AMOUNT_DELTA = 0.001
@@ -171,9 +176,92 @@ class Linker {
         }
       })
     })
-    .then(() => {
+    .then(async () => {
+      let found
+
+      do {
+        found = false
+
+        const unlinkedBills = this.getUnlinkedBills(result)
+        const billsGroups = this.groupBills(unlinkedBills)
+
+        const combinations = flatten(billsGroups.map(
+          billsGroup => this.generateBillsCombinations(billsGroup)
+        ))
+
+        const combinedBills = combinations.map(
+          combination => this.combineBills(...combination)
+        )
+
+        for (const combinedBill of combinedBills) {
+          const debitOperation = await findDebitOperation(
+            this.cozyClient,
+            combinedBill,
+            options,
+            allOperations
+          )
+
+          if (debitOperation) {
+            found = true
+            log('debug', combinedBill, 'Matching bills combination')
+            log('debug', debitOperation, 'Matching debit debitOperation')
+
+            combinedBill.originalBills.forEach(async originalBill => {
+              const res = result[originalBill._id]
+              res.debitOperation = debitOperation
+
+              if (res.creditOperation && res.debitOperation) {
+                await this.addReimbursementToOperation(originalBill, debitOperation, res.creditOperation)
+              }
+            })
+
+            break;
+          }
+        }
+      } while (found)
+
       return result
     })
+  }
+
+  getUnlinkedBills (bills) {
+    const unlinkedBills = Object.values(bills)
+      .filter(bill => !bill.debitOperation)
+      .map(bill => bill.bill)
+
+    return unlinkedBills
+  }
+
+  groupBills (bills) {
+    const groups = groupBy(bills, bill => ([
+      moment(bill.originalDate).format().split('T')[0],
+      bill.type
+    ]))
+
+    return Object.values(groups)
+  }
+
+  generateBillsCombinations (bills) {
+    const MIN_ITEMS_IN_COMBINATION = 2
+    let combinations = []
+
+
+    for (let n = MIN_ITEMS_IN_COMBINATION; n <= bills.length; ++n) {
+      const combinationsN = geco.gen(bills.length, n, bills)
+      combinations = combinations.concat([...combinationsN])
+    }
+
+    return combinations
+  }
+
+  combineBills (...bills) {
+    return {
+      ...bills[0],
+      _id: ['combined', ...bills.map(bill => bill._id)].join(':'),
+      amount: sumBy(bills, bill => bill.amount),
+      originalAmount: sumBy(bills, bill => bill.originalAmount),
+      originalBills: bills
+    }
   }
 }
 
