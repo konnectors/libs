@@ -45,6 +45,17 @@ $ yarn
 $ yarn bootstrap # executes lerna under the hood and symlinks repositories
 ```
 
+To publish a new version, those are the commands that can be used :
+
+```
+$ lerna updated # check if some packages need to be published
+$ lerna publish # publish all packages in interactive mode, will ask for patch/minor/major
+$ lerna publish --scope cozy-konnector-libs # only publish cozy-konnector-libs
+$ lerna publish --scope cozy-konnector-libs --npm-tag next # use the npm dist tag next
+```
+
+Useful documentation : https://github.com/lerna/lerna#publish
+
 ### What's Cozy?
 
 ![Cozy Logo](https://cdn.rawgit.com/cozy/cozy-guidelines/master/templates/cozy_logo_small.svg)
