@@ -66,7 +66,7 @@ const filterByAmounts = ({ minAmount, maxAmount }) => {
 const filterByCategory = (bill, options={}) => {
   const isHealth = isHealthBill(bill)
   const categoryFilter = operation => {
-    if (options.allowUncategorized !== false
+    if (options.allowUncategorized === true
       && isUncategorizedOperation(operation)) {
       return true
     }
