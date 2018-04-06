@@ -3,9 +3,9 @@
  *
  * Launch with `cozy-run-dev visualizer/index.js`
  */
-const { Linker } = require('../../libs/linkBankOperations')
-const { cozyClient } = require('../..')
-const { fetchAll } = require('../../libs/utils')
+const { Linker } = require('../../src/libs/linkBankOperations')
+const { cozyClient } = require('../../src')
+const { fetchAll } = require('../../src/libs/utils')
 const fs = require('fs')
 const path = require('path')
 
