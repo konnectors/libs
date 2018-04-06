@@ -1,17 +1,23 @@
 # Changelog
 
-## [Unreleased] - 4.0.0
+## [Unreleased]
 
-## Changed
-
-- `cozy-konnector-libs` : Changed linking mechanism to in-memory
-- `cozy-konnector-libs`: `updateOrCreate` is no longer deprecated.
+### Changed
+- none yet
 
 ### Fixed
 - none yet
 
 ### Added
 - none yet
+
+## [4.0.0] - 2018-04-06
+
+### Changed
+
+- `cozy-konnector-libs` : Changed linking mechanism to in-memory
+- `cozy-konnector-libs`: `updateOrCreate` is no longer deprecated.
+- `cozy-konnector-libs`: transpiled sources are shipped on npm
 
 ## [3.8.1] - 2018-03-29
 
@@ -116,7 +122,8 @@ debug logs but "info" are kept.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-[Unreleased]: https://github.com/cozy/cozy-konnector-libs/compare/v3.8.1...HEAD
+[Unreleased]: https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.0.0...HEAD
+[4.0.0]: https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@3.8.2...cozy-konnector-libs@4.0.0
 [3.8.2]: https://github.com/cozy/cozy-konnector-libs/compare/v3.8.1...v3.8.2
 [3.8.1]: https://github.com/cozy/cozy-konnector-libs/compare/v3.8.0...v3.8.1
 [3.8.0]: https://github.com/cozy/cozy-konnector-libs/compare/v3.7.0...v3.8.0
