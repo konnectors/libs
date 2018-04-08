@@ -17,7 +17,7 @@ process.env.COZY_FIELDS = JSON.stringify({
 const config = require('./init-konnector-config')()
 process.env.COZY_URL = config.COZY_URL
 
-const filename = program.args[0] || process.env.npm_package_main || 'index.js'
+const filename = program.args[0] || process.env.npm_package_main || './src/index.js'
 
 initReplay()
 

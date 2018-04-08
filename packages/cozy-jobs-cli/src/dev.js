@@ -19,12 +19,13 @@ program
   .usage('[options] <file>')
   .arguments('<file>')
   .action(_file => {
-    _file = _file || process.env.npm_package_main || 'index.js'
-    file = abspath(_file)
+    file = _file
   })
   .option('-t, --token [value]', 'Token file location (will be created if does not exist)', abspath)
   .option('-m, --manifest [value]', 'Manifest file for permissions (manifest.webapp or manifest.konnector)', abspath)
   .parse(process.argv)
+
+file = abspath(file || process.env.npm_package_main || './src/index.js')
 
 // Check for a .konnector file next to the launched file
 manifest = program.manifest
