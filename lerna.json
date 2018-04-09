@@ -6,6 +6,7 @@
   "version": "independent",
   "npmClient": "yarn",
   "changelog": {
+    "repo": "konnectors/libs",
     "labels": {
       "enhancement": ":rocket: Enhancement",
       "bug": ":bug: Bug Fix"

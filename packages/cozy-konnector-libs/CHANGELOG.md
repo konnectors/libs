@@ -11,6 +11,18 @@
 ### Added
 - none yet
 
+## [4.1.0] (2018-04-09)
+
+#### :rocket: Enhancement
+* Other
+  * [#178](https://github.com/konnectors/libs/pull/178) ✨ feat: add lerna changelog. ([@ptbrowne](https://github.com/ptbrowne))
+* `cozy-logger`
+  * [#177](https://github.com/konnectors/libs/pull/177) feat: if message is an object, its properties are assigned to the log. ([@ptbrowne](https://github.com/ptbrowne))
+
+#### :bug: Bug Fix
+* `cozy-jobs-cli`
+  * [#172](https://github.com/konnectors/libs/pull/172) fix: yarn dev now works without defining the file source. ([@doubleface](https://github.com/doubleface))
+
 ## [4.0.0] - 2018-04-06
 
 ### Changed
@@ -122,7 +134,8 @@ debug logs but "info" are kept.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-[Unreleased]: https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.0.0...HEAD
+[Unreleased]: https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.1.0...HEAD
+[4.1.0]: https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.0.0...4.1.0
 [4.0.0]: https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@3.8.2...cozy-konnector-libs@4.0.0
 [3.8.2]: https://github.com/cozy/cozy-konnector-libs/compare/v3.8.1...v3.8.2
 [3.8.1]: https://github.com/cozy/cozy-konnector-libs/compare/v3.8.0...v3.8.1
