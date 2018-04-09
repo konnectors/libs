@@ -17,11 +17,21 @@ const type2color = {
 }
 
 function prodFormat (type, message, label, namespace) {
+  const log = { time: new Date(), type, label, namespace }
+
+  if (typeof message == 'object') {
+    Object.assign(log, message)
+  } else {
+    log.message = message
+  }
+
   // properly display error messages
-  if (message.stack) message = message.stack
+  if (log.message.stack) {
+    log.message = log.message.stack
+  }
 
   // cut the string to avoid a fail in the stack
-  return JSON.stringify({ time: new Date(), type, message, label, namespace }).substr(0, LOG_LENGTH_LIMIT)
+  return JSON.stringify(log).substr(0, LOG_LENGTH_LIMIT)
 }
 
 function devFormat (type, message, label, namespace) {
