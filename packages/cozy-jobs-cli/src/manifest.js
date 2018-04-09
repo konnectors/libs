@@ -4,7 +4,7 @@ const log = require('cozy-logger').namespace('manifest')
 module.exports = {
   getScopes (manifestPath) {
     // get the permissions from the manifest.konnector file
-    const permissions = JSON.parse(fs.readFileSync(manifestPath)).permissions
+    const permissions = getManifest(manifestPath).permissions
 
     // convert the permissions into scopes
     let scopes = []
@@ -14,5 +14,12 @@ module.exports = {
     log('debug', scopes, 'scopes found')
 
     return scopes
+  },
+  getSlug (manifestPath) {
+    return getManifest(manifestPath).slug
   }
+}
+
+function getManifest (manifestPath) {
+  return JSON.parse(fs.readFileSync(manifestPath))
 }
