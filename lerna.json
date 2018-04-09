@@ -4,5 +4,12 @@
     "packages/*"
   ],
   "version": "independent",
-  "npmClient": "yarn"
+  "npmClient": "yarn",
+  "changelog": {
+    "labels": {
+      "enhancement": ":rocket: Enhancement",
+      "bug": ":bug: Bug Fix"
+    },
+    "cacheDir": ".changelog"
+  }
 }
