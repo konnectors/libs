@@ -21,5 +21,13 @@ module.exports = {
 }
 
 function getManifest (manifestPath) {
-  return JSON.parse(fs.readFileSync(manifestPath))
+  let manifest
+  try {
+    manifest = JSON.parse(fs.readFileSync(manifestPath))
+  } catch (err) {
+    log('error', `Error while parsing ${manifestPath}`)
+    log('error', err.message)
+    process.exit()
+  }
+  return manifest
 }
