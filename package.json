@@ -9,7 +9,7 @@
     "jest": "22.4.3",
     "jsdoc-to-markdown": "4.0.1",
     "lerna": "2.9.0",
-    "lerna-changelog": "^0.7.0",
+    "lerna-changelog": "0.7.0",
     "prettier": "1.11.1"
   },
   "eslintConfig": {
