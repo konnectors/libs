@@ -1,5 +1,5 @@
-[![Travis build status shield](https://img.shields.io/travis/cozy/cozy-konnector-libs/master.svg)](https://travis-ci.org/cozy/cozy-konnector-libs)
-[![NPM Licence shield](https://img.shields.io/npm/l/cozy-konnector-libs.svg)](https://github.com/cozy/cozy-konnector-libs/blob/master/LICENSE)
+[![Travis build status shield](https://img.shields.io/travis/konnectors/libs/master.svg)](https://travis-ci.org/konnectors/libs)
+[![NPM Licence shield](https://img.shields.io/npm/l/cozy-konnector-libs.svg)](https://github.com/konnectors/libs/blob/master/LICENSE)
 
 | cozy-konnector-libs | cozy-jobs-cli | cozy-logger | renovate-config-cozy-konnector |
 |---|---|---|---|
@@ -39,7 +39,7 @@ focused packages that rely on each other.
 To start developing :
 
 ```
-$ git clone git@github.com:cozy/cozy-konnector-libs.git
+$ git clone git@github.com:konnectors/libs.git cozy-konnector-libs
 $ cd cozy-konnector-libs
 $ yarn
 $ yarn bootstrap # executes lerna under the hood and symlinks repositories
