@@ -15,7 +15,8 @@
       "packageRules": [
         {
           "excludePackageNames": [
-            "cozy-konnector-libs"
+            "cozy-konnector-libs",
+            "cozy-app-publish"
           ],
           "schedule": "before 5am every monday"
         }
