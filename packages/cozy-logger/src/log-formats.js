@@ -26,7 +26,7 @@ function prodFormat (type, message, label, namespace) {
   }
 
   // properly display error messages
-  if (log.message.stack) {
+  if (log.message && log.message.stack) {
     log.message = log.message.stack
   }
 
