@@ -11,6 +11,13 @@
 ### Added
 - none yet
 
+## cozy-konnector-libs@4.1.2 (2018-04-10)
+
+#### :bug: Bug Fix
+* `cozy-konnector-libs`
+  * [#180](https://github.com/konnectors/libs/pull/180) 🐝 fix: use target node 8 to remove the need for regeneratorRuntime. ([@ptbrowne](https://github.com/ptbrowne))
+
+
 ## [4.1.0] (2018-04-09)
 
 #### :rocket: Enhancement
