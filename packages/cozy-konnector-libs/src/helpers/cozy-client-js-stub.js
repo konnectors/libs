@@ -115,6 +115,9 @@ module.exports = {
         fs.mkdirSync(finalPath)
         resolve()
       })
+    },
+    fetchJSON () {
+      Promise.resolve({})
     }
   }
 }
