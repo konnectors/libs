@@ -27,5 +27,8 @@
     "doc": "cd packages/cozy-konnector-libs && jsdoc2md --template jsdoc2md/README.hbs libs/*.js helpers/*.js > docs/api.md",
     "lint": "eslint .",
     "test": "cross-env LOG_LEVEL=info jest"
+  },
+  "dependencies": {
+    "json-stringify-safe": "5.0.1"
   }
 }
