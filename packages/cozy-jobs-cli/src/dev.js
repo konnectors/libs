@@ -12,6 +12,9 @@ const fs = require('fs')
 const authenticate = require('./cozy-authenticate')
 const initDevAccount = require('./init-dev-account')
 
+const DEFAULT_MANIFEST_PATH = path.resolve('manifest.konnector')
+const DEFAULT_TOKEN_PATH = path.resolve('.token.json')
+
 let useFolder = false
 let file, manifest
 
@@ -36,7 +39,10 @@ if (!manifest && file) {
   }
 }
 
-authenticate({ tokenPath: program.token, manifestPath: manifest })
+file = abspath(file || process.env.npm_package_main || './src/index.js')
+manifest = manifest || DEFAULT_MANIFEST_PATH
+const token = program.token || DEFAULT_TOKEN_PATH
+authenticate({ tokenPath: token, manifestPath: manifest })
 .then(result => {
   const credentials = result.creds
   const scopes = result.scopes
@@ -45,7 +51,7 @@ authenticate({ tokenPath: program.token, manifestPath: manifest })
   // check if the token is valid
   process.env.COZY_CREDENTIALS = JSON.stringify(credentials)
 })
-.then(() => initDevAccount())
+.then(() => initDevAccount({manifestPath: manifest}))
 .then((accountId) => {
   process.env.COZY_FIELDS = JSON.stringify({
     account: accountId,

@@ -3,14 +3,15 @@
 const fs = require('fs')
 const path = require('path')
 const log = require('cozy-logger').namespace('init-dev-account')
+const manifest = require('./manifest')
 
 const accountIdPath = path.resolve('.account')
 
-module.exports = function () {
-  return ensureAccount()
+module.exports = function ({manifestPath}) {
+  return ensureAccount(manifestPath)
 }
 
-function ensureAccount () {
+function ensureAccount (manifestPath) {
   const cozy = require('cozy-konnector-libs').cozyClient
   return getAccountId()
     .then(id => {
@@ -20,7 +21,7 @@ function ensureAccount () {
     })
     .catch((err) => {
       log('warn', err.message, 'Error while getting the account')
-      return createAccount()
+      return createAccount(manifestPath)
     })
 }
 
@@ -32,12 +33,13 @@ function getAccountId () {
   })
 }
 
-function createAccount () {
+function createAccount (manifestPath) {
   const cozy = require('cozy-konnector-libs').cozyClient
   log('info', 'Creating a new dev account')
+  const slug = manifest.getSlug(manifestPath)
   return cozy.data.create('io.cozy.accounts', {
     name: 'dev_account',
-    account_type: 'dev_account',
+    account_type: slug,
     status: 'PENDING',
     auth: require('./init-konnector-config')().fields
   })

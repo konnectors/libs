@@ -1,14 +1,10 @@
 #!/usr/bin/env node
 
 const http = require('http')
-const path = require('path')
 const fs = require('fs')
 const log = require('cozy-logger').namespace('cozy-authenticate')
 const {Client, MemoryStorage} = require('cozy-client-js')
 const manifest = require('./manifest')
-
-const DEFAULT_MANIFEST_PATH = path.resolve('manifest.konnector')
-const DEFAULT_TOKEN_PATH = path.resolve('.token.json')
 
 const cozyURL = process.env.COZY_URL ? process.env.COZY_URL : 'http://cozy.tools:8080'
 log('debug', cozyURL, 'COZY_URL')
@@ -41,7 +37,7 @@ function onRegistered (client, url) {
   })
 }
 
-function authenticate ({ manifestPath = DEFAULT_MANIFEST_PATH, tokenPath = DEFAULT_TOKEN_PATH }) {
+function authenticate ({ manifestPath, tokenPath }) {
   const scopes = manifest.getScopes(manifestPath)
   if (!scopes.includes('io.cozy.accounts')) {
     scopes.push('io.cozy.accounts')
