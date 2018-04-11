@@ -1,5 +1,6 @@
 const chalk = require('chalk')
 const util = require('util')
+const stringify = require('json-stringify-safe')
 util.inspect.defaultOptions.maxArrayLength = null
 util.inspect.defaultOptions.depth = null
 util.inspect.defaultOptions.colors = true
@@ -33,7 +34,7 @@ function prodFormat (type, message, label, namespace) {
   // cut the string to avoid a fail in the stack
   let result = log
   try {
-    result = JSON.stringify(log).substr(0, LOG_LENGTH_LIMIT)
+    result = stringify(log).substr(0, LOG_LENGTH_LIMIT)
   } catch (err) {
     console.log(err.message, 'cozy-logger: Failed to convert message to JSON')
   }
