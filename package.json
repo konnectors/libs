@@ -10,7 +10,7 @@
     "jsdoc-to-markdown": "4.0.1",
     "lerna": "2.10.1",
     "lerna-changelog": "0.7.0",
-    "prettier": "1.11.1"
+    "prettier": "1.12.0"
   },
   "eslintConfig": {
     "extends": [
