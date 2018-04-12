@@ -14,6 +14,9 @@ if (fs.existsSync(FIXTURE_PATH)) {
 }
 
 module.exports = {
+  fetchJSON () {
+    Promise.resolve({})
+  },
   data: {
     create (doctype, item) {
       log('info', item, `creating ${doctype}`)
@@ -115,9 +118,6 @@ module.exports = {
         fs.mkdirSync(finalPath)
         resolve()
       })
-    },
-    fetchJSON () {
-      Promise.resolve({})
     }
   }
 }
