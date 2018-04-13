@@ -9,7 +9,8 @@
  * - Spaces and tabs (while those should work, preventing them may magically
  *   fix issues with other softwares)
  *
- * A warning will be logged in case the result doesn't make sense.
+ * An exception will be thrown in case there is not any filename-compatible
+ * character in the given name.
  *
  * Parameters:
  *
