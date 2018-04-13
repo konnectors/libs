@@ -29,12 +29,29 @@ describe('normalizeFilename', () => {
     expect(normalizeFilename('foo* \r')).toEqual('foo')
   })
 
+  it('takes an optional extension with leading dot', () => {
+    expect(normalizeFilename('foo/bar', '.qux')).toEqual('foo_bar.qux')
+  })
+
+  it('adds the dot when missing', () => {
+    expect(normalizeFilename('foo/bar', 'qux')).toEqual('foo_bar.qux')
+  })
+
   it('does not change an already valid name', () => {
     const validName = 'foo.bar'
     expect(normalizeFilename(validName)).toEqual(validName)
+    expect(normalizeFilename('foo', '.bar')).toEqual(validName)
+    expect(normalizeFilename('foo', 'bar')).toEqual(validName)
   })
 
   it('warns when name contains only problematic characters', () => {
     expect(() => normalizeFilename(' <>:"/\\|?*\0\n\r \t')).toThrow(/filename/)
+  })
+
+  it('is the responsibility of the function user to provide a valid extension', () => {
+    expect(normalizeFilename('foo', '')).toEqual('foo.')
+    expect(normalizeFilename('foo', '.')).toEqual('foo.')
+    expect(normalizeFilename('foo', '..')).toEqual('foo..')
+    expect(normalizeFilename('foo', '.-')).toEqual('foo.-')
   })
 })

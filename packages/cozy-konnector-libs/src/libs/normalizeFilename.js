@@ -14,12 +14,13 @@
  *
  * Parameters:
  *
- * - `name` is whatever string you want to generate the filename from
+ * - `basename` is whatever string you want to generate the filename from
+ * - `ext` is an optional file extension, with or without leading dot
  *
  * ```javascript
  * const { normalizeFilename } = require('cozy-konnector-libs')
  *
- * const filename = normalizeFilename('*foo/bar: <baz> \\"qux"\t???.txt')
+ * const filename = normalizeFilename('*foo/bar: <baz> \\"qux"\t???', '.txt')
  * // `filename` === `foo_bar_baz_qux.txt`
  * ```
  *
@@ -28,8 +29,11 @@
 
 const forbiddenCharsRegExp = /[<>:"/\\|?*\0\s]+/g
 
-const normalizeFilename = name => {
-  const filename = name.replace(forbiddenCharsRegExp, '_').replace(/^_|_$/g, '')
+const normalizeFilename = (basename, ext) => {
+  const filename = basename
+    .replace(forbiddenCharsRegExp, '_')
+    .replace(/^_|_$/g, '')
+
   if (filename === '') {
     throw new Error(
       'Cannot find any filename-compatible character in ' +
@@ -37,7 +41,10 @@ const normalizeFilename = name => {
         '!'
     )
   }
-  return filename
+  if (ext == null) ext = ''
+  else if (!ext.startsWith('.')) ext = '.' + ext
+
+  return filename + ext
 }
 
 module.exports = normalizeFilename
