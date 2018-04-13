@@ -40,6 +40,7 @@ const log = require('cozy-logger').namespace('saveFiles')
 const cozy = require('./cozyclient')
 const mimetypes = require('mime-types')
 const errors = require('../helpers/errors')
+const DEFAULT_TIMEOUT = Date.now() + 4 * 60 * 1000 // 4 minutes by default since the stack allows 5 minutes
 
 const sanitizeEntry = function (entry) {
   delete entry.requestOptions
@@ -150,7 +151,7 @@ module.exports = (entries, fields, options = {}) => {
   }
   const saveOptions = {
     folderPath: fields.folderPath,
-    timeout: options.timeout,
+    timeout: options.timeout || DEFAULT_TIMEOUT,
     postProcess: options.postProcess,
     postProcessFile: options.postProcessFile,
     contentType: options.contentType
