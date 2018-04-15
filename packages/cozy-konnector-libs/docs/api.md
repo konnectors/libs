@@ -168,6 +168,46 @@ You can try it in the previous code.</li>
 </li>
 </ul>
 </dd>
+<dt><a href="#module_signin">signin</a></dt>
+<dd><p>The goal of this function is to provide an handy method to log the user in,
+on html form pages. On success, it resolves a promise with a parsed body.</p>
+<p>Errors:</p>
+<ul>
+<li>LOGIN_FAILED if the validate predicate is false</li>
+<li>INVALID_FORM if the element matched by <code>formSelector</code> is not a form or has
+no <code>action</code> attribute</li>
+<li>UNKNOWN_PARSING_STRATEGY if <code>parse</code> is not one of the accepted values:
+<code>raw</code>, <code>cheerio</code>, <code>json</code>.</li>
+<li>VENDOR_DOWN if a request throws a RequestError, or StatusCodeError</li>
+</ul>
+<p>It does not submit values provided through <code>select</code> tags, except if populated
+by user with <code>formData</code>.</p>
+<ul>
+<li><p><code>url</code> is the url to access the html form</p>
+</li>
+<li><p><code>formSelector</code> is used by cheerio to uniquely identify the form in which to
+log in</p>
+</li>
+<li><p><code>formData</code> is an object <code>{ name: value, … }</code>. It is used to populate the
+form, in the proper inputs with the same name as the properties of this
+object, before submitting it. It can also be a function that returns this
+object. The page at <code>url</code> would be given as argument, right after having
+been parsed through <code>cheerio</code>.</p>
+</li>
+<li><p><code>parse</code> allow the user to resolve <code>signin</code> with a preparsed body. The
+choice of the strategy for the parsing is one of : <code>raw</code>, <code>json</code> or
+<code>cheerio</code>. <code>cheerio</code> being the default.</p>
+</li>
+<li><p><code>validate</code> is a predicate taking two arguments <code>statusCode</code> and
+<code>parsedBody</code>. If it is false, <code>LOGIN_FAILED</code> is thrown, otherwise the
+signin resolves with <code>parsedBody</code> value.</p>
+</li>
+<li><p><code>requestOpts</code> allows to pass eventual options to the <code>signin</code>&#39;s
+<code>requestFactory</code>. It could be useful for pages using <code>latin1</code> <code>encoding</code>
+for instance.</p>
+</li>
+</ul>
+</dd>
 <dt><a href="#module_updateOrCreate">updateOrCreate</a></dt>
 <dd><p>The goal of this function is create or update the given entries according to if they already
 exist in the cozy or not
@@ -438,6 +478,47 @@ in standalone mode, the main path is the path of the connector.
   downloaded, on the next run of the connector, it will be able to download some more
   files, and so on. If you want the timeout to be in 10s, do `Date.now() + 10*1000`.
   You can try it in the previous code.
+
+<a name="module_signin"></a>
+
+## signin
+The goal of this function is to provide an handy method to log the user in,
+on html form pages. On success, it resolves a promise with a parsed body.
+
+Errors:
+
+- LOGIN_FAILED if the validate predicate is false
+- INVALID_FORM if the element matched by `formSelector` is not a form or has
+  no `action` attribute
+- UNKNOWN_PARSING_STRATEGY if `parse` is not one of the accepted values:
+  `raw`, `cheerio`, `json`.
+- VENDOR_DOWN if a request throws a RequestError, or StatusCodeError
+
+It does not submit values provided through `select` tags, except if populated
+by user with `formData`.
+
+- `url` is the url to access the html form
+
+- `formSelector` is used by cheerio to uniquely identify the form in which to
+  log in
+
+- `formData` is an object `{ name: value, … }`. It is used to populate the
+  form, in the proper inputs with the same name as the properties of this
+  object, before submitting it. It can also be a function that returns this
+  object. The page at `url` would be given as argument, right after having
+  been parsed through `cheerio`.
+
+- `parse` allow the user to resolve `signin` with a preparsed body. The
+  choice of the strategy for the parsing is one of : `raw`, `json` or
+  `cheerio`. `cheerio` being the default.
+
+- `validate` is a predicate taking two arguments `statusCode` and
+  `parsedBody`. If it is false, `LOGIN_FAILED` is thrown, otherwise the
+  signin resolves with `parsedBody` value.
+
+- `requestOpts` allows to pass eventual options to the `signin`'s
+  `requestFactory`. It could be useful for pages using `latin1` `encoding`
+  for instance.
 
 <a name="module_updateOrCreate"></a>
 

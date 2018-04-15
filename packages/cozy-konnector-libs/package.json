@@ -51,7 +51,7 @@
     "prepublishOnly": "yarn run transpile",
     "lint": "standard --fix commands/* helpers/* libs/* index.js",
     "test": "cross-env LOG_LEVEL=info jest",
-    "doc": "jsdoc2md --template jsdoc2md/README.hbs libs/*.js helpers/*.js > docs/api.md"
+    "doc": "jsdoc2md --template jsdoc2md/README.hbs src/libs/*.js src/helpers/*.js > docs/api.md"
   },
   "standard": {
     "globals": [
