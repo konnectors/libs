@@ -67,7 +67,7 @@
     "body-parser": "1.18.2",
     "cross-env": "5.1.4",
     "express": "4.16.3",
-    "lerna": "2.10.1"
+    "lerna": "2.10.2"
   },
   "prettier": {
     "semi": false,
