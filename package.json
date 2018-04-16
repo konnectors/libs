@@ -31,7 +31,5 @@
     "lint": "eslint .",
     "test": "cross-env LOG_LEVEL=info jest"
   },
-  "dependencies": {
-    "json-stringify-safe": "5.0.1"
-  }
+  "dependencies": {}
 }
