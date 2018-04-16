@@ -11,5 +11,8 @@
   "prettier": {
     "semi": false,
     "singleQuote": true
+  },
+  "dependencies": {
+    "json-stringify-safe": "5.0.1"
   }
 }
