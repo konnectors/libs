@@ -12,8 +12,7 @@
  * - `fields` (object) this is the first parameter given to BaseKonnector's constructor
  * - `options` is passed directly to `saveFiles`, `hydrateAndFilter`, `addData` and `linkBankOperations`.
  *      - `doctype` option has `io.cozy.bills`
- *      - `banking` options activates linkBankOperations or not. It is automatically activated for
- *      io.cozy.bills and io.cozy.payslips doctypes
+ *      - `noBanking` option deactivates linkBankOperations. Default value is false.
  *
  * ```javascript
  * const { BaseKonnector, saveBankingDocuments } = require('cozy-konnector-libs')
@@ -48,9 +47,6 @@ module.exports = (entries, fields, options = {}) => {
 
   options.doctype = options.doctype || DEFAULT_DOCTYPE
 
-  const bankingDoctypes = ['io.cozy.bills', 'io.cozy.payslips']
-  options.banking = options.banking || bankingDoctypes.includes(options.doctype)
-
   // Deduplicate on this keys
   options.keys = options.keys || ['date', 'amount', 'vendor']
 
@@ -73,7 +69,7 @@ module.exports = (entries, fields, options = {}) => {
     .then(entries => hydrateAndFilter(entries, options.doctype, options))
     .then(entries => addData(entries, options.doctype, options))
     .then(entries => {
-      if (!options.banking) return entries
+      if (!options.noBanking) return entries
 
       return linkBankOperations(originalEntries, options.doctype, fields, options)
     })

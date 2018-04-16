@@ -127,8 +127,7 @@ full permission on <code>io.cozy.bank.operations</code> in your manifest, to be 
 <li><code>fields</code> (object) this is the first parameter given to BaseKonnector&#39;s constructor</li>
 <li><code>options</code> is passed directly to <code>saveFiles</code>, <code>hydrateAndFilter</code>, <code>addData</code> and <code>linkBankOperations</code>.<ul>
 <li><code>doctype</code> option has <code>io.cozy.bills</code></li>
-<li><code>banking</code> options activates linkBankOperations or not. It is automatically activated for
-io.cozy.bills and io.cozy.payslips doctypes</li>
+<li><code>noBanking</code> option deactivates linkBankOperations. Default value is false.</li>
 </ul>
 </li>
 </ul>
@@ -446,8 +445,7 @@ Parameters:
 - `fields` (object) this is the first parameter given to BaseKonnector's constructor
 - `options` is passed directly to `saveFiles`, `hydrateAndFilter`, `addData` and `linkBankOperations`.
      - `doctype` option has `io.cozy.bills`
-     - `banking` options activates linkBankOperations or not. It is automatically activated for
-     io.cozy.bills and io.cozy.payslips doctypes
+     - `noBanking` option deactivates linkBankOperations. Default value is false.
 
 ```javascript
 const { BaseKonnector, saveBankingDocuments } = require('cozy-konnector-libs')
