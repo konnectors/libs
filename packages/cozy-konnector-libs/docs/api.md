@@ -75,6 +75,25 @@ return filterData(documents, &#39;io.cozy.height&#39;, {
 <p>This function will soon move to a dedicated service. You should not use it.
 The goal of this function is to find links between bills and bank operations.</p>
 </dd>
+<dt><a href="#module_mkdirp">mkdirp</a></dt>
+<dd><p>Creates a directory and its missing ancestors as needed.</p>
+<p>Options :</p>
+<ul>
+<li><code>...pathComponents</code>:  one or many path components to be joined</li>
+</ul>
+<pre><code class="lang-javascript">await mkdirp(&#39;/foo&#39;) // Creates /foo
+await mkdirp(&#39;/foo&#39;) // Does nothing as /foo already exists
+await mkdirp(&#39;/bar/baz&#39;) // Creates /bar, then /bar/baz
+await mkdirp(&#39;/foo/bar/baz&#39;) // Creates /foo/bar, then /foo/bar/baz, not /foo
+await mkdirp(&#39;/&#39;) // Does nothing
+await mkdirp(&#39;/qux&#39;, &#39;qux2/qux3&#39;, &#39;qux4&#39;) // Creates /qux, then /qux/qux2,
+                                          // then /qux/qux2/qux3 and
+                                          // finally /qux/qux2/qux3/qux4
+</code></pre>
+<p>The function will automatically add a leading slash when missing:</p>
+<pre><code class="lang-javascript">await mkdirp(&#39;foo&#39;, &#39;bar&#39;) // Creates /foo, then /foo/bar
+</code></pre>
+</dd>
 <dt><a href="#module_requestFactory">requestFactory</a></dt>
 <dd><p>This is a function which returns an instance of
 <a href="https://www.npmjs.com/package/request-promise">request-promise</a> initialized with
@@ -375,6 +394,32 @@ as `arguments`.
 
 This function will soon move to a dedicated service. You should not use it.
 The goal of this function is to find links between bills and bank operations.
+
+<a name="module_mkdirp"></a>
+
+## mkdirp
+Creates a directory and its missing ancestors as needed.
+
+Options :
+
+- `...pathComponents`:  one or many path components to be joined
+
+```javascript
+await mkdirp('/foo') // Creates /foo
+await mkdirp('/foo') // Does nothing as /foo already exists
+await mkdirp('/bar/baz') // Creates /bar, then /bar/baz
+await mkdirp('/foo/bar/baz') // Creates /foo/bar, then /foo/bar/baz, not /foo
+await mkdirp('/') // Does nothing
+await mkdirp('/qux', 'qux2/qux3', 'qux4') // Creates /qux, then /qux/qux2,
+                                          // then /qux/qux2/qux3 and
+                                          // finally /qux/qux2/qux3/qux4
+```
+
+The function will automatically add a leading slash when missing:
+
+```javascript
+await mkdirp('foo', 'bar') // Creates /foo, then /foo/bar
+```
 
 <a name="module_requestFactory"></a>
 
