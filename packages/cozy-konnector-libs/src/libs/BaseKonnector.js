@@ -181,8 +181,8 @@ class BaseKonnector {
    * @param  {string} message - The error code to be saved as connector result see [docs/ERROR_CODES.md]
    */
   terminate (err) {
-    log('error', err.message || err)
-    log('critical', err.message || err)
+    log('error', err)
+    log('critical', err)
     captureExceptionAndDie(err)
   }
 }
