@@ -11,6 +11,12 @@
 ### Added
 - none yet
 
+## cozy-konnector-libs@4.1.3 (2018-04-17)
+
+#### :rocket: Enhancement
+* `cozy-konnector-libs`
+  * [#200](https://github.com/konnectors/libs/pull/200) fix: formatting of error is done in cozy-logger. ([@ptbrowne](https://github.com/ptbrowne))
+
 ## cozy-konnector-libs@4.1.2 (2018-04-10)
 
 #### :bug: Bug Fix
