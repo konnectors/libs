@@ -11,6 +11,17 @@
 ### Added
 - none yet
 
+## cozy-jobs-cli@1.0.17 (2018-04-17)
+## cozy-konnector-libs@4.1.7 (2018-04-17)
+## cozy-logger@1.1.4 (2018-04-17)
+
+#### :bug: Bug Fix
+* `cozy-logger`
+  * [#202](https://github.com/konnectors/libs/pull/202) fix: cannot assign from error to object. ([@ptbrowne](https://github.com/ptbrowne))
+
+#### Committers: 1
+- Patrick Browne ([ptbrowne](https://github.com/ptbrowne))
+
 ## cozy-konnector-libs@4.1.6 (2018-04-17)
 
 #### :rocket: Enhancement
