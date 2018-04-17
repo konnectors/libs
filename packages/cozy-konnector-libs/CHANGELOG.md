@@ -11,7 +11,7 @@
 ### Added
 - none yet
 
-## cozy-konnector-libs@4.1.3 (2018-04-17)
+## cozy-konnector-libs@4.1.6 (2018-04-17)
 
 #### :rocket: Enhancement
 * `cozy-konnector-libs`
