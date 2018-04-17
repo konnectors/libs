@@ -11,9 +11,7 @@
 ### Added
 - none yet
 
-## cozy-jobs-cli@1.0.17 (2018-04-17)
-## cozy-konnector-libs@4.1.7 (2018-04-17)
-## cozy-logger@1.1.4 (2018-04-17)
+## cozy-jobs-cli@1.0.17, cozy-konnector-libs@4.1.7, cozy-logger@1.1.4 (2018-04-17)
 
 #### :bug: Bug Fix
 * `cozy-logger`
