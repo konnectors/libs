@@ -13,20 +13,65 @@ if (fs.existsSync(FIXTURE_PATH)) {
   fixture = require(FIXTURE_PATH)
 }
 
+let DUMP_PATH = 'importedData.json'
+const KONNECTOR_DEV_CONFIG_PATH = path.resolve('konnector-dev-config.json')
+if (fs.existsSync(KONNECTOR_DEV_CONFIG_PATH)) {
+  const KONNECTOR_DEV_CONFIG = require(KONNECTOR_DEV_CONFIG_PATH)
+  DUMP_PATH = path.join(KONNECTOR_DEV_CONFIG.fields.folderPath || '.', DUMP_PATH)
+}
+// Truncate dump file
+fs.writeFileSync(DUMP_PATH, '[]', 'utf8')
+
+function loadImportedDataJSON() {
+  let docStore = []
+  if (fs.existsSync(DUMP_PATH)) {
+    docStore = JSON.parse(fs.readFileSync(DUMP_PATH, 'utf8'))
+  }
+
+  return docStore
+}
+
+function dumpJSON(data) {
+    return JSON.stringify(data, null, 2)
+}
+
 module.exports = {
   fetchJSON () {
-    Promise.resolve({})
+    return Promise.resolve({
+      rows: [],
+    })
   },
   data: {
     create (doctype, item) {
       log('info', item, `creating ${doctype}`)
       const ns = bytesToUuid(sha1(doctype))
-      const _id = uuid(JSON.stringify(item), ns).replace(/-/gi, '')
-      return Promise.resolve(Object.assign({}, item, {_id}))
+      const _id = uuid(dumpJSON(item), ns).replace(/-/gi, '')
+
+      // Dump created data in the imported data JSON dump
+      const docStore = loadImportedDataJSON()
+      const obj = Object.assign({}, item, {_id})
+      docStore.push(obj)
+      fs.writeFileSync(DUMP_PATH, dumpJSON(docStore), 'utf8')
+
+      return Promise.resolve(obj)
     },
     updateAttributes (doctype, id, attrs) {
       log('info', attrs, `updating ${id} in ${doctype}`)
-      return Promise.resolve(Object.assign({}, attrs, {_id: id}))
+
+      // Update the imported data JSON dump
+      const docStore = loadImportedDataJSON()
+      const index = docStore.findIndex(function (item) {
+        return item._id === id
+      })
+      let obj = {}
+      if (index > -1) {
+        obj = Object.assign(docStore[index], attrs, {_id: id})
+        docStore[index] = obj
+      } else {
+        obj = Object.assign({}, attrs, {_id: id})
+      }
+      fs.writeFileSync(DUMP_PATH, dumpJSON(docStore), 'utf8')
+      return Promise.resolve(obj)
     },
     defineIndex (doctype) {
       return Promise.resolve({doctype})
