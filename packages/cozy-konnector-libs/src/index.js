@@ -22,7 +22,8 @@ module.exports = {
   wrapIfSentrySetUp: require('./helpers/sentry').wrapIfSentrySetUp,
   Document: require('./libs/document'),
   signin: require('./libs/signin'),
-  scrape: require('./libs/scrape')
+  scrape: require('./libs/scrape'),
+  normalizeFilename: require('./libs/normalizeFilename')
 }
 
 function deprecate (wrapped, message) {
