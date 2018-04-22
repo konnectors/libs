@@ -33,7 +33,8 @@ const request = require('./request')
 const rq = request({
   json: false,
   headers: {
-    'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:36.0) Gecko/20100101 Firefox/36.0'
+    'User-Agent':
+      'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:36.0) Gecko/20100101 Firefox/36.0'
   }
 })
 const log = require('cozy-logger').namespace('saveFiles')
@@ -42,31 +43,33 @@ const mimetypes = require('mime-types')
 const errors = require('../helpers/errors')
 const DEFAULT_TIMEOUT = Date.now() + 4 * 60 * 1000 // 4 minutes by default since the stack allows 5 minutes
 
-const sanitizeEntry = function (entry) {
+const sanitizeEntry = function(entry) {
   delete entry.requestOptions
   delete entry.filestream
   return entry
 }
 
-const downloadEntry = function (entry, options) {
-  const reqOptions = Object.assign({
-    uri: entry.fileurl,
-    method: 'GET',
-    jar: true
-  }, entry.requestOptions)
+const downloadEntry = function(entry, options) {
+  const reqOptions = Object.assign(
+    {
+      uri: entry.fileurl,
+      method: 'GET',
+      jar: true
+    },
+    entry.requestOptions
+  )
 
   let filePromise = rq(reqOptions)
 
   // we have to do this since the result of filePromise is not a stream and cannot be taken by
   // cozy.files.create
   if (options.postProcessFile) {
-    return filePromise
-      .then(data => options.postProcessFile(data))
+    return filePromise.then(data => options.postProcessFile(data))
   }
   return filePromise
 }
 
-const createFile = function (entry, options) {
+const createFile = function(entry, options) {
   return cozy.files
     .statByPath(options.folderPath)
     .then(folder => {
@@ -81,21 +84,27 @@ const createFile = function (entry, options) {
     })
     .then(fileDocument => {
       // This allows us to have the warning message at the first run
-      checkMimeWithPath(fileDocument.attributes.mime, fileDocument.attributes.name)
+      checkMimeWithPath(
+        fileDocument.attributes.mime,
+        fileDocument.attributes.name
+      )
       checkFileSize(fileDocument)
       return fileDocument
     })
 }
 
-const attachFileToEntry = function (entry, fileDocument) {
+const attachFileToEntry = function(entry, fileDocument) {
   entry.fileDocument = fileDocument
   return entry
 }
 
-const saveEntry = function (entry, options) {
-  const canBeSaved = entry => entry.fileurl || entry.requestOptions || entry.filestream
+const saveEntry = function(entry, options) {
+  const canBeSaved = entry =>
+    entry.fileurl || entry.requestOptions || entry.filestream
 
-  if (!canBeSaved(entry)) { return entry }
+  if (!canBeSaved(entry)) {
+    return entry
+  }
 
   if (options.timeout && Date.now() > options.timeout) {
     const remainingTime = Math.floor((options.timeout - Date.now()) / 1000)
@@ -111,18 +120,22 @@ const saveEntry = function (entry, options) {
       // if this is not the case, we redownload it
       const mime = file.attributes.mime
       if (!checkMimeWithPath(mime, filepath) || !checkFileSize(file)) {
-        return cozy.files.trashById(file._id)
+        return cozy.files
+          .trashById(file._id)
           .then(() => Promise.reject(new Error('BAD_DOWNLOADED_FILE')))
       }
       return file
     })
-    .then(file => {
-      return file
-    }, () => {
-      log('debug', entry)
-      log('debug', `File ${filepath} does not exist yet or is not valid`)
-      return createFile(entry, options)
-    })
+    .then(
+      file => {
+        return file
+      },
+      () => {
+        log('debug', entry)
+        log('debug', `File ${filepath} does not exist yet or is not valid`)
+        return createFile(entry, options)
+      }
+    )
     .then(file => {
       attachFileToEntry(entry, file)
       return entry
@@ -133,7 +146,13 @@ const saveEntry = function (entry, options) {
     })
     .catch(err => {
       log('warn', errors.SAVE_FILE_FAILED)
-      log('warn', err.message, `Error caught while trying to save the file ${entry.fileurl ? entry.fileurl : entry.filename}`)
+      log(
+        'warn',
+        err.message,
+        `Error caught while trying to save the file ${
+          entry.fileurl ? entry.fileurl : entry.filename
+        }`
+      )
       return entry
     })
 }
@@ -164,7 +183,7 @@ module.exports = (entries, fields, options = {}) => {
     })
 }
 
-function getFileName (entry) {
+function getFileName(entry) {
   let filename
   if (entry.filename) {
     filename = entry.filename
@@ -179,11 +198,11 @@ function getFileName (entry) {
   return sanitizeFileName(filename)
 }
 
-function sanitizeFileName (filename) {
+function sanitizeFileName(filename) {
   return filename.replace(/^\.+$/, '').replace(/[/?<>\\:*|":]/g, '')
 }
 
-function checkFileSize (fileobject) {
+function checkFileSize(fileobject) {
   if (fileobject.attributes.size === 0) {
     log('warn', `${fileobject.attributes.name} is empty`)
     log('warn', 'BAD_FILE_SIZE')
@@ -192,7 +211,7 @@ function checkFileSize (fileobject) {
   return true
 }
 
-function checkMimeWithPath (mime, filepath) {
+function checkMimeWithPath(mime, filepath) {
   const extension = path.extname(filepath).substr(1)
   if (extension && mime && mimetypes.lookup(extension) !== mime) {
     log('warn', `${filepath} and ${mime} do not correspond`)
