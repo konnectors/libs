@@ -145,6 +145,10 @@ const saveEntry = function(entry, options) {
       return options.postProcess ? options.postProcess(entry) : entry
     })
     .catch(err => {
+      if (err.statusCode === 413) {
+        // the cozy quota is full
+        throw new Error(errors.DISK_QUOTA_EXCEEDED)
+      }
       log('warn', errors.SAVE_FILE_FAILED)
       log(
         'warn',
