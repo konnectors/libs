@@ -75,6 +75,7 @@ return filterData(documents, &#39;io.cozy.height&#39;, {
 <p>This function will soon move to a dedicated service. You should not use it.
 The goal of this function is to find links between bills and bank operations.</p>
 </dd>
+
 <dt><a href="#module_mkdirp">mkdirp</a></dt>
 <dd><p>Creates a directory and its missing ancestors as needed.</p>
 <p>Options :</p>
@@ -92,6 +93,29 @@ await mkdirp(&#39;/qux&#39;, &#39;qux2/qux3&#39;, &#39;qux4&#39;) // Creates /qu
 </code></pre>
 <p>The function will automatically add a leading slash when missing:</p>
 <pre><code class="lang-javascript">await mkdirp(&#39;foo&#39;, &#39;bar&#39;) // Creates /foo, then /foo/bar
+
+<dt><a href="#module_normalizeFilename">normalizeFilename</a></dt>
+<dd><p>Returns the given name, replacing characters that could be an issue when
+used in a filename with spaces.</p>
+<p>Replaced characters include:</p>
+<ul>
+<li>Those forbidden on one or many popular OS or filesystem: <code>&lt;&gt;:&quot;/\|?*</code></li>
+<li>Those forbidden by the cozy-stack <code>\0</code>, <code>\r</code> and <code>\n</code></li>
+<li>Multiple spaces and/or tabs are replaced with a single space</li>
+<li>Leading &amp; trailing spaces and/or tabs are removed</li>
+</ul>
+<p>An exception will be thrown in case there is not any filename-compatible
+character in the given name.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>basename</code> is whatever string you want to generate the filename from</li>
+<li><code>ext</code> is an optional file extension, with or without leading dot</li>
+</ul>
+<pre><code class="lang-javascript">const { normalizeFilename } = require(&#39;cozy-konnector-libs&#39;)
+
+const filename = normalizeFilename(&#39;*foo/bar: &lt;baz&gt; \\&quot;qux&quot;\t???&#39;, &#39;.txt&#39;)
+// `filename` === `foo bar baz qux.txt`
+
 </code></pre>
 </dd>
 <dt><a href="#module_requestFactory">requestFactory</a></dt>
@@ -419,6 +443,34 @@ The function will automatically add a leading slash when missing:
 
 ```javascript
 await mkdirp('foo', 'bar') // Creates /foo, then /foo/bar
+
+<a name="module_normalizeFilename"></a>
+
+## normalizeFilename
+Returns the given name, replacing characters that could be an issue when
+used in a filename with spaces.
+
+Replaced characters include:
+
+- Those forbidden on one or many popular OS or filesystem: `<>:"/\|?*`
+- Those forbidden by the cozy-stack `\0`, `\r` and `\n`
+- Multiple spaces and/or tabs are replaced with a single space
+- Leading & trailing spaces and/or tabs are removed
+
+An exception will be thrown in case there is not any filename-compatible
+character in the given name.
+
+Parameters:
+
+- `basename` is whatever string you want to generate the filename from
+- `ext` is an optional file extension, with or without leading dot
+
+```javascript
+const { normalizeFilename } = require('cozy-konnector-libs')
+
+const filename = normalizeFilename('*foo/bar: <baz> \\"qux"\t???', '.txt')
+// `filename` === `foo bar baz qux.txt`
+
 ```
 
 <a name="module_requestFactory"></a>

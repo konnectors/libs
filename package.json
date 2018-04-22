@@ -11,9 +11,9 @@
     "eslint-plugin-prettier": "2.6.0",
     "jest": "22.4.3",
     "jsdoc-to-markdown": "4.0.1",
-    "lerna": "2.10.1",
+    "lerna": "2.10.2",
     "lerna-changelog": "0.7.0",
-    "prettier": "1.12.0"
+    "prettier": "1.12.1"
   },
   "eslintConfig": {
     "extends": [
