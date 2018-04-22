@@ -1,17 +1,5 @@
 'use strict'
 
-const log = require('cozy-logger')
-
-const MSG = {
-  TWOFACTOR: '2FA token requested'
-}
-
-function requireTwoFactor (extras = {}) {
-  const extrasStr = Buffer.from(JSON.stringify(extras), 'binary').toString('base64')
-  log('error', `${MSG.TWOFACTOR}||${extrasStr}`)
-  return extrasStr
-}
-
 /**
  * The konnector could not login
  * @type {String}
@@ -49,12 +37,10 @@ const FILE_DOWNLOAD_FAILED = 'FILE_DOWNLOAD_FAILED'
 const SAVE_FILE_FAILED = 'SAVE_FILE_FAILED'
 
 module.exports = {
-  MSG: MSG,
   LOGIN_FAILED,
   NOT_EXISTING_DIRECTORY,
   VENDOR_DOWN,
   USER_ACTION_NEEDED,
   FILE_DOWNLOAD_FAILED,
-  requireTwoFactor: requireTwoFactor,
   SAVE_FILE_FAILED
 }
