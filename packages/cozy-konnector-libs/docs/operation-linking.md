@@ -1,7 +1,7 @@
 Linking bank operations
 =======================
 
-When bills are saved via saveBills, we try to find a bank operation
+When bills are saved via saveBankingDocuments, we try to find a bank operation
 that matches it.
 
 Criterias for matching :
