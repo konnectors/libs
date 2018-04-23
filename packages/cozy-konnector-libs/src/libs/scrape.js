@@ -10,12 +10,12 @@
  */
 
 const mkSpec = function(spec) {
-  if (typeof spec === "string") {
-    return { sel: spec };
+  if (typeof spec === 'string') {
+    return { sel: spec }
   } else {
-    return spec;
+    return spec
   }
-};
+}
 
 /**
  * Scrape a cheerio object for properties
@@ -28,48 +28,49 @@ const mkSpec = function(spec) {
 const scrape = ($, specs, childSelector) => {
   // Only one value shorthand
   if (
-    typeof specs === "string" ||
-    (specs.sel && typeof specs.sel === "string")
+    typeof specs === 'string' ||
+    (specs.sel && typeof specs.sel === 'string')
   ) {
-    const { val } = scrape($, { val: specs });
-    return val;
+    const { val } = scrape($, { val: specs })
+    return val
   }
 
   // Several items shorthand
   if (childSelector !== undefined) {
-    return Array.from(($.find || $)(childSelector)).map(e => scrape($(e), specs));
+    return Array.from(($.find || $)(childSelector)).map(e =>
+      scrape($(e), specs)
+    )
   }
 
   // Several properties "normal" case
-  const res = {};
+  const res = {}
   Object.keys(specs).forEach(specName => {
-
     try {
-      const spec = mkSpec(specs[specName]);
-      let data = spec.sel ? $.find(spec.sel) : $;
+      const spec = mkSpec(specs[specName])
+      let data = spec.sel ? $.find(spec.sel) : $
       if (spec.index) {
-        data = data.get(spec.index);
+        data = data.get(spec.index)
       }
-      let val;
+      let val
       if (spec.fn) {
-        val = spec.fn(data);
+        val = spec.fn(data)
       } else if (spec.attr) {
-        val = data.attr(spec.attr);
+        val = data.attr(spec.attr)
       } else {
         val = data
         val = val && val.text()
-        val = val && val.trim();
+        val = val && val.trim()
       }
       if (spec.parse) {
-        val = spec.parse(val);
+        val = spec.parse(val)
       }
-      res[specName] = val;
+      res[specName] = val
     } catch (e) {
       console.warn('Could not parse for', specName)
       console.log(e)
     }
-  });
-  return res;
-};
+  })
+  return res
+}
 
-module.exports = scrape;
+module.exports = scrape

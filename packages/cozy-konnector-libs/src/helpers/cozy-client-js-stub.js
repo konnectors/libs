@@ -14,24 +14,24 @@ if (fs.existsSync(FIXTURE_PATH)) {
 }
 
 module.exports = {
-  fetchJSON () {
+  fetchJSON() {
     Promise.resolve({})
   },
   data: {
-    create (doctype, item) {
+    create(doctype, item) {
       log('info', item, `creating ${doctype}`)
       const ns = bytesToUuid(sha1(doctype))
       const _id = uuid(JSON.stringify(item), ns).replace(/-/gi, '')
-      return Promise.resolve(Object.assign({}, item, {_id}))
+      return Promise.resolve(Object.assign({}, item, { _id }))
     },
-    updateAttributes (doctype, id, attrs) {
+    updateAttributes(doctype, id, attrs) {
       log('info', attrs, `updating ${id} in ${doctype}`)
-      return Promise.resolve(Object.assign({}, attrs, {_id: id}))
+      return Promise.resolve(Object.assign({}, attrs, { _id: id }))
     },
-    defineIndex (doctype) {
-      return Promise.resolve({doctype})
+    defineIndex(doctype) {
+      return Promise.resolve({ doctype })
     },
-    query (index) {
+    query(index) {
       let result = null
       if (fixture[index.doctype]) {
         result = fixture[index.doctype]
@@ -40,7 +40,7 @@ module.exports = {
       }
       return Promise.resolve(result)
     },
-    findAll (doctype) {
+    findAll(doctype) {
       let result = null
       if (fixture[doctype]) {
         result = fixture[doctype]
@@ -49,42 +49,44 @@ module.exports = {
       }
       return Promise.resolve(result)
     },
-    delete () {
+    delete() {
       return Promise.resolve({})
     },
-    find (doctype, id) {
+    find(doctype, id) {
       // Find the doc in the fixture
       // exeption for "io.cozy.accounts" doctype where we return konnector-dev-config.json content
       let result = null
       if (doctype === 'io.cozy.accounts') {
         const configPath = path.resolve('konnector-dev-config.json')
         const config = require(configPath)
-        result = {auth: config.fields}
+        result = { auth: config.fields }
       } else {
-        return Promise.reject(new Error('find is not implemented yet in cozy-client-js stub'))
+        return Promise.reject(
+          new Error('find is not implemented yet in cozy-client-js stub')
+        )
       }
       return Promise.resolve(result)
     }
   },
   files: {
-    statByPath (pathToCheck) {
+    statByPath(pathToCheck) {
       // check this path in .
       return new Promise((resolve, reject) => {
         log('debug', `Checking if ${pathToCheck} exists`)
         const realpath = path.join('.', pathToCheck)
         log('debug', `Real path : ${realpath}`)
         if (fs.existsSync(realpath)) {
-          resolve({_id: pathToCheck})
+          resolve({ _id: pathToCheck })
         } else {
           throw new Error(`${pathToCheck} does not exist`)
         }
       })
     },
-    statById (idToCheck) {
+    statById(idToCheck) {
       // just return the / path for dev purpose
-      return Promise.resolve({attributes: {path: '/'}})
+      return Promise.resolve({ attributes: { path: '/' } })
     },
-    create (file, options) {
+    create(file, options) {
       return new Promise((resolve, reject) => {
         log('debug', `Creating new file ${options.name}`)
         const finalPath = path.join('.', options.dirID, options.name)
@@ -110,7 +112,7 @@ module.exports = {
         })
       })
     },
-    createDirectory (options) {
+    createDirectory(options) {
       return new Promise(resolve => {
         log('info', `Creating new directory ${options.name}`)
         const finalPath = path.join('.', options.dirID, options.name)

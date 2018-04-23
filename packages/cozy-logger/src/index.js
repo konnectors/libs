@@ -1,4 +1,3 @@
-
 const { env2formats } = require('./log-formats')
 const { filterLevel, filterSecrets } = require('./log-filters')
 const Secret = require('./Secret')
@@ -9,7 +8,7 @@ let level = LOG_LEVEL || 'debug'
 const format = env2formats[env]
 const filters = [filterLevel, filterSecrets]
 
-const filterOut = function (level, type, message, label, namespace) {
+const filterOut = function(level, type, message, label, namespace) {
   for (const filter of filters) {
     if (filter.apply(null, arguments) === false) {
       return true
@@ -44,35 +43,35 @@ const filterOut = function (level, type, message, label, namespace) {
  * @param  {string} label
  * @param  {string} namespace
  */
-function log (type, message, label, namespace) {
+function log(type, message, label, namespace) {
   if (filterOut(level, type, message, label, namespace)) {
     return
   }
   console.log(format(type, message, label, namespace))
 }
 
-log.addFilter = function (filter) {
+log.addFilter = function(filter) {
   return filters.push(filter)
 }
 
-log.setLevel = function (lvl) {
+log.setLevel = function(lvl) {
   level = lvl
 }
 
 // Short-hands
 const methods = ['debug', 'info', 'warn', 'error', 'ok', 'critical']
 methods.forEach(level => {
-  log[level] = function (message, label, namespace) {
+  log[level] = function(message, label, namespace) {
     return log(level, message, label, namespace)
   }
 })
 
 module.exports = log
 
-log.setNoRetry = obj => obj.no_retry = true
+log.setNoRetry = obj => (obj.no_retry = true)
 log.Secret = Secret
-log.namespace = function (namespace) {
-  return function (type, message, label, ns = namespace) {
+log.namespace = function(namespace) {
+  return function(type, message, label, ns = namespace) {
     log(type, message, label, ns)
   }
 }

@@ -16,9 +16,7 @@
     "prettier": "1.12.1"
   },
   "eslintConfig": {
-    "extends": [
-      "eslint-config-cozy-app"
-    ]
+    "extends": ["eslint-config-cozy-app"]
   },
   "prettier": {
     "semi": false,
@@ -27,7 +25,8 @@
   "scripts": {
     "bootstrap": "lerna bootstrap",
     "format": "prettier --write '**/*.{js,json}'",
-    "doc": "cd packages/cozy-konnector-libs && jsdoc2md --template jsdoc2md/README.hbs libs/*.js helpers/*.js > docs/api.md",
+    "doc":
+      "cd packages/cozy-konnector-libs && jsdoc2md --template jsdoc2md/README.hbs libs/*.js helpers/*.js > docs/api.md",
     "lint": "eslint .",
     "test": "cross-env LOG_LEVEL=info jest"
   },
