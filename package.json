@@ -27,7 +27,7 @@
     "format": "prettier --write '**/*.{js,json}'",
     "doc":
       "cd packages/cozy-konnector-libs && jsdoc2md --template jsdoc2md/README.hbs libs/*.js helpers/*.js > docs/api.md",
-    "lint": "eslint .",
+    "lint": "eslint . --rule 'no-console: [0]'",
     "test": "cross-env LOG_LEVEL=info jest"
   },
   "dependencies": {}

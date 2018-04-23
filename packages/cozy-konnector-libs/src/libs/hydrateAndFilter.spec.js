@@ -53,7 +53,7 @@ describe('hydrate and filter', () => {
       shouldSave: entry => {
         return entry.name !== 'Bart'
       },
-      shouldUpdate: (entry, existing) => {
+      shouldUpdate: entry => {
         return entry.name === 'Marge'
       }
     })

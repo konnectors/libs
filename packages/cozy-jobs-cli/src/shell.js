@@ -23,7 +23,7 @@ Object.assign(cozyRepl.context, libs)
 
 function writer(output) {
   if (output && output.constructor && output.constructor.name === 'Request') {
-    output.then(body => {
+    output.then(() => {
       global.response = output.response
       global.$ = cheerio.load(output.response.body)
     })

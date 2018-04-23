@@ -43,7 +43,6 @@ const parser = spec => obj => {
   return res
 }
 
-const int = x => parseInt(x, 10)
 const float = x => parseFloat(x, 10)
 const htmlFormBoolean = x => x === 'on'
 const commaSeparatedArray = x => x.split(/\s*,\s*/)

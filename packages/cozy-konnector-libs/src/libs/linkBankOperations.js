@@ -89,7 +89,7 @@ class Linker {
 
   /* Commit updates */
   commitChanges() {
-    return cozyClient.fetchJSON(
+    return this.cozyClient.fetchJSON(
       'POST',
       `data/${DOCTYPE_OPERATIONS}/_bulk_docs`,
       {

@@ -133,7 +133,7 @@ const hydrateAndFilter = (documents, doctype, options = {}) => {
   }
 
   const defaultShouldSave = () => true
-  const defaultShouldUpdate = existing => false
+  const defaultShouldUpdate = () => false
 
   const filterEntries = store => async () => {
     // Filter out items according to shouldSave / shouldUpdate.

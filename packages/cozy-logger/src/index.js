@@ -8,7 +8,7 @@ let level = LOG_LEVEL || 'debug'
 const format = env2formats[env]
 const filters = [filterLevel, filterSecrets]
 
-const filterOut = function(level, type, message, label, namespace) {
+const filterOut = function() {
   for (const filter of filters) {
     if (filter.apply(null, arguments) === false) {
       return true

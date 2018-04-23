@@ -52,7 +52,7 @@ module.exports = {
     delete() {
       return Promise.resolve({})
     },
-    find(doctype, id) {
+    find(doctype) {
       // Find the doc in the fixture
       // exeption for "io.cozy.accounts" doctype where we return konnector-dev-config.json content
       let result = null
@@ -78,13 +78,13 @@ module.exports = {
         if (fs.existsSync(realpath)) {
           resolve({ _id: pathToCheck })
         } else {
-          throw new Error(`${pathToCheck} does not exist`)
+          reject(new Error(`${pathToCheck} does not exist`))
         }
       })
     },
     statById(idToCheck) {
       // just return the / path for dev purpose
-      return Promise.resolve({ attributes: { path: '/' } })
+      return Promise.resolve({ attributes: { id: idToCheck, path: '/' } })
     },
     create(file, options) {
       return new Promise((resolve, reject) => {
