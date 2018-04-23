@@ -1,17 +1,5 @@
 'use strict'
 
-const log = require('cozy-logger')
-
-const MSG = {
-  TWOFACTOR: '2FA token requested'
-}
-
-function requireTwoFactor (extras = {}) {
-  const extrasStr = Buffer.from(JSON.stringify(extras), 'binary').toString('base64')
-  log('error', `${MSG.TWOFACTOR}||${extrasStr}`)
-  return extrasStr
-}
-
 /**
  * The konnector could not login
  * @type {String}
@@ -48,13 +36,18 @@ const FILE_DOWNLOAD_FAILED = 'FILE_DOWNLOAD_FAILED'
  */
 const SAVE_FILE_FAILED = 'SAVE_FILE_FAILED'
 
+/**
+ * Could not save a file to the cozy because of disk quota exceeded
+ * @type {String}
+ */
+const DISK_QUOTA_EXCEEDED = 'DISK_QUOTA_EXCEEDED'
+
 module.exports = {
-  MSG: MSG,
   LOGIN_FAILED,
   NOT_EXISTING_DIRECTORY,
   VENDOR_DOWN,
   USER_ACTION_NEEDED,
   FILE_DOWNLOAD_FAILED,
-  requireTwoFactor: requireTwoFactor,
-  SAVE_FILE_FAILED
+  SAVE_FILE_FAILED,
+  DISK_QUOTA_EXCEEDED
 }
