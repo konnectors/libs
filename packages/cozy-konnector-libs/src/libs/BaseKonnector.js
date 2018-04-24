@@ -26,7 +26,7 @@ const {
  *  // different stages of the konnector
  *  return request('http://ameli.fr')
  *    .then(computeReimbursements)
- *    .then(saveDocuments)
+ *    .then(saveBills)
  * })
  * ```
  *
