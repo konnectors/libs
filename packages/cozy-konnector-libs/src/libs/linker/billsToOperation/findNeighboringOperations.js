@@ -1,10 +1,7 @@
-const format = require('date-fns/format')
 const { getDateRangeFromBill, getAmountRangeFromBill } = require('./helpers')
-const log = require('cozy-logger')
 
 // cozy-stack limit to 100 elements max
 const COZY_STACK_QUERY_LIMIT = 100
-const DOCTYPE_OPERATIONS = 'io.cozy.bank.operations'
 
 // Get the operations corresponding to the date interval
 // around the date of the bill
@@ -19,7 +16,7 @@ const createDateSelector = (bill, options) => {
 // Get the operations corresponding to the date interval
 // around the amount of the bill
 const createAmountSelector = (bill, options) => {
-  const {minAmount, maxAmount} = getAmountRangeFromBill(bill, options)
+  const { minAmount, maxAmount } = getAmountRangeFromBill(bill, options)
 
   return {
     $gt: minAmount,
@@ -33,7 +30,7 @@ const getQueryOptions = (bill, options, ids) => {
       date: createDateSelector(bill, options),
       amount: createAmountSelector(bill, options)
     },
-    sort: [{date: 'desc'}, {amount: 'desc'}],
+    sort: [{ date: 'desc' }, { amount: 'desc' }],
     COZY_STACK_QUERY_LIMIT
   }
 
@@ -46,36 +43,44 @@ const getQueryOptions = (bill, options, ids) => {
 
 const and = conditions => obj => {
   for (let c of conditions) {
-    if (!c(obj)) { return false }
+    if (!c(obj)) {
+      return false
+    }
   }
   return true
 }
 
 const findByMangoQuerySimple = (docs, query) => {
   const selector = query.selector
-  const filters = Object.keys(selector)
-    .map(attr => doc => {
-      const attrSel = selector[attr]
-      const conditions = Object.keys(attrSel)
-        .map($operator => doc => {
-          const val = doc[attr]
-          const selValue = attrSel[$operator]
-          if ($operator == '$gt') {
-            return val > selValue
-          } else if ($operator == '$lt') {
-            return val < selValue
-          } else {
-            throw new Error(`Unknown operator ${$operator}`)
-          }
-        })
-      return and(conditions)(doc)
+  const filters = Object.keys(selector).map(attr => doc => {
+    const attrSel = selector[attr]
+    const conditions = Object.keys(attrSel).map($operator => doc => {
+      const val = doc[attr]
+      const selValue = attrSel[$operator]
+      if ($operator == '$gt') {
+        return val > selValue
+      } else if ($operator == '$lt') {
+        return val < selValue
+      } else {
+        throw new Error(`Unknown operator ${$operator}`)
+      }
     })
+    return and(conditions)(doc)
+  })
   return docs.filter(and(filters))
 }
 
-const findNeighboringOperations = async (cozyClient, bill, options, allOperations) => {
+const findNeighboringOperations = async (
+  cozyClient,
+  bill,
+  options,
+  allOperations
+) => {
   const queryOptions = getQueryOptions(bill, options, [])
-  const neighboringOperations = findByMangoQuerySimple(allOperations, queryOptions)
+  const neighboringOperations = findByMangoQuerySimple(
+    allOperations,
+    queryOptions
+  )
   return neighboringOperations
 }
 

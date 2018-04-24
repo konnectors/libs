@@ -11,9 +11,8 @@ import {
 const OK = 'ok'
 
 describe('getterHelper', () => {
-
   test('getIdentifiers', () => {
-    expect(getIdentifiers({identifiers: OK})).toBe(OK)
+    expect(getIdentifiers({ identifiers: OK })).toBe(OK)
   })
 
   describe('getOperationAmountFromBill', () => {
@@ -27,7 +26,7 @@ describe('getterHelper', () => {
       expect(getOperationAmountFromBill(bill2)).toBe(-amount)
     })
     test('find credit amount', () => {
-      expect(getOperationAmountFromBill(bill1, {credit: true})).toBe(amount)
+      expect(getOperationAmountFromBill(bill1, { credit: true })).toBe(amount)
     })
   })
 
@@ -42,7 +41,9 @@ describe('getterHelper', () => {
       expect(getOperationDateFromBill(bill2)).toEqual(new Date(date))
     })
     it('should find credit date', () => {
-      expect(getOperationDateFromBill(bill1, {credit: true})).toEqual(new Date(date))
+      expect(getOperationDateFromBill(bill1, { credit: true })).toEqual(
+        new Date(date)
+      )
     })
   })
 
@@ -93,13 +94,19 @@ describe('getterHelper', () => {
     })
 
     it('sould find credit amount range (positive)', () => {
-      const { minAmount, maxAmount } = getAmountRangeFromBill(bill1, creditOptions)
+      const { minAmount, maxAmount } = getAmountRangeFromBill(
+        bill1,
+        creditOptions
+      )
       expect(minAmount).toEqual(6.5)
       expect(maxAmount).toEqual(8.5)
     })
 
     it('should find credit amount range of bill with originalAmount (positive)', () => {
-      const { minAmount, maxAmount } = getAmountRangeFromBill(bill2, creditOptions)
+      const { minAmount, maxAmount } = getAmountRangeFromBill(
+        bill2,
+        creditOptions
+      )
       expect(minAmount).toEqual(6.5)
       expect(maxAmount).toEqual(8.5)
     })
@@ -114,7 +121,7 @@ describe('getterHelper', () => {
     it('should return the total amount of reimbursements field', () => {
       const amount1 = 3
       const amount2 = 2
-      const op = {reimbursements: [{amount: amount1}, {amount: amount2}]}
+      const op = { reimbursements: [{ amount: amount1 }, { amount: amount2 }] }
       expect(getTotalReimbursements(op)).toEqual(5) // amount1 + amount2
     })
   })
@@ -126,7 +133,7 @@ describe('getterHelper', () => {
       const operations = [
         { id: 1, date: new Date(2017, 0, 16), amount: -10 },
         { id: 3, date: new Date(2017, 0, 17), amount: -10 },
-        { id: 2, date: new Date(2017, 0, 17), amount: -11 },
+        { id: 2, date: new Date(2017, 0, 17), amount: -11 }
       ]
       expect(sortedOperations(bill, operations)[0]).toEqual(operations[1])
     })
@@ -135,7 +142,7 @@ describe('getterHelper', () => {
       const operations = [
         { id: 1, date: new Date(2017, 0, 17), amount: -8 },
         { id: 2, date: new Date(2017, 0, 17), amount: -9 },
-        { id: 3, date: new Date(2017, 0, 17), amount: -12 },
+        { id: 3, date: new Date(2017, 0, 17), amount: -12 }
       ]
       expect(sortedOperations(bill, operations)[0]).toEqual(operations[1])
     })
@@ -144,7 +151,7 @@ describe('getterHelper', () => {
       const operations = [
         { id: 1, date: new Date(2017, 0, 15), amount: -10 },
         { id: 2, date: new Date(2017, 0, 18), amount: -10 },
-        { id: 3, date: new Date(2017, 0, 19), amount: -10 },
+        { id: 3, date: new Date(2017, 0, 19), amount: -10 }
       ]
       expect(sortedOperations(bill, operations)[0]).toEqual(operations[1])
     })
@@ -153,7 +160,7 @@ describe('getterHelper', () => {
       const operations = [
         { id: 1, date: new Date(2017, 0, 16), amount: -12 },
         { id: 2, date: new Date(2017, 0, 18), amount: -11 },
-        { id: 3, date: new Date(2017, 0, 19), amount: -13 },
+        { id: 3, date: new Date(2017, 0, 19), amount: -13 }
       ]
       expect(sortedOperations(bill, operations)[0]).toEqual(operations[1])
     })

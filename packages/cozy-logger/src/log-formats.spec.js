@@ -10,7 +10,9 @@ describe('dev format', () => {
     const lines = formatted.split('\n')
     expect(lines[0]).toEqual(expect.stringContaining('critical'))
     expect(lines[0]).toEqual(expect.stringContaining('LOGIN_FAILED'))
-    expect(lines[lines.length - 1]).toEqual(expect.stringContaining('no_retry: ' + chalk.yellow('true')))
+    expect(lines[lines.length - 1]).toEqual(
+      expect.stringContaining('no_retry: ' + chalk.yellow('true'))
+    )
   })
 })
 
@@ -20,7 +22,7 @@ describe('prod format', () => {
     type: 'critical',
     no_retry: true,
     message: 'LOGIN_FAILED'
-   }
+  }
 
   it('should log correctly an error', () => {
     const err = new Error('LOGIN_FAILED')
@@ -30,7 +32,7 @@ describe('prod format', () => {
   })
 
   it('should log correctly an object', () => {
-    const err = { message: 'LOGIN_FAILED'}
+    const err = { message: 'LOGIN_FAILED' }
     setNoRetry(err)
     const formatted = prodFormat('critical', err)
     expect(JSON.parse(formatted)).toMatchObject(expectation)

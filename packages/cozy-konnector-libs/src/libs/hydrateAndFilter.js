@@ -63,8 +63,15 @@ const suitableCall = (funcOrMethod, ...args) => {
 const hydrateAndFilter = (documents, doctype, options = {}) => {
   const cozy = require('./cozyclient')
 
-  log('debug', String(documents.length), 'Number of items before hydrateAndFilter')
-  if (!doctype) return Promise.reject(new Error(`Doctype is mandatory to filter the connector data.`))
+  log(
+    'debug',
+    String(documents.length),
+    'Number of items before hydrateAndFilter'
+  )
+  if (!doctype)
+    return Promise.reject(
+      new Error(`Doctype is mandatory to filter the connector data.`)
+    )
 
   const keys = options.keys ? options.keys : ['_id']
   const store = {}
@@ -72,29 +79,35 @@ const hydrateAndFilter = (documents, doctype, options = {}) => {
   log('debug', keys, 'keys')
 
   const createHash = item => {
-    return keys.map(key => {
-      let result = get(item, key)
-      if (key === 'date') result = new Date(result)
-      return result
-    }).join('####')
+    return keys
+      .map(key => {
+        let result = get(item, key)
+        if (key === 'date') result = new Date(result)
+        return result
+      })
+      .join('####')
   }
 
   const getIndex = () => {
-    const index = options.index ? options.index : cozy.data.defineIndex(doctype, keys)
+    const index = options.index
+      ? options.index
+      : cozy.data.defineIndex(doctype, keys)
     return index
   }
 
   const getItems = index => {
     log('debug', index, 'index')
 
-    const selector = options.selector ? options.selector : keys.reduce((memo, key) => {
-      memo[key] = {'$gt': null}
-      return memo
-    }, {})
+    const selector = options.selector
+      ? options.selector
+      : keys.reduce((memo, key) => {
+          memo[key] = { $gt: null }
+          return memo
+        }, {})
 
     log('debug', selector, 'selector')
 
-    return cozy.data.query(index, {selector})
+    return cozy.data.query(index, { selector })
   }
 
   const populateStore = store => dbitems => {
@@ -120,25 +133,34 @@ const hydrateAndFilter = (documents, doctype, options = {}) => {
   }
 
   const defaultShouldSave = () => true
-  const defaultShouldUpdate = existing => false
+  const defaultShouldUpdate = () => false
 
   const filterEntries = store => async () => {
     // Filter out items according to shouldSave / shouldUpdate.
     // Both can be passed as option or can be part of the entry.
-    return uniqBy(await bluebird.filter(documents, entry => {
-      const shouldSave = entry.shouldSave || options.shouldSave || defaultShouldSave
-      const shouldUpdate = entry.shouldUpdate || options.shouldUpdate || defaultShouldUpdate
-      const existing = store[createHash(entry)]
-      if (existing) {
-        return suitableCall(shouldUpdate, entry, existing)
-      } else {
-        return suitableCall(shouldSave, entry)
-      }
-    }), entry => (entry && entry._id) || entry)
+    return uniqBy(
+      await bluebird.filter(documents, entry => {
+        const shouldSave =
+          entry.shouldSave || options.shouldSave || defaultShouldSave
+        const shouldUpdate =
+          entry.shouldUpdate || options.shouldUpdate || defaultShouldUpdate
+        const existing = store[createHash(entry)]
+        if (existing) {
+          return suitableCall(shouldUpdate, entry, existing)
+        } else {
+          return suitableCall(shouldSave, entry)
+        }
+      }),
+      entry => (entry && entry._id) || entry
+    )
   }
 
   const formatOutput = entries => {
-    log('debug', String(entries.length), 'Number of items after hydrateAndFilter')
+    log(
+      'debug',
+      String(entries.length),
+      'Number of items after hydrateAndFilter'
+    )
     return entries
   }
 

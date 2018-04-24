@@ -6,7 +6,7 @@ const indexBy = require('lodash/keyBy')
 
 let linker
 
-beforeEach(function () {
+beforeEach(function() {
   // We mock defineIndex/query so that fetchOperations returns the right operations
   const INDEX = 'index'
   cozyClient.data.defineIndex.mockReturnValue(Promise.resolve(INDEX))
@@ -17,7 +17,7 @@ beforeEach(function () {
 
 const wrapAsFetchJSONResult = documents => {
   return {
-    rows: documents.map(x => ({ id: x._id, doc: x}))
+    rows: documents.map(x => ({ id: x._id, doc: x }))
   }
 }
 
@@ -32,9 +32,11 @@ describe('linker', () => {
 
       expect(linker.updateAttributes).lastCalledWith(
         'io.cozy.bank.operations',
-        operation, {
-         bills: ['io.cozy.bills:b1']
-        })
+        operation,
+        {
+          bills: ['io.cozy.bills:b1']
+        }
+      )
     })
 
     test('operation with bills', () => {
@@ -44,9 +46,11 @@ describe('linker', () => {
 
       expect(linker.updateAttributes).lastCalledWith(
         'io.cozy.bank.operations',
-        operation, {
+        operation,
+        {
           bills: ['bill1', 'io.cozy.bills:b1']
-        })
+        }
+      )
     })
 
     test('operation have already this bill', () => {
@@ -68,11 +72,13 @@ describe('linker', () => {
         'io.cozy.bank.operations',
         operation,
         {
-          reimbursements: [{
-            amount: 110,
-            billId: 'io.cozy.bills:b1',
-            operationId: 123456
-          }]
+          reimbursements: [
+            {
+              amount: 110,
+              billId: 'io.cozy.bills:b1',
+              operationId: 123456
+            }
+          ]
         }
       )
     })
@@ -86,11 +92,14 @@ describe('linker', () => {
         'io.cozy.bank.operations',
         operation,
         {
-          reimbursements: ['test', {
-            amount: 110,
-            billId: 'io.cozy.bills:b1',
-            operationId: 123456
-          }]
+          reimbursements: [
+            'test',
+            {
+              amount: 110,
+              billId: 'io.cozy.bills:b1',
+              operationId: 123456
+            }
+          ]
         }
       )
     })
@@ -98,11 +107,13 @@ describe('linker', () => {
     test('operation have already the reimbursement', () => {
       const operation = {
         _id: 123456,
-        reimbursements: [{
-          amount: 110,
-          billId: 'io.cozy.bills:b1',
-          operationId: 123456
-        }]
+        reimbursements: [
+          {
+            amount: 110,
+            billId: 'io.cozy.bills:b1',
+            operationId: 123456
+          }
+        ]
       }
 
       linker.addReimbursementToOperation(bill, operation, operation)
@@ -113,22 +124,61 @@ describe('linker', () => {
 
   describe('linkBillsToOperations', () => {
     const operationsInit = [
-      { amount: -20, label: 'Visite chez le médecin', _id: 'medecin', date: new Date(2017, 11, 13), automaticCategoryId: '400610' },
-      { amount: 5, label: 'Remboursement CPAM', _id: 'cpam', date: new Date(2017, 11, 15), automaticCategoryId: '400610' },
-      { amount: -120, label: 'Facture SFR', _id: 'big_sfr', date: new Date(2017, 11, 8) },
-      { amount: -30, label: 'Facture SFR', _id: 'small_sfr', date: new Date(2017, 11, 7) },
-      { amount: +30, label: "Remboursemet Matériel d'escalade", _id: 'escalade', date: new Date(2017, 11, 7) },
-      { amount: -5.5, label: 'Burrito', _id: 'burrito', date: new Date(2017, 11, 5) },
-      { amount: -2.6, label: 'Salade', _id: 'salade', date: new Date(2017, 11, 6) }
+      {
+        amount: -20,
+        label: 'Visite chez le médecin',
+        _id: 'medecin',
+        date: new Date(2017, 11, 13),
+        automaticCategoryId: '400610'
+      },
+      {
+        amount: 5,
+        label: 'Remboursement CPAM',
+        _id: 'cpam',
+        date: new Date(2017, 11, 15),
+        automaticCategoryId: '400610'
+      },
+      {
+        amount: -120,
+        label: 'Facture SFR',
+        _id: 'big_sfr',
+        date: new Date(2017, 11, 8)
+      },
+      {
+        amount: -30,
+        label: 'Facture SFR',
+        _id: 'small_sfr',
+        date: new Date(2017, 11, 7)
+      },
+      {
+        amount: +30,
+        label: "Remboursemet Matériel d'escalade",
+        _id: 'escalade',
+        date: new Date(2017, 11, 7)
+      },
+      {
+        amount: -5.5,
+        label: 'Burrito',
+        _id: 'burrito',
+        date: new Date(2017, 11, 5)
+      },
+      {
+        amount: -2.6,
+        label: 'Salade',
+        _id: 'salade',
+        date: new Date(2017, 11, 6)
+      }
     ].map(x => ({ ...x, date: x.date.toISOString() }))
 
     let operations, operationsById
 
-    beforeEach(function () {
+    beforeEach(function() {
       // reset operations to operationsInit values
       operations = operationsInit.map(op => ({ ...op }))
       operationsById = indexBy(operations, '_id')
-      cozyClient.fetchJSON = jest.fn().mockReturnValue(Promise.resolve(wrapAsFetchJSONResult(operations)))
+      cozyClient.fetchJSON = jest
+        .fn()
+        .mockReturnValue(Promise.resolve(wrapAsFetchJSONResult(operations)))
       linker.updateAttributes.mockImplementation(updateOperation)
     })
 
@@ -139,8 +189,10 @@ describe('linker', () => {
       futureWindow: 2
     }
 
-    function updateOperation (doctype, needleOp, attributes) {
-      const operation = operations.find(operation => operation._id === needleOp._id)
+    function updateOperation(doctype, needleOp, attributes) {
+      const operation = operations.find(
+        operation => operation._id === needleOp._id
+      )
       Object.assign(operation, attributes)
       return Promise.resolve(operation)
     }
@@ -159,17 +211,18 @@ describe('linker', () => {
         }
       ]
       const options = { ...defaultOptions, identifiers: ['CPAM'] }
-      return linker.linkBillsToOperations(healthBills, options)
-      .then(result => {
+      return linker.linkBillsToOperations(healthBills, options).then(result => {
         expect(result.b1.creditOperation).toEqual(operationsById.cpam)
         expect(result.b1.debitOperation).toEqual(operations[0])
         expect(operations[0]).toMatchObject({
-          reimbursements: [{
-            billId: 'io.cozy.bills:b1',
-            amount: 5,
-            operationId: 'cpam'
-          }
-        ]})
+          reimbursements: [
+            {
+              billId: 'io.cozy.bills:b1',
+              amount: 5,
+              operationId: 'cpam'
+            }
+          ]
+        })
         expect(operationsById.cpam).toMatchObject({
           bills: ['io.cozy.bills:b1']
         })
@@ -190,13 +243,14 @@ describe('linker', () => {
         }
       ]
       const options = { ...defaultOptions, identifiers: ['CPAM'] }
-      return linker.linkBillsToOperations(healthBills, options)
-      .then(result => {
+      return linker.linkBillsToOperations(healthBills, options).then(result => {
         expect(result).toMatchObject({
           b1: { creditOperation: operationsById.cpam }
         })
         expect(result.b1.debitOperation).toBe(undefined)
-        expect(operationsById.cpam).toMatchObject({bills: ['io.cozy.bills:b1']})
+        expect(operationsById.cpam).toMatchObject({
+          bills: ['io.cozy.bills:b1']
+        })
       })
     })
 
@@ -232,7 +286,8 @@ describe('linker', () => {
       describe('with corresponding debit operation', () => {
         it('should be associated with the right operations', () => {
           const options = { ...defaultOptions, identifiers: ['CPAM'] }
-          return linker.linkBillsToOperations(healthBills, options)
+          return linker
+            .linkBillsToOperations(healthBills, options)
             .then(result => {
               const debitOperation = expect.any(Object)
               expect(result).toMatchObject({
@@ -250,9 +305,13 @@ describe('linker', () => {
 
       describe('without corresponding debit operation', () => {
         it('should be associated with the right credit operation', () => {
-          const healthBills2 = healthBills.map(x => ({...x, originalAmount: 999}))
+          const healthBills2 = healthBills.map(x => ({
+            ...x,
+            originalAmount: 999
+          }))
           const options = { ...defaultOptions, identifiers: ['CPAM'] }
-          return linker.linkBillsToOperations(healthBills2, options)
+          return linker
+            .linkBillsToOperations(healthBills2, options)
             .then(result => {
               expect(result.b1.creditOperation).toBe(operationsById.cpam)
               expect(result.b2.creditOperation).toBe(operationsById.cpam)
@@ -266,7 +325,6 @@ describe('linker', () => {
       })
     })
 
-
     it('not health bills', () => {
       const noHealthBills = [
         {
@@ -277,18 +335,18 @@ describe('linker', () => {
         }
       ]
       const options = { ...defaultOptions, identifiers: ['SFR'] }
-      return linker.linkBillsToOperations(noHealthBills, options)
-      .then(result => {
-        expect(result).toMatchObject({
-          b2: { debitOperation: operationsById.small_sfr }
+      return linker
+        .linkBillsToOperations(noHealthBills, options)
+        .then(result => {
+          expect(result).toMatchObject({
+            b2: { debitOperation: operationsById.small_sfr }
+          })
         })
-      })
     })
   })
 
   describe('linking with combinations', () => {
     describe('getUnlinkedBills', () => {
-
       it('returns the bills that are not linked', () => {
         const linkingResult = {
           b1: { bill: { _id: 'b1' }, debitOperation: {} },
@@ -312,15 +370,39 @@ describe('linker', () => {
 
     describe('groupBills', () => {
       const bills = [
-        { _id: 'b1', originalDate: new Date(2018, 2, 10), type: 'health_costs' },
+        {
+          _id: 'b1',
+          originalDate: new Date(2018, 2, 10),
+          type: 'health_costs'
+        },
         { _id: 'b2', originalDate: new Date(2018, 2, 10), type: 'phone' },
-        { _id: 'b3', originalDate: new Date(2018, 2, 10), type: 'health_costs' },
-        { _id: 'b4', originalDate: new Date(2018, 2, 15), type: 'health_costs' },
-        { _id: 'b5', originalDate: new Date(2018, 2, 15), type: 'health_costs' },
+        {
+          _id: 'b3',
+          originalDate: new Date(2018, 2, 10),
+          type: 'health_costs'
+        },
+        {
+          _id: 'b4',
+          originalDate: new Date(2018, 2, 15),
+          type: 'health_costs'
+        },
+        {
+          _id: 'b5',
+          originalDate: new Date(2018, 2, 15),
+          type: 'health_costs'
+        },
         { _id: 'b6', originalDate: new Date(2018, 2, 20), type: 'phone' },
-        { _id: 'b7', originalDate: new Date(2018, 2, 20), type: 'health_costs' },
+        {
+          _id: 'b7',
+          originalDate: new Date(2018, 2, 20),
+          type: 'health_costs'
+        },
         { _id: 'b8', originalDate: new Date(2018, 2, 20), type: 'phone' },
-        { _id: 'b9', originalDate: new Date(2018, 2, 20), type: 'health_costs' },
+        {
+          _id: 'b9',
+          originalDate: new Date(2018, 2, 20),
+          type: 'health_costs'
+        },
         { _id: 'b10', originalDate: new Date(2018, 2, 30), type: 'phone' }
       ]
 
@@ -337,12 +419,7 @@ describe('linker', () => {
     })
 
     describe('generateBillsCombinations', () => {
-      const bills = [
-        { _id: 'b1' },
-        { _id: 'b2' },
-        { _id: 'b3' },
-        { _id: 'b4' }
-      ]
+      const bills = [{ _id: 'b1' }, { _id: 'b2' }, { _id: 'b3' }, { _id: 'b4' }]
 
       it('generates the right combinations', () => {
         const result = linker.generateBillsCombinations(bills)

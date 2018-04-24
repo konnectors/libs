@@ -52,7 +52,7 @@ const requestdebug = require('request-debug')
 let singleton = null
 let requestClass = null
 
-module.exports = function (options = {}) {
+module.exports = function(options = {}) {
   if (singleton) return singleton
 
   if (request.Request) requestClass = request.Request
@@ -90,7 +90,11 @@ module.exports = function (options = {}) {
     // a lot of web service do not want to be called by robots and then check the user agent to
     // be sure they are called by a browser. This user agent works most of the time.
     options.userAgent = true
-    requestOptions.transform = function (body, response, resolveWithFullResponse) {
+    requestOptions.transform = function(
+      body,
+      response,
+      resolveWithFullResponse
+    ) {
       let result = require('cheerio').load(body)
 
       if (resolveWithFullResponse === true) {
@@ -101,7 +105,11 @@ module.exports = function (options = {}) {
       return result
     }
   } else {
-    requestOptions.transform = function (body, response, resolveWithFullResponse) {
+    requestOptions.transform = function(
+      body,
+      response,
+      resolveWithFullResponse
+    ) {
       let result = body
       if (resolveWithFullResponse === true) {
         result = response
@@ -111,8 +119,9 @@ module.exports = function (options = {}) {
   }
 
   if (options.userAgent === true) {
-    requestOptions.headers['User-Agent'] = 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:36.0) ' +
-                                           'Gecko/20100101 Firefox/36.0'
+    requestOptions.headers['User-Agent'] =
+      'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:36.0) ' +
+      'Gecko/20100101 Firefox/36.0'
   }
 
   request = request.defaults(requestOptions)

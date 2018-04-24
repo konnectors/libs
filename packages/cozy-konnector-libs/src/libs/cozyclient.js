@@ -15,13 +15,13 @@
  * @module cozyClient
  */
 
-const {Client, MemoryStorage} = require('cozy-client-js')
+const { Client, MemoryStorage } = require('cozy-client-js')
 
-const getCredentials = function (environment) {
+const getCredentials = function(environment) {
   try {
     if (environment === 'development') {
       const credentials = JSON.parse(process.env.COZY_CREDENTIALS)
-      credentials.token.toAuthHeader = function () {
+      credentials.token.toAuthHeader = function() {
         return 'Bearer ' + credentials.client.registrationAccessToken
       }
       return credentials
@@ -29,12 +29,16 @@ const getCredentials = function (environment) {
       return process.env.COZY_CREDENTIALS.trim()
     }
   } catch (err) {
-    console.error(`Please provide proper COZY_CREDENTIALS environment variable. ${process.env.COZY_CREDENTIALS} is not OK`)
+    console.error(
+      `Please provide proper COZY_CREDENTIALS environment variable. ${
+        process.env.COZY_CREDENTIALS
+      } is not OK`
+    )
     throw err
   }
 }
 
-const getCozyUrl = function () {
+const getCozyUrl = function() {
   if (process.env.COZY_URL === undefined) {
     console.error(`Please provide COZY_URL environment variable.`)
     throw new Error('COZY_URL environment variable is absent/not valid')
@@ -43,7 +47,7 @@ const getCozyUrl = function () {
   }
 }
 
-const getCozyClient = function (environment = 'production') {
+const getCozyClient = function(environment = 'production') {
   if (environment === 'standalone' || environment === 'test') {
     return require('../helpers/cozy-client-js-stub')
   }
@@ -56,7 +60,7 @@ const getCozyClient = function (environment = 'production') {
   }
 
   if (environment === 'development') {
-    options.oauth = {storage: new MemoryStorage()}
+    options.oauth = { storage: new MemoryStorage() }
   } else if (environment === 'production') {
     options.token = credentials
   }
@@ -72,4 +76,6 @@ const getCozyClient = function (environment = 'production') {
 
 // webpack 4 now changes the NODE_ENV environment variable when you change its 'mode' option
 // since we do not want to minimize the built file, we recognize the 'none' mode as production mode
-module.exports = getCozyClient(process.env.NODE_ENV === 'none' ? 'production' : process.env.NODE_ENV)
+module.exports = getCozyClient(
+  process.env.NODE_ENV === 'none' ? 'production' : process.env.NODE_ENV
+)

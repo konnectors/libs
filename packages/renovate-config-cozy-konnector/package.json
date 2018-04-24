@@ -5,19 +5,14 @@
   "license": "MIT",
   "renovate-config": {
     "default": {
-      "extends": [
-        "config:base"
-      ],
+      "extends": ["config:base"],
       "timezone": "Europe/Paris",
       "minor": {
         "automerge": true
       },
       "packageRules": [
         {
-          "excludePackageNames": [
-            "cozy-konnector-libs",
-            "cozy-app-publish"
-          ],
+          "excludePackageNames": ["cozy-konnector-libs", "cozy-app-publish"],
           "schedule": "before 5am every monday"
         }
       ],

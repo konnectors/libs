@@ -16,7 +16,7 @@ class DryLinker extends Linker {
 }
 
 const generate = async options => {
-  const bills = (await fetchAll('io.cozy.bills'))
+  const bills = await fetchAll('io.cozy.bills')
 
   const linker = new DryLinker(cozyClient)
   const results = await linker.linkBillsToOperations(bills, options)
@@ -43,7 +43,6 @@ const parser = spec => obj => {
   return res
 }
 
-const int = x => parseInt(x, 10)
 const float = x => parseFloat(x, 10)
 const htmlFormBoolean = x => x === 'on'
 const commaSeparatedArray = x => x.split(/\s*,\s*/)

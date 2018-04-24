@@ -24,7 +24,9 @@ const maybeQuote = x => {
   }
 }
 const fmtOpts = opts => {
-  return Object.keys(opts).map(k => `${k}=${maybeQuote(opts[k])}`).join(' ')
+  return Object.keys(opts)
+    .map(k => `${k}=${maybeQuote(opts[k])}`)
+    .join(' ')
 }
 
 class Dot {

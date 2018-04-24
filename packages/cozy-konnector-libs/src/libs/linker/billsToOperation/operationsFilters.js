@@ -3,11 +3,21 @@ const some = require('lodash/some')
 const sumBy = require('lodash/sumBy')
 const isWithinRange = require('date-fns/is_within_range')
 
-const { getIdentifiers, getDateRangeFromBill, getAmountRangeFromBill } = require('./helpers')
+const {
+  getIdentifiers,
+  getDateRangeFromBill,
+  getAmountRangeFromBill
+} = require('./helpers')
 
 // constants
 
-const HEALTH_VENDORS = ['Ameli', 'Harmonie', 'Malakoff Mederic', 'MGEN', 'Generali'] // TODO: to import from each konnector
+const HEALTH_VENDORS = [
+  'Ameli',
+  'Harmonie',
+  'Malakoff Mederic',
+  'MGEN',
+  'Generali'
+] // TODO: to import from each konnector
 const HEALTH_EXPENSE_CAT = '400610'
 const HEALTH_INSURANCE_CAT = '400620'
 const UNCATEGORIZED_CAT_ID_OPERATION = '0' // TODO: import it from cozy-bank
@@ -15,9 +25,11 @@ const UNCATEGORIZED_CAT_ID_OPERATION = '0' // TODO: import it from cozy-bank
 // helpers
 
 const getCategoryId = o => {
-  return o.manualCategoryId
-    || o.automaticCategoryId
-    || UNCATEGORIZED_CAT_ID_OPERATION
+  return (
+    o.manualCategoryId ||
+    o.automaticCategoryId ||
+    UNCATEGORIZED_CAT_ID_OPERATION
+  )
 }
 
 const isHealthOperation = operation => {
@@ -63,11 +75,13 @@ const filterByAmounts = ({ minAmount, maxAmount }) => {
   return amountFilter
 }
 
-const filterByCategory = (bill, options={}) => {
+const filterByCategory = (bill, options = {}) => {
   const isHealth = isHealthBill(bill)
   const categoryFilter = operation => {
-    if (options.allowUncategorized === true
-      && isUncategorizedOperation(operation)) {
+    if (
+      options.allowUncategorized === true &&
+      isUncategorizedOperation(operation)
+    ) {
       return true
     }
     return isHealth
@@ -81,10 +95,10 @@ const filterByCategory = (bill, options={}) => {
  * Check that the sum of the reimbursements + the amount of the bill is not
  * greater that the amount of the operation
  */
-const filterByReimbursements = (bill, options={}) => {
+const filterByReimbursements = bill => {
   const reimbursementFilter = operation => {
     const sumReimbursements = sumBy(operation.reimbursements, 'amount')
-    return (sumReimbursements + bill.amount) <= -operation.amount
+    return sumReimbursements + bill.amount <= -operation.amount
   }
   return reimbursementFilter
 }

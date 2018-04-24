@@ -18,14 +18,16 @@ const log = require('cozy-logger').namespace('updateOrCreate')
 const cozy = require('./cozyclient')
 
 module.exports = (entries = [], doctype, matchingAttributes = []) => {
-  return cozy.data.findAll(doctype)
-    .then(existings => bluebird.mapSeries(entries, entry => {
+  return cozy.data.findAll(doctype).then(existings =>
+    bluebird.mapSeries(entries, entry => {
       log('debug', entry)
       // try to find a corresponding existing element
       const toUpdate = existings.find(doc =>
-        matchingAttributes.reduce((isMatching, matchingAttribute) =>
-          isMatching && doc[matchingAttribute] === entry[matchingAttribute]
-        , true)
+        matchingAttributes.reduce(
+          (isMatching, matchingAttribute) =>
+            isMatching && doc[matchingAttribute] === entry[matchingAttribute],
+          true
+        )
       )
 
       if (toUpdate) {
@@ -35,5 +37,6 @@ module.exports = (entries = [], doctype, matchingAttributes = []) => {
         log('debug', 'creating')
         return cozy.data.create(doctype, entry)
       }
-    }))
+    })
+  )
 }
