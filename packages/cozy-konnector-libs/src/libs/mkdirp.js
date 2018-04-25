@@ -26,7 +26,7 @@
  */
 
 const { basename, dirname, join } = require('path').posix
-const { cozyClient } = require('..')
+const cozyClient = require('./cozyclient')
 
 const log = () => {}
 
