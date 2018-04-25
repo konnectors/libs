@@ -76,7 +76,7 @@ module.exports = function signin (
   }).catch(handleRequestErrors)
     .then($ => {
       const data = (typeof formData === 'function' ? formData($) : formData)
-      const [action, inputs] = parseForm($, formSelector)
+      const [action, inputs] = parseForm($, formSelector, url)
       for (let name in data) {
         inputs[name] = data[name]
       }
@@ -112,17 +112,12 @@ function getStrategy (parseStrategy) {
   }
 }
 
-function parseForm ($, formSelector) {
+function parseForm ($, formSelector, currentUrl) {
   const form = $(formSelector).first()
-  const action = form.attr('action')
+  const action = form.attr('action') || currentUrl
 
   if (!form.is('form')) {
     const err = 'element matching `' + formSelector + '` is not a `form`'
-    log('error', err)
-    throw new Error('INVALID_FORM')
-  }
-  if (action === undefined) {
-    const err = 'form matching `' + formSelector + '` has no `action` attribute'
     log('error', err)
     throw new Error('INVALID_FORM')
   }

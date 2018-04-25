@@ -33,6 +33,13 @@ describe('signin', () => {
     })
   })
 
+  describe('without action', () => {
+    it('works', () => {
+      return expect(signin({url, formSelector: '#got-no-action', parse: 'raw'}))
+        .resolves.toEqual(resp)
+    })
+  })
+
   describe('url', () => {
     it('throws if missing', () => {
       return expect(() => {
@@ -50,11 +57,6 @@ describe('signin', () => {
 
     it('throws when matching something else than a form', () => {
       return expect(signin({url, formSelector: '#im-no-form', parse: 'raw'}))
-        .rejects.toThrow('INVALID_FORM')
-    })
-
-    it('throws when matching a form without action', () => {
-      return expect(signin({url, formSelector: '#got-no-action', parse: 'raw'}))
         .rejects.toThrow('INVALID_FORM')
     })
 
