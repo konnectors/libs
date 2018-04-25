@@ -64,6 +64,12 @@ module.exports = {
         return Promise.reject(new Error('find is not implemented yet in cozy-client-js stub'))
       }
       return Promise.resolve(result)
+    },
+    listReferencedFiles () {
+      return Promise.resolve([])
+    },
+    addReferencedFiles () {
+      return Promise.resolve({})
     }
   },
   files: {
