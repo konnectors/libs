@@ -64,6 +64,12 @@ module.exports = {
         return Promise.reject(new Error('find is not implemented yet in cozy-client-js stub'))
       }
       return Promise.resolve(result)
+    },
+    listReferencedFiles () {
+      return Promise.resolve([])
+    },
+    addReferencedFiles () {
+      return Promise.resolve({})
     }
   },
   files: {
@@ -71,12 +77,15 @@ module.exports = {
       // check this path in .
       return new Promise((resolve, reject) => {
         log('debug', `Checking if ${pathToCheck} exists`)
+         if(pathToCheck === "/") return resolve({ _id: '.' });
         const realpath = path.join('.', pathToCheck)
         log('debug', `Real path : ${realpath}`)
         if (fs.existsSync(realpath)) {
           resolve({_id: pathToCheck})
         } else {
-          throw new Error(`${pathToCheck} does not exist`)
+          const err = new Error(`${pathToCheck} does not exist`)
+          err.status = 404
+          reject(err)
         }
       })
     },
@@ -116,7 +125,7 @@ module.exports = {
         const finalPath = path.join('.', options.dirID, options.name)
         log('info', `Real path : ${finalPath}`)
         fs.mkdirSync(finalPath)
-        resolve()
+        resolve({_id: finalPath, path: finalPath});
       })
     }
   }

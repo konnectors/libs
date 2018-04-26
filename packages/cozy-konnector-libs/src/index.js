@@ -23,6 +23,7 @@ module.exports = {
   Document: require('./libs/document'),
   signin: require('./libs/signin'),
   scrape: require('./libs/scrape'),
+  mkdirp: require('./libs/mkdirp'),
   normalizeFilename: require('./libs/normalizeFilename')
 }
 
