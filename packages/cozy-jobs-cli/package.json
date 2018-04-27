@@ -22,7 +22,7 @@
     "cheerio": "^1.0.0-rc.2",
     "commander": "^2.12.2",
     "core-js": "^2.5.3",
-    "cozy-client-js": "^0.8.0",
+    "cozy-client-js": "^0.9.0",
     "cozy-konnector-libs": "^4.1.7",
     "cozy-logger": "^1.1.4",
     "isomorphic-fetch": "^2.2.1",
