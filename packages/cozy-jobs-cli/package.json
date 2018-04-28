@@ -34,7 +34,7 @@
   },
   "devDependencies": {
     "cross-env": "5.1.4",
-    "lerna": "2.10.2"
+    "lerna": "2.11.0"
   },
   "prettier": {
     "semi": false,
