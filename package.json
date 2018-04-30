@@ -25,6 +25,7 @@
     "singleQuote": true
   },
   "scripts": {
+    "publish": "lerna publish",
     "bootstrap": "lerna bootstrap",
     "format": "prettier --write '**/*.{js,json}'",
     "doc": "cd packages/cozy-konnector-libs && jsdoc2md --template jsdoc2md/README.hbs libs/*.js helpers/*.js > docs/api.md",
