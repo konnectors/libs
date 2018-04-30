@@ -75,7 +75,6 @@ return filterData(documents, &#39;io.cozy.height&#39;, {
 <p>This function will soon move to a dedicated service. You should not use it.
 The goal of this function is to find links between bills and bank operations.</p>
 </dd>
-
 <dt><a href="#module_mkdirp">mkdirp</a></dt>
 <dd><p>Creates a directory and its missing ancestors as needed.</p>
 <p>Options :</p>
@@ -93,7 +92,8 @@ await mkdirp(&#39;/qux&#39;, &#39;qux2/qux3&#39;, &#39;qux4&#39;) // Creates /qu
 </code></pre>
 <p>The function will automatically add a leading slash when missing:</p>
 <pre><code class="lang-javascript">await mkdirp(&#39;foo&#39;, &#39;bar&#39;) // Creates /foo, then /foo/bar
-
+</code></pre>
+</dd>
 <dt><a href="#module_normalizeFilename">normalizeFilename</a></dt>
 <dd><p>Returns the given name, replacing characters that could be an issue when
 used in a filename with spaces.</p>
@@ -115,7 +115,6 @@ character in the given name.</p>
 
 const filename = normalizeFilename(&#39;*foo/bar: &lt;baz&gt; \\&quot;qux&quot;\t???&#39;, &#39;.txt&#39;)
 // `filename` === `foo bar baz qux.txt`
-
 </code></pre>
 </dd>
 <dt><a href="#module_requestFactory">requestFactory</a></dt>
@@ -303,6 +302,9 @@ fetch account information for your connector.</p>
 <dt><a href="#SAVE_FILE_FAILED">SAVE_FILE_FAILED</a> : <code>String</code></dt>
 <dd><p>There was a problem while saving a file</p>
 </dd>
+<dt><a href="#DISK_QUOTA_EXCEEDED">DISK_QUOTA_EXCEEDED</a> : <code>String</code></dt>
+<dd><p>Could not save a file to the cozy because of disk quota exceeded</p>
+</dd>
 </dl>
 
 ## Functions
@@ -443,6 +445,7 @@ The function will automatically add a leading slash when missing:
 
 ```javascript
 await mkdirp('foo', 'bar') // Creates /foo, then /foo/bar
+```
 
 <a name="module_normalizeFilename"></a>
 
@@ -470,7 +473,6 @@ const { normalizeFilename } = require('cozy-konnector-libs')
 
 const filename = normalizeFilename('*foo/bar: <baz> \\"qux"\t???', '.txt')
 // `filename` === `foo bar baz qux.txt`
-
 ```
 
 <a name="module_requestFactory"></a>
@@ -789,6 +791,12 @@ There was a problem while downloading a file
 
 ## SAVE_FILE_FAILED : <code>String</code>
 There was a problem while saving a file
+
+**Kind**: global constant  
+<a name="DISK_QUOTA_EXCEEDED"></a>
+
+## DISK_QUOTA_EXCEEDED : <code>String</code>
+Could not save a file to the cozy because of disk quota exceeded
 
 **Kind**: global constant  
 <a name="mkSpec"></a>
