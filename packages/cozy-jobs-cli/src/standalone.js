@@ -21,6 +21,8 @@ const filename = program.args[0] || process.env.npm_package_main || './src/index
 
 initReplay()
 
+// sentry is not needed in dev mode
+process.env.SENTRY_DSN = 'false'
 require(require('path').resolve(filename))
 
 /**
