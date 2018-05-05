@@ -36,7 +36,7 @@ module.exports = (entries, doctype) => {
     const dbEntry = await (entry._id
       ? cozy.data.update(doctype, entry, omit(entry, '_rev'))
       : cozy.data.create(doctype, entry))
-    // Also update the original entry _id to allow saveBills'
+    // Also update the original entry _id to allow saveBankingDocuments'
     // linkBankOperation entries to have an id
     entry._id = dbEntry._id
     return dbEntry
