@@ -1,9 +1,7 @@
 {
   "lerna": "2.4.0",
-  "packages": [
-    "packages/*"
-  ],
   "version": "independent",
+  "useWorkspaces": true,
   "npmClient": "yarn",
   "changelog": {
     "repo": "konnectors/libs",
