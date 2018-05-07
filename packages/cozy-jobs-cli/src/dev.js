@@ -57,6 +57,8 @@ authenticate({ tokenPath: token, manifestPath: manifest })
     account: accountId,
     folder_to_save: useFolder ? 'io.cozy.files.root-dir' : ''
   })
+  // sentry is not needed in dev mode
+  process.env.SENTRY_DSN = 'false'
   return require(file)
 })
 .catch(err => {

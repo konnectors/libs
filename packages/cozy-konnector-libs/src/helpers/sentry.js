@@ -74,11 +74,11 @@ module.exports.captureExceptionAndDie = function (err) {
 }
 
 module.exports.wrapIfSentrySetUp = function (obj, method) {
-  if (SENTRY_DSN) {
+  if (SENTRY_DSN && SENTRY_DSN !== 'false') {
     obj[method] = Raven.wrap(obj[method])
   }
 }
 
-if (SENTRY_DSN) {
+if (SENTRY_DSN && SENTRY_DSN !== 'false') {
   setupSentry()
 }
