@@ -143,6 +143,12 @@ class Linker {
     return bluebird.each(bills, bill => {
       const res = result[bill._id] = { bill:bill }
 
+      // the bills combination phase is very time consuming. We can avoid it when we run the
+      // connector in standalone mode
+      if (allOperations.length === 0) {
+        return result
+      }
+
       const linkBillToDebitOperation = () => {
         return findDebitOperation(this.cozyClient, bill, options, allOperations)
           .then(operation => {
