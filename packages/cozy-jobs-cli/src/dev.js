@@ -10,12 +10,10 @@ const path = require('path')
 const fs = require('fs')
 
 const authenticate = require('./cozy-authenticate')
-const initDevAccount = require('./init-dev-account')
 
 const DEFAULT_MANIFEST_PATH = path.resolve('manifest.konnector')
 const DEFAULT_TOKEN_PATH = path.resolve('.token.json')
 
-let useFolder = false
 let file, manifest
 
 program
@@ -45,20 +43,22 @@ const token = program.token || DEFAULT_TOKEN_PATH
 authenticate({ tokenPath: token, manifestPath: manifest })
 .then(result => {
   const credentials = result.creds
-  const scopes = result.scopes
-  if (scopes.includes('io.cozy.files')) useFolder = true
 
   // check if the token is valid
   process.env.COZY_CREDENTIALS = JSON.stringify(credentials)
 })
-.then(() => initDevAccount({manifestPath: manifest}))
-.then((accountId) => {
-  process.env.COZY_FIELDS = JSON.stringify({
-    account: accountId,
-    folder_to_save: useFolder ? 'io.cozy.files.root-dir' : ''
-  })
+.then(() => {
+  const BaseKonnector = require('cozy-konnector-libs').BaseKonnector
+  BaseKonnector.prototype.init = () => {
+    return Promise.resolve({
+      ...config.fields,
+      folderPath: '/'
+    })
+  }
+
   // sentry is not needed in dev mode
   process.env.SENTRY_DSN = 'false'
+
   return require(file)
 })
 .catch(err => {
