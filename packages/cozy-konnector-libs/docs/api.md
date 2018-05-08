@@ -164,7 +164,14 @@ You need the full permission on <code>io.cozy.bills</code>, full permission on <
 full permission on <code>io.cozy.bank.operations</code> in your manifest, to be able to * use this function.</p>
 <p>Parameters:</p>
 <ul>
-<li><code>documents</code> is an array of objects with any attributes :</li>
+<li><code>documents</code> is an array of objects with any attributes with some mandatory attributes :<ul>
+<li><code>amount</code> (Number): the amount of the bill used to match bank operations</li>
+<li><code>date</code> (Date): the date of the bill also used to match bank operations</li>
+<li><code>vendor</code> (String): the name of the vendor associated to the bill. Ex: &#39;trainline&#39;
+You can also pass attributes expected by <code>saveFiles</code>
+Please take a look at <a href="https://github.com/cozy/cozy-doctypes/blob/master/docs/io.cozy.bills.md">io.cozy.bills doctype documentation</a></li>
+</ul>
+</li>
 <li><code>fields</code> (object) this is the first parameter given to BaseKonnector&#39;s constructor</li>
 <li><code>options</code> is passed directly to <code>saveFiles</code>, <code>hydrateAndFilter</code>, <code>addData</code> and <code>linkBankOperations</code>.</li>
 </ul>
@@ -533,7 +540,12 @@ full permission on `io.cozy.bank.operations` in your manifest, to be able to * u
 
 Parameters:
 
-- `documents` is an array of objects with any attributes :
+- `documents` is an array of objects with any attributes with some mandatory attributes :
+  + `amount` (Number): the amount of the bill used to match bank operations
+  + `date` (Date): the date of the bill also used to match bank operations
+  + `vendor` (String): the name of the vendor associated to the bill. Ex: 'trainline'
+  You can also pass attributes expected by `saveFiles`
+  Please take a look at [io.cozy.bills doctype documentation](https://github.com/cozy/cozy-doctypes/blob/master/docs/io.cozy.bills.md)
 - `fields` (object) this is the first parameter given to BaseKonnector's constructor
 - `options` is passed directly to `saveFiles`, `hydrateAndFilter`, `addData` and `linkBankOperations`.
 
@@ -650,6 +662,7 @@ fetch account information for your connector.
     * [.fail()](#BaseKonnector+fail)
     * [.init()](#BaseKonnector+init) ⇒ <code>Promise</code>
     * [.saveAccountData(data, options)](#BaseKonnector+saveAccountData) ⇒ <code>Promise</code>
+    * [.getAccountData()](#BaseKonnector+getAccountData) ⇒ <code>object</code>
     * [.terminate(message)](#BaseKonnector+terminate)
 
 <a name="new_BaseKonnector_new"></a>
@@ -724,6 +737,12 @@ account.
 | data | <code>object</code> | Attributes to be merged |
 | options | <code>object</code> | { merge: true|false } |
 
+<a name="BaseKonnector+getAccountData"></a>
+
+### baseKonnector.getAccountData() ⇒ <code>object</code>
+Get the data saved by saveAccountData
+
+**Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)  
 <a name="BaseKonnector+terminate"></a>
 
 ### baseKonnector.terminate(message)
