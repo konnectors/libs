@@ -188,7 +188,7 @@ class Linker {
       do {
         found = false
 
-        const unlinkedBills = this.getUnlinkedBills(result)
+        const unlinkedBills = this.getUnlinkedBills(result).filter(bill => bill.type === 'health_costs')
         const billsGroups = this.groupBills(unlinkedBills)
 
         const combinations = flatten(billsGroups.map(
@@ -277,10 +277,10 @@ const jsonTee = filename => res => {
 }
 
 module.exports = (bills, doctype, fields, options = {}) => {
+  // Use the custom bank identifier from user if any
   if (fields.bank_identifier && fields.bank_identifier.length) {
     options.identifiers = [fields.bank_identifier]
   }
-  // Use the custom bank identifier from user if any
   const cozyClient = require('./cozyclient')
   const linker = new Linker(cozyClient)
   const prom = linker.linkBillsToOperations(bills, options)
