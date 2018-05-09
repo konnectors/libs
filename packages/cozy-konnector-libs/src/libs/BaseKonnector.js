@@ -170,6 +170,11 @@ class BaseKonnector {
       })
   }
 
+  /**
+   * Get the data saved by saveAccountData
+   *
+   * @return {object}
+   */
   getAccountData () {
     return new Secret(this._account.data || {})
   }

@@ -7,7 +7,12 @@
  *
  * Parameters:
  *
- * - `documents` is an array of objects with any attributes :
+ * - `documents` is an array of objects with any attributes with some mandatory attributes :
+ *   + `amount` (Number): the amount of the bill used to match bank operations
+ *   + `date` (Date): the date of the bill also used to match bank operations
+ *   + `vendor` (String): the name of the vendor associated to the bill. Ex: 'trainline'
+ *   You can also pass attributes expected by `saveFiles`
+ *   Please take a look at [io.cozy.bills doctype documentation](https://github.com/cozy/cozy-doctypes/blob/master/docs/io.cozy.bills.md)
  * - `fields` (object) this is the first parameter given to BaseKonnector's constructor
  * - `options` is passed directly to `saveFiles`, `hydrateAndFilter`, `addData` and `linkBankOperations`.
  *
