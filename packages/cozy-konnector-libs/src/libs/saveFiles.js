@@ -30,6 +30,7 @@
 const bluebird = require('bluebird')
 const path = require('path')
 const request = require('./request')
+const omit = require('lodash/omit')
 const rq = request({
   json: false,
   headers: {
@@ -131,7 +132,8 @@ const saveEntry = function(entry, options) {
         return file
       },
       () => {
-        log('debug', entry)
+        log('debug', omit(entry, 'filestream'))
+        logFileStream(entry.filestream)
         log('debug', `File ${filepath} does not exist yet or is not valid`)
         return createFile(entry, options)
       }
@@ -192,7 +194,8 @@ function getFileName(entry) {
   if (entry.filename) {
     filename = entry.filename
   } else if (entry.filestream) {
-    log('debug', entry)
+    log('debug', omit(entry, 'filestream'))
+    logFileStream(entry.filestream)
     throw new Error('Missing filename property')
   } else {
     // try to get the file name from the url
@@ -223,4 +226,18 @@ function checkMimeWithPath(mime, filepath) {
     return false
   }
   return true
+}
+
+function logFileStream(fileStream) {
+  if (fileStream && fileStream.constructor && fileStream.constructor.name) {
+    log(
+      'info',
+      `The fileStream attribute is an instance of ${
+        fileStream.constructor.name
+      }`
+    )
+  } else {
+    log('info', `The fileStream attribute is a ${typeof fileStream}`)
+    // console.log(fileStream)
+  }
 }
