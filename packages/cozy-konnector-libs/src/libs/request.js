@@ -89,7 +89,7 @@ module.exports = function (options = {}) {
   if (options.cheerio) {
     // a lot of web service do not want to be called by robots and then check the user agent to
     // be sure they are called by a browser. This user agent works most of the time.
-    options.userAgent = true
+    if (options.userAgent === undefined) { options.userAgent = true }
     requestOptions.transform = function (body, response, resolveWithFullResponse) {
       let result = require('cheerio').load(body)
 
