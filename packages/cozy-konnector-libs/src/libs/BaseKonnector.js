@@ -53,38 +53,41 @@ class BaseKonnector {
    * If not fetch function is given. The connector will have to handle itself it's own exection and
    * error handling
    */
-  constructor (fetch) {
+  constructor(fetch) {
     if (typeof fetch === 'function') {
       this.fetch = fetch.bind(this)
       return this.run()
     }
   }
 
-  run () {
+  run() {
     return this.init()
-    .then(requiredFields =>  {
-      const prom = this.fetch(requiredFields)
-      if (!prom || !prom.then) {
-        log('warn', `A promise should be returned from the \`fetch\` function. Here ${prom} was returned`)
-        throw new Error('`fetch` should return a Promise')
-      }
-      return prom
-    })
-    .then(this.end)
-    .catch(this.fail.bind(this))
+      .then(requiredFields => {
+        const prom = this.fetch(requiredFields)
+        if (!prom || !prom.then) {
+          log(
+            'warn',
+            `A promise should be returned from the \`fetch\` function. Here ${prom} was returned`
+          )
+          throw new Error('`fetch` should return a Promise')
+        }
+        return prom
+      })
+      .then(this.end)
+      .catch(this.fail.bind(this))
   }
 
   /**
    * Hook called when the connector is ended
    */
-  end () {
+  end() {
     log('info', 'The connector has been run')
   }
 
   /**
    * Hook called when the connector fails
    */
-  fail (err) {
+  fail(err) {
     log('warn', 'Error caught by BaseKonnector')
 
     const error = err.message || err
@@ -100,47 +103,56 @@ class BaseKonnector {
    *
    * @return {Promise} with the fields as an object
    */
-  init () {
+  init() {
     const cozyFields = JSON.parse(process.env.COZY_FIELDS)
     log('debug', cozyFields, 'cozyFields in fetch')
 
     // First get the account related to the specified account id
-    return cozy.data.find('io.cozy.accounts', cozyFields.account)
-    .catch(err => {
-      log('error', err)
-      log('error', `Account ${cozyFields.account} does not exist`)
-      this.terminate('CANNOT_FIND_ACCOUNT')
-    })
-    .then(account => {
-      this.accountId = cozyFields.account
-      this._account = account
-
-      // folder ID will be stored in cozyFields.folder_to_save when first connection
-      const folderId = account.folderId || cozyFields.folder_to_save
-      if (!folderId) { // if no folder needed
-        log('debug', 'No folder needed')
-        return Promise.resolve(account)
-      }
-      return cozy.files.statById(folderId, false)
-      .then(folder => {
-        cozyFields.folder_to_save = folder.attributes.path
-        log('debug', folder, 'folder details')
-        return account
-      })
+    return cozy.data
+      .find('io.cozy.accounts', cozyFields.account)
       .catch(err => {
         log('error', err)
-        log('error', `error while getting the folder path of ${folderId}`)
-        this.terminate('NOT_EXISTING_DIRECTORY')
-        return {} // to avoid having an undefined account for next part
+        log('error', `Account ${cozyFields.account} does not exist`)
+        this.terminate('CANNOT_FIND_ACCOUNT')
       })
-    })
-    .then(account => {
-      this.fields = Object.assign(cozyFields.folder_to_save ? {
-        folderPath: cozyFields.folder_to_save
-      } : {}, account.auth, account.oauth)
+      .then(account => {
+        this.accountId = cozyFields.account
+        this._account = account
 
-      return this.fields
-    })
+        // folder ID will be stored in cozyFields.folder_to_save when first connection
+        const folderId = cozyFields.folder_to_save || account.folderId
+        if (!folderId) {
+          // if no folder needed
+          log('debug', 'No folder needed')
+          return Promise.resolve(account)
+        }
+        return cozy.files
+          .statById(folderId, false)
+          .then(folder => {
+            cozyFields.folder_to_save = folder.attributes.path
+            log('debug', folder, 'folder details')
+            return account
+          })
+          .catch(err => {
+            log('error', err)
+            log('error', `error while getting the folder path of ${folderId}`)
+            this.terminate('NOT_EXISTING_DIRECTORY')
+            return {} // to avoid having an undefined account for next part
+          })
+      })
+      .then(account => {
+        this.fields = Object.assign(
+          cozyFields.folder_to_save
+            ? {
+                folderPath: cozyFields.folder_to_save
+              }
+            : {},
+          account.auth,
+          account.oauth
+        )
+
+        return this.fields
+      })
   }
 
   /**
@@ -158,12 +170,13 @@ class BaseKonnector {
    * @param  {object} options - { merge: true|false }
    * @return {Promise}
    */
-  saveAccountData (data, options) {
+  saveAccountData(data, options) {
     options = options || {}
     options.merge = options.merge === undefined ? true : options.merge
     const start = options.merge ? Object.assign({}, this.getAccountData()) : {}
     const newData = Object.assign({}, start, data)
-    return cozy.data.updateAttributes('io.cozy.accounts', this.accountId, {data: newData})
+    return cozy.data
+      .updateAttributes('io.cozy.accounts', this.accountId, { data: newData })
       .then(account => {
         this._account = account
         return account.data
@@ -175,7 +188,7 @@ class BaseKonnector {
    *
    * @return {object}
    */
-  getAccountData () {
+  getAccountData() {
     return new Secret(this._account.data || {})
   }
 
@@ -185,7 +198,7 @@ class BaseKonnector {
    *
    * @param  {string} message - The error code to be saved as connector result see [docs/ERROR_CODES.md]
    */
-  terminate (err) {
+  terminate(err) {
     log('error', err)
     log('critical', err)
     captureExceptionAndDie(err)

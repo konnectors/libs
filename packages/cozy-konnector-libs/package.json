@@ -20,7 +20,6 @@
   "dependencies": {
     "babel-cli": "^6.26.0",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "babel-preset-env": "^1.6.0",
     "bluebird": "^3.5.0",
     "bluebird-retry": "^0.11.0",
     "btoa": "^1.1.2",
@@ -38,10 +37,10 @@
     "lodash": "4.17.10",
     "moment": "^2.18.1",
     "opn": "^5.1.0",
-    "raven": "^2.4.0",
+    "raven": "2.6.1",
     "regenerator-runtime": "^0.11.0",
     "replay": "^2.1.2",
-    "request": "^2.81.0",
+    "request": "2.86.0",
     "request-debug": "^0.2.0",
     "request-promise": "^4.2.1",
     "uuid": "^3.1.0"
@@ -64,8 +63,10 @@
     ]
   },
   "devDependencies": {
-    "body-parser": "1.18.2",
-    "cross-env": "5.1.4",
+    "babel-preset-env": "1.7.0",
+    "body-parser": "1.18.3",
+    "cross-env": "5.1.5",
+    "eslint-config-cozy-app": "0.7.1",
     "express": "4.16.3",
     "lerna": "2.11.0"
   },
