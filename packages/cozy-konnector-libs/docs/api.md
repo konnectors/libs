@@ -199,8 +199,7 @@ file name will be &quot;smartly&quot; guessed by the function. Use this attribut
 enough for you.</li>
 </ul>
 </li>
-<li><p><code>folderPath</code> (string) is relative to the main path given by the <code>cozy-collect</code> application to the connector. If the connector is run
-in standalone mode, the main path is the path of the connector.</p>
+<li><p><code>fields</code> (object) is the fields passed by BaseKonnector to the start function.</p>
 </li>
 <li><p><code>options</code> (object) is optional. Possible options :</p>
 <ul>
@@ -575,8 +574,7 @@ You need the full permission on `io.cozy.files` in your manifest to use this fun
     file name will be "smartly" guessed by the function. Use this attribute if the guess is not smart
   enough for you.
 
-- `folderPath` (string) is relative to the main path given by the `cozy-collect` application to the connector. If the connector is run
-in standalone mode, the main path is the path of the connector.
+- `fields` (object) is the fields passed by BaseKonnector to the start function.
 
 - `options` (object) is optional. Possible options :
 
