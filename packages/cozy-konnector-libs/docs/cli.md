@@ -1,16 +1,17 @@
 ### CLI
 
-`cozy-konnector-libs` also comes with some cli tools which allow to run your connector in standalone
-or development mode
+There is a specific npm package which provides cli tools to allow to run your connector in
+standalone or development mode : cozy-jobs-cli. You can install it in your connector as a dev
+dependency.
 
-#### cozy-konnector-standalone
+#### cozy-run-standalone
 
-If you just want to test your connector without any cozy available. Just add the following code in
+If you just want to test your connector without any cozy available, add the following code in
 the `scripts` section of your package.json file
 
 ```javascript
   scripts: {
-    standalone: "cozy-konnector-standalone"
+    standalone: "cozy-run-standalone"
   }
 ```
 
@@ -25,7 +26,7 @@ and when cozy-client-js is asked to create or update data, the data will be outp
 The bills (or any file) will be saved in the . directory.
 
 It is possible to add an argument to this command which tells which file to run. Default is
-defined in `package.json` `main` section or ./index.js
+defined in `package.json` `main` section or ./src/index.js
 
 It is possible to record and replay the requests done by the standalone command using the
 [replay](https://github.com/assaf/node-replay) module.
@@ -33,7 +34,7 @@ It is possible to record and replay the requests done by the standalone command 
 ##### Arguments
 
 ```
-Usage: cozy-konnector-standalone [options] <file>
+Usage: cozy-run-standalone [options] <file>
 
 
 Options:
@@ -44,14 +45,14 @@ Options:
 ```
 
 
-#### cozy-konnector-dev
+#### cozy-run-dev
 
 If you want to run your connector linked to a cozy-stack, even remotely. Just add the follwing code
 in the `scripts` section of your package.json file:
 
 ```javascript
   scripts: {
-    dev: "cozy-konnector-dev"
+    dev: "cozy-run-dev"
   }
 ```
 
@@ -71,13 +72,13 @@ the target service. You can do this also in [./konnector-dev-config.json] in the
 The files are saved in the root directory of your cozy by default.
 
 It is also possible to add an argument to this command which tells which file to run. Default is
-defined in `package.json` `main` section or ./index.js
+defined in `package.json` `main` section or ./src/index.js
 
 
 ##### Arguments
 
 ```
-$ cozy-konnector-dev <file> [-t token.json] [-m manifest.webapp]
+$ cozy-run-dev <file> [-t token.json] [-m manifest.webapp]
 ```
 
 As for the `standalone` command, you can specify which file to run. Default is `./index.js`.
