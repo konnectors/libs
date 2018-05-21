@@ -845,6 +845,50 @@ Scrape a cheerio object for properties
 | spec(s) | <code>object</code> \| <code>string</code> | Options object describing what you want to scrape |
 | [childSelector] | <code>string</code> | If passed, scrape will return an array of items |
 
+**Example**  
+`scrape` can be used to declaratively extract data :
+
+- For one object :
+
+```
+const item = scrape($('#item'), {
+  title: '.title',
+  content: '.content'
+})
+```
+
+- For a list of objects :
+
+```
+const items = scrape($('#content'), {
+  title: '.title',
+  content: '.content'
+}, '.item')
+```
+
+For more power, you can use `object`s for each retriever :
+
+```
+const items = scrape($('#content'), {
+  title: '.title',
+  content: '.content',
+  link: {
+    sel: 'a',
+    attr: 'href'
+  },
+}, '.item')
+```
+
+Here the `href` attribute of the `a` inside `.item`s would have been
+put into the `link` attribute of the items returned by `scrape`.
+
+Available options :
+
+- `sel`: the CSS selector used to target the HTML node from which data will be scraped
+- `attr`: the HTML attribute from which to extract data
+- `parse`: function applied to the value extracted (`{ sel: '.price', parse: parseAmount }`)
+- `fn`: if you need something more complicated than `attr`, you can use this function, it receives
+the complete DOM node. `{ sel: '.person', fn: $node => $node.attr('data-name') + $node.attr('data-firstname') }`
 
 
 ### ⚠ Permissions
