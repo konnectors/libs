@@ -10,8 +10,7 @@
  *     file name will be "smartly" guessed by the function. Use this attribute if the guess is not smart
  *   enough for you.
  *
- * - `folderPath` (string) is relative to the main path given by the `cozy-collect` application to the connector. If the connector is run
- * in standalone mode, the main path is the path of the connector.
+ * - `fields` (object) is the fields passed by BaseKonnector to the start function.
  *
  * - `options` (object) is optional. Possible options :
  *
