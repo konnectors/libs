@@ -65,7 +65,7 @@
   "devDependencies": {
     "babel-preset-env": "1.7.0",
     "body-parser": "1.18.3",
-    "cross-env": "5.1.5",
+    "cross-env": "5.1.6",
     "eslint-config-cozy-app": "0.7.3",
     "express": "4.16.3",
     "lerna": "2.11.0"
