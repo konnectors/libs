@@ -1,4 +1,6 @@
 const program = require('commander')
+const fs = require('fs')
+const path = require('path')
 
 program
   .usage('[options] <file>')
@@ -23,7 +25,16 @@ initReplay()
 
 // sentry is not needed in dev mode
 process.env.SENTRY_DSN = 'false'
-require(require('path').resolve(filename))
+
+if (fs.existsSync(path.resolve(filename))) {
+  require(require('path').resolve(filename))
+} else {
+  console.log(
+    `ERROR: File ${path.resolve(
+      filename
+    )} does not exist. cozy-run-standalone cannot run it.`
+  )
+}
 
 /**
  * Inits the replay module

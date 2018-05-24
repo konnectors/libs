@@ -59,7 +59,13 @@ authenticate({ tokenPath: token, manifestPath: manifest })
   // sentry is not needed in dev mode
   process.env.SENTRY_DSN = 'false'
 
-  return require(file)
+  if (fs.existsSync(file)) {
+    return require(file)
+  } else {
+    console.log(
+      `ERROR: File ${file} does not exist. cozy-run-dev cannot run it.`
+    )
+  }
 })
 .catch(err => {
   console.log(err, 'unexpected error')
