@@ -13,7 +13,7 @@ process.env.NODE_ENV = 'standalone'
 if (!process.env.DEBUG) process.env.DEBUG = '*'
 
 process.env.COZY_FIELDS = JSON.stringify({
-  folder_to_save: '.'
+  folder_to_save: './data'
 })
 
 const config = require('./init-konnector-config')()

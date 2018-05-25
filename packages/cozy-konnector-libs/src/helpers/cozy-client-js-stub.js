@@ -5,6 +5,8 @@ const uuid = require('uuid/v5')
 const sha1 = require('uuid/lib/sha1')
 const bytesToUuid = require('uuid/lib/bytesToUuid')
 const mimetypes = require('mime-types')
+const rootPath = JSON.parse(process.env.COZY_FIELDS || '{"folder_to_save": "."}').folder_to_save
+if (!fs.existsSync(rootPath)) fs.mkdirSync(rootPath)
 
 let fixture = {}
 const FIXTURE_PATH = path.resolve('fixture.json')
@@ -122,8 +124,8 @@ module.exports = {
       // check this path in .
       return new Promise((resolve, reject) => {
         log('debug', `Checking if ${pathToCheck} exists`)
-         if(pathToCheck === "/") return resolve({ _id: '.' });
-        const realpath = path.join('.', pathToCheck)
+        if(pathToCheck === "/") return resolve({ _id: '.' });
+        const realpath = path.join(rootPath, pathToCheck)
         log('debug', `Real path : ${realpath}`)
         if (fs.existsSync(realpath)) {
           resolve({_id: pathToCheck})
@@ -141,7 +143,7 @@ module.exports = {
     create (file, options) {
       return new Promise((resolve, reject) => {
         log('debug', `Creating new file ${options.name}`)
-        const finalPath = path.join('.', options.dirID, options.name)
+        const finalPath = path.join(rootPath, options.dirID, options.name)
         log('debug', `Real path : ${finalPath}`)
         let writeStream = fs.createWriteStream(finalPath)
         file.pipe(writeStream)
@@ -167,10 +169,11 @@ module.exports = {
     createDirectory (options) {
       return new Promise(resolve => {
         log('info', `Creating new directory ${options.name}`)
-        const finalPath = path.join('.', options.dirID, options.name)
+        const finalPath = path.join(rootPath, options.dirID, options.name)
+        const returnPath = path.join(options.dirID, options.name)
         log('info', `Real path : ${finalPath}`)
         fs.mkdirSync(finalPath)
-        resolve({_id: finalPath, path: finalPath});
+        resolve({_id: returnPath, path: returnPath});
       })
     }
   }
