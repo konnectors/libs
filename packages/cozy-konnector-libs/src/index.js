@@ -14,6 +14,8 @@ module.exports = {
   linkBankOperations: require('./libs/linkBankOperations'),
   addData: require('./libs/addData'),
   hydrateAndFilter,
+  htmlToPDF: require('./libs/html2pdf').htmlToPDF,
+  createCozyPDFDocument: require('./libs/html2pdf').createCozyPDFDocument,
   filterData: deprecate(hydrateAndFilter, 'Use hydrateAndFilter now. filterData will be removed in cozy-konnector-libs@4'),
   updateOrCreate: require('./libs/updateOrCreate'),
   request: deprecate(requestFactory, 'Use requestFactory instead of request. It will be removed in cozy-konnector-libs@4'),
