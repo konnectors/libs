@@ -5,7 +5,9 @@ const uuid = require('uuid/v5')
 const sha1 = require('uuid/lib/sha1')
 const bytesToUuid = require('uuid/lib/bytesToUuid')
 const mimetypes = require('mime-types')
-const rootPath = JSON.parse(process.env.COZY_FIELDS || '{"folder_to_save": "."}').folder_to_save
+const rootPath = JSON.parse(
+  process.env.COZY_FIELDS || '{"folder_to_save": "."}'
+).folder_to_save
 if (!fs.existsSync(rootPath)) fs.mkdirSync(rootPath)
 
 let fixture = {}
@@ -19,7 +21,10 @@ let DUMP_PATH = 'importedData.json'
 const KONNECTOR_DEV_CONFIG_PATH = path.resolve('konnector-dev-config.json')
 if (fs.existsSync(KONNECTOR_DEV_CONFIG_PATH)) {
   const KONNECTOR_DEV_CONFIG = require(KONNECTOR_DEV_CONFIG_PATH)
-  DUMP_PATH = path.join(KONNECTOR_DEV_CONFIG.fields.folderPath || '.', DUMP_PATH)
+  DUMP_PATH = path.join(
+    KONNECTOR_DEV_CONFIG.fields.folderPath || '.',
+    DUMP_PATH
+  )
 }
 // Truncate dump file
 fs.writeFileSync(DUMP_PATH, '[]', 'utf8')
@@ -34,51 +39,51 @@ function loadImportedDataJSON() {
 }
 
 function dumpJSON(data) {
-    return JSON.stringify(data, null, 2)
+  return JSON.stringify(data, null, 2)
 }
 
 module.exports = {
-  fetchJSON () {
+  fetchJSON() {
     return Promise.resolve({
-      rows: [],
+      rows: []
     })
   },
   data: {
-    create (doctype, item) {
+    create(doctype, item) {
       log('info', item, `creating ${doctype}`)
       const ns = bytesToUuid(sha1(doctype))
       const _id = uuid(dumpJSON(item), ns).replace(/-/gi, '')
 
       // Dump created data in the imported data JSON dump
       const docStore = loadImportedDataJSON()
-      const obj = Object.assign({}, item, {_id})
+      const obj = Object.assign({}, item, { _id })
       docStore.push(obj)
       fs.writeFileSync(DUMP_PATH, dumpJSON(docStore), 'utf8')
 
       return Promise.resolve(obj)
     },
-    updateAttributes (doctype, id, attrs) {
+    updateAttributes(doctype, id, attrs) {
       log('info', attrs, `updating ${id} in ${doctype}`)
 
       // Update the imported data JSON dump
       const docStore = loadImportedDataJSON()
-      const index = docStore.findIndex(function (item) {
+      const index = docStore.findIndex(function(item) {
         return item._id === id
       })
       let obj = {}
       if (index > -1) {
-        obj = Object.assign(docStore[index], attrs, {_id: id})
+        obj = Object.assign(docStore[index], attrs, { _id: id })
         docStore[index] = obj
       } else {
-        obj = Object.assign({}, attrs, {_id: id})
+        obj = Object.assign({}, attrs, { _id: id })
       }
       fs.writeFileSync(DUMP_PATH, dumpJSON(docStore), 'utf8')
       return Promise.resolve(obj)
     },
-    defineIndex (doctype) {
-      return Promise.resolve({doctype})
+    defineIndex(doctype) {
+      return Promise.resolve({ doctype })
     },
-    query (index) {
+    query(index) {
       let result = null
       if (fixture[index.doctype]) {
         result = fixture[index.doctype]
@@ -87,7 +92,7 @@ module.exports = {
       }
       return Promise.resolve(result)
     },
-    findAll (doctype) {
+    findAll(doctype) {
       let result = null
       if (fixture[doctype]) {
         result = fixture[doctype]
@@ -96,39 +101,41 @@ module.exports = {
       }
       return Promise.resolve(result)
     },
-    delete () {
+    delete() {
       return Promise.resolve({})
     },
-    find (doctype, id) {
+    find(doctype, id) {
       // Find the doc in the fixture
       // exeption for "io.cozy.accounts" doctype where we return konnector-dev-config.json content
       let result = null
       if (doctype === 'io.cozy.accounts') {
         const configPath = path.resolve('konnector-dev-config.json')
         const config = require(configPath)
-        result = {auth: config.fields}
+        result = { auth: config.fields }
       } else {
-        return Promise.reject(new Error('find is not implemented yet in cozy-client-js stub'))
+        return Promise.reject(
+          new Error('find is not implemented yet in cozy-client-js stub')
+        )
       }
       return Promise.resolve(result)
     },
-    listReferencedFiles () {
+    listReferencedFiles() {
       return Promise.resolve([])
     },
-    addReferencedFiles () {
+    addReferencedFiles() {
       return Promise.resolve({})
     }
   },
   files: {
-    statByPath (pathToCheck) {
+    statByPath(pathToCheck) {
       // check this path in .
       return new Promise((resolve, reject) => {
         log('debug', `Checking if ${pathToCheck} exists`)
-        if(pathToCheck === "/") return resolve({ _id: '.' });
+        if (pathToCheck === '/') return resolve({ _id: '.' })
         const realpath = path.join(rootPath, pathToCheck)
         log('debug', `Real path : ${realpath}`)
         if (fs.existsSync(realpath)) {
-          resolve({_id: pathToCheck})
+          resolve({ _id: pathToCheck })
         } else {
           const err = new Error(`${pathToCheck} does not exist`)
           err.status = 404
@@ -136,11 +143,11 @@ module.exports = {
         }
       })
     },
-    statById (idToCheck) {
+    statById(idToCheck) {
       // just return the / path for dev purpose
-      return Promise.resolve({attributes: {path: '/'}})
+      return Promise.resolve({ attributes: { path: '/' } })
     },
-    create (file, options) {
+    create(file, options) {
       return new Promise((resolve, reject) => {
         log('debug', `Creating new file ${options.name}`)
         const finalPath = path.join(rootPath, options.dirID, options.name)
@@ -166,14 +173,14 @@ module.exports = {
         })
       })
     },
-    createDirectory (options) {
+    createDirectory(options) {
       return new Promise(resolve => {
         log('info', `Creating new directory ${options.name}`)
         const finalPath = path.join(rootPath, options.dirID, options.name)
         const returnPath = path.join(options.dirID, options.name)
         log('info', `Real path : ${finalPath}`)
         fs.mkdirSync(finalPath)
-        resolve({_id: returnPath, path: returnPath});
+        resolve({ _id: returnPath, path: returnPath })
       })
     }
   }

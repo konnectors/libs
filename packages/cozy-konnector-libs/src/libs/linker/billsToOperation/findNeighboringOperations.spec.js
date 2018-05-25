@@ -5,12 +5,12 @@ import {
 jest.mock('../../cozyclient')
 const cozyClient = require('../../cozyclient')
 
-beforeEach(function () {
+beforeEach(function() {
   const INDEX = 'index'
   cozyClient.data.defineIndex.mockReturnValue(Promise.resolve(INDEX))
 })
 
-const asyncResolve = (value) => {
+const asyncResolve = value => {
   return new Promise(resolve => {
     setTimeout(() => {
       resolve(value)
@@ -21,12 +21,12 @@ const asyncResolve = (value) => {
 describe('findByMangoQuerySimple', () => {
   it('should work', () => {
     const operations = [
-      {amount: 5},
-      {amount: 6},
-      {amount: 7},
-      {amount: 8},
-      {amount: 9},
-      {amount: 10}
+      { amount: 5 },
+      { amount: 6 },
+      { amount: 7 },
+      { amount: 8 },
+      { amount: 9 },
+      { amount: 10 }
     ]
 
     const greaterThanSeven = findByMangoQuerySimple(operations, {
@@ -37,7 +37,6 @@ describe('findByMangoQuerySimple', () => {
       }
     })
     expect(greaterThanSeven.length).toBe(3)
-
 
     const equalToEight = findByMangoQuerySimple(operations, {
       selector: {
@@ -61,11 +60,11 @@ xdescribe('findNeighboringOperations', () => {
     cozyClient.data.query.mockReturnValueOnce(asyncResolve(ops3))
     const bill = {}
     const options = {}
-    return findNeighboringOperations(cozyClient, bill, options)
-      .then(operations => {
+    return findNeighboringOperations(cozyClient, bill, options).then(
+      operations => {
         expect(cozyClient.data.query.mock.calls.length).toBe(3)
         expect(operations.length).toBe(ops1.length + ops2.length + ops3.length)
-      })
+      }
+    )
   })
 })
-

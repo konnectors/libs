@@ -13,50 +13,51 @@ const asyncResolve = val => {
 logger.setLevel('critical')
 
 // TODO put in fixture file
-function getBillFixtures() { return [
-  {
-    amount: 20.09,
-    date: '2017-12-12T23:00:00.000Z',
-    vendor: 'Free Mobile',
-    type: 'phone',
-    fileurl:
-      'https://mobile.free.fr/moncompte/index.php?page=suiviconso&action=getFacture&format=dl&l=14730097&id=7c7dfbfc8707b75fb478f68a50b42fc6&date=20171213&multi=0',
-    filename: '201712_freemobile.pdf'
-  },
-  {
-    amount: 20.03,
-    date: '2018-01-12T23:00:00.000Z',
-    vendor: 'Free Mobile',
-    type: 'phone',
-    fileurl:
-      'https://mobile.free.fr/moncompte/index.php?page=suiviconso&action=getFacture&format=dl&l=14730097&id=29654a01acee829ccf09596cf856ac1d&date=20180113&multi=0',
-    filename: '201801_freemobile.pdf'
-  },
-  {
-    amount: 20.39,
-    date: '2017-01-12T23:00:00.000Z',
-    vendor: 'Free Mobile',
-    type: 'phone',
-    fileurl:
-      'https://mobile.free.fr/moncompte/index.php?page=suiviconso&action=getFacture&format=dl&l=14730097&id=0ca5e5537786bc548a87a89eba2a804a&date=20170113&multi=0',
-    filename: '201701_freemobile.pdf'
-  },
-  {
-    amount: 49.32,
-    date: '2018-03-03T23:00:00.000Z',
-    vendor: 'Free Mobile',
-    type: 'phone',
-    filestream: 'mock stream',
-    filename: '201701_freemobile.pdf'
-  }
-]
+function getBillFixtures() {
+  return [
+    {
+      amount: 20.09,
+      date: '2017-12-12T23:00:00.000Z',
+      vendor: 'Free Mobile',
+      type: 'phone',
+      fileurl:
+        'https://mobile.free.fr/moncompte/index.php?page=suiviconso&action=getFacture&format=dl&l=14730097&id=7c7dfbfc8707b75fb478f68a50b42fc6&date=20171213&multi=0',
+      filename: '201712_freemobile.pdf'
+    },
+    {
+      amount: 20.03,
+      date: '2018-01-12T23:00:00.000Z',
+      vendor: 'Free Mobile',
+      type: 'phone',
+      fileurl:
+        'https://mobile.free.fr/moncompte/index.php?page=suiviconso&action=getFacture&format=dl&l=14730097&id=29654a01acee829ccf09596cf856ac1d&date=20180113&multi=0',
+      filename: '201801_freemobile.pdf'
+    },
+    {
+      amount: 20.39,
+      date: '2017-01-12T23:00:00.000Z',
+      vendor: 'Free Mobile',
+      type: 'phone',
+      fileurl:
+        'https://mobile.free.fr/moncompte/index.php?page=suiviconso&action=getFacture&format=dl&l=14730097&id=0ca5e5537786bc548a87a89eba2a804a&date=20170113&multi=0',
+      filename: '201701_freemobile.pdf'
+    },
+    {
+      amount: 49.32,
+      date: '2018-03-03T23:00:00.000Z',
+      vendor: 'Free Mobile',
+      type: 'phone',
+      filestream: 'mock stream',
+      filename: '201701_freemobile.pdf'
+    }
+  ]
 }
 
 const FOLDER_PATH = '/testfolder'
 const options = { folderPath: FOLDER_PATH }
 let bills
 
-beforeEach(async function () {
+beforeEach(async function() {
   const INDEX = 'index'
   bills = getBillFixtures()
   cozyClient.data.defineIndex.mockReturnValue(() => asyncResolve(INDEX))
@@ -67,7 +68,7 @@ beforeEach(async function () {
   })
 })
 
-describe('saveFiles', function () {
+describe('saveFiles', function() {
   const makeFile = (_id, attributes) => ({ _id, attributes })
   const rightMimeFile = makeFile('existingFileId', {
     name: '201701_freemobile.pdf',
@@ -115,7 +116,9 @@ describe('saveFiles', function () {
       })
 
       // Whether a file should be created or not
-      it(`should${expectCreation ? ' ' : ' not '}create a file`, async function () {
+      it(`should${
+        expectCreation ? ' ' : ' not '
+      }create a file`, async function() {
         if (expectCreation) {
           expect(cozyClient.files.create).toHaveBeenCalledTimes(bills.length)
         } else {
@@ -141,13 +144,15 @@ describe('saveFiles', function () {
     })
   }
 
-  const billWithoutFilename = [{
-    amount: 62.93,
-    date: '2018-03-03T23:00:00.000Z',
-    vendor: 'Free Mobile',
-    type: 'phone',
-    filestream: 'mock stream'
-  }]
+  const billWithoutFilename = [
+    {
+      amount: 62.93,
+      date: '2018-03-03T23:00:00.000Z',
+      vendor: 'Free Mobile',
+      type: 'phone',
+      filestream: 'mock stream'
+    }
+  ]
   describe('when filestream is used without filename', () => {
     it('should throw an error', async () => {
       expect.assertions(2)
@@ -160,13 +165,15 @@ describe('saveFiles', function () {
     })
   })
 
-  const billWithoutStreamUrlAndRequestOptions = [{
-    amount: 62.93,
-    date: '2018-03-03T23:00:00.000Z',
-    vendor: 'Free Mobile',
-    type: 'phone'
-  }]
-  describe('when entry doesn\'t have file creation information', () => {
+  const billWithoutStreamUrlAndRequestOptions = [
+    {
+      amount: 62.93,
+      date: '2018-03-03T23:00:00.000Z',
+      vendor: 'Free Mobile',
+      type: 'phone'
+    }
+  ]
+  describe("when entry doesn't have file creation information", () => {
     it('should do nothing', async () => {
       expect.assertions(1)
       await saveFiles(billWithoutStreamUrlAndRequestOptions, options)

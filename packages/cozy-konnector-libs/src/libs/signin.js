@@ -45,16 +45,14 @@ const log = require('cozy-logger').namespace('cozy-konnector-libs')
 const requestFactory = require('./request')
 const cheerio = require('cheerio')
 
-module.exports = function signin (
-  {
-    url,
-    formSelector,
-    formData = {},
-    parse = 'cheerio',
-    validate = defaultValidate,
-    ...requestOpts
-  } = {})
-{
+module.exports = function signin({
+  url,
+  formSelector,
+  formData = {},
+  parse = 'cheerio',
+  validate = defaultValidate,
+  ...requestOpts
+} = {}) {
   // Check for mandatory arguments
   if (url === undefined) {
     throw 'signin: `url` must be defined'
@@ -72,16 +70,22 @@ module.exports = function signin (
 
   return rq({
     uri: url,
-    transform: (body) => cheerio.load(body)
-  }).catch(handleRequestErrors)
+    transform: body => cheerio.load(body)
+  })
+    .catch(handleRequestErrors)
     .then($ => {
-      const data = (typeof formData === 'function' ? formData($) : formData)
+      const data = typeof formData === 'function' ? formData($) : formData
       const [action, inputs] = parseForm($, formSelector, url)
       for (let name in data) {
         inputs[name] = data[name]
       }
 
-      return submitForm(rq, require('url').resolve(url, action), inputs, parseBody)
+      return submitForm(
+        rq,
+        require('url').resolve(url, action),
+        inputs,
+        parseBody
+      )
     })
     .then(([statusCode, parsedBody]) => {
       if (!validate(statusCode, parsedBody)) {
@@ -92,18 +96,18 @@ module.exports = function signin (
     })
 }
 
-function defaultValidate (statusCode, body) {
+function defaultValidate(statusCode, body) {
   return statusCode === 200
 }
 
-function getStrategy (parseStrategy) {
+function getStrategy(parseStrategy) {
   switch (parseStrategy) {
     case 'cheerio':
       return cheerio.load
     case 'json':
       return JSON.parse
     case 'raw':
-      return (body) => body
+      return body => body
     default:
       const err = `signin: parsing strategy \`${parseStrategy}\` unknown. `
       const hint = 'Use one of `raw`, `cheerio` or `json`'
@@ -112,7 +116,7 @@ function getStrategy (parseStrategy) {
   }
 }
 
-function parseForm ($, formSelector, currentUrl) {
+function parseForm($, formSelector, currentUrl) {
   const form = $(formSelector).first()
   const action = form.attr('action') || currentUrl
 
@@ -130,7 +134,7 @@ function parseForm ($, formSelector, currentUrl) {
   return [action, inputs]
 }
 
-function submitForm (rq, uri, inputs, parseBody) {
+function submitForm(rq, uri, inputs, parseBody) {
   return rq({
     uri: uri,
     method: 'POST',
@@ -138,12 +142,14 @@ function submitForm (rq, uri, inputs, parseBody) {
       ...inputs
     },
     transform: (body, response) => [response.statusCode, parseBody(body)]
-  })
-    .catch(handleRequestErrors)
+  }).catch(handleRequestErrors)
 }
 
-function handleRequestErrors (err) {
-  if (err instanceof rerrors.RequestError || err instanceof rerrors.StatusCodeError) {
+function handleRequestErrors(err) {
+  if (
+    err instanceof rerrors.RequestError ||
+    err instanceof rerrors.StatusCodeError
+  ) {
     log('error', err)
     throw errors.VENDOR_DOWN
   } else {

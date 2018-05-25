@@ -16,9 +16,15 @@ module.exports = {
   hydrateAndFilter,
   htmlToPDF: require('./libs/html2pdf').htmlToPDF,
   createCozyPDFDocument: require('./libs/html2pdf').createCozyPDFDocument,
-  filterData: deprecate(hydrateAndFilter, 'Use hydrateAndFilter now. filterData will be removed in cozy-konnector-libs@4'),
+  filterData: deprecate(
+    hydrateAndFilter,
+    'Use hydrateAndFilter now. filterData will be removed in cozy-konnector-libs@4'
+  ),
   updateOrCreate: require('./libs/updateOrCreate'),
-  request: deprecate(requestFactory, 'Use requestFactory instead of request. It will be removed in cozy-konnector-libs@4'),
+  request: deprecate(
+    requestFactory,
+    'Use requestFactory instead of request. It will be removed in cozy-konnector-libs@4'
+  ),
   requestFactory,
   retry: require('bluebird-retry'),
   wrapIfSentrySetUp: require('./helpers/sentry').wrapIfSentrySetUp,
@@ -29,8 +35,8 @@ module.exports = {
   normalizeFilename: require('./libs/normalizeFilename')
 }
 
-function deprecate (wrapped, message) {
-  return function () {
+function deprecate(wrapped, message) {
+  return function() {
     log('warn', message)
     return wrapped.apply(this, arguments)
   }

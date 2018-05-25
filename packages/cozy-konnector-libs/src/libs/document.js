@@ -1,22 +1,21 @@
-const isEqualWith = require("lodash/isEqualWith");
-const omit = require("lodash/omit");
+const isEqualWith = require('lodash/isEqualWith')
+const omit = require('lodash/omit')
 
 const maybeToISO = date => {
   try {
-    return date.toISOString ? date.toISOString() : date;
+    return date.toISOString ? date.toISOString() : date
   } catch (e) {
-    return date;
+    return date
   }
-};
+}
 
 const looseDates = (val, otherVal) => {
   // Loose equality for dates since when coming from Couch, they
   // are ISO strings whereas just after scraping they are `Date`s.
   if (val instanceof Date) {
-    return maybeToISO(val) === maybeToISO(otherVal);
+    return maybeToISO(val) === maybeToISO(otherVal)
   }
-};
-
+}
 
 /**
  * Simple Model for Documents. Allows to specify
@@ -28,18 +27,18 @@ const looseDates = (val, otherVal) => {
 class Document {
   constructor(attrs) {
     if (this.validate) {
-      this.validate(attrs);
+      this.validate(attrs)
     }
     Object.assign(this, attrs, {
       metadata: {
         version:
           (attrs.metadata && attrs.metadata.version) || this.constructor.version
       }
-    });
+    })
   }
 
   toJSON() {
-    return this;
+    return this
   }
 
   /**
@@ -51,12 +50,12 @@ class Document {
    * compare existing documents (dates in ISO string) with documents
    * that just have been scraped where dates are `Date`s.
    */
-  isEqual(other, ignoreAttrs = ["_id", "_rev"], strict = false) {
+  isEqual(other, ignoreAttrs = ['_id', '_rev'], strict = false) {
     return isEqualWith(
       omit(this, ignoreAttrs),
       omit(other, ignoreAttrs),
       !strict && looseDates
-    );
+    )
   }
 }
 

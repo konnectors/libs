@@ -4,10 +4,12 @@ const path = require('path')
 
 program
   .usage('[options] <file>')
-  .option('--record', 'Record all the requests in the ./fixtures directory using the replay module')
+  .option(
+    '--record',
+    'Record all the requests in the ./fixtures directory using the replay module'
+  )
   .option('--replay', 'Replay all the recorded requests')
   .parse(process.argv)
-
 
 process.env.NODE_ENV = 'standalone'
 if (!process.env.DEBUG) process.env.DEBUG = '*'
@@ -19,7 +21,8 @@ process.env.COZY_FIELDS = JSON.stringify({
 const config = require('./init-konnector-config')()
 process.env.COZY_URL = config.COZY_URL
 
-const filename = program.args[0] || process.env.npm_package_main || './src/index.js'
+const filename =
+  program.args[0] || process.env.npm_package_main || './src/index.js'
 
 initReplay()
 
@@ -53,9 +56,8 @@ function initReplay() {
   const replayOption = ['record', 'replay'].find(opt => program[opt] === true)
   if (replayOption) process.env.REPLAY = replayOption
 
-  process.env.REPLAY = replayOption || (process.env.REPLAY
-        ? process.env.REPLAY
-        : 'bloody')
+  process.env.REPLAY =
+    replayOption || (process.env.REPLAY ? process.env.REPLAY : 'bloody')
 
   require('replay')
 }
