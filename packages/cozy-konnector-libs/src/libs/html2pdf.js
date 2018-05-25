@@ -85,24 +85,33 @@ function htmlToPDF($, frag, $parent, opts) {
         case 'table': {
           text = null
           let width = computeWidth($el)
+          let tableState = {
+            tableWidth: width
+          }
           htmlToPDF(
             $,
             frag.table({
-              widths: new Array(width).map(() => '*'),
+              widths: Array.from(Array(width), () => '*'),
               borderWidth: 1
             }),
             $el,
-            Object.assign({}, opts, {
-              tableWidth: width
-            })
+            Object.assign({}, opts, { tableState })
           )
           break
         }
 
-        case 'tr':
+        case 'tr': {
           text = null
-          htmlToPDF($, frag.row(), $el, opts)
+          opts.tableState.colRemaining = opts.tableState.tableWidth
+          let row = frag.row()
+          htmlToPDF($, row, $el, opts)
+          if (opts.tableState.colRemaining > 0) {
+            row.cell({
+              colspan: opts.tableState.colRemaining
+            })
+          }
           break
+        }
 
         case 'dl':
           text = null
@@ -117,18 +126,21 @@ function htmlToPDF($, frag, $parent, opts) {
         case 'dt':
         case 'dd':
         case 'th':
-        case 'td':
+        case 'td': {
           text = null
+          const colspan = parseInt($el.attr('colspan')) || 1
+          opts.tableState.colRemaining -= colspan
           htmlToPDF(
             $,
             frag.cell({
               padding: 5,
-              colspan: parseInt($el.attr('colspan')) || 1
+              colspan: colspan
             }),
             $el,
             opts
           )
           break
+        }
 
         case 'h1':
         case 'h2':
@@ -186,7 +198,7 @@ function createCozyPDFDocument(headline, url) {
   return doc
 }
 
-module.expots = {
+module.exports = {
   htmlToPDF,
   createCozyPDFDocument
 }
