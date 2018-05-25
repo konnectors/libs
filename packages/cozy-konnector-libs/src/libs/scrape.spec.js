@@ -19,72 +19,72 @@ const html = `
   <div class="title" href="title5">Header 5</div>
   <div class="content">Itaque debitis reiciendis nobis voluptatibus, aliquam, quidem in molestiae! In obcaecati ullam ratione molestias quidem voluptas neque tenetur, aut totam perspiciatis tempora animi maxime magni praesentium vitae, optio, iste nulla.</div>
 </div>
-`;
+`
 
-const cheerio = require("cheerio");
-const scrape = require("./scrape");
+const cheerio = require('cheerio')
+const scrape = require('./scrape')
 
-describe("scrape", () => {
-  let $;
+describe('scrape', () => {
+  let $
   beforeEach(() => {
-    $ = cheerio.load(html);
-  });
+    $ = cheerio.load(html)
+  })
 
-  it("should be able to scrape 1 element", () => {
-    const article = $(".article").eq(0);
-    const title = scrape(article, ".title");
-    expect(title).toBe("Header 1");
-  });
+  it('should be able to scrape 1 element', () => {
+    const article = $('.article').eq(0)
+    const title = scrape(article, '.title')
+    expect(title).toBe('Header 1')
+  })
 
-  it("should be able to parse", () => {
-    const article = $(".article").eq(0);
+  it('should be able to parse', () => {
+    const article = $('.article').eq(0)
     const title = scrape(article, {
-      sel: ".title",
+      sel: '.title',
       parse: val => val.toUpperCase()
-    });
-    expect(title).toBe("HEADER 1");
-  });
+    })
+    expect(title).toBe('HEADER 1')
+  })
 
-  it("should be able to return several properties", () => {
-    const article = $(".article").eq(0);
+  it('should be able to return several properties', () => {
+    const article = $('.article').eq(0)
     const specs = {
-      title: ".title",
-      titleHref: { sel: ".title", attr: "href" },
-      content: ".content"
-    };
+      title: '.title',
+      titleHref: { sel: '.title', attr: 'href' },
+      content: '.content'
+    }
 
-    const attrs = scrape(article, specs);
-    expect(attrs.title).toBe("Header 1");
-    expect(attrs.content.slice(0, 5)).toBe("Lorem");
-  });
+    const attrs = scrape(article, specs)
+    expect(attrs.title).toBe('Header 1')
+    expect(attrs.content.slice(0, 5)).toBe('Lorem')
+  })
 
-  it("should be able to scrape several elements", () => {
+  it('should be able to scrape several elements', () => {
     const specs = {
-      title: ".title",
-      titleHref: { sel: ".title", attr: "href" },
-      content: ".content"
-    };
+      title: '.title',
+      titleHref: { sel: '.title', attr: 'href' },
+      content: '.content'
+    }
 
-    const items = scrape($, specs, ".article");
-    expect(items[0].title).toBe("Header 1");
-    expect(items[0].titleHref).toBe("title1");
+    const items = scrape($, specs, '.article')
+    expect(items[0].title).toBe('Header 1')
+    expect(items[0].titleHref).toBe('title1')
 
-    const content = items[0].content;
-    const l = content.length;
-    expect(content.slice(0, 5)).toBe("Lorem");
-    expect(content.substr(l - 11, l)).toBe("laboriosam.");
-  });
+    const content = items[0].content
+    const l = content.length
+    expect(content.slice(0, 5)).toBe('Lorem')
+    expect(content.substr(l - 11, l)).toBe('laboriosam.')
+  })
 
-  it("should be possible to pass a custom function", () => {
+  it('should be possible to pass a custom function', () => {
     const specs = {
       title: {
-        sel: ".title",
+        sel: '.title',
         fn: $this => {
-          return $this.attr("href") + ":" + $this.text().trim();
+          return $this.attr('href') + ':' + $this.text().trim()
         }
       }
-    };
-    const item = scrape($(".article").eq(0), specs);
-    expect(item.title).toBe("title1:Header 1");
-  });
-});
+    }
+    const item = scrape($('.article').eq(0), specs)
+    expect(item.title).toBe('title1:Header 1')
+  })
+})

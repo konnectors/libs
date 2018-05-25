@@ -16,7 +16,7 @@ class DryLinker extends Linker {
 }
 
 const generate = async options => {
-  const bills = (await fetchAll('io.cozy.bills'))
+  const bills = await fetchAll('io.cozy.bills')
 
   const linker = new DryLinker(cozyClient)
   const results = await linker.linkBillsToOperations(bills, options)

@@ -49,7 +49,7 @@ module.exports = (entries, fields, options = {}) => {
   // Deduplicate on this keys
   options.keys = options.keys || ['date', 'amount', 'vendor']
 
-  options.postProcess = function (entry) {
+  options.postProcess = function(entry) {
     if (entry.fileDocument) {
       entry.invoice = `io.cozy.files:${entry.fileDocument._id}`
     }
@@ -61,5 +61,7 @@ module.exports = (entries, fields, options = {}) => {
   return saveFiles(entries, fields, options)
     .then(entries => hydrateAndFilter(entries, DOCTYPE, options))
     .then(entries => addData(entries, DOCTYPE, options))
-    .then(entries => linkBankOperations(originalEntries, DOCTYPE, fields, options))
+    .then(entries =>
+      linkBankOperations(originalEntries, DOCTYPE, fields, options)
+    )
 }

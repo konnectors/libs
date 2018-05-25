@@ -17,12 +17,16 @@ const type2color = {
   critical: 'red'
 }
 
-function prodFormat (type, message, label, namespace) {
+function prodFormat(type, message, label, namespace) {
   const log = { time: new Date(), type, label, namespace }
 
   if (typeof message === 'object') {
-    if (message.no_retry) { log.no_retry = message.no_retry }
-    if (message.message) {  log.message = message.message }
+    if (message.no_retry) {
+      log.no_retry = message.no_retry
+    }
+    if (message.message) {
+      log.message = message.message
+    }
   } else {
     log.message = message
   }
@@ -42,7 +46,7 @@ function prodFormat (type, message, label, namespace) {
   return result
 }
 
-function devFormat (type, message, label, namespace) {
+function devFormat(type, message, label, namespace) {
   let formatmessage = message
 
   if (typeof formatmessage !== 'string') {
