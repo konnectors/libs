@@ -50,6 +50,7 @@ module.exports = (entries, fields, options = {}) => {
   options.keys = options.keys || ['date', 'amount', 'vendor']
 
   options.postProcess = function(entry) {
+    entry.currency = convertCurrency(entry.currency)
     if (entry.fileDocument) {
       entry.invoice = `io.cozy.files:${entry.fileDocument._id}`
     }
@@ -64,4 +65,20 @@ module.exports = (entries, fields, options = {}) => {
     .then(entries =>
       linkBankOperations(originalEntries, DOCTYPE, fields, options)
     )
+}
+
+function convertCurrency(currency) {
+  if (currency) {
+    if (currency.includes('€')) {
+      return 'EUR'
+    } else if (currency.includes('$')) {
+      return 'USD'
+    } else if (currency.includes('£')) {
+      return 'GBP'
+    } else {
+      return currency
+    }
+  } else {
+    return 'EUR'
+  }
 }
