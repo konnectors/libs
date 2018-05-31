@@ -22,7 +22,7 @@ const KONNECTOR_DEV_CONFIG_PATH = path.resolve('konnector-dev-config.json')
 if (fs.existsSync(KONNECTOR_DEV_CONFIG_PATH)) {
   const KONNECTOR_DEV_CONFIG = require(KONNECTOR_DEV_CONFIG_PATH)
   DUMP_PATH = path.join(
-    KONNECTOR_DEV_CONFIG.fields.folderPath || '.',
+    KONNECTOR_DEV_CONFIG.fields.folderPath || './data',
     DUMP_PATH
   )
 }
@@ -55,8 +55,8 @@ module.exports = {
       const _id = uuid(dumpJSON(item), ns).replace(/-/gi, '')
 
       // Dump created data in the imported data JSON dump
-      const docStore = loadImportedDataJSON()
-      const obj = Object.assign({}, item, { _id })
+      const docStore = loadImportedDataJSON(doctype)
+      const obj = { ...item, _id, doctype }
       docStore.push(obj)
       fs.writeFileSync(DUMP_PATH, dumpJSON(docStore), 'utf8')
 
