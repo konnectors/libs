@@ -26,8 +26,22 @@ if (fs.existsSync(KONNECTOR_DEV_CONFIG_PATH)) {
     DUMP_PATH
   )
 }
-// Truncate dump file
-fs.writeFileSync(DUMP_PATH, '[]', 'utf8')
+
+const ensureImportedDataExists = () => {
+  // Truncate dump file
+  const initialContent = '[]'
+  const write = () => fs.writeFileSync(DUMP_PATH, initialContent, 'utf8');
+  try {
+    const content = fs.readFileSync(DUMP_PATH).toString()
+    if (content !== initialContent) {
+      write()
+    }
+  } catch (e) {
+    write()
+  }
+}
+
+ensureImportedDataExists()
 
 function loadImportedDataJSON() {
   let docStore = []
