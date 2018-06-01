@@ -30,14 +30,9 @@ if (fs.existsSync(KONNECTOR_DEV_CONFIG_PATH)) {
 const ensureImportedDataExists = () => {
   // Truncate dump file
   const initialContent = '[]'
-  const write = () => fs.writeFileSync(DUMP_PATH, initialContent, 'utf8');
-  try {
-    const content = fs.readFileSync(DUMP_PATH).toString()
-    if (content !== initialContent) {
-      write()
-    }
-  } catch (e) {
-    write()
+  const importedDataIsOK = fs.existsSync(DUMP_PATH) && fs.readFileSync(DUMP_PATH).toString() === initialContent
+  if (!importedDataIsOK) {
+    fs.writeFileSync(DUMP_PATH, initialContent, 'utf8')
   }
 }
 
