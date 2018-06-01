@@ -29,15 +29,8 @@
  */
 const bluebird = require('bluebird')
 const path = require('path')
-const request = require('./request')
+const requestFactory = require('./request')
 const omit = require('lodash/omit')
-const rq = request({
-  json: false,
-  headers: {
-    'User-Agent':
-      'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:36.0) Gecko/20100101 Firefox/36.0'
-  }
-})
 const log = require('cozy-logger').namespace('saveFiles')
 const cozy = require('./cozyclient')
 const mimetypes = require('mime-types')
@@ -60,6 +53,10 @@ const downloadEntry = function(entry, options) {
     entry.requestOptions
   )
 
+  const rq = requestFactory({
+    json: false,
+    cheerio: false
+  })
   let filePromise = rq(reqOptions)
 
   // we have to do this since the result of filePromise is not a stream and cannot be taken by
