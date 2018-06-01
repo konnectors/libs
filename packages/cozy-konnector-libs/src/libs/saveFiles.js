@@ -226,6 +226,8 @@ function checkMimeWithPath(mime, filepath) {
 }
 
 function logFileStream(fileStream) {
+  if (!fileStream) return
+
   if (fileStream && fileStream.constructor && fileStream.constructor.name) {
     log(
       'info',
