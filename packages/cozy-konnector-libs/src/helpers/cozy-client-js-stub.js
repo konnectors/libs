@@ -8,7 +8,6 @@ const mimetypes = require('mime-types')
 const rootPath = JSON.parse(
   process.env.COZY_FIELDS || '{"folder_to_save": "."}'
 ).folder_to_save
-if (!fs.existsSync(rootPath)) fs.mkdirSync(rootPath)
 
 let fixture = {}
 const FIXTURE_PATH = path.resolve('fixture.json')
@@ -22,21 +21,10 @@ const KONNECTOR_DEV_CONFIG_PATH = path.resolve('konnector-dev-config.json')
 if (fs.existsSync(KONNECTOR_DEV_CONFIG_PATH)) {
   const KONNECTOR_DEV_CONFIG = require(KONNECTOR_DEV_CONFIG_PATH)
   DUMP_PATH = path.join(
-    KONNECTOR_DEV_CONFIG.fields.folderPath || './data',
+    KONNECTOR_DEV_CONFIG.fields.folderPath || rootPath,
     DUMP_PATH
   )
 }
-
-const ensureImportedDataExists = () => {
-  // Truncate dump file
-  const initialContent = '[]'
-  const importedDataIsOK = fs.existsSync(DUMP_PATH) && fs.readFileSync(DUMP_PATH).toString() === initialContent
-  if (!importedDataIsOK) {
-    fs.writeFileSync(DUMP_PATH, initialContent, 'utf8')
-  }
-}
-
-ensureImportedDataExists()
 
 function loadImportedDataJSON() {
   let docStore = []
