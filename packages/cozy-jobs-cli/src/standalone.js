@@ -14,9 +14,17 @@ program
 process.env.NODE_ENV = 'standalone'
 if (!process.env.DEBUG) process.env.DEBUG = '*'
 
+const rootPath = path.resolve('./data')
+if (!fs.existsSync(rootPath)) fs.mkdirSync(rootPath)
 process.env.COZY_FIELDS = JSON.stringify({
-  folder_to_save: './data'
+  folder_to_save: rootPath
 })
+
+// ensure the importedData.json file exist or is initialized with default content
+let DUMP_PATH = path.join(rootPath, 'importedData')
+const initialContent = '[]'
+if (!fs.existsSync(DUMP_PATH))
+  fs.writeFileSync(DUMP_PATH, initialContent, 'utf8')
 
 const config = require('./init-konnector-config')()
 process.env.COZY_URL = config.COZY_URL

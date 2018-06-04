@@ -47,6 +47,7 @@
     "uuid": "^3.1.0"
   },
   "scripts": {
+    "build": "npm run transpile",
     "transpile": "babel src --out-dir dist",
     "prepublishOnly": "yarn run transpile",
     "lint": "standard --fix commands/* helpers/* libs/* index.js",
