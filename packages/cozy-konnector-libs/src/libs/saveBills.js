@@ -34,13 +34,17 @@
 const saveFiles = require('./saveFiles')
 const hydrateAndFilter = require('./hydrateAndFilter')
 const addData = require('./addData')
+const log = require('cozy-logger').namespace('saveBills')
 const linkBankOperations = require('./linkBankOperations')
 const DOCTYPE = 'io.cozy.bills'
 
 // Encapsulate the saving of Bills : saves the files, saves the new data, and associate the files
 // to an existing bank operation
 module.exports = (entries, fields, options = {}) => {
-  if (entries.length === 0) return Promise.resolve()
+  if (entries.length === 0) {
+    log('warn', 'saveBills: no bills to save')
+    return Promise.resolve()
+  }
 
   if (typeof fields === 'string') {
     fields = { folderPath: fields }
@@ -62,9 +66,7 @@ module.exports = (entries, fields, options = {}) => {
   return saveFiles(entries, fields, options)
     .then(entries => hydrateAndFilter(entries, DOCTYPE, options))
     .then(entries => addData(entries, DOCTYPE, options))
-    .then(entries =>
-      linkBankOperations(originalEntries, DOCTYPE, fields, options)
-    )
+    .then(() => linkBankOperations(originalEntries, DOCTYPE, fields, options))
 }
 
 function convertCurrency(currency) {

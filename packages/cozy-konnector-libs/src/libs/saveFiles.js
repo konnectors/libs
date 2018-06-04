@@ -97,13 +97,6 @@ const attachFileToEntry = function(entry, fileDocument) {
 }
 
 const saveEntry = function(entry, options) {
-  const canBeSaved = entry =>
-    entry.fileurl || entry.requestOptions || entry.filestream
-
-  if (!canBeSaved(entry)) {
-    return entry
-  }
-
   if (options.timeout && Date.now() > options.timeout) {
     const remainingTime = Math.floor((options.timeout - Date.now()) / 1000)
     log('info', `${remainingTime}s timeout finished for ${options.folderPath}`)
@@ -161,7 +154,10 @@ const saveEntry = function(entry, options) {
 }
 
 // Saves the files given in the fileurl attribute of each entries
-module.exports = (entries, fields, options = {}) => {
+module.exports = async (entries, fields, options = {}) => {
+  if (entries.length === 0) {
+    log('warn', 'No file to download')
+  }
   if (typeof fields !== 'object') {
     log(
       'debug',
@@ -178,11 +174,31 @@ module.exports = (entries, fields, options = {}) => {
     postProcessFile: options.postProcessFile,
     contentType: options.contentType
   }
+
+  const canBeSaved = entry =>
+    entry.fileurl || entry.requestOptions || entry.filestream
+
+  const saveableEntries = await bluebird.filter(entries, canBeSaved)
+
+  if (saveableEntries.length === 0) {
+    log('warn', 'saveFiles: no file to save')
+  }
+
+  let savedFiles = 0
   return bluebird
-    .mapSeries(entries, entry => saveEntry(entry, saveOptions))
+    .mapSeries(saveableEntries, async entry => {
+      entry = await saveEntry(entry, saveOptions)
+      savedFiles++
+      return entry
+    })
     .catch(err => {
       // do not count TIMEOUT error as an error outside
       if (err.message !== 'TIMEOUT') throw err
+    })
+    .finally(entries => {
+      const logType = savedFiles ? 'info' : 'warn'
+      log(logType, `saveFiles downloaded ${savedFiles} file(s)`)
+      return entries
     })
 }
 
