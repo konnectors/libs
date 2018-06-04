@@ -5,8 +5,7 @@
   "main": "src/index.js",
   "license": "MIT",
   "devDependencies": {
-    "chalk": "2.4.1",
-    "util": "0.10.3"
+    "chalk": "2.4.1"
   },
   "prettier": {
     "semi": false,
