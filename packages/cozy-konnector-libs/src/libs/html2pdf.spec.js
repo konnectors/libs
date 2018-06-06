@@ -51,4 +51,17 @@ describe('htmlToPDF', () => {
 
     htmlToPDF($, pdf, $('#root'))
   })
+
+  it('should handle colspan in header', () => {
+    const $ = cheerio.load(`
+      <div id="root">
+        <table>
+          <tr><td colspan=2>A</td><td>C</td></tr>
+          <tr><td>1</td><td>2</td><td>3</td></tr>
+        </table>
+      </div>
+    `)
+
+    htmlToPDF($, pdf, $('#root'))
+  })
 })

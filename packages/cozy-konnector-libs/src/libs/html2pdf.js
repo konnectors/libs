@@ -11,7 +11,7 @@ const computeWidth = $table => {
     .first()
     .find('td,th')
   for (var i = 0; i < tds.length; i++) {
-    out += tds.eq(i).attr('colspan') || 1
+    out += parseInt(tds.eq(i).attr('colspan')) || 1
   }
   return out
 }
