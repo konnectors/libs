@@ -49,12 +49,9 @@
 let request = require('request-promise')
 const requestdebug = require('request-debug')
 
-let singleton = null
 let requestClass = null
 
 module.exports = function(options = {}) {
-  if (singleton) return singleton
-
   if (request.Request) requestClass = request.Request
 
   const defaultOptions = {
