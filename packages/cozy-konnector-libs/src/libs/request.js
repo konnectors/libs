@@ -25,7 +25,6 @@
  *
  * - `jar`: is passed to `request` options. Remembers cookies for future use.
  * - `json`: will parse the `response.body` as JSON
- * - `json`: will parse the `response.body` as JSON
  * - `resolveWithFullResponse`: The full response will be return in the promise. It is compatible
  *   with cheerio and json options.
  *
@@ -49,11 +48,14 @@
 let request = require('request-promise')
 const requestdebug = require('request-debug')
 
-let requestClass = null
+module.exports = requestFactory
 
-module.exports = function(options = {}) {
-  if (request.Request) requestClass = request.Request
+function requestFactory({ debug, ...options }) {
+  debug && requestdebug(request)
+  return request.defaults(getRequestOptions(mergeDefaultOptions(options)))
+}
 
+function mergeDefaultOptions(options) {
   const defaultOptions = {
     debug: false,
     json: true,
@@ -62,68 +64,43 @@ module.exports = function(options = {}) {
     headers: {},
     followAllRedirects: true
   }
-
-  options = Object.assign(defaultOptions, options)
-
-  if (options.cheerio === true && !options.json) options.json = false
-
-  if (options.debug) {
-    // This avoids an error message comming from request-debug
-    // see https://github.com/request/request-debug/blob/0.2.0/index.js#L15
-    if (!request.Request) request.Request = requestClass
-    requestdebug(request)
-  }
-
-  const requestOptions = {}
-
-  requestOptions.json = options.json
-  requestOptions.jar = options.jar
-  requestOptions.headers = options.headers
-  requestOptions.followAllRedirects = options.followAllRedirects
-  requestOptions.strictSSL = options.strictSSL
-  requestOptions.encoding = options.encoding
-
-  if (options.cheerio) {
-    // a lot of web service do not want to be called by robots and then check the user agent to
-    // be sure they are called by a browser. This user agent works most of the time.
-    if (options.userAgent === undefined) {
-      options.userAgent = true
-    }
-    requestOptions.transform = function(
-      body,
-      response,
-      resolveWithFullResponse
-    ) {
-      let result = require('cheerio').load(body)
-
-      if (resolveWithFullResponse === true) {
-        response.body = result
-        result = response
-      }
-
-      return result
-    }
-  } else {
-    requestOptions.transform = function(
-      body,
-      response,
-      resolveWithFullResponse
-    ) {
-      let result = body
-      if (resolveWithFullResponse === true) {
-        result = response
-      }
-      return result
-    }
-  }
-
-  if (options.userAgent === true) {
-    requestOptions.headers['User-Agent'] =
-      'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:36.0) ' +
-      'Gecko/20100101 Firefox/36.0'
-  }
-
-  request = request.defaults(requestOptions)
-
-  return request
+  return { ...defaultOptions, ...options, json: !options.cheerio }
 }
+
+const transformWithCheerio = (body, response, resolveWithFullResponse) => {
+  const result = require('cheerio').load(body)
+  if (resolveWithFullResponse) {
+    return {
+      ...response,
+      body: result
+    }
+  }
+  return result
+}
+
+function getRequestOptions({ cheerio, userAgent, ...options }) {
+  return cheerio
+    ? {
+        ...options,
+        transform: transformWithCheerio,
+        headers: {
+          ...options.headers,
+          'User-Agent':
+            userAgent === undefined || userAgent
+              ? DEFAULT_USER_AGENT
+              : options.headers['User-Agent']
+        }
+      }
+    : {
+        ...options,
+        headers: {
+          ...options.headers,
+          'User-Agent': userAgent
+            ? DEFAULT_USER_AGENT
+            : options.headers['User-Agent']
+        }
+      }
+}
+
+const DEFAULT_USER_AGENT =
+  'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:36.0) Gecko/20100101 Firefox/36.0'
