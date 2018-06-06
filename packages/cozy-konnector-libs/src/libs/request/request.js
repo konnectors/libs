@@ -48,14 +48,19 @@
 let request = require('request-promise')
 const requestdebug = require('request-debug')
 
-module.exports = requestFactory
+exports = module.exports = {
+  default: requestFactory,
+  mergeDefaultOptions,
+  transformWithCheerio,
+  getRequestOptions
+}
 
 function requestFactory({ debug, ...options }) {
   debug && requestdebug(request)
   return request.defaults(getRequestOptions(mergeDefaultOptions(options)))
 }
 
-function mergeDefaultOptions(options) {
+function mergeDefaultOptions(options = {}) {
   const defaultOptions = {
     debug: false,
     json: true,
@@ -67,7 +72,7 @@ function mergeDefaultOptions(options) {
   return { ...defaultOptions, ...options, json: !options.cheerio }
 }
 
-const transformWithCheerio = (body, response, resolveWithFullResponse) => {
+function transformWithCheerio(body, response, resolveWithFullResponse) {
   const result = require('cheerio').load(body)
   if (resolveWithFullResponse) {
     return {
