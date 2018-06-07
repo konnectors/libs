@@ -23,7 +23,7 @@ process.env.COZY_FIELDS = JSON.stringify({
 })
 
 // ensure the importedData.json file exist or is initialized with default content
-let DUMP_PATH = path.join(rootPath, 'importedData')
+let DUMP_PATH = path.join(rootPath, 'importedData.json')
 const initialContent = '[]'
 if (!fs.existsSync(DUMP_PATH))
   fs.writeFileSync(DUMP_PATH, initialContent, 'utf8')
