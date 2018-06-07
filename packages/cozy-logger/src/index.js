@@ -8,7 +8,7 @@ let level = LOG_LEVEL || 'debug'
 const format = env2formats[env]
 const filters = [filterLevel, filterSecrets]
 
-const filterOut = function(level, type, message, label, namespace) {
+const filterOut = function() {
   for (const filter of filters) {
     if (filter.apply(null, arguments) === false) {
       return true
@@ -47,6 +47,7 @@ function log(type, message, label, namespace) {
   if (filterOut(level, type, message, label, namespace)) {
     return
   }
+  // eslint-disable-next-line no-console
   console.log(format(type, message, label, namespace))
 }
 

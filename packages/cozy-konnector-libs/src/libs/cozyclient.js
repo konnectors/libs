@@ -15,6 +15,8 @@
  * @module cozyClient
  */
 
+/* eslint no-console: off */
+
 const { Client, MemoryStorage } = require('cozy-client-js')
 
 const getCredentials = function(environment) {

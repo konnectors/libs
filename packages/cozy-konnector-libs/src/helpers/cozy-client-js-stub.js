@@ -101,7 +101,7 @@ module.exports = {
     delete() {
       return Promise.resolve({})
     },
-    find(doctype, id) {
+    find(doctype) {
       // Find the doc in the fixture
       // exeption for "io.cozy.accounts" doctype where we return konnector-dev-config.json content
       let result = null
@@ -140,7 +140,7 @@ module.exports = {
         }
       })
     },
-    statById(idToCheck) {
+    statById() {
       // just return the / path for dev purpose
       return Promise.resolve({ attributes: { path: '/' } })
     },

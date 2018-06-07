@@ -1,3 +1,5 @@
+/* eslint no-console: off */
+
 process.env.NODE_ENV = 'development'
 
 const config = require('./init-konnector-config')()

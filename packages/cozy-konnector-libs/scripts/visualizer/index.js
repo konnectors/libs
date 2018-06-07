@@ -24,6 +24,7 @@ const generate = async options => {
 }
 
 process.on('unhandledRejection', x => {
+  // eslint-disable-next-line no-console
   console.warn(x)
 })
 
@@ -43,7 +44,6 @@ const parser = spec => obj => {
   return res
 }
 
-const int = x => parseInt(x, 10)
 const float = x => parseFloat(x, 10)
 const htmlFormBoolean = x => x === 'on'
 const commaSeparatedArray = x => x.split(/\s*,\s*/)
@@ -66,5 +66,5 @@ app.get('/', (req, res) => {
   const index = fs.readFileSync(require.resolve('./index.html'))
   res.send(index.toString())
 })
-
+// eslint-disable-next-line no-console
 app.listen(3000, () => console.log('Visualizer server running'))

@@ -1,3 +1,5 @@
+const log = require('cozy-logger').namespace('scrape')
+
 /**
  * Declarative scraping.
  *
@@ -111,8 +113,8 @@ const scrape = ($, specs, childSelector) => {
       }
       res[specName] = val
     } catch (e) {
-      console.warn('Could not parse for', specName)
-      console.log(e)
+      log('warn', 'Could not parse for', specName)
+      log('warn', e)
     }
   })
   return res

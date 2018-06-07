@@ -133,7 +133,7 @@ const hydrateAndFilter = (documents, doctype, options = {}) => {
   }
 
   const defaultShouldSave = () => true
-  const defaultShouldUpdate = existing => false
+  const defaultShouldUpdate = existing => false // eslint-disable-line no-unused-vars
 
   const filterEntries = store => async () => {
     // Filter out items according to shouldSave / shouldUpdate.

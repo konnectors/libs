@@ -24,6 +24,7 @@
     "singleQuote": true
   },
   "scripts": {
+    "prepublish": "npm run lint",
     "publish": "lerna publish",
     "bootstrap": "lerna bootstrap",
     "lint": "eslint . --fix",
