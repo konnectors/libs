@@ -93,7 +93,7 @@ class BaseKonnector {
     const error = err.message || err
 
     // if we have an unexpected error, display the stack trace
-    if (!errors[error]) console.log(err, 'unexpected error detail')
+    if (!errors[error]) log('warn', err)
 
     this.terminate(error)
   }

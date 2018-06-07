@@ -96,7 +96,7 @@ module.exports = function signin({
     })
 }
 
-function defaultValidate(statusCode, body) {
+function defaultValidate(statusCode) {
   return statusCode === 200
 }
 
@@ -108,11 +108,12 @@ function getStrategy(parseStrategy) {
       return JSON.parse
     case 'raw':
       return body => body
-    default:
+    default: {
       const err = `signin: parsing strategy \`${parseStrategy}\` unknown. `
       const hint = 'Use one of `raw`, `cheerio` or `json`'
       log('error', err + hint)
       throw new Error('UNKNOWN_PARSING_STRATEGY')
+    }
   }
 }
 

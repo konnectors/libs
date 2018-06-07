@@ -1,10 +1,7 @@
-const format = require('date-fns/format')
 const { getDateRangeFromBill, getAmountRangeFromBill } = require('./helpers')
-const log = require('cozy-logger')
 
 // cozy-stack limit to 100 elements max
 const COZY_STACK_QUERY_LIMIT = 100
-const DOCTYPE_OPERATIONS = 'io.cozy.bank.operations'
 
 // Get the operations corresponding to the date interval
 // around the date of the bill

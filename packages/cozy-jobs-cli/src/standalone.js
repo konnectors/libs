@@ -1,3 +1,5 @@
+/* eslint no-console: off */
+
 const program = require('commander')
 const fs = require('fs')
 const path = require('path')

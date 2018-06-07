@@ -1,3 +1,5 @@
+/* eslint no-console: off */
+
 const repl = require('repl')
 const util = require('util')
 const cheerio = require('cheerio')
@@ -23,7 +25,7 @@ Object.assign(cozyRepl.context, libs)
 
 function writer(output) {
   if (output && output.constructor && output.constructor.name === 'Request') {
-    output.then(body => {
+    output.then(() => {
       global.response = output.response
       global.$ = cheerio.load(output.response.body)
     })

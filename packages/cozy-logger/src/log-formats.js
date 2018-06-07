@@ -41,6 +41,7 @@ function prodFormat(type, message, label, namespace) {
   try {
     result = stringify(log).substr(0, LOG_LENGTH_LIMIT)
   } catch (err) {
+    // eslint-disable-next-line no-console
     console.log(err.message, 'cozy-logger: Failed to convert message to JSON')
   }
   return result

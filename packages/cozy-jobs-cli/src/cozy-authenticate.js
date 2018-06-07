@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+/* eslint no-console: off */
 const http = require('http')
 const fs = require('fs')
 const log = require('cozy-logger').namespace('cozy-authenticate')

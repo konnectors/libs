@@ -95,7 +95,7 @@ const filterByCategory = (bill, options = {}) => {
  * Check that the sum of the reimbursements + the amount of the bill is not
  * greater that the amount of the operation
  */
-const filterByReimbursements = (bill, options = {}) => {
+const filterByReimbursements = bill => {
   const reimbursementFilter = operation => {
     const sumReimbursements = sumBy(operation.reimbursements, 'amount')
     return sumReimbursements + bill.amount <= -operation.amount
