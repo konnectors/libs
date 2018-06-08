@@ -178,17 +178,13 @@ module.exports = async (entries, fields, options = {}) => {
   const canBeSaved = entry =>
     entry.fileurl || entry.requestOptions || entry.filestream
 
-  const saveableEntries = await bluebird.filter(entries, canBeSaved)
-
-  if (saveableEntries.length === 0) {
-    log('warn', 'saveFiles: no file to save')
-  }
-
   let savedFiles = 0
   return bluebird
-    .mapSeries(saveableEntries, async entry => {
-      entry = await saveEntry(entry, saveOptions)
-      savedFiles++
+    .mapSeries(entries, async entry => {
+      if (canBeSaved(entry)) {
+        entry = await saveEntry(entry, saveOptions)
+        savedFiles++
+      }
       return entry
     })
     .catch(err => {
