@@ -81,7 +81,7 @@ function loadFile(filepath) {
   console.log(`${filepath} loaded`)
 }
 
-global.request = libs.requestFactory()
+global.request = libs.requestFactory({ jar: true })
 
 global.debug = function(value = true) {
   global.request = libs.requestFactory({ debug: value })
