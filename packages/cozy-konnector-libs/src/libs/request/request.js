@@ -55,7 +55,7 @@ exports = module.exports = {
   getRequestOptions
 }
 
-function requestFactory({ debug, ...options }) {
+function requestFactory({ debug, ...options } = { debug: false }) {
   debug && requestdebug(request)
   return request.defaults(getRequestOptions(mergeDefaultOptions(options)))
 }
