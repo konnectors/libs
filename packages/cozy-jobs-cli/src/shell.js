@@ -33,6 +33,9 @@ function writer(output) {
     output.then(() => {
       global.response = output.response
       global.$ = cheerio.load(output.response.body)
+      // console.log(
+      //   `[${global.response.statusCode}] ${global.response.statusMessage}`
+      // )
     })
     return ''
   }
@@ -79,3 +82,7 @@ function loadFile(filepath) {
 }
 
 global.request = libs.requestFactory()
+
+global.debug = function(value = true) {
+  global.request = libs.requestFactory({ debug: value })
+}
