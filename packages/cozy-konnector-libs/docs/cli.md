@@ -83,3 +83,67 @@ $ cozy-run-dev <file> [-t token.json] [-m manifest.webapp]
 
 - `-t`, `--token` : Specify where the token should be saved
 - `-m`, `--manifest` : Specify the manifest.path that should be used for the permissions
+
+#### cozy-run-shell
+
+When you are developping a connector, it is possible to get a REPL with all the cozy-konnector-libs
+tools available and some enhancement.
+
+```javascript
+  scripts: {
+    dev: "cozy-run-shell"
+  }
+```
+
+and run:
+
+```sh
+yarn shell
+```
+
+In this REPL, all the cozy-konnector-libs tools are available as globals and a default global
+request instance initialized with cheerio and cookie handling is available. For example run :
+
+```javascript
+request('http://quotes.toscrape.com/')
+```
+
+After running a request, a global $ object with a cheerio instance is available. Run :
+
+```js
+$
+```
+
+A full global request-promise response object is also available.
+
+If you always want the details of the request and the response to be displayed. Just run once:
+
+```js
+debug()
+```
+
+And you get a syntax colored html representation of the result of the request.
+If you run :
+
+```js
+$('p')
+```
+
+You get an array of elements with for each element:
+- the type of the element (p)
+- the html of the element
+- the cleaned text of the element
+
+It is also possible to load a html file into the shell. Run :
+
+```sh
+yarn shell index.html
+```
+
+The html file will load and $ will be correctly initialized.
+
+##### Arguments
+
+```
+$ cozy-run-shell [<file>]
+```

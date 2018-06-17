@@ -4,12 +4,17 @@ const repl = require('repl')
 const util = require('util')
 const cheerio = require('cheerio')
 const fs = require('fs')
+const path = require('path')
+const pretty = require('pretty')
+const highlight = require('cli-highlight').highlight
 
 process.env.NODE_ENV = 'standalone'
 if (!process.env.DEBUG) process.env.DEBUG = '*'
 
+const rootPath = path.resolve('./data')
+if (!fs.existsSync(rootPath)) fs.mkdirSync(rootPath)
 process.env.COZY_FIELDS = JSON.stringify({
-  folder_to_save: '.'
+  folder_to_save: rootPath
 })
 
 const libs = require('cozy-konnector-libs')
@@ -28,6 +33,9 @@ function writer(output) {
     output.then(() => {
       global.response = output.response
       global.$ = cheerio.load(output.response.body)
+      // console.log(
+      //   `[${global.response.statusCode}] ${global.response.statusMessage}`
+      // )
     })
     return ''
   }
@@ -37,8 +45,26 @@ function writer(output) {
     typeof output.html === 'function'
   ) {
     // if cheerio instance, output its HTML because of memory leaks
-    if (output.length > 1) return `Cheerio instance ${output.length} elements`
-    else return `Cheerio instance ${output.length} elements\n` + output.html()
+    if (output.length > 1 && !output.root) {
+      console.log(
+        Array.from(output).map(elem => ({
+          type: elem.name,
+          html: pretty(global.$(elem).html()),
+          text: global
+            .$(elem)
+            .text()
+            .replace('\n', '')
+            .trim()
+        }))
+      )
+      return `Cheerio instance ${output.length} elements`
+    } else {
+      // return `Cheerio instance ${output.length} elements\n`
+      return (
+        `Cheerio instance ${output.length} elements\n` +
+        highlight(pretty(output.html(), { ocd: true }))
+      )
+    }
   }
 
   return util.inspect(output)
@@ -55,4 +81,8 @@ function loadFile(filepath) {
   console.log(`${filepath} loaded`)
 }
 
-global.request = libs.requestFactory()
+global.request = libs.requestFactory({ jar: true })
+
+global.debug = function(value = true) {
+  global.request = libs.requestFactory({ debug: value })
+}
