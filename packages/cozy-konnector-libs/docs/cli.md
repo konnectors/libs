@@ -1,7 +1,7 @@
 ### CLI
 
 There is a specific npm package which provides cli tools to allow to run your connector in
-standalone or development mode : cozy-jobs-cli. You can install it in your connector as a dev
+standalone or development mode or in dedicated REPL : cozy-jobs-cli. You can install it in your connector as a dev
 dependency.
 
 #### cozy-run-standalone
@@ -30,6 +30,10 @@ defined in `package.json` `main` section or ./src/index.js
 
 It is possible to record and replay the requests done by the standalone command using the
 [replay](https://github.com/assaf/node-replay) module.
+
+When your connector is run with this command, a global function is available in your connector :
+`global.openInBrowser`, which can take an html string or a cheerio object as input and will show
+the corresponding html page in your default browser.
 
 ##### Arguments
 
@@ -73,6 +77,10 @@ The files are saved in the root directory of your cozy by default.
 
 It is also possible to add an argument to this command which tells which file to run. Default is
 defined in `package.json` `main` section or ./src/index.js
+
+When your connector is run with this command, a global function is available in your connector :
+`global.openInBrowser`, which can take an html string or a cheerio object as input and will show
+the corresponding html page in your default browser.
 
 
 ##### Arguments
@@ -141,6 +149,9 @@ yarn shell index.html
 ```
 
 The html file will load and $ will be correctly initialized.
+
+The `openInBrowser` is also available , which can take an html string or a cheerio object as input and will show
+the corresponding html page in your default browser.
 
 ##### Arguments
 
