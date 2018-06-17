@@ -33,7 +33,7 @@ function onRegistered(client, url) {
         'A new tab just opened in your browser to require the right authorizations for this connector in your cozy. Waiting for it...'
       )
       console.log(
-        'If your browser does not open (maybe your are in a headless virtual machine...), then past this url in your browser'
+        'If your browser does not open (maybe your are in a headless virtual machine...), then paste this url in your browser'
       )
       console.log(url)
     })

@@ -10,6 +10,7 @@ process.env.COZY_URL = config.COZY_URL
 const program = require('commander')
 const path = require('path')
 const fs = require('fs')
+require('./open-in-browser')
 
 const authenticate = require('./cozy-authenticate')
 

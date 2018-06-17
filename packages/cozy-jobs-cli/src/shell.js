@@ -7,6 +7,7 @@ const fs = require('fs')
 const path = require('path')
 const pretty = require('pretty')
 const highlight = require('cli-highlight').highlight
+require('./open-in-browser')
 
 process.env.NODE_ENV = 'standalone'
 if (!process.env.DEBUG) process.env.DEBUG = '*'
