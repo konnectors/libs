@@ -69,7 +69,7 @@ update the COZY_URL field in [./konnector-dev-config.json].
 After that, your connector is running but should not work since you did not specify any credentials to
 the target service. You can do this also in [./konnector-dev-config.json] in the "fields" section.
 
-The files are saved in the root directory of your cozy by default.
+The files are saved in the `/cozy-konnector-dev-root` directory of your cozy.
 
 It is also possible to add an argument to this command which tells which file to run. Default is
 defined in `package.json` `main` section or ./src/index.js

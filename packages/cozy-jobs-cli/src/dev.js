@@ -58,12 +58,14 @@ authenticate({ tokenPath: token, manifestPath: manifest })
     process.env.COZY_CREDENTIALS = JSON.stringify(credentials)
   })
   .then(() => {
-    const BaseKonnector = require('cozy-konnector-libs').BaseKonnector
-    BaseKonnector.prototype.init = () => {
-      return Promise.resolve({
+    const { BaseKonnector, mkdirp } = require('cozy-konnector-libs')
+    BaseKonnector.prototype.init = async () => {
+      const rootPath = '/cozy-konnector-dev-root'
+      await mkdirp(rootPath)
+      return {
         ...config.fields,
-        folderPath: '/'
-      })
+        folderPath: rootPath
+      }
     }
 
     // sentry is not needed in dev mode
