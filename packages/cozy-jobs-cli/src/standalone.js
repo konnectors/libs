@@ -3,6 +3,7 @@
 const program = require('commander')
 const fs = require('fs')
 const path = require('path')
+require('./open-in-browser')
 
 program
   .usage('[options] <file>')
