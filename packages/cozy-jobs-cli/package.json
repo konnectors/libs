@@ -36,7 +36,7 @@
     "lint": "standard --fix src/*"
   },
   "devDependencies": {
-    "cross-env": "5.1.6",
+    "cross-env": "5.2.0",
     "lerna": "2.11.0"
   },
   "prettier": {
