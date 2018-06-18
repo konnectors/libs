@@ -35,6 +35,7 @@ const log = require('cozy-logger').namespace('saveFiles')
 const cozy = require('./cozyclient')
 const mimetypes = require('mime-types')
 const errors = require('../helpers/errors')
+const stream = require('stream')
 const DEFAULT_TIMEOUT = Date.now() + 4 * 60 * 1000 // 4 minutes by default since the stack allows 5 minutes
 
 const sanitizeEntry = function(entry) {
@@ -59,36 +60,42 @@ const downloadEntry = function(entry, options) {
   })
   let filePromise = rq(reqOptions)
 
+  if (options.contentType) {
+    // the developper wants to foce the contentType of the document
+    // we pipe the stream to remove headers with bad contentType from the request
+    return filePromise.pipe(new stream.PassThrough())
+  }
+
   // we have to do this since the result of filePromise is not a stream and cannot be taken by
   // cozy.files.create
   if (options.postProcessFile) {
+    log(
+      'warn',
+      'Be carefull postProcessFile option is deprecated. You should use the filestream attribute in each entry instead'
+    )
     return filePromise.then(data => options.postProcessFile(data))
   }
   return filePromise
 }
 
-const createFile = function(entry, options) {
-  return cozy.files
-    .statByPath(options.folderPath)
-    .then(folder => {
-      const createFileOptions = {
-        name: getFileName(entry),
-        dirID: folder._id,
-        contentType: options.contentType
-      }
+const createFile = async function(entry, options) {
+  const folder = await cozy.files.statByPath(options.folderPath)
+  const createFileOptions = {
+    name: getFileName(entry),
+    dirID: folder._id
+  }
+  if (options.contentType && entry.fileurl) {
+    createFileOptions.contentType = options.contentType
+  }
 
-      const toCreate = entry.filestream || downloadEntry(entry, options)
-      return cozy.files.create(toCreate, createFileOptions)
-    })
-    .then(fileDocument => {
-      // This allows us to have the warning message at the first run
-      checkMimeWithPath(
-        fileDocument.attributes.mime,
-        fileDocument.attributes.name
-      )
-      checkFileSize(fileDocument)
-      return fileDocument
-    })
+  const toCreate = entry.filestream || downloadEntry(entry, options)
+  let fileDocument = await cozy.files.create(toCreate, createFileOptions)
+
+  // This allows us to have the warning message at the first run
+  checkMimeWithPath(fileDocument.attributes.mime, fileDocument.attributes.name)
+
+  checkFileSize(fileDocument)
+  return fileDocument
 }
 
 const attachFileToEntry = function(entry, fileDocument) {
