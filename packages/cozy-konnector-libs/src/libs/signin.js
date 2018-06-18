@@ -87,8 +87,8 @@ module.exports = function signin({
         parseBody
       )
     })
-    .then(([statusCode, parsedBody]) => {
-      if (!validate(statusCode, parsedBody)) {
+    .then(([statusCode, parsedBody, response]) => {
+      if (!validate(statusCode, parsedBody, response)) {
         throw new Error(errors.LOGIN_FAILED)
       } else {
         return Promise.resolve(parsedBody)
@@ -142,7 +142,11 @@ function submitForm(rq, uri, inputs, parseBody) {
     form: {
       ...inputs
     },
-    transform: (body, response) => [response.statusCode, parseBody(body)]
+    transform: (body, response) => [
+      response.statusCode,
+      parseBody(body),
+      response
+    ]
   }).catch(handleRequestErrors)
 }
 
