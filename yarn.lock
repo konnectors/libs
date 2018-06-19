@@ -5467,9 +5467,9 @@ onetime@^2.0.0:
   dependencies:
     mimic-fn "^1.0.0"
 
-opentype.js@^0.7.3:
-  version "0.7.3"
-  resolved "https://registry.yarnpkg.com/opentype.js/-/opentype.js-0.7.3.tgz#40fb8ce18bfd60e74448efdfe442834098397aab"
+opentype.js@^0.8.0:
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/opentype.js/-/opentype.js-0.8.0.tgz#acabcfa1642fbe894a3e4d759e43ba694e02bd35"
   dependencies:
     tiny-inflate "^1.0.2"
 
@@ -5696,12 +5696,12 @@ path-type@^3.0.0:
   dependencies:
     pify "^3.0.0"
 
-pdfjs@2.0.0-alpha.8:
-  version "2.0.0-alpha.8"
-  resolved "https://registry.yarnpkg.com/pdfjs/-/pdfjs-2.0.0-alpha.8.tgz#47754b862602fc6a1435a08c1ea718d36906447e"
+pdfjs@2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/pdfjs/-/pdfjs-2.0.0.tgz#1f00f782f62252b516ec1ce6ded1db24a741d7c2"
   dependencies:
     "@rkusa/linebreak" "^1.0.0"
-    opentype.js "^0.7.3"
+    opentype.js "^0.8.0"
     pako "^1.0.6"
     unorm "^1.4.1"
     uuid "^3.0.1"
