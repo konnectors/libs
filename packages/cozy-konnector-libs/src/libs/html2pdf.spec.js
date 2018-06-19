@@ -64,4 +64,43 @@ describe('htmlToPDF', () => {
 
     htmlToPDF($, pdf, $('#root'))
   })
+
+  test('colspan too big is handle', () => {
+    const $ = cheerio.load(`
+      <div id="root">
+        <table>
+          <tr>
+            <td>1</td>
+            <td>2</td>
+          </tr>
+          <tr><td colspan=6>A</td></tr>
+        </table>
+      </div>
+    `)
+
+    htmlToPDF($, pdf, $('#root'))
+  })
+  test('colspan too big is handle', () => {
+    const $ = cheerio.load(`
+      <div id="root">
+        <table>
+          <tr>
+            <td>1</td>
+            <td>2</td>
+          </tr>
+          <tr>
+            <td>
+              <dl>
+                <dt>term1</dt><dd>definition1</dd>
+                <dt>term2</dt> <dd>definition2</dd>
+              </dl>
+            </td>
+          </tr>
+          <tr><td colspan=6>A</td></tr>
+        </table>
+      </div>
+    `)
+
+    htmlToPDF($, pdf, $('#root'))
+  })
 })
