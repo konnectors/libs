@@ -37,6 +37,7 @@ function htmlToPDF($, frag, $parent, opts) {
   )
   const children = $parent.contents()
   let text = opts.text
+  let parentDL = null
   const getText = () => {
     if (!text) text = frag.text('', opts.txtOpts)
     return text
@@ -117,18 +118,35 @@ function htmlToPDF($, frag, $parent, opts) {
           text = null
           htmlToPDF(
             $,
-            frag.table({ widths: [5 * pdf.cm, null], borderWidth: 1 }).row(),
+            frag.table({ widths: [5 * pdf.cm, null], borderWidth: 1 }),
             $el,
-            opts
+            {
+              ...opts,
+              tableState: {
+                tableWidth: 2,
+                colRemaining: 2
+              }
+            }
           )
+          parentDL = null
           break
 
         case 'dt':
+          if (!parentDL) {
+            parentDL = frag
+          } else {
+            frag = parentDL
+          }
+          frag = frag.row()
+        // fall through the rest of the procedure
         case 'dd':
         case 'th':
         case 'td': {
           text = null
-          const colspan = parseInt($el.attr('colspan')) || 1
+          const colspan = Math.min(
+            opts.tableState.tableWidth,
+            parseInt($el.attr('colspan')) || 1
+          )
           opts.tableState.colRemaining -= colspan
           htmlToPDF(
             $,
