@@ -80,6 +80,7 @@ function htmlToPDF($, frag, $parent, opts) {
         case 'button':
         case 'img':
         case 'script':
+        case 'caption':
           // ignore
           break
 
