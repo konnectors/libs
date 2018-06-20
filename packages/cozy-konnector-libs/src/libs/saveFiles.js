@@ -84,7 +84,7 @@ const createFile = async function(entry, options) {
     name: getFileName(entry),
     dirID: folder._id
   }
-  if (options.contentType && entry.fileurl) {
+  if (options.contentType) {
     createFileOptions.contentType = options.contentType
   }
 
