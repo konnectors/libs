@@ -61,7 +61,7 @@ module.exports = function signin({
     throw 'signin: `formSelector` must be defined'
   }
 
-  const rq = requestFactory({
+  const rq = requestOpts.requestInstance || requestFactory({
     jar: true,
     ...requestOpts
   })
