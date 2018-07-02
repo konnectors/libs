@@ -103,4 +103,16 @@ describe('htmlToPDF', () => {
 
     htmlToPDF($, pdf, $('#root'))
   })
+
+  test('caption in table', () => {
+    const $ = cheerio.load(`
+      <div id="root">
+        <table class="my-order-total__table">
+          <caption class="my-order-total__title">text</caption>
+        </table>
+      </div>
+    `)
+
+    htmlToPDF($, pdf, $('#root'))
+  })
 })
