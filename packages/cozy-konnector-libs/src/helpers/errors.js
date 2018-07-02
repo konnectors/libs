@@ -42,6 +42,49 @@ const SAVE_FILE_FAILED = 'SAVE_FILE_FAILED'
  */
 const DISK_QUOTA_EXCEEDED = 'DISK_QUOTA_EXCEEDED'
 
+/**
+ * It seems that the website requires a second authentification factor that we don’t support yet.
+ * @type {String}
+ */
+const CHALLENGE_ASKED = 'CHALLENGE_ASKED'
+
+/**
+ * Temporarily blocked
+ * @type {String}
+ */
+const LOGIN_FAILED_TOO_MANY_ATTEMPTS = 'LOGIN_FAILED.TOO_MANY_ATTEMPTS'
+
+/**
+ * Access refresh required
+ * @type {String}
+ */
+const USER_ACTION_NEEDED_OAUTH_OUTDATED = 'USER_ACTION_NEEDED.OAUTH_OUTDATED'
+
+/**
+ * Unavailable account
+ * @type {String}
+ */
+const USER_ACTION_NEEDED_ACCOUNT_REMOVED = 'USER_ACTION_NEEDED.ACCOUNT_REMOVED'
+
+/**
+ * Unavailable account
+ * @type {String}
+ */
+const USER_ACTION_NEEDED_CHANGE_PASSWORD = 'USER_ACTION_NEEDED.CHANGE_PASSWORD'
+
+/**
+ * Password update required
+ * @type {String}
+ */
+const USER_ACTION_NEEDED_PERMISSIONS_CHANGED =
+  'USER_ACTION_NEEDED.PERMISSIONS_CHANGED'
+
+/**
+ * The user needs to accept a CGU form before accessing the rest of the website
+ * @type {String}
+ */
+const USER_ACTION_NEEDED_CGU_FORM = 'USER_ACTION_NEEDED.CGU_FORM'
+
 module.exports = {
   LOGIN_FAILED,
   NOT_EXISTING_DIRECTORY,
@@ -49,5 +92,12 @@ module.exports = {
   USER_ACTION_NEEDED,
   FILE_DOWNLOAD_FAILED,
   SAVE_FILE_FAILED,
-  DISK_QUOTA_EXCEEDED
+  DISK_QUOTA_EXCEEDED,
+  CHALLENGE_ASKED,
+  LOGIN_FAILED_TOO_MANY_ATTEMPTS,
+  USER_ACTION_NEEDED_OAUTH_OUTDATED,
+  USER_ACTION_NEEDED_ACCOUNT_REMOVED,
+  USER_ACTION_NEEDED_CHANGE_PASSWORD,
+  USER_ACTION_NEEDED_PERMISSIONS_CHANGED,
+  USER_ACTION_NEEDED_CGU_FORM
 }
