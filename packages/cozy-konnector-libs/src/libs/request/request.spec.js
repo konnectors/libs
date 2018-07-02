@@ -70,7 +70,6 @@ describe('requestFactory', () => {
         debug: false,
         json: true,
         cheerio: false,
-        strictSSL: false,
         headers: {},
         followAllRedirects: true
       })
@@ -84,7 +83,6 @@ describe('requestFactory', () => {
         debug: true,
         json: true,
         cheerio: false,
-        strictSSL: false,
         headers: {},
         followAllRedirects: false
       })

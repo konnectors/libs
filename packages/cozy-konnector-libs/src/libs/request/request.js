@@ -65,7 +65,6 @@ function mergeDefaultOptions(options = {}) {
     debug: false,
     json: true,
     cheerio: false,
-    strictSSL: false,
     headers: {},
     followAllRedirects: true
   }
