@@ -60,7 +60,7 @@ const suitableCall = (funcOrMethod, ...args) => {
   }
 }
 
-const hydrateAndFilter = (documents, doctype, options = {}) => {
+const hydrateAndFilter = (documents = [], doctype, options = {}) => {
   const cozy = require('./cozyclient')
 
   log(
