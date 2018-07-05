@@ -159,7 +159,9 @@ class Linker {
               res.debitOperation = operation
               log(
                 'debug',
-                `bills: Matching bill ${bill.subtype} (${fmtDate(
+                `bills: Matching bill ${bill.vendor} ${
+                  bill.amount
+                }${bill.currency || '€'} (${fmtDate(
                   bill.date
                 )}) with debit operation ${operation.label} (${fmtDate(
                   operation.date
