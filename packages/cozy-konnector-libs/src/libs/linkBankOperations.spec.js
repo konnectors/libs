@@ -373,40 +373,63 @@ describe('linker', () => {
         {
           _id: 'b1',
           originalDate: new Date(2018, 2, 10),
+          vendor: 'Ameli',
           type: 'health_costs'
         },
-        { _id: 'b2', originalDate: new Date(2018, 2, 10), type: 'phone' },
+        {
+          _id: 'b2',
+          originalDate: new Date(2018, 2, 10),
+          vendor: 'Numéricable',
+          type: 'health_costs'
+        },
         {
           _id: 'b3',
           originalDate: new Date(2018, 2, 10),
+          vendor: 'Ameli',
           type: 'health_costs'
         },
         {
           _id: 'b4',
           originalDate: new Date(2018, 2, 15),
+          vendor: 'Ameli',
           type: 'health_costs'
         },
         {
           _id: 'b5',
           originalDate: new Date(2018, 2, 15),
+          vendor: 'Ameli',
           type: 'health_costs'
         },
-        { _id: 'b6', originalDate: new Date(2018, 2, 20), type: 'phone' },
+        {
+          _id: 'b6',
+          originalDate: new Date(2018, 2, 20),
+          vendor: 'Numéricable'
+        },
         {
           _id: 'b7',
           originalDate: new Date(2018, 2, 20),
+          vendor: 'Ameli',
           type: 'health_costs'
         },
-        { _id: 'b8', originalDate: new Date(2018, 2, 20), type: 'phone' },
+        {
+          _id: 'b8',
+          originalDate: new Date(2018, 2, 20),
+          vendor: 'Numéricable'
+        },
         {
           _id: 'b9',
           originalDate: new Date(2018, 2, 20),
+          vendor: 'Ameli',
           type: 'health_costs'
         },
-        { _id: 'b10', originalDate: new Date(2018, 2, 30), type: 'phone' }
+        {
+          _id: 'b10',
+          originalDate: new Date(2018, 2, 30),
+          vendor: 'Numéricable'
+        }
       ]
 
-      it('groups bills by type and originalDate', () => {
+      it('groups bills by vendor and originalDate', () => {
         const result = linker.groupBills(bills)
 
         expect(result).toContainEqual([bills[0], bills[2]])
