@@ -36,6 +36,7 @@ class Linker {
   constructor(cozyClient) {
     this.cozyClient = cozyClient
     this.toUpdate = []
+    this.groupVendors = ['Numéricable']
   }
 
   addBillToOperation(bill, operation) {
@@ -217,9 +218,7 @@ class Linker {
         do {
           found = false
 
-          const unlinkedBills = this.getUnlinkedBills(result).filter(
-            bill => bill.type === 'health_costs'
-          )
+          const unlinkedBills = this.getUnlinkedBills(result)
           const billsGroups = this.groupBills(unlinkedBills)
 
           const combinations = flatten(
@@ -275,8 +274,15 @@ class Linker {
     return unlinkedBills
   }
 
+  billCanBeGrouped(bill) {
+    return (
+      bill.type === 'health_costs' || this.groupVendors.includes(bill.vendor)
+    )
+  }
+
   groupBills(bills) {
-    const groups = groupBy(bills, bill => [
+    const billsToGroup = bills.filter(bill => this.billCanBeGrouped(bill))
+    const groups = groupBy(billsToGroup, bill => [
       moment(bill.originalDate)
         .format()
         .split('T')[0],
