@@ -280,7 +280,7 @@ class Linker {
       moment(bill.originalDate)
         .format()
         .split('T')[0],
-      bill.type
+      bill.vendor
     ])
 
     return Object.values(groups)
