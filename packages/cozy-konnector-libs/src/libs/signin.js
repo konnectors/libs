@@ -61,10 +61,12 @@ module.exports = function signin({
     throw 'signin: `formSelector` must be defined'
   }
 
-  const rq = requestOpts.requestInstance || requestFactory({
-    jar: true,
-    ...requestOpts
-  })
+  const rq =
+    requestOpts.requestInstance ||
+    requestFactory({
+      jar: true,
+      ...requestOpts
+    })
 
   const parseBody = getStrategy(parse)
 
