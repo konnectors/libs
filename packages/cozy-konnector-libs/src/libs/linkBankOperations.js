@@ -294,11 +294,11 @@ class Linker {
 
   generateBillsCombinations(bills) {
     const MIN_ITEMS_IN_COMBINATION = 2
-    let combinations = []
+    const combinations = []
 
     for (let n = MIN_ITEMS_IN_COMBINATION; n <= bills.length; ++n) {
       const combinationsN = geco.gen(bills.length, n, bills)
-      combinations = combinations.concat([...combinationsN])
+      combinations.push(...combinationsN)
     }
 
     return combinations
