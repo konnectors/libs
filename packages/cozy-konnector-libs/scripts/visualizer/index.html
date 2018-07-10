@@ -1,73 +1,22 @@
 <head>
-<style>
-  #app {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-  }
-  #graph {
-    border: 1px dashed #ccc;
-    flex: 1 0 auto;
-  }
-
-  #graph svg {
-    height: 100%;
-  }
-</style>
+<link href='static/style.css' rel='stylesheet' type='text/css'/>
 </head>
 <body>
   <div id='app'>
-    <form id='form' action='/generate' method='post'>
-      identifiers: <input type='text' name='identifiers' value="Harmonie" /><br/>
+    <h1>Link finder</h1>
+    <p>Find links between bills and banking</p>
+    <form id='form'>
+      Identifiers: <input type='text' name='identifiers' value="Harmonie" /><br/>
       minDateDelta: <input type='text' name='minDateDelta' value='15' /><br/>
       maxDateDelta: <input type='text' name='maxDateDelta' value='29' /><br/>
       amountDelta: <input type='text' name='amountDelta' value='0.001' /><br/>
       Allow uncategorized : <input type='checkbox' name='allowUncategorized' /><br/>
       <button type='submit'>Find links</button>
     </form>
-    <div id="graph" style="text-align: center;"></div>
+    <div id="results"></div>
   </div>
 </body>
-<script src="static/d3.v4.min.js"></script>
-<script src="static/viz.js" type="javascript/worker"></script>
-<script src="static/d3-graphviz.min.js"></script>
 <script src="static/dot.js"></script>
-<script type='text/javascript'>
-  const serialize = formData => {
-    const res = {}
-    for (let k of formData) {
-      res[k[0]] = k[1]
-    }
-    return res
-  }
+<script src="static/form.js"></script>
 
-  const graphviz = d3.select("#graph").graphviz()
 
-  const renderResults = function (results) {
-    results = JSON.parse(results)
-    graphviz.renderDot(outputGraphviz(results))
-  }
-
-  document.querySelector('#form')
-    .addEventListener('submit', ev => {
-      ev.preventDefault()
-      const form = ev.target
-      const submitBtn = form.querySelector('[type="submit"]')
-      const txt = submitBtn.innerText
-      submitBtn.innerText = 'Loading...'
-      const data = serialize(new FormData(form));
-      const sendDate = new Date()
-      fetch('/generate', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-      }).then(res => res.text())
-        .then(res => {
-          console.log(new Date() - sendDate)
-          submitBtn.innerText = txt
-          renderResults(res)
-        })
-    })
-</script>

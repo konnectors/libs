@@ -30,9 +30,11 @@ process.on('unhandledRejection', x => {
 
 const express = require('express')
 const bodyParser = require('body-parser')
+const cors = require('cors')
 const app = express()
 
 app.use(bodyParser.json())
+app.use(cors())
 app.use('/static', express.static(path.join(__dirname, 'static')))
 
 const parser = spec => obj => {

@@ -1,0 +1,16 @@
+{
+  "name": "visualizer",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "watch": "parcel watch index.html",
+    "build": "parcel index.html"
+  },
+  "dependencies": {
+    "cors": "^2.8.4",
+    "express": "^4.16.3",
+    "parcel": "^1.9.3"
+  }
+}
