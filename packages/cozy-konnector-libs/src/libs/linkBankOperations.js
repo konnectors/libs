@@ -84,7 +84,7 @@ class Linker {
   }
 
   /* Buffer update operations */
-  updateAttributes(doc, attrs) {
+  updateAttributes(doctype, doc, attrs) {
     Object.assign(doc, attrs)
     this.toUpdate.push(doc)
     return Promise.resolve()
@@ -94,9 +94,9 @@ class Linker {
   commitChanges() {
     return cozyClient.fetchJSON(
       'POST',
-      `data/${DOCTYPE_OPERATIONS}/_bulk_docs`,
+      `/data/${DOCTYPE_OPERATIONS}/_bulk_docs`,
       {
-        data: JSON.stringify(this.toUpdate)
+        docs: this.toUpdate
       }
     )
   }
@@ -232,6 +232,8 @@ class Linker {
     })
 
     await this.findCombinations(result, options, allOperations)
+
+    await this.commitChanges()
 
     return result
   }
