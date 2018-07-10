@@ -160,6 +160,29 @@ class Linker {
     return creditOperation
   }
 
+  async linkBillToDebitOperation (bill, allOperations, options) {
+    return findDebitOperation(
+      this.cozyClient,
+      bill,
+      options,
+      allOperations
+    ).then(operation => {
+      if (operation) {
+        log(
+          'debug',
+          `bills: Matching bill ${bill.subtype} (${fmtDate(
+            bill.date
+          )}) with debit operation ${operation.label} (${fmtDate(
+            operation.date
+          )})`
+        )
+        return this.addBillToOperation(bill, operation).then(
+          () => operation
+        )
+      }
+    })
+  }
+
   /**
    * Link bills to
    *   - their matching banking operation (debit)
@@ -176,7 +199,7 @@ class Linker {
     bills = bills.filter(bill => !bill.isThirdPartyPayer === true)
 
     return bluebird
-      .each(bills, bill => {
+      .each(bills, async bill => {
         const res = (result[bill._id] = { bill: bill })
 
         // the bills combination phase is very time consuming. We can avoid it when we run the
@@ -185,40 +208,16 @@ class Linker {
           return result
         }
 
-        const linkBillToDebitOperation = () => {
-          return findDebitOperation(
-            this.cozyClient,
-            bill,
-            options,
-            allOperations
-          ).then(operation => {
-            if (operation) {
-              res.debitOperation = operation
-              log(
-                'debug',
-                `bills: Matching bill ${bill.subtype} (${fmtDate(
-                  bill.date
-                )}) with debit operation ${operation.label} (${fmtDate(
-                  operation.date
-                )})`
-              )
-              return this.addBillToOperation(bill, operation).then(
-                () => operation
-              )
-            }
-          })
+        const debitOperation = await this.linkBillToDebitOperation(bill, allOperations, options)
+        if (debitOperation) {
+          res.debitOperation = debitOperation
         }
-
-
-
-        return linkBillToDebitOperation().then(async debitOperation => {
-          if (bill.isRefund) {
-            const creditOperation = await this.linkBillToCreditOperation(bill, debitOperation, allOperations, options)
-            if (creditOperation) {
-              res.creditOperation = creditOperation
-            }
+        if (bill.isRefund) {
+          const creditOperation = await this.linkBillToCreditOperation(bill, debitOperation, allOperations, options)
+          if (creditOperation) {
+            res.creditOperation = creditOperation
           }
-        })
+        }
       })
       .then(async () => {
         let found
