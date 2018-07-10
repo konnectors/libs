@@ -32,6 +32,7 @@ const fmtDate = function(x) {
   return new Date(x).toISOString().substr(0, 10)
 }
 
+
 class Linker {
   constructor(cozyClient) {
     this.cozyClient = cozyClient
@@ -124,6 +125,41 @@ class Linker {
     return options
   }
 
+  async linkBillToCreditOperation (bill, debitOperation, allOperations, options) {
+    const creditOperation = await findCreditOperation(
+      this.cozyClient,
+      bill,
+      options,
+      allOperations
+    )
+
+    const promises = []
+    if (creditOperation) {
+      promises.push(this.addBillToOperation(bill, creditOperation))
+    }
+    if (creditOperation && debitOperation) {
+      log(
+        'debug',
+        `reimbursement: Matching bill ${bill.subtype} (${fmtDate(
+          bill.date
+        )}) with credit operation ${creditOperation.label} (${fmtDate(
+          creditOperation.date
+        )})`
+      )
+      promises.push(
+        this.addReimbursementToOperation(
+          bill,
+          debitOperation,
+          creditOperation
+        )
+      )
+    }
+
+    await Promise.all(promises)
+
+    return creditOperation
+  }
+
   /**
    * Link bills to
    *   - their matching banking operation (debit)
@@ -173,42 +209,14 @@ class Linker {
           })
         }
 
-        const linkBillToCreditOperation = debitOperation => {
-          return findCreditOperation(
-            this.cozyClient,
-            bill,
-            options,
-            allOperations
-          ).then(creditOperation => {
-            const promises = []
+
+
+        return linkBillToDebitOperation().then(async debitOperation => {
+          if (bill.isRefund) {
+            const creditOperation = await this.linkBillToCreditOperation(bill, debitOperation, allOperations, options)
             if (creditOperation) {
               res.creditOperation = creditOperation
-              promises.push(this.addBillToOperation(bill, creditOperation))
             }
-            if (creditOperation && debitOperation) {
-              log(
-                'debug',
-                `reimbursement: Matching bill ${bill.subtype} (${fmtDate(
-                  bill.date
-                )}) with credit operation ${creditOperation.label} (${fmtDate(
-                  creditOperation.date
-                )})`
-              )
-              promises.push(
-                this.addReimbursementToOperation(
-                  bill,
-                  debitOperation,
-                  creditOperation
-                )
-              )
-            }
-            return Promise.all(promises)
-          })
-        }
-
-        return linkBillToDebitOperation().then(debitOperation => {
-          if (bill.isRefund) {
-            return linkBillToCreditOperation(debitOperation)
           }
         })
       })
