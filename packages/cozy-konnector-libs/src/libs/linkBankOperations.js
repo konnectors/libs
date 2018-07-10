@@ -198,79 +198,97 @@ class Linker {
     // no transaction is visible on the bank account
     bills = bills.filter(bill => !bill.isThirdPartyPayer === true)
 
-    return bluebird
-      .each(bills, async bill => {
-        const res = (result[bill._id] = { bill: bill })
+    await bluebird.each(bills, async bill => {
+      const res = (result[bill._id] = { bill: bill })
 
-        // the bills combination phase is very time consuming. We can avoid it when we run the
-        // connector in standalone mode
-        if (allOperations.length === 0) {
-          return result
-        }
-
-        const debitOperation = await this.linkBillToDebitOperation(bill, allOperations, options)
-        if (debitOperation) {
-          res.debitOperation = debitOperation
-        }
-        if (bill.isRefund) {
-          const creditOperation = await this.linkBillToCreditOperation(bill, debitOperation, allOperations, options)
-          if (creditOperation) {
-            res.creditOperation = creditOperation
-          }
-        }
-      })
-      .then(async () => {
-        let found
-
-        do {
-          found = false
-
-          const unlinkedBills = this.getUnlinkedBills(result)
-          const billsGroups = this.groupBills(unlinkedBills)
-
-          const combinations = flatten(
-            billsGroups.map(billsGroup =>
-              this.generateBillsCombinations(billsGroup)
-            )
-          )
-
-          const combinedBills = combinations.map(combination =>
-            this.combineBills(...combination)
-          )
-
-          for (const combinedBill of combinedBills) {
-            const debitOperation = await findDebitOperation(
-              this.cozyClient,
-              combinedBill,
-              options,
-              allOperations
-            )
-
-            if (debitOperation) {
-              found = true
-              log('debug', combinedBill, 'Matching bills combination')
-              log('debug', debitOperation, 'Matching debit debitOperation')
-
-              combinedBill.originalBills.forEach(async originalBill => {
-                const res = result[originalBill._id]
-                res.debitOperation = debitOperation
-
-                if (res.creditOperation && res.debitOperation) {
-                  await this.addReimbursementToOperation(
-                    originalBill,
-                    debitOperation,
-                    res.creditOperation
-                  )
-                }
-              })
-
-              break
-            }
-          }
-        } while (found)
-
+      // the bills combination phase is very time consuming. We can avoid it when we run the
+      // connector in standalone mode
+      if (allOperations.length === 0) {
         return result
-      })
+      }
+
+      const debitOperation = await this.linkBillToDebitOperation(
+        bill,
+        allOperations,
+        options
+      )
+
+      if (debitOperation) {
+        res.debitOperation = debitOperation
+      }
+
+      if (bill.isRefund) {
+        const creditOperation = await this.linkBillToCreditOperation(
+          bill,
+          debitOperation,
+          allOperations,
+          options
+        )
+
+        if (creditOperation) {
+          res.creditOperation = creditOperation
+        }
+      }
+    })
+
+    await this.findCombinations(result, options, allOperations)
+
+    return result
+  }
+
+  async findCombinations(result, options, allOperations) {
+    let found
+
+    do {
+      found = false
+
+      const unlinkedBills = this.getUnlinkedBills(result).filter(
+        bill => bill.type === 'health_costs'
+      )
+      const billsGroups = this.groupBills(unlinkedBills)
+
+      const combinations = flatten(
+        billsGroups.map(billsGroup =>
+          this.generateBillsCombinations(billsGroup)
+        )
+      )
+
+      const combinedBills = combinations.map(combination =>
+        this.combineBills(...combination)
+      )
+
+      for (const combinedBill of combinedBills) {
+        const debitOperation = await findDebitOperation(
+          this.cozyClient,
+          combinedBill,
+          options,
+          allOperations
+        )
+
+        if (debitOperation) {
+          found = true
+          log('debug', combinedBill, 'Matching bills combination')
+          log('debug', debitOperation, 'Matching debit debitOperation')
+
+          combinedBill.originalBills.forEach(async originalBill => {
+            const res = result[originalBill._id]
+            res.debitOperation = debitOperation
+
+            if (res.creditOperation && res.debitOperation) {
+              await this.addReimbursementToOperation(
+                originalBill,
+                debitOperation,
+                res.creditOperation
+              )
+            }
+          })
+
+          break
+        }
+      }
+    } while (found)
+
+    return result
   }
 
   getUnlinkedBills(bills) {
