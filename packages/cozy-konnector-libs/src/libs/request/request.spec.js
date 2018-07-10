@@ -97,7 +97,7 @@ describe('requestFactory', () => {
   })
 
   describe('TLS behavior assertions', () => {
-    const rq = requestFactory({resolveWithFullResponse: true})
+    const rq = requestFactory({ resolveWithFullResponse: true })
     // Valid Cert
     test('Valid cert should success', async () => {
       const resp = await rq('https://badssl.com')
@@ -105,20 +105,26 @@ describe('requestFactory', () => {
     })
     // Not Valid Cert
     test('Expired cert should be refused', async () => {
-      return expect(rq('https://expired.badssl.com'))
-        .rejects.toEqual(new Error('Error: certificate has expired'))
+      return expect(rq('https://expired.badssl.com')).rejects.toEqual(
+        new Error('Error: certificate has expired')
+      )
     })
     test('Wrong Host cert should be refused', async () => {
-      return expect(rq('https://wrong.host.badssl.com'))
-        .rejects.toEqual(new Error("Error: Hostname/IP doesn't match certificate's altnames: \"Host: wrong.host.badssl.com. is not in the cert's altnames: DNS:*.badssl.com, DNS:badssl.com\""))
+      return expect(rq('https://wrong.host.badssl.com')).rejects.toEqual(
+        new Error(
+          "Error: Hostname/IP doesn't match certificate's altnames: \"Host: wrong.host.badssl.com. is not in the cert's altnames: DNS:*.badssl.com, DNS:badssl.com\""
+        )
+      )
     })
     test('Untrust Root cert should be refused', async () => {
-      return expect(rq('https://untrusted-root.badssl.com'))
-        .rejects.toEqual(new Error('Error: unable to verify the first certificate'))
+      return expect(rq('https://untrusted-root.badssl.com')).rejects.toEqual(
+        new Error('Error: unable to verify the first certificate')
+      )
     })
     test('Self-signed cert should be refused', async () => {
-      return expect(rq('https://self-signed.badssl.com'))
-        .rejects.toEqual(new Error('Error: self signed certificate'))
+      return expect(rq('https://self-signed.badssl.com')).rejects.toEqual(
+        new Error('Error: self signed certificate')
+      )
     })
   })
 
