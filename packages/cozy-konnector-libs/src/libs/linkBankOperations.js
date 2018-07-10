@@ -92,6 +92,7 @@ class Linker {
 
   /* Commit updates */
   commitChanges() {
+    log('debug', `linkBankOperations: commiting ${this.toUpdate.length} changes`)
     return cozyClient.fetchJSON(
       'POST',
       `/data/${DOCTYPE_OPERATIONS}/_bulk_docs`,
