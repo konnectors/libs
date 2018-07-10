@@ -140,7 +140,7 @@ class Linker {
     if (creditOperation && debitOperation) {
       log(
         'debug',
-        `reimbursement: Matching bill ${bill.subtype} (${fmtDate(
+        `reimbursement: Matching bill ${bill.subtype || bill.filename} (${fmtDate(
           bill.date
         )}) with credit operation ${creditOperation.label} (${fmtDate(
           creditOperation.date
@@ -170,7 +170,7 @@ class Linker {
       if (operation) {
         log(
           'debug',
-          `bills: Matching bill ${bill.subtype} (${fmtDate(
+          `bills: Matching bill ${bill.subtype || bill.filename} (${fmtDate(
             bill.date
           )}) with debit operation ${operation.label} (${fmtDate(
             operation.date
