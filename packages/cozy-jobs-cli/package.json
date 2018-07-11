@@ -18,7 +18,7 @@
   },
   "homepage": "https://github.com/cozy/cozy-konnector-libs#readme",
   "dependencies": {
-    "btoa": "1.1.2",
+    "btoa": "1.2.1",
     "cheerio": "1.0.0-rc.2",
     "cli-highlight": "2.0.0",
     "commander": "2.16.0",
