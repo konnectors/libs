@@ -240,12 +240,14 @@ class Linker {
   }
 
   async findCombinations(result, options, allOperations) {
+    log('debug', 'finding combinations')
     let found
 
     do {
       found = false
 
       const unlinkedBills = this.getUnlinkedBills(result)
+      log('debug', `findCombinations: There are ${unlinkedBills.length} unlinked bills`)
       const billsGroups = this.groupBills(unlinkedBills)
 
       const combinations = flatten(
@@ -253,6 +255,8 @@ class Linker {
           this.generateBillsCombinations(billsGroup)
         )
       )
+
+      log('debug', `Generated ${combinations.length} bills combinations`)
 
       const combinedBills = combinations.map(combination =>
         this.combineBills(...combination)
