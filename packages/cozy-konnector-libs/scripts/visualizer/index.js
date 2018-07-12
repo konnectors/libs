@@ -6,7 +6,6 @@
 const { Linker } = require('../../src/libs/linkBankOperations')
 const { cozyClient } = require('../../src')
 const { fetchAll } = require('../../src/libs/utils')
-const fs = require('fs')
 const path = require('path')
 
 class DryLinker extends Linker {
@@ -35,7 +34,7 @@ const app = express()
 
 app.use(bodyParser.json())
 app.use(cors())
-app.use('/static', express.static(path.join(__dirname, 'static')))
+app.use('/', express.static(path.join(__dirname, 'dist')))
 
 const parser = spec => obj => {
   const res = {}
@@ -64,9 +63,5 @@ app.post('/generate', async (req, res) => {
   res.send(JSON.stringify(await generate(options)))
 })
 
-app.get('/', (req, res) => {
-  const index = fs.readFileSync(require.resolve('./index.html'))
-  res.send(index.toString())
-})
 // eslint-disable-next-line no-console
 app.listen(3000, () => console.log('Visualizer server running'))
