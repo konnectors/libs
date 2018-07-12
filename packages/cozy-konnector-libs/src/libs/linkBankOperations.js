@@ -32,6 +32,8 @@ const fmtDate = function(x) {
   return new Date(x).toISOString().substr(0, 10)
 }
 
+const getBillDate = bill => bill.originalDate || bill.date
+
 
 class Linker {
   constructor(cozyClient) {
@@ -250,6 +252,8 @@ class Linker {
       log('debug', `findCombinations: There are ${unlinkedBills.length} unlinked bills`)
       const billsGroups = this.groupBills(unlinkedBills)
 
+
+      log('debug', `findCombinations: Groups: ${billsGroups.length}`)
       const combinations = flatten(
         billsGroups.map(billsGroup =>
           this.generateBillsCombinations(billsGroup)
@@ -306,18 +310,19 @@ class Linker {
 
   billCanBeGrouped(bill) {
     return (
-      bill.type === 'health_costs' || this.groupVendors.includes(bill.vendor)
+      getBillDate(bill) &&
+      (bill.type === 'health_costs' || this.groupVendors.includes(bill.vendor))
     )
   }
 
   groupBills(bills) {
     const billsToGroup = bills.filter(bill => this.billCanBeGrouped(bill))
-    const groups = groupBy(billsToGroup, bill => [
-      moment(bill.originalDate)
-        .format()
-        .split('T')[0],
-      bill.vendor
-    ])
+    const groups = groupBy(billsToGroup, bill => {
+      return [
+        moment(getBillDate(bill)).format('YYYY-MM-DD'),
+        bill.vendor
+      ]
+    })
 
     return Object.values(groups)
   }
