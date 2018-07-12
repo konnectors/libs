@@ -12,7 +12,8 @@ const getOperationAmountFromBill = (bill, options) => {
 
 const getOperationDateFromBill = (bill, options) => {
   const isCredit = options && options.credit
-  return new Date(isCredit ? bill.date : bill.originalDate || bill.date)
+  const date = isCredit ? bill.date : bill.originalDate || bill.date
+  return date ? new Date(date) : new Date()
 }
 
 const getIdentifiers = options => options.identifiers
