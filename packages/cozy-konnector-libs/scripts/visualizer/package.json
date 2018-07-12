@@ -6,7 +6,8 @@
   "private": true,
   "scripts": {
     "watch": "parcel watch index.html",
-    "build": "parcel index.html"
+    "build": "parcel index.html",
+    "serve": "cozy-run-dev index.js"
   },
   "dependencies": {
     "cors": "^2.8.4",
