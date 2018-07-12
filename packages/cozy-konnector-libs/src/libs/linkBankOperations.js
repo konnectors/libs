@@ -245,9 +245,7 @@ class Linker {
     do {
       found = false
 
-      const unlinkedBills = this.getUnlinkedBills(result).filter(
-        bill => bill.type === 'health_costs'
-      )
+      const unlinkedBills = this.getUnlinkedBills(result)
       const billsGroups = this.groupBills(unlinkedBills)
 
       const combinations = flatten(
