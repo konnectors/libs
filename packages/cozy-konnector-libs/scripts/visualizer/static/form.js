@@ -97,7 +97,9 @@ const setSavedFormData = () => {
   for (let name of ['identifiers', 'minDateDelta', 'maxDateDelta', 'amountDelta']) {
     const input = document.querySelector(`[name=${name}]`)
     const value = localStorage.getItem(`form__${name}`)
-    input.value = value
+    if (value !== undefined) {
+      input.value = value
+    }
   }
 }
 
