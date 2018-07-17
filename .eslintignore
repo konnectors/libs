@@ -1,3 +1,4 @@
 node_modules
 **/node_modules
-packages/cozy-konnector-libs/scripts/visualizer/static/
+*.min.js
+**/dist
