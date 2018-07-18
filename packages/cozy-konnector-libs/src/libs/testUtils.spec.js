@@ -29,4 +29,3 @@ it('should parse correctly with missing values 2', () => {
   expect(op.amount).toBe(-120)
   expect(op.label).toBe('Facture SFR')
 })
-

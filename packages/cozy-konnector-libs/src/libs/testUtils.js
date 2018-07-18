@@ -3,13 +3,13 @@ const parseDate = str => {
   try {
     return new Date(year, month - 1, day).toISOString()
   } catch (e) {
-    console.warn(`${str} is not a valid date`)
+    console.warn(`${str} is not a valid date`) // eslint-disable-line no-console
     throw e
   }
 }
 
 const parseAmount = x => parseFloat(x, 10)
-const parseBool = x => x == 'true' ? true : false
+const parseBool = x => (x == 'true' ? true : false)
 const parseStr = x => x
 
 const operationLineSpec = [
@@ -29,7 +29,7 @@ const billLineSpec = [
   ['date', parseDate],
   ['isRefund', parseBool],
   ['vendor', parseStr],
-  ['type', parseStr],
+  ['type', parseStr]
 ]
 
 const mkLineParser = spec => line => {
@@ -45,7 +45,7 @@ const mkLineParser = spec => line => {
       }
     })
   } catch (e) {
-    console.warn('Error while parsing', line, e)
+    console.warn('Error while parsing', line, e) // eslint-disable-line no-console
     throw e
   }
   return obj
