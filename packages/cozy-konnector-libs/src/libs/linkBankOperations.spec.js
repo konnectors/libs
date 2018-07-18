@@ -232,9 +232,7 @@ describe('linker', () => {
       {
         description: 'malakoff real case',
         options: {
-          identifiers: ['CPAM', 'Malakoff'],
-          pastWindow: 5,
-          futureWindow: 5
+          identifiers: ['CPAM', 'Malakoff']
         },
         bills: [
           'b1 | 5.9  |  | 45 | 09-01-2018 | 09-01-2018 | true | Ameli    | health_costs',
@@ -268,9 +266,7 @@ describe('linker', () => {
           'harmonie_reimbur | 24-05-2018 | HARMONIE MUTUELLE IP0169697530 MUTUELLE -609143-4152-20970487 | 6.9 | 400610'
         ],
         options: {
-          identifiers: ['Harmonie'],
-          pastWindow: 15,
-          futureWindow: 15
+          identifiers: ['Harmonie']
         },
         result: [
           'harmonie_bill | debitOperation | ophtalmo',
@@ -339,8 +335,8 @@ describe('linker', () => {
     const defaultOptions = {
       minAmountDelta: 1,
       maxAmountDelta: 1,
-      pastWindow: 2,
-      futureWindow: 2
+      pastWindow: 15,
+      futureWindow: 29
     }
 
     function updateOperation(doctype, needleOp, attributes) {
