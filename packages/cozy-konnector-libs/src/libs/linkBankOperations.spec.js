@@ -343,6 +343,16 @@ describe('linker', () => {
           })
         })
     })
+
+    it('should not link twice', async () => {
+      const test = tests[0]
+      const options = { ...defaultOptions, ...test.options }
+      expect(operationsById.medecin.reimbursements).toBe(undefined)
+      await linker.linkBillsToOperations(test.bills, options)
+      expect(operationsById.medecin.reimbursements.length).toBe(1)
+      await linker.linkBillsToOperations(test.bills, options)
+      expect(operationsById.medecin.reimbursements.length).toBe(1)
+    })
   })
 
   describe('linking with combinations', () => {
