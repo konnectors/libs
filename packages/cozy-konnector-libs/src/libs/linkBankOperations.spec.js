@@ -23,6 +23,19 @@ beforeEach(function() {
   linker.updateAttributes = jest.fn().mockReturnValue(Promise.resolve())
 })
 
+const any = expect.any(Object)
+
+const parseResultLines = (resultLines, operationsById) => () => {
+  const resultObj = {}
+  resultLines.forEach(line => {
+    const [billId, attr, operationId] = line.split(/\s*\|\s*/)
+    resultObj[billId] = resultObj[billId] || {}
+    resultObj[billId][attr] =
+      operationId === 'any' ? any : operationsById[operationId]
+  })
+  return resultObj
+}
+
 describe('linker', () => {
   const bill = { amount: 110, _id: 'b1' }
 
@@ -320,6 +333,18 @@ describe('linker', () => {
             creditOperation: operationsById.harmonie_reimbur
           }
         })
+      {
+        description: 'trainline real case',
+        options: {
+          identifiers: ['Trainline']
+        },
+        bills: [
+          'b1 | 297  |  |  |  | 04-05-2017 | false | Trainline    | transport'
+        ],
+        dbOperations: [
+          'trainline | 05-05-2017 | TRAINLINE PARIS | -297 | 400840'
+        ],
+        result: ['b1 | debitOperation | trainline']
       }
     ]
 
@@ -329,7 +354,9 @@ describe('linker', () => {
         if (test.disabled) {
           return
         }
+        test.bills = test.bills.map(parseBillLine)
         if (test.dbOperations) {
+          test.dbOperations = test.dbOperations.map(parseOperationLine)
           test.dbOperations.forEach(op => operations.push(op))
           test.dbOperations.forEach(op => {
             operationsById[op._id] = op
@@ -337,6 +364,9 @@ describe('linker', () => {
         }
         const options = { ...defaultOptions, ...test.options }
         const result = await linker.linkBillsToOperations(test.bills, options)
+        if (typeof test.result != 'function') {
+          test.result = parseResultLines(test.result, operationsById)
+        }
         expect(result).toMatchObject(test.result())
         for (let [operationId, matchObject] of Object.entries(
           test.operations || {}

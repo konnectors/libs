@@ -33,6 +33,9 @@ const billLineSpec = [
 ]
 
 const mkLineParser = spec => line => {
+  if (typeof line !== 'string') {
+    return line
+  }
   const splitted = line.split(/\s*\|\s*/)
   const obj = {}
   try {
