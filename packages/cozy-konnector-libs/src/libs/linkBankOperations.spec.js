@@ -9,6 +9,39 @@ const indexBy = require('lodash/keyBy')
 
 let linker
 
+const parseDate = str => {
+  const [day, month, year] = str.split('-').map(x => parseInt(x, 10))
+  return new Date(year, month - 1, day)
+}
+
+const parseOperationLine = line => {
+  const splitted = line.split(/\s+\|\s+/)
+  const _id = splitted[0]
+  const date = parseDate(splitted[1])
+  const label = splitted[2]
+  const amount = parseFloat(splitted[3])
+  const automaticCategoryId = splitted.length == 5 ? splitted[4] : null
+  return {
+    _id,
+    date,
+    label,
+    amount,
+    automaticCategoryId
+  }
+}
+
+it('should parse correctly', () => {
+  const line =
+    'medecin   | 13-11-2017 | Visite chez le médecin            | -20  | 400610'
+  const op = parseOperationLine(line)
+  expect(op.date.getDate()).toBe(13)
+  expect(op.date.getMonth()).toBe(10)
+  expect(op.date.getFullYear()).toBe(2017)
+  expect(op.label).toBe('Visite chez le médecin')
+  expect(op.amount).toBe(-20)
+  expect(op.automaticCategoryId).toBe('400610')
+})
+
 beforeEach(function() {
   // We mock defineIndex/query so that fetchOperations returns the right operations
   const INDEX = 'index'
@@ -127,51 +160,14 @@ describe('linker', () => {
 
   describe('linkBillsToOperations', () => {
     const operationsInit = [
-      {
-        amount: -20,
-        label: 'Visite chez le médecin',
-        _id: 'medecin',
-        date: new Date(2017, 11, 13),
-        automaticCategoryId: '400610'
-      },
-      {
-        amount: 5,
-        label: 'Remboursement CPAM',
-        _id: 'cpam',
-        date: new Date(2017, 11, 15),
-        automaticCategoryId: '400610'
-      },
-      {
-        amount: -120,
-        label: 'Facture SFR',
-        _id: 'big_sfr',
-        date: new Date(2017, 11, 8)
-      },
-      {
-        amount: -30,
-        label: 'Facture SFR',
-        _id: 'small_sfr',
-        date: new Date(2017, 11, 7)
-      },
-      {
-        amount: +30,
-        label: "Remboursemet Matériel d'escalade",
-        _id: 'escalade',
-        date: new Date(2017, 11, 7)
-      },
-      {
-        amount: -5.5,
-        label: 'Burrito',
-        _id: 'burrito',
-        date: new Date(2017, 11, 5)
-      },
-      {
-        amount: -2.6,
-        label: 'Salade',
-        _id: 'salade',
-        date: new Date(2017, 11, 6)
-      }
-    ].map(x => ({ ...x, date: x.date.toISOString() }))
+      'medecin   | 13-12-2017 | Visite chez le médecin            | -20  | 400610',
+      'cpam      | 15-12-2017 | Remboursement CPAM                | 5    | 400610',
+      'big_sfr   | 08-12-2017 | Facture SFR                       | -120',
+      'small_sfr | 07-12-2017 | Facture SFR                       | -30',
+      "escalade  | 07-12-2017 | Remboursement Matériel d'escalade | 30",
+      'burrito   | 05-12-2017 | Burrito                           | -5.5',
+      'salade    | 06-12-2017 | Salade                            | -2.6'
+    ].map(parseOperationLine)
 
     let operations, operationsById
 
