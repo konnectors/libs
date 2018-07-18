@@ -138,45 +138,6 @@ describe('linker', () => {
   })
 
   describe('linkBillsToOperations', () => {
-    const operationsInit = [
-      'medecin   | 13-12-2017 | Visite chez le médecin            | -20  | 400610',
-      'cpam      | 15-12-2017 | Remboursement CPAM                | 5    | 400610',
-      'big_sfr   | 08-12-2017 | Facture SFR                       | -120',
-      'small_sfr | 07-12-2017 | Facture SFR                       | -30',
-      "escalade  | 07-12-2017 | Remboursement Matériel d'escalade | 30",
-      'burrito   | 05-12-2017 | Burrito                           | -5.5',
-      'salade    | 06-12-2017 | Salade                            | -2.6'
-    ].map(parseOperationLine)
-
-    let operations, operationsById
-
-    beforeEach(function() {
-      // reset operations to operationsInit values
-      operations = operationsInit.map(op => ({ ...op }))
-      operationsById = indexBy(operations, '_id')
-      cozyClient.fetchJSON = jest
-        .fn()
-        .mockImplementation(() =>
-          Promise.resolve(wrapAsFetchJSONResult(operations))
-        )
-      linker.updateAttributes.mockImplementation(updateOperation)
-    })
-
-    const defaultOptions = {
-      minAmountDelta: 1,
-      maxAmountDelta: 1,
-      pastWindow: 2,
-      futureWindow: 2
-    }
-
-    function updateOperation(doctype, needleOp, attributes) {
-      const operation = operations.find(
-        operation => operation._id === needleOp._id
-      )
-      Object.assign(operation, attributes)
-      return Promise.resolve(operation)
-    }
-
     const tests = [
       {
         description: 'health bills with both credit and debit',
@@ -330,6 +291,45 @@ describe('linker', () => {
         result: ['b1 | debitOperation | trainline']
       }
     ]
+
+    const operationsInit = [
+      'medecin   | 13-12-2017 | Visite chez le médecin            | -20  | 400610',
+      'cpam      | 15-12-2017 | Remboursement CPAM                | 5    | 400610',
+      'big_sfr   | 08-12-2017 | Facture SFR                       | -120',
+      'small_sfr | 07-12-2017 | Facture SFR                       | -30',
+      "escalade  | 07-12-2017 | Remboursement Matériel d'escalade | 30",
+      'burrito   | 05-12-2017 | Burrito                           | -5.5',
+      'salade    | 06-12-2017 | Salade                            | -2.6'
+    ].map(parseOperationLine)
+
+    let operations, operationsById
+
+    beforeEach(function() {
+      // reset operations to operationsInit values
+      operations = operationsInit.map(op => ({ ...op }))
+      operationsById = indexBy(operations, '_id')
+      cozyClient.fetchJSON = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve(wrapAsFetchJSONResult(operations))
+        )
+      linker.updateAttributes.mockImplementation(updateOperation)
+    })
+
+    const defaultOptions = {
+      minAmountDelta: 1,
+      maxAmountDelta: 1,
+      pastWindow: 2,
+      futureWindow: 2
+    }
+
+    function updateOperation(doctype, needleOp, attributes) {
+      const operation = operations.find(
+        operation => operation._id === needleOp._id
+      )
+      Object.assign(operation, attributes)
+      return Promise.resolve(operation)
+    }
 
     for (let test of tests) {
       const fn = test.fn || it
