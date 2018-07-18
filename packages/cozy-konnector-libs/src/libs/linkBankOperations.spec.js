@@ -6,41 +6,13 @@ jest.mock('cozy-logger', () => ({
 }))
 const cozyClient = require('./cozyclient')
 const indexBy = require('lodash/keyBy')
+const {
+  parseBillLine,
+  parseOperationLine,
+  wrapAsFetchJSONResult
+} = require('./testUtils')
 
 let linker
-
-const parseDate = str => {
-  const [day, month, year] = str.split('-').map(x => parseInt(x, 10))
-  return new Date(year, month - 1, day)
-}
-
-const parseOperationLine = line => {
-  const splitted = line.split(/\s+\|\s+/)
-  const _id = splitted[0]
-  const date = parseDate(splitted[1])
-  const label = splitted[2]
-  const amount = parseFloat(splitted[3])
-  const automaticCategoryId = splitted.length == 5 ? splitted[4] : null
-  return {
-    _id,
-    date,
-    label,
-    amount,
-    automaticCategoryId
-  }
-}
-
-it('should parse correctly', () => {
-  const line =
-    'medecin   | 13-11-2017 | Visite chez le médecin            | -20  | 400610'
-  const op = parseOperationLine(line)
-  expect(op.date.getDate()).toBe(13)
-  expect(op.date.getMonth()).toBe(10)
-  expect(op.date.getFullYear()).toBe(2017)
-  expect(op.label).toBe('Visite chez le médecin')
-  expect(op.amount).toBe(-20)
-  expect(op.automaticCategoryId).toBe('400610')
-})
 
 beforeEach(function() {
   // We mock defineIndex/query so that fetchOperations returns the right operations
@@ -50,12 +22,6 @@ beforeEach(function() {
   linker = new Linker(cozyClient)
   linker.updateAttributes = jest.fn().mockReturnValue(Promise.resolve())
 })
-
-const wrapAsFetchJSONResult = documents => {
-  return {
-    rows: documents.map(x => ({ id: x._id, doc: x }))
-  }
-}
 
 describe('linker', () => {
   const bill = { amount: 110, _id: 'b1' }
@@ -198,43 +164,14 @@ describe('linker', () => {
       return Promise.resolve(operation)
     }
 
-    const groupBills = [{
-      _id: 'b1',
-      amount: 3.5,
-      groupAmount: 5,
-      originalAmount: 20,
-      type: 'health_costs',
-      originalDate: new Date(2017, 11, 13),
-      date: new Date(2017, 11, 15),
-      isRefund: true,
-      vendor: 'Ameli'
-    }, {
-      _id: 'b2',
-      amount: 1.5,
-      groupAmount: 5,
-      originalAmount: 20,
-      type: 'health_costs',
-      originalDate: new Date(2017, 11, 14),
-      date: new Date(2017, 11, 16),
-      isRefund: true,
-      vendor: 'Ameli'
-    }]
-
     const any = expect.any(Object)
 
     const tests = [
       {
         description: 'health bills with both credit and debit',
-        bills: [{
-          _id: 'b1',
-          amount: 5,
-          originalAmount: 20,
-          type: 'health_costs',
-          originalDate: new Date(2017, 11, 13),
-          date: new Date(2017, 11, 15),
-          isRefund: true,
-          vendor: 'Ameli'
-        }],
+        bills: [
+          'b1 | 5 |     | 20 | 13-12-2017 | 15-12-2017 | true | Ameli | health_costs'
+        ],
         options: { identifiers: ['CPAM'] },
         result: () => ({
           b1: {
@@ -260,16 +197,8 @@ describe('linker', () => {
       {
         description: 'health bills with debit operation but without credit',
         options: { identifiers: ['CPAM'] },
-        bills: [{
-          _id: 'b1',
-          amount: 5,
-          originalAmount: 999,
-          type: 'health_costs',
-          originalDate: new Date(2017, 11, 13),
-          date: new Date(2017, 11, 15),
-          isRefund: true,
-          vendor: 'Ameli'
-        }],
+        bills: [
+          'b1 | 5 |     | 999 | 13-12-2017 | 15-12-2017 | true | Ameli | health_costs'
         result: () => ({
           b1: {
             creditOperation: operationsById.cpam
@@ -287,8 +216,13 @@ describe('linker', () => {
       // the debit operation
       {
         description: 'health bills with group amount with credit and debit',
-        bills: groupBills,
-        options: { identifiers: ['CPAM'] },
+        bills: [
+          'b1 | 3.5 | 5 | 20 | 13-12-2017 | 15-12-2017 | true | Ameli | health_costs',
+          'b2 | 1.5 | 5 | 20 | 14-12-2017 | 16-12-2017 | true | Ameli | health_costs'
+        ],
+        options: {
+          identifiers: ['CPAM']
+        },
         result: () => ({
           b1: {
             bill: any,
@@ -315,11 +249,14 @@ describe('linker', () => {
         description:
           'health bills with group amount with credit but without debit',
         options: { identifiers: ['CPAM'] },
-        bills: groupBills.map(x => ({...x, originalAmount: 999 })),
+        bills: [
+          'b1 | 3.5 | 5 | 999 | 13-12-2018 | 15-12-2017 | true | Ameli | health_costs',
+          'b2 | 1.5 | 5 | 999 | 14-12-2018 | 16-12-2017 | true | Ameli | health_costs'
         result: () => ({
           b1: { creditOperation: operationsById.cpam },
           b2: { creditOperation: operationsById.cpam }
         }),
+        ],
         operations: {
           cpam: {
             bills: ['io.cozy.bills:b1', 'io.cozy.bills:b2']
@@ -328,13 +265,8 @@ describe('linker', () => {
       },
       {
         description: 'not health bills',
-        bills: [{
-          _id: 'b2',
-          amount: 30,
-          date: new Date(2017, 11, 8),
-          vendor: 'SFR'
-        }],
         options: { identifiers: ['SFR'] },
+        bills: ['b2 | 30 |  |  |  | 07-12-2017 | false | SFR'],
         result: () => ({
           b2: { debitOperation: operationsById.small_sfr }
         })
