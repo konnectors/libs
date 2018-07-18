@@ -25,7 +25,7 @@ beforeEach(function() {
 
 const any = expect.any(Object)
 
-const parseResultLines = (resultLines, operationsById) => () => {
+const parseResultLines = (resultLines, operationsById) => {
   const resultObj = {}
   resultLines.forEach(line => {
     const [billId, attr, operationId] = line.split(/\s*\|\s*/)
@@ -177,8 +177,6 @@ describe('linker', () => {
       return Promise.resolve(operation)
     }
 
-    const any = expect.any(Object)
-
     const tests = [
       {
         description: 'health bills with both credit and debit',
@@ -186,12 +184,10 @@ describe('linker', () => {
           'b1 | 5 |     | 20 | 13-12-2017 | 15-12-2017 | true | Ameli | health_costs'
         ],
         options: { identifiers: ['CPAM'] },
-        result: () => ({
-          b1: {
-            creditOperation: operationsById.cpam,
-            debitOperation: operationsById.medecin
-          }
-        }),
+        result: [
+          'b1 | creditOperation | cpam',
+          'b1 | debitOperation  | medecin'
+        ],
         operations: {
           medecin: {
             reimbursements: [
@@ -212,11 +208,8 @@ describe('linker', () => {
         options: { identifiers: ['CPAM'] },
         bills: [
           'b1 | 5 |     | 999 | 13-12-2017 | 15-12-2017 | true | Ameli | health_costs'
-        result: () => ({
-          b1: {
-            creditOperation: operationsById.cpam
-          }
-        }),
+        ],
+        result: ['b1 | creditOperation | cpam'],
         operations: {
           cpam: {
             bills: ['io.cozy.bills:b1']
@@ -236,18 +229,14 @@ describe('linker', () => {
         options: {
           identifiers: ['CPAM']
         },
-        result: () => ({
-          b1: {
-            bill: any,
-            creditOperation: operationsById.cpam,
-            debitOperation: any
-          },
-          b2: {
-            bill: any,
-            creditOperation: operationsById.cpam,
-            debitOperation: any
-          }
-        }),
+        result: [
+          'b1 | bill            | any',
+          'b1 | debitOperation  | any',
+          'b1 | creditOperation | cpam',
+          'b2 | bill            | any',
+          'b2 | creditOperation | cpam',
+          'b2 | debitOperation  | any'
+        ],
         operations: {
           cpam: {
             bills: ['io.cozy.bills:b1', 'io.cozy.bills:b2']
@@ -265,11 +254,8 @@ describe('linker', () => {
         bills: [
           'b1 | 3.5 | 5 | 999 | 13-12-2018 | 15-12-2017 | true | Ameli | health_costs',
           'b2 | 1.5 | 5 | 999 | 14-12-2018 | 16-12-2017 | true | Ameli | health_costs'
-        result: () => ({
-          b1: { creditOperation: operationsById.cpam },
-          b2: { creditOperation: operationsById.cpam }
-        }),
         ],
+        result: ['b1 | creditOperation | cpam', 'b2 | creditOperation | cpam'],
         operations: {
           cpam: {
             bills: ['io.cozy.bills:b1', 'io.cozy.bills:b2']
@@ -280,9 +266,7 @@ describe('linker', () => {
         description: 'not health bills',
         options: { identifiers: ['SFR'] },
         bills: ['b2 | 30 |  |  |  | 07-12-2017 | false | SFR'],
-        result: () => ({
-          b2: { debitOperation: operationsById.small_sfr }
-        })
+        result: ['b2 | debitOperation | small_sfr']
       },
       {
         description: 'malakoff real case',
@@ -299,8 +283,8 @@ describe('linker', () => {
           'malakoff | 15-01-2018 | Malakoff Mederic Pre | 13.8 | 400610',
           'cpam     | 12-01-2018 | Cpam de Paris        | 5.9  | 400610',
           'docteur  | 09-01-2018 | Docteur Konqui       | -45  | 400610'
-        result: () => ({}),
         ],
+        result: [],
         operations: {
           docteur: {
             reimbursements: [
@@ -327,12 +311,11 @@ describe('linker', () => {
           pastWindow: 15,
           futureWindow: 15
         },
-        result: () => ({
-          harmonie_bill: {
-            debitOperation: operationsById.ophtalmo,
-            creditOperation: operationsById.harmonie_reimbur
-          }
-        })
+        result: [
+          'harmonie_bill | debitOperation | ophtalmo',
+          'harmonie_bill | creditOperation | harmonie_reimbur'
+        ]
+      },
       {
         description: 'trainline real case',
         options: {
@@ -355,6 +338,8 @@ describe('linker', () => {
           return
         }
         test.bills = test.bills.map(parseBillLine)
+
+        // Some tests need specific operations, additionally to the default operations
         if (test.dbOperations) {
           test.dbOperations = test.dbOperations.map(parseOperationLine)
           test.dbOperations.forEach(op => operations.push(op))
@@ -362,12 +347,14 @@ describe('linker', () => {
             operationsById[op._id] = op
           })
         }
+
+        // Add specific test options
         const options = { ...defaultOptions, ...test.options }
+
+        test.result = parseResultLines(test.result, operationsById)
+
         const result = await linker.linkBillsToOperations(test.bills, options)
-        if (typeof test.result != 'function') {
-          test.result = parseResultLines(test.result, operationsById)
-        }
-        expect(result).toMatchObject(test.result())
+        expect(result).toMatchObject(test.result)
         for (let [operationId, matchObject] of Object.entries(
           test.operations || {}
         )) {
