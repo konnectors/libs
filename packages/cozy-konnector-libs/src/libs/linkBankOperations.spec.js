@@ -181,7 +181,9 @@ describe('linker', () => {
       operationsById = indexBy(operations, '_id')
       cozyClient.fetchJSON = jest
         .fn()
-        .mockReturnValue(Promise.resolve(wrapAsFetchJSONResult(operations)))
+        .mockImplementation(() =>
+          Promise.resolve(wrapAsFetchJSONResult(operations))
+        )
       linker.updateAttributes.mockImplementation(updateOperation)
     })
 
@@ -200,9 +202,34 @@ describe('linker', () => {
       return Promise.resolve(operation)
     }
 
-    it('should match health bills correctly', () => {
-      const healthBills = [
-        {
+    const groupBills = [{
+      _id: 'b1',
+      amount: 3.5,
+      groupAmount: 5,
+      originalAmount: 20,
+      type: 'health_costs',
+      originalDate: new Date(2017, 11, 13),
+      date: new Date(2017, 11, 15),
+      isRefund: true,
+      vendor: 'Ameli'
+    }, {
+      _id: 'b2',
+      amount: 1.5,
+      groupAmount: 5,
+      originalAmount: 20,
+      type: 'health_costs',
+      originalDate: new Date(2017, 11, 14),
+      date: new Date(2017, 11, 16),
+      isRefund: true,
+      vendor: 'Ameli'
+    }]
+
+    const any = expect.any(Object)
+
+    const tests = [
+      {
+        description: 'health bills with both credit and debit',
+        bills: [{
           _id: 'b1',
           amount: 5,
           originalAmount: 20,
@@ -211,30 +238,33 @@ describe('linker', () => {
           date: new Date(2017, 11, 15),
           isRefund: true,
           vendor: 'Ameli'
+        }],
+        options: { identifiers: ['CPAM'] },
+        result: () => ({
+          b1: {
+            creditOperation: operationsById.cpam,
+            debitOperation: operationsById.medecin
+          }
+        }),
+        operations: {
+          medecin: {
+            reimbursements: [
+              {
+                billId: 'io.cozy.bills:b1',
+                amount: 5,
+                operationId: 'cpam'
+              }
+            ]
+          },
+          cpam: {
+            bills: ['io.cozy.bills:b1']
+          }
         }
-      ]
-      const options = { ...defaultOptions, identifiers: ['CPAM'] }
-      return linker.linkBillsToOperations(healthBills, options).then(result => {
-        expect(result.b1.creditOperation).toEqual(operationsById.cpam)
-        expect(result.b1.debitOperation).toEqual(operations[0])
-        expect(operations[0]).toMatchObject({
-          reimbursements: [
-            {
-              billId: 'io.cozy.bills:b1',
-              amount: 5,
-              operationId: 'cpam'
-            }
-          ]
-        })
-        expect(operationsById.cpam).toMatchObject({
-          bills: ['io.cozy.bills:b1']
-        })
-      })
-    })
-
-    it('should match health bills with no debit operation with a credit operation', () => {
-      const healthBills = [
-        {
+      },
+      {
+        description: 'health bills with debit operation but without credit',
+        options: { identifiers: ['CPAM'] },
+        bills: [{
           _id: 'b1',
           amount: 5,
           originalAmount: 999,
@@ -243,109 +273,103 @@ describe('linker', () => {
           date: new Date(2017, 11, 15),
           isRefund: true,
           vendor: 'Ameli'
+        }],
+        result: () => ({
+          b1: {
+            creditOperation: operationsById.cpam
+          }
+        }),
+        operations: {
+          cpam: {
+            bills: ['io.cozy.bills:b1']
+          }
         }
-      ]
-      const options = { ...defaultOptions, identifiers: ['CPAM'] }
-      return linker.linkBillsToOperations(healthBills, options).then(result => {
-        expect(result).toMatchObject({
-          b1: { creditOperation: operationsById.cpam }
-        })
-        expect(result.b1.debitOperation).toBe(undefined)
-        expect(operationsById.cpam).toMatchObject({
-          bills: ['io.cozy.bills:b1']
-        })
-      })
-    })
+      },
 
-    describe('health bill with group amount', () => {
       // Bills that have been reimbursed at the same date in the same
       // "bundle" have a "groupAmount" that is matched against
       // the debit operation
-      const healthBills = [
-        {
-          _id: 'b1',
-          amount: 3.5,
-          groupAmount: 5,
-          originalAmount: 20,
-          type: 'health_costs',
-          originalDate: new Date(2017, 11, 13),
-          date: new Date(2017, 11, 15),
-          isRefund: true,
-          vendor: 'Ameli'
+      {
+        description: 'health bills with group amount with credit and debit',
+        bills: groupBills,
+        options: { identifiers: ['CPAM'] },
+        result: () => ({
+          b1: {
+            bill: any,
+            creditOperation: operationsById.cpam,
+            debitOperation: any
+          },
+          b2: {
+            bill: any,
+            creditOperation: operationsById.cpam,
+            debitOperation: any
+          }
+        }),
+        operations: {
+          cpam: {
+            bills: ['io.cozy.bills:b1', 'io.cozy.bills:b2']
+          }
         },
-        {
-          _id: 'b2',
-          amount: 1.5,
-          groupAmount: 5,
-          originalAmount: 20,
-          type: 'health_costs',
-          originalDate: new Date(2017, 11, 14),
-          date: new Date(2017, 11, 16),
-          isRefund: true,
-          vendor: 'Ameli'
+        extra: result => {
+          expect(result.b1.debitOperation).toBe(result.b2.debitOperation)
+          expect(result.b1.debitOperation.reimbursements.length).toBe(2)
         }
-      ]
-
-      describe('with corresponding debit operation', () => {
-        it('should be associated with the right operations', () => {
-          const options = { ...defaultOptions, identifiers: ['CPAM'] }
-          return linker
-            .linkBillsToOperations(healthBills, options)
-            .then(result => {
-              const debitOperation = expect.any(Object)
-              expect(result).toMatchObject({
-                b1: { creditOperation: operationsById.cpam, debitOperation },
-                b2: { creditOperation: operationsById.cpam, debitOperation }
-              })
-              expect(operationsById.cpam).toMatchObject({
-                bills: ['io.cozy.bills:b1', 'io.cozy.bills:b2']
-              })
-              expect(result.b1.debitOperation).toBe(result.b2.debitOperation)
-              expect(result.b1.debitOperation.reimbursements.length).toBe(2)
-            })
-        })
-      })
-
-      describe('without corresponding debit operation', () => {
-        it('should be associated with the right credit operation', () => {
-          const healthBills2 = healthBills.map(x => ({
-            ...x,
-            originalAmount: 999
-          }))
-          const options = { ...defaultOptions, identifiers: ['CPAM'] }
-          return linker
-            .linkBillsToOperations(healthBills2, options)
-            .then(result => {
-              expect(result.b1.creditOperation).toBe(operationsById.cpam)
-              expect(result.b2.creditOperation).toBe(operationsById.cpam)
-              expect(result.b1.debitOperation).toBe(undefined)
-              expect(result.b2.debitOperation).toBe(undefined)
-              expect(operationsById.cpam).toMatchObject({
-                bills: ['io.cozy.bills:b1', 'io.cozy.bills:b2']
-              })
-            })
-        })
-      })
-    })
-
-    it('not health bills', () => {
-      const noHealthBills = [
-        {
+      },
+      {
+        description:
+          'health bills with group amount with credit but without debit',
+        options: { identifiers: ['CPAM'] },
+        bills: groupBills.map(x => ({...x, originalAmount: 999 })),
+        result: () => ({
+          b1: { creditOperation: operationsById.cpam },
+          b2: { creditOperation: operationsById.cpam }
+        }),
+        operations: {
+          cpam: {
+            bills: ['io.cozy.bills:b1', 'io.cozy.bills:b2']
+          }
+        }
+      },
+      {
+        description: 'not health bills',
+        bills: [{
           _id: 'b2',
           amount: 30,
           date: new Date(2017, 11, 8),
           vendor: 'SFR'
-        }
-      ]
-      const options = { ...defaultOptions, identifiers: ['SFR'] }
-      return linker
-        .linkBillsToOperations(noHealthBills, options)
-        .then(result => {
-          expect(result).toMatchObject({
-            b2: { debitOperation: operationsById.small_sfr }
-          })
+        }],
+        options: { identifiers: ['SFR'] },
+        result: () => ({
+          b2: { debitOperation: operationsById.small_sfr }
         })
-    })
+      }
+    ]
+
+    for (let test of tests) {
+      const fn = test.fn || it
+      fn(test.description, async () => {
+        if (test.disabled) {
+          return
+        }
+        if (test.dbOperations) {
+          test.dbOperations.forEach(op => operations.push(op))
+          test.dbOperations.forEach(op => {
+            operationsById[op._id] = op
+          })
+        }
+        const options = { ...defaultOptions, ...test.options }
+        const result = await linker.linkBillsToOperations(test.bills, options)
+        expect(result).toMatchObject(test.result())
+        for (let [operationId, matchObject] of Object.entries(
+          test.operations || {}
+        )) {
+          expect(operationsById[operationId]).toMatchObject(matchObject)
+        }
+        if (test.extra) {
+          test.extra(result)
+        }
+      })
+    }
 
     it('should not link twice', async () => {
       const test = tests[0]
