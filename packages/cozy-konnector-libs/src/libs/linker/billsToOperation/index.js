@@ -14,7 +14,6 @@ const findOperation = (cozyClient, bill, options, allOperations) => {
   ).then(operations => {
     operations = operationsFilters(bill, operations, options)
     operations = sortedOperations(bill, operations)
-
     return operations[0]
   })
 }

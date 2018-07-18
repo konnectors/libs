@@ -270,6 +270,56 @@ describe('linker', () => {
         result: () => ({
           b2: { debitOperation: operationsById.small_sfr }
         })
+      },
+      {
+        description: 'malakoff real case',
+        options: {
+          identifiers: ['CPAM', 'Malakoff'],
+          pastWindow: 5,
+          futureWindow: 5
+        },
+        bills: [
+          'b1 | 5.9  |  | 45 | 09-01-2018 | 09-01-2018 | true | Ameli    | health_costs',
+          'b2 | 13.8 |  | 45 | 15-01-2018 | 15-01-2018 | true | Malakoff | health_costs'
+        ],
+        dbOperations: [
+          'malakoff | 15-01-2018 | Malakoff Mederic Pre | 13.8 | 400610',
+          'cpam     | 12-01-2018 | Cpam de Paris        | 5.9  | 400610',
+          'docteur  | 09-01-2018 | Docteur Konqui       | -45  | 400610'
+        result: () => ({}),
+        ],
+        operations: {
+          docteur: {
+            reimbursements: [
+              {
+                billId: 'io.cozy.bills:b1',
+                amount: 5.9,
+                operationId: 'cpam'
+              }
+            ]
+          }
+        }
+      },
+      {
+        description: 'harmonie real case',
+        bills: [
+          'harmonie_bill | 6.9 | 6.9 | 80 | 23-05-2018 | 16-05-2018 | true | Harmonie | health_costs'
+        ],
+        dbOperations: [
+          'ophtalmo         | 22-05-2018 | CENTRE OPHTALM                                                | -80 | 400610',
+          'harmonie_reimbur | 24-05-2018 | HARMONIE MUTUELLE IP0169697530 MUTUELLE -609143-4152-20970487 | 6.9 | 400610'
+        ],
+        options: {
+          identifiers: ['Harmonie'],
+          pastWindow: 15,
+          futureWindow: 15
+        },
+        result: () => ({
+          harmonie_bill: {
+            debitOperation: operationsById.ophtalmo,
+            creditOperation: operationsById.harmonie_reimbur
+          }
+        })
       }
     ]
 
