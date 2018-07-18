@@ -1,6 +1,9 @@
 import { Linker } from './linkBankOperations'
 
 jest.mock('./cozyclient')
+jest.mock('cozy-logger', () => ({
+  namespace: () => () => ({})
+}))
 const cozyClient = require('./cozyclient')
 const indexBy = require('lodash/keyBy')
 
