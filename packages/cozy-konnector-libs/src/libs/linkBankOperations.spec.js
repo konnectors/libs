@@ -289,6 +289,26 @@ describe('linker', () => {
           'trainline | 05-05-2017 | TRAINLINE PARIS | -297 | 400840'
         ],
         result: ['b1 | debitOperation | trainline']
+      },
+      {
+        description:
+          'should not link bills with operation that have not the right originalAmount',
+        options: {
+          identifiers: ['CPAM']
+        },
+        bills: [
+          'b1 | 16.1 | 14.6 | 100 | 11-04-2018 | 13-04-2018 | true | Ameli | health'
+        ],
+        dbOperations: [
+          'cohen         | 12-04-2018 | SELARL DR COHEN         | -150 | 400610',
+          'reimbursement | 16-04-2018 | CPAM DES HAUTS DE SEINE | 14.6 | 400610'
+        ],
+        result: ['b1 | creditOperation | reimbursement'],
+        operations: {
+          cohen: {
+            bills: undefined
+          }
+        }
       }
     ]
 
@@ -358,7 +378,10 @@ describe('linker', () => {
         for (let [operationId, matchObject] of Object.entries(
           test.operations || {}
         )) {
-          expect(operationsById[operationId]).toMatchObject(matchObject)
+          const op = operationsById[operationId]
+          for (let [attr, value] of Object.entries(matchObject)) {
+            expect(op).toHaveProperty(attr, value)
+          }
         }
         if (test.extra) {
           test.extra(result)
