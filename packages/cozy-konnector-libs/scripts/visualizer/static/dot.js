@@ -24,7 +24,9 @@ const maybeQuote = x => {
   }
 }
 const fmtOpts = opts => {
-  return Object.keys(opts).map(k => `${k}=${maybeQuote(opts[k])}`).join(' ')
+  return Object.keys(opts)
+    .map(k => `${k}=${maybeQuote(opts[k])}`)
+    .join(' ')
 }
 
 class Dot {
@@ -68,13 +70,13 @@ const comparison = selector => (a, b) => {
 }
 
 function outputGraphviz(data) {
-  dot = new Dot()
+  let dot = new Dot()
 
   const matchings = Object.values(data).sort(comparison(x => x.bill.date))
   for (let matching of matchings) {
-    debit = matching['debitOperation']
-    credit = matching['creditOperation']
-    bill = matching['bill']
+    const debit = matching['debitOperation']
+    const credit = matching['creditOperation']
+    const bill = matching['bill']
 
     renderBill(dot, bill)
     if (debit) {

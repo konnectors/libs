@@ -34,7 +34,6 @@ const fmtDate = function(x) {
 
 const getBillDate = bill => bill.originalDate || bill.date
 
-
 class Linker {
   constructor(cozyClient) {
     this.cozyClient = cozyClient
@@ -94,7 +93,10 @@ class Linker {
 
   /* Commit updates */
   commitChanges() {
-    log('debug', `linkBankOperations: commiting ${this.toUpdate.length} changes`)
+    log(
+      'debug',
+      `linkBankOperations: commiting ${this.toUpdate.length} changes`
+    )
     return cozyClient.fetchJSON(
       'POST',
       `/data/${DOCTYPE_OPERATIONS}/_bulk_docs`,
@@ -128,7 +130,12 @@ class Linker {
     return options
   }
 
-  async linkBillToCreditOperation (bill, debitOperation, allOperations, options) {
+  async linkBillToCreditOperation(
+    bill,
+    debitOperation,
+    allOperations,
+    options
+  ) {
     const creditOperation = await findCreditOperation(
       this.cozyClient,
       bill,
@@ -143,18 +150,13 @@ class Linker {
     if (creditOperation && debitOperation) {
       log(
         'debug',
-        `reimbursement: Matching bill ${bill.subtype || bill.filename} (${fmtDate(
-          bill.date
-        )}) with credit operation ${creditOperation.label} (${fmtDate(
-          creditOperation.date
-        )})`
+        `reimbursement: Matching bill ${bill.subtype ||
+          bill.filename} (${fmtDate(bill.date)}) with credit operation ${
+          creditOperation.label
+        } (${fmtDate(creditOperation.date)})`
       )
       promises.push(
-        this.addReimbursementToOperation(
-          bill,
-          debitOperation,
-          creditOperation
-        )
+        this.addReimbursementToOperation(bill, debitOperation, creditOperation)
       )
     }
 
@@ -163,7 +165,7 @@ class Linker {
     return creditOperation
   }
 
-  async linkBillToDebitOperation (bill, allOperations, options) {
+  async linkBillToDebitOperation(bill, allOperations, options) {
     return findDebitOperation(
       this.cozyClient,
       bill,
@@ -179,9 +181,7 @@ class Linker {
             operation.date
           )})`
         )
-        return this.addBillToOperation(bill, operation).then(
-          () => operation
-        )
+        return this.addBillToOperation(bill, operation).then(() => operation)
       }
     })
   }
@@ -249,9 +249,11 @@ class Linker {
       found = false
 
       const unlinkedBills = this.getUnlinkedBills(result)
-      log('debug', `findCombinations: There are ${unlinkedBills.length} unlinked bills`)
+      log(
+        'debug',
+        `findCombinations: There are ${unlinkedBills.length} unlinked bills`
+      )
       const billsGroups = this.groupBills(unlinkedBills)
-
 
       log('debug', `findCombinations: Groups: ${billsGroups.length}`)
       const combinations = flatten(
@@ -318,10 +320,7 @@ class Linker {
   groupBills(bills) {
     const billsToGroup = bills.filter(bill => this.billCanBeGrouped(bill))
     const groups = groupBy(billsToGroup, bill => {
-      return [
-        moment(getBillDate(bill)).format('YYYY-MM-DD'),
-        bill.vendor
-      ]
+      return [moment(getBillDate(bill)).format('YYYY-MM-DD'), bill.vendor]
     })
 
     return Object.values(groups)
