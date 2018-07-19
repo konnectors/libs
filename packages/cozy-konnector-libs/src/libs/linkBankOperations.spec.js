@@ -29,10 +29,25 @@ const parseResultLines = (resultLines, operationsById) => {
   resultLines.forEach(line => {
     const [billId, attr, operationId] = line.split(/\s*\|\s*/)
     resultObj[billId] = resultObj[billId] || {}
-    resultObj[billId][attr] =
-      operationId === 'any' ? any : operationsById[operationId]
+    if (operationId === 'undefined') {
+      resultObj[billId][attr] = undefined
+    } else {
+      resultObj[billId][attr] =
+        operationId === 'any' ? any : operationsById[operationId]
+    }
   })
   return resultObj
+}
+
+const expectPropertyMatch = (obj, matcher) => {
+  for (let [attr, value] of Object.entries(matcher)) {
+    // console.log('checking', attr, 'against', )
+    if (value === undefined) {
+      expect(obj).not.toHaveProperty(attr)
+    } else {
+      expect(obj).toHaveProperty(attr, matcher[attr])
+    }
+  }
 }
 
 describe('linker', () => {
@@ -319,6 +334,27 @@ describe('linker', () => {
             bills: undefined
           }
         }
+      },
+      {
+        description: 'matching should favor groupAmount instead of amount',
+        dbOperations: [
+          '_id | date | label | amount | automaticCategoryId',
+          'not_to_match | 19-07-2018 | Dentiste | -20 | 400610',
+          'to_match     | 19-07-2018 | Ophtalmo | -50 | 400610'
+        ],
+        options: { identifiers: ['CPAM'] },
+        bills: [
+          '_id | amount | groupAmount | originalAmount | originalDate | date | type | vendor',
+          'b1 | 10 | 20 | 50 | 17-07-2018 | 25-07-2018 | health_costs | Ameli',
+          'b2 | 10 | 30 | 50 | 17-07-2018 | 25-07-2018 | health_costs | Ameli'
+        ],
+        result: [
+          'b1 | debitOperation  | to_match',
+          'b1 | creditOperation | undefined',
+          'b2 | debitOperation  | to_match',
+          'b2 | creditOperation | undefined'
+        ]
+      },
       }
     ]
 
@@ -388,17 +424,21 @@ describe('linker', () => {
         // Add specific test options
         const options = { ...defaultOptions, ...test.options }
 
-        test.result = parseResultLines(test.result, operationsById)
-
         const result = await linker.linkBillsToOperations(test.bills, options)
-        expect(result).toMatchObject(test.result)
+
+        if (test.result) {
+          test.result = parseResultLines(test.result, operationsById)
+
+          for (let [billId, billObject] of Object.entries(test.result)) {
+            expectPropertyMatch(result[billId], billObject)
+          }
+        }
+
         for (let [operationId, matchObject] of Object.entries(
           test.operations || {}
         )) {
           const op = operationsById[operationId]
-          for (let [attr, value] of Object.entries(matchObject)) {
-            expect(op).toHaveProperty(attr, value)
-          }
+          expectPropertyMatch(op, matchObject)
         }
         if (test.extra) {
           test.extra(result)
