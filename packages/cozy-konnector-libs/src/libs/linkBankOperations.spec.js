@@ -6,10 +6,7 @@ jest.mock('cozy-logger', () => ({
 }))
 const cozyClient = require('./cozyclient')
 const indexBy = require('lodash/keyBy')
-const {
-  parseTable,
-  wrapAsFetchJSONResult
-} = require('./testUtils')
+const { parseTable, wrapAsFetchJSONResult } = require('./testUtils')
 
 let linker
 
