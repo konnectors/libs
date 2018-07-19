@@ -361,8 +361,8 @@ describe('linker', () => {
           'reimbur      | 20-07-2018 | CPAM     | 10     | 400610'
         ],
         bills: [
-          '_id | amount | groupAmount | originalAmount | originalDate | date | isRefund | type | vendor',
-          'b1  | 10 | 10 | 50 | 19-07-2018 | 25-07-2018 | true | health_costs | Ameli'
+          '_id | amount | groupAmount | originalAmount | originalDate | date       | isRefund | type         | vendor',
+          'b1  | 10     | 10          | 50             | 19-07-2018   | 25-07-2018 | true     | health_costs | Ameli'
         ],
         options: {
           identifiers: ['CPAM']
@@ -385,8 +385,8 @@ describe('linker', () => {
           'reimbur      | 20-07-2018 | CPAM     | 10     | 400610'
         ],
         bills: [
-          '_id | amount | groupAmount | originalAmount | originalDate | date | isRefund | type | vendor',
-          'b1  | 10 | 10 | 50 | 19-07-2018 | 25-07-2018 | true | health_costs | Ameli'
+          '_id | amount | groupAmount | originalAmount | originalDate | date       | isRefund | type         | vendor',
+          'b1  | 10     | 10          | 50             | 19-07-2018   | 25-07-2018 | true     | health_costs | Ameli'
         ],
         options: {
           identifiers: ['CPAM']
