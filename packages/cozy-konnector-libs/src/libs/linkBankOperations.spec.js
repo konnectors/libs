@@ -1,8 +1,16 @@
 import { Linker } from './linkBankOperations'
 
 jest.mock('./cozyclient')
+jest.mock('cozy-logger', () => ({
+  namespace: () => () => ({})
+}))
 const cozyClient = require('./cozyclient')
 const indexBy = require('lodash/keyBy')
+const {
+  parseBillLine,
+  parseOperationLine,
+  wrapAsFetchJSONResult
+} = require('./testUtils')
 
 let linker
 
@@ -15,10 +23,17 @@ beforeEach(function() {
   linker.updateAttributes = jest.fn().mockReturnValue(Promise.resolve())
 })
 
-const wrapAsFetchJSONResult = documents => {
-  return {
-    rows: documents.map(x => ({ id: x._id, doc: x }))
-  }
+const any = expect.any(Object)
+
+const parseResultLines = (resultLines, operationsById) => {
+  const resultObj = {}
+  resultLines.forEach(line => {
+    const [billId, attr, operationId] = line.split(/\s*\|\s*/)
+    resultObj[billId] = resultObj[billId] || {}
+    resultObj[billId][attr] =
+      operationId === 'any' ? any : operationsById[operationId]
+  })
+  return resultObj
 }
 
 describe('linker', () => {
@@ -123,52 +138,185 @@ describe('linker', () => {
   })
 
   describe('linkBillsToOperations', () => {
-    const operationsInit = [
+    const tests = [
       {
-        amount: -20,
-        label: 'Visite chez le médecin',
-        _id: 'medecin',
-        date: new Date(2017, 11, 13),
-        automaticCategoryId: '400610'
+        description: 'health bills with both credit and debit',
+        bills: [
+          'b1 | 5 |     | 20 | 13-12-2017 | 15-12-2017 | true | Ameli | health_costs'
+        ],
+        options: { identifiers: ['CPAM'] },
+        result: [
+          'b1 | creditOperation | cpam',
+          'b1 | debitOperation  | medecin'
+        ],
+        operations: {
+          medecin: {
+            reimbursements: [
+              {
+                billId: 'io.cozy.bills:b1',
+                amount: 5,
+                operationId: 'cpam'
+              }
+            ]
+          },
+          cpam: {
+            bills: ['io.cozy.bills:b1']
+          }
+        }
       },
       {
-        amount: 5,
-        label: 'Remboursement CPAM',
-        _id: 'cpam',
-        date: new Date(2017, 11, 15),
-        automaticCategoryId: '400610'
+        description: 'health bills with debit operation but without credit',
+        options: { identifiers: ['CPAM'] },
+        bills: [
+          'b1 | 5 |     | 999 | 13-12-2017 | 15-12-2017 | true | Ameli | health_costs'
+        ],
+        result: ['b1 | creditOperation | cpam'],
+        operations: {
+          cpam: {
+            bills: ['io.cozy.bills:b1']
+          }
+        }
+      },
+
+      // Bills that have been reimbursed at the same date in the same
+      // "bundle" have a "groupAmount" that is matched against
+      // the debit operation
+      {
+        description: 'health bills with group amount with credit and debit',
+        bills: [
+          'b1 | 3.5 | 5 | 20 | 13-12-2017 | 15-12-2017 | true | Ameli | health_costs',
+          'b2 | 1.5 | 5 | 20 | 14-12-2017 | 16-12-2017 | true | Ameli | health_costs'
+        ],
+        options: {
+          identifiers: ['CPAM']
+        },
+        result: [
+          'b1 | bill            | any',
+          'b1 | debitOperation  | any',
+          'b1 | creditOperation | cpam',
+          'b2 | bill            | any',
+          'b2 | creditOperation | cpam',
+          'b2 | debitOperation  | any'
+        ],
+        operations: {
+          cpam: {
+            bills: ['io.cozy.bills:b1', 'io.cozy.bills:b2']
+          }
+        },
+        extra: result => {
+          expect(result.b1.debitOperation).toBe(result.b2.debitOperation)
+          expect(result.b1.debitOperation.reimbursements.length).toBe(2)
+        }
       },
       {
-        amount: -120,
-        label: 'Facture SFR',
-        _id: 'big_sfr',
-        date: new Date(2017, 11, 8)
+        description:
+          'health bills with group amount with credit but without debit',
+        options: { identifiers: ['CPAM'] },
+        bills: [
+          'b1 | 3.5 | 5 | 999 | 13-12-2018 | 15-12-2017 | true | Ameli | health_costs',
+          'b2 | 1.5 | 5 | 999 | 14-12-2018 | 16-12-2017 | true | Ameli | health_costs'
+        ],
+        result: ['b1 | creditOperation | cpam', 'b2 | creditOperation | cpam'],
+        operations: {
+          cpam: {
+            bills: ['io.cozy.bills:b1', 'io.cozy.bills:b2']
+          }
+        }
       },
       {
-        amount: -30,
-        label: 'Facture SFR',
-        _id: 'small_sfr',
-        date: new Date(2017, 11, 7)
+        description: 'not health bills',
+        options: { identifiers: ['SFR'] },
+        bills: ['b2 | 30 |  |  |  | 07-12-2017 | false | SFR'],
+        result: ['b2 | debitOperation | small_sfr']
       },
       {
-        amount: +30,
-        label: "Remboursemet Matériel d'escalade",
-        _id: 'escalade',
-        date: new Date(2017, 11, 7)
+        description: 'malakoff real case',
+        options: {
+          identifiers: ['CPAM', 'Malakoff']
+        },
+        bills: [
+          'b1 | 5.9  |  | 45 | 09-01-2018 | 09-01-2018 | true | Ameli    | health_costs',
+          'b2 | 13.8 |  | 45 | 15-01-2018 | 15-01-2018 | true | Malakoff | health_costs'
+        ],
+        dbOperations: [
+          'malakoff | 15-01-2018 | Malakoff Mederic Pre | 13.8 | 400610',
+          'cpam     | 12-01-2018 | Cpam de Paris        | 5.9  | 400610',
+          'docteur  | 09-01-2018 | Docteur Konqui       | -45  | 400610'
+        ],
+        result: [],
+        operations: {
+          docteur: {
+            reimbursements: [
+              {
+                billId: 'io.cozy.bills:b1',
+                amount: 5.9,
+                operationId: 'cpam'
+              }
+            ]
+          }
+        }
       },
       {
-        amount: -5.5,
-        label: 'Burrito',
-        _id: 'burrito',
-        date: new Date(2017, 11, 5)
+        description: 'harmonie real case',
+        bills: [
+          'harmonie_bill | 6.9 | 6.9 | 80 | 23-05-2018 | 16-05-2018 | true | Harmonie | health_costs'
+        ],
+        dbOperations: [
+          'ophtalmo         | 22-05-2018 | CENTRE OPHTALM                                                | -80 | 400610',
+          'harmonie_reimbur | 24-05-2018 | HARMONIE MUTUELLE IP0169697530 MUTUELLE -609143-4152-20970487 | 6.9 | 400610'
+        ],
+        options: {
+          identifiers: ['Harmonie']
+        },
+        result: [
+          'harmonie_bill | debitOperation | ophtalmo',
+          'harmonie_bill | creditOperation | harmonie_reimbur'
+        ]
       },
       {
-        amount: -2.6,
-        label: 'Salade',
-        _id: 'salade',
-        date: new Date(2017, 11, 6)
+        description: 'trainline real case',
+        options: {
+          identifiers: ['Trainline']
+        },
+        bills: [
+          'b1 | 297  |  |  |  | 04-05-2017 | false | Trainline    | transport'
+        ],
+        dbOperations: [
+          'trainline | 05-05-2017 | TRAINLINE PARIS | -297 | 400840'
+        ],
+        result: ['b1 | debitOperation | trainline']
+      },
+      {
+        description:
+          'should not link bills with operation that have not the right originalAmount',
+        options: {
+          identifiers: ['CPAM']
+        },
+        bills: [
+          'b1 | 16.1 | 14.6 | 100 | 11-04-2018 | 13-04-2018 | true | Ameli | health'
+        ],
+        dbOperations: [
+          'cohen         | 12-04-2018 | SELARL DR COHEN         | -150 | 400610',
+          'reimbursement | 16-04-2018 | CPAM DES HAUTS DE SEINE | 14.6 | 400610'
+        ],
+        result: ['b1 | creditOperation | reimbursement'],
+        operations: {
+          cohen: {
+            bills: undefined
+          }
+        }
       }
-    ].map(x => ({ ...x, date: x.date.toISOString() }))
+    ]
+
+    const operationsInit = [
+      'medecin   | 13-12-2017 | Visite chez le médecin            | -20  | 400610',
+      'cpam      | 15-12-2017 | Remboursement CPAM                | 5    | 400610',
+      'big_sfr   | 08-12-2017 | Facture SFR                       | -120',
+      'small_sfr | 07-12-2017 | Facture SFR                       | -30',
+      "escalade  | 07-12-2017 | Remboursement Matériel d'escalade | 30",
+      'burrito   | 05-12-2017 | Burrito                           | -5.5',
+      'salade    | 06-12-2017 | Salade                            | -2.6'
+    ].map(parseOperationLine)
 
     let operations, operationsById
 
@@ -178,15 +326,17 @@ describe('linker', () => {
       operationsById = indexBy(operations, '_id')
       cozyClient.fetchJSON = jest
         .fn()
-        .mockReturnValue(Promise.resolve(wrapAsFetchJSONResult(operations)))
+        .mockImplementation(() =>
+          Promise.resolve(wrapAsFetchJSONResult(operations))
+        )
       linker.updateAttributes.mockImplementation(updateOperation)
     })
 
     const defaultOptions = {
       minAmountDelta: 1,
       maxAmountDelta: 1,
-      pastWindow: 2,
-      futureWindow: 2
+      pastWindow: 15,
+      futureWindow: 29
     }
 
     function updateOperation(doctype, needleOp, attributes) {
@@ -197,151 +347,52 @@ describe('linker', () => {
       return Promise.resolve(operation)
     }
 
-    it('should match health bills correctly', () => {
-      const healthBills = [
-        {
-          _id: 'b1',
-          amount: 5,
-          originalAmount: 20,
-          type: 'health_costs',
-          originalDate: new Date(2017, 11, 13),
-          date: new Date(2017, 11, 15),
-          isRefund: true,
-          vendor: 'Ameli'
+    for (let test of tests) {
+      const fn = test.fn || it
+      fn(test.description, async () => {
+        if (test.disabled) {
+          return
         }
-      ]
-      const options = { ...defaultOptions, identifiers: ['CPAM'] }
-      return linker.linkBillsToOperations(healthBills, options).then(result => {
-        expect(result.b1.creditOperation).toEqual(operationsById.cpam)
-        expect(result.b1.debitOperation).toEqual(operations[0])
-        expect(operations[0]).toMatchObject({
-          reimbursements: [
-            {
-              billId: 'io.cozy.bills:b1',
-              amount: 5,
-              operationId: 'cpam'
-            }
-          ]
-        })
-        expect(operationsById.cpam).toMatchObject({
-          bills: ['io.cozy.bills:b1']
-        })
-      })
-    })
+        test.bills = test.bills.map(parseBillLine)
 
-    it('should match health bills with no debit operation with a credit operation', () => {
-      const healthBills = [
-        {
-          _id: 'b1',
-          amount: 5,
-          originalAmount: 999,
-          type: 'health_costs',
-          originalDate: new Date(2017, 11, 13),
-          date: new Date(2017, 11, 15),
-          isRefund: true,
-          vendor: 'Ameli'
-        }
-      ]
-      const options = { ...defaultOptions, identifiers: ['CPAM'] }
-      return linker.linkBillsToOperations(healthBills, options).then(result => {
-        expect(result).toMatchObject({
-          b1: { creditOperation: operationsById.cpam }
-        })
-        expect(result.b1.debitOperation).toBe(undefined)
-        expect(operationsById.cpam).toMatchObject({
-          bills: ['io.cozy.bills:b1']
-        })
-      })
-    })
-
-    describe('health bill with group amount', () => {
-      // Bills that have been reimbursed at the same date in the same
-      // "bundle" have a "groupAmount" that is matched against
-      // the debit operation
-      const healthBills = [
-        {
-          _id: 'b1',
-          amount: 3.5,
-          groupAmount: 5,
-          originalAmount: 20,
-          type: 'health_costs',
-          originalDate: new Date(2017, 11, 13),
-          date: new Date(2017, 11, 15),
-          isRefund: true,
-          vendor: 'Ameli'
-        },
-        {
-          _id: 'b2',
-          amount: 1.5,
-          groupAmount: 5,
-          originalAmount: 20,
-          type: 'health_costs',
-          originalDate: new Date(2017, 11, 14),
-          date: new Date(2017, 11, 16),
-          isRefund: true,
-          vendor: 'Ameli'
-        }
-      ]
-
-      describe('with corresponding debit operation', () => {
-        it('should be associated with the right operations', () => {
-          const options = { ...defaultOptions, identifiers: ['CPAM'] }
-          return linker
-            .linkBillsToOperations(healthBills, options)
-            .then(result => {
-              const debitOperation = expect.any(Object)
-              expect(result).toMatchObject({
-                b1: { creditOperation: operationsById.cpam, debitOperation },
-                b2: { creditOperation: operationsById.cpam, debitOperation }
-              })
-              expect(operationsById.cpam).toMatchObject({
-                bills: ['io.cozy.bills:b1', 'io.cozy.bills:b2']
-              })
-              expect(result.b1.debitOperation).toBe(result.b2.debitOperation)
-              expect(result.b1.debitOperation.reimbursements.length).toBe(2)
-            })
-        })
-      })
-
-      describe('without corresponding debit operation', () => {
-        it('should be associated with the right credit operation', () => {
-          const healthBills2 = healthBills.map(x => ({
-            ...x,
-            originalAmount: 999
-          }))
-          const options = { ...defaultOptions, identifiers: ['CPAM'] }
-          return linker
-            .linkBillsToOperations(healthBills2, options)
-            .then(result => {
-              expect(result.b1.creditOperation).toBe(operationsById.cpam)
-              expect(result.b2.creditOperation).toBe(operationsById.cpam)
-              expect(result.b1.debitOperation).toBe(undefined)
-              expect(result.b2.debitOperation).toBe(undefined)
-              expect(operationsById.cpam).toMatchObject({
-                bills: ['io.cozy.bills:b1', 'io.cozy.bills:b2']
-              })
-            })
-        })
-      })
-    })
-
-    it('not health bills', () => {
-      const noHealthBills = [
-        {
-          _id: 'b2',
-          amount: 30,
-          date: new Date(2017, 11, 8),
-          vendor: 'SFR'
-        }
-      ]
-      const options = { ...defaultOptions, identifiers: ['SFR'] }
-      return linker
-        .linkBillsToOperations(noHealthBills, options)
-        .then(result => {
-          expect(result).toMatchObject({
-            b2: { debitOperation: operationsById.small_sfr }
+        // Some tests need specific operations, additionally to the default operations
+        if (test.dbOperations) {
+          test.dbOperations = test.dbOperations.map(parseOperationLine)
+          test.dbOperations.forEach(op => operations.push(op))
+          test.dbOperations.forEach(op => {
+            operationsById[op._id] = op
           })
-        })
+        }
+
+        // Add specific test options
+        const options = { ...defaultOptions, ...test.options }
+
+        test.result = parseResultLines(test.result, operationsById)
+
+        const result = await linker.linkBillsToOperations(test.bills, options)
+        expect(result).toMatchObject(test.result)
+        for (let [operationId, matchObject] of Object.entries(
+          test.operations || {}
+        )) {
+          const op = operationsById[operationId]
+          for (let [attr, value] of Object.entries(matchObject)) {
+            expect(op).toHaveProperty(attr, value)
+          }
+        }
+        if (test.extra) {
+          test.extra(result)
+        }
+      })
+    }
+
+    it('should not link twice', async () => {
+      const test = tests[0]
+      const options = { ...defaultOptions, ...test.options }
+      expect(operationsById.medecin.reimbursements).toBe(undefined)
+      await linker.linkBillsToOperations(test.bills, options)
+      expect(operationsById.medecin.reimbursements.length).toBe(1)
+      await linker.linkBillsToOperations(test.bills, options)
+      expect(operationsById.medecin.reimbursements.length).toBe(1)
     })
   })
 

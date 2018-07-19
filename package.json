@@ -30,5 +30,11 @@
     "lint": "eslint . --fix",
     "test": "cross-env LOG_LEVEL=info jest"
   },
+  "jest": {
+    "testPathIgnorePatterns" : [
+      "<rootDir>/node_modules/",
+      "<rootDir>/packages/.*/dist"
+    ]
+  },
   "dependencies": {}
 }
