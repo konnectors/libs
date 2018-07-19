@@ -110,7 +110,7 @@ const operationsFilters = (bill, operations, options) => {
     for (let f of filters) {
       const res = f(op)
       if (!res) {
-        return res
+        return false
       }
     }
     return true

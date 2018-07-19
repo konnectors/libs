@@ -355,6 +355,50 @@ describe('linker', () => {
           'b2 | creditOperation | undefined'
         ]
       },
+      {
+        description:
+          'a reimbursement should be able to be added when operation is not "full"',
+        dbOperations: [
+          '_id          | date       | label    | amount | automaticCategoryId | reimbursements',
+          'to_match     | 19-07-2018 | Ophtalmo | -50    | 400610              | 25',
+          'reimbur      | 20-07-2018 | CPAM     | 10     | 400610'
+        ],
+        bills: [
+          '_id | amount | groupAmount | originalAmount | originalDate | date | isRefund | type | vendor',
+          'b1  | 10 | 10 | 50 | 19-07-2018 | 25-07-2018 | true | health_costs | Ameli'
+        ],
+        options: {
+          identifiers: ['CPAM']
+        },
+        operations: {
+          to_match: {
+            reimbursements: [
+              { amount: 25 },
+              { amount: 10, billId: 'io.cozy.bills:b1', operationId: 'reimbur' }
+            ]
+          }
+        }
+      },
+      {
+        description:
+          'a reimbursement should not be able to be added when operation is "full"',
+        dbOperations: [
+          '_id          | date       | label    | amount | automaticCategoryId | reimbursements',
+          'to_match     | 19-07-2018 | Ophtalmo | -50    | 400610              | 25;25',
+          'reimbur      | 20-07-2018 | CPAM     | 10     | 400610'
+        ],
+        bills: [
+          '_id | amount | groupAmount | originalAmount | originalDate | date | isRefund | type | vendor',
+          'b1  | 10 | 10 | 50 | 19-07-2018 | 25-07-2018 | true | health_costs | Ameli'
+        ],
+        options: {
+          identifiers: ['CPAM']
+        },
+        operations: {
+          to_match: {
+            reimbursements: [{ amount: 25 }, { amount: 25 }]
+          }
+        }
       }
     ]
 
