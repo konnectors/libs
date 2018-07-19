@@ -7,8 +7,7 @@ jest.mock('cozy-logger', () => ({
 const cozyClient = require('./cozyclient')
 const indexBy = require('lodash/keyBy')
 const {
-  parseBillLine,
-  parseOperationLine,
+  parseTable,
   wrapAsFetchJSONResult
 } = require('./testUtils')
 
@@ -142,6 +141,7 @@ describe('linker', () => {
       {
         description: 'health bills with both credit and debit',
         bills: [
+          '_id | amount | groupAmount | originalAmount | originalDate | date | isRefund | vendor | type',
           'b1 | 5 |     | 20 | 13-12-2017 | 15-12-2017 | true | Ameli | health_costs'
         ],
         options: { identifiers: ['CPAM'] },
@@ -168,6 +168,7 @@ describe('linker', () => {
         description: 'health bills with debit operation but without credit',
         options: { identifiers: ['CPAM'] },
         bills: [
+          '_id | amount | groupAmount | originalAmount | originalDate | date | isRefund | vendor | type',
           'b1 | 5 |     | 999 | 13-12-2017 | 15-12-2017 | true | Ameli | health_costs'
         ],
         result: ['b1 | creditOperation | cpam'],
@@ -184,8 +185,9 @@ describe('linker', () => {
       {
         description: 'health bills with group amount with credit and debit',
         bills: [
-          'b1 | 3.5 | 5 | 20 | 13-12-2017 | 15-12-2017 | true | Ameli | health_costs',
-          'b2 | 1.5 | 5 | 20 | 14-12-2017 | 16-12-2017 | true | Ameli | health_costs'
+          '_id | amount | groupAmount | originalAmount | originalDate | date | isRefund | vendor | type',
+          'b1  | 3.5 | 5 | 20 | 13-12-2017 | 15-12-2017 | true | Ameli | health_costs',
+          'b2  | 1.5 | 5 | 20 | 14-12-2017 | 16-12-2017 | true | Ameli | health_costs'
         ],
         options: {
           identifiers: ['CPAM']
@@ -213,6 +215,7 @@ describe('linker', () => {
           'health bills with group amount with credit but without debit',
         options: { identifiers: ['CPAM'] },
         bills: [
+          '_id | amount | groupAmount | originalAmount | originalDate | date | isRefund | vendor | type',
           'b1 | 3.5 | 5 | 999 | 13-12-2018 | 15-12-2017 | true | Ameli | health_costs',
           'b2 | 1.5 | 5 | 999 | 14-12-2018 | 16-12-2017 | true | Ameli | health_costs'
         ],
@@ -226,7 +229,10 @@ describe('linker', () => {
       {
         description: 'not health bills',
         options: { identifiers: ['SFR'] },
-        bills: ['b2 | 30 |  |  |  | 07-12-2017 | false | SFR'],
+        bills: [
+          '_id | amount | groupAmount | originalAmount | originalDate | date | isRefund | vendor | type',
+          'b2 | 30 |  |  |  | 07-12-2017 | false | SFR'
+        ],
         result: ['b2 | debitOperation | small_sfr']
       },
       {
@@ -235,10 +241,12 @@ describe('linker', () => {
           identifiers: ['CPAM', 'Malakoff']
         },
         bills: [
+          '_id | amount | groupAmount | originalAmount | originalDate | date | isRefund | vendor | type',
           'b1 | 5.9  |  | 45 | 09-01-2018 | 09-01-2018 | true | Ameli    | health_costs',
           'b2 | 13.8 |  | 45 | 15-01-2018 | 15-01-2018 | true | Malakoff | health_costs'
         ],
         dbOperations: [
+          '_id | date | label | amount | automaticCategoryId',
           'malakoff | 15-01-2018 | Malakoff Mederic Pre | 13.8 | 400610',
           'cpam     | 12-01-2018 | Cpam de Paris        | 5.9  | 400610',
           'docteur  | 09-01-2018 | Docteur Konqui       | -45  | 400610'
@@ -259,9 +267,11 @@ describe('linker', () => {
       {
         description: 'harmonie real case',
         bills: [
+          '_id | amount | groupAmount | originalAmount | originalDate | date | isRefund | vendor | type',
           'harmonie_bill | 6.9 | 6.9 | 80 | 23-05-2018 | 16-05-2018 | true | Harmonie | health_costs'
         ],
         dbOperations: [
+          '_id | date | label | amount | automaticCategoryId',
           'ophtalmo         | 22-05-2018 | CENTRE OPHTALM                                                | -80 | 400610',
           'harmonie_reimbur | 24-05-2018 | HARMONIE MUTUELLE IP0169697530 MUTUELLE -609143-4152-20970487 | 6.9 | 400610'
         ],
@@ -279,9 +289,11 @@ describe('linker', () => {
           identifiers: ['Trainline']
         },
         bills: [
+          '_id | amount | groupAmount | originalAmount | originalDate | date | isRefund | vendor | type',
           'b1 | 297  |  |  |  | 04-05-2017 | false | Trainline    | transport'
         ],
         dbOperations: [
+          '_id | date | label | amount | automaticCategoryId',
           'trainline | 05-05-2017 | TRAINLINE PARIS | -297 | 400840'
         ],
         result: ['b1 | debitOperation | trainline']
@@ -293,9 +305,11 @@ describe('linker', () => {
           identifiers: ['CPAM']
         },
         bills: [
+          '_id | amount | groupAmount | originalAmount | originalDate | date | isRefund | vendor | type',
           'b1 | 16.1 | 14.6 | 100 | 11-04-2018 | 13-04-2018 | true | Ameli | health'
         ],
         dbOperations: [
+          '_id | date | label | amount | automaticCategoryId',
           'cohen         | 12-04-2018 | SELARL DR COHEN         | -150 | 400610',
           'reimbursement | 16-04-2018 | CPAM DES HAUTS DE SEINE | 14.6 | 400610'
         ],
@@ -308,15 +322,19 @@ describe('linker', () => {
       }
     ]
 
-    const operationsInit = [
-      'medecin   | 13-12-2017 | Visite chez le médecin            | -20  | 400610',
-      'cpam      | 15-12-2017 | Remboursement CPAM                | 5    | 400610',
-      'big_sfr   | 08-12-2017 | Facture SFR                       | -120',
-      'small_sfr | 07-12-2017 | Facture SFR                       | -30',
-      "escalade  | 07-12-2017 | Remboursement Matériel d'escalade | 30",
-      'burrito   | 05-12-2017 | Burrito                           | -5.5',
-      'salade    | 06-12-2017 | Salade                            | -2.6'
-    ].map(parseOperationLine)
+    const operationsInit = parseTable(
+      [
+        '_id       | date       | label                             | amount | automaticCategoryId',
+        'medecin   | 13-12-2017 | Visite chez le médecin            | -20    | 400610',
+        'cpam      | 15-12-2017 | Remboursement CPAM                | 5      | 400610',
+        'big_sfr   | 08-12-2017 | Facture SFR                       | -120',
+        'small_sfr | 07-12-2017 | Facture SFR                       | -30',
+        "escalade  | 07-12-2017 | Remboursement Matériel d'escalade | 30",
+        'burrito   | 05-12-2017 | Burrito                           | -5.5',
+        'salade    | 06-12-2017 | Salade                            | -2.6'
+      ],
+      'io.cozy.bank.operations'
+    )
 
     let operations, operationsById
 
@@ -353,11 +371,14 @@ describe('linker', () => {
         if (test.disabled) {
           return
         }
-        test.bills = test.bills.map(parseBillLine)
+        test.bills = parseTable(test.bills, 'io.cozy.bills')
 
         // Some tests need specific operations, additionally to the default operations
         if (test.dbOperations) {
-          test.dbOperations = test.dbOperations.map(parseOperationLine)
+          test.dbOperations = parseTable(
+            test.dbOperations,
+            'io.cozy.bank.operations'
+          )
           test.dbOperations.forEach(op => operations.push(op))
           test.dbOperations.forEach(op => {
             operationsById[op._id] = op

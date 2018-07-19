@@ -12,31 +12,34 @@ const parseAmount = x => parseFloat(x, 10)
 const parseBool = x => (x == 'true' ? true : false)
 const parseStr = x => x
 
-const operationLineSpec = [
-  ['_id', parseStr],
-  ['date', parseDate],
-  ['label', parseStr],
-  ['amount', parseAmount],
-  ['automaticCategoryId', parseStr]
-]
+const rowRx = /\s*\|\s*/
 
-const billLineSpec = [
-  ['_id', parseStr],
-  ['amount', parseAmount],
-  ['groupAmount', parseAmount],
-  ['originalAmount', parseAmount],
-  ['originalDate', parseDate],
-  ['date', parseDate],
-  ['isRefund', parseBool],
-  ['vendor', parseStr],
-  ['type', parseStr]
-]
+const doctypes = {
+  'io.cozy.bank.operations': {
+    _id: parseStr,
+    date: parseDate,
+    label: parseStr,
+    amount: parseAmount,
+    automaticCategoryId: parseStr
+  },
+  'io.cozy.bills': {
+    _id: parseStr,
+    amount: parseAmount,
+    groupAmount: parseAmount,
+    originalAmount: parseAmount,
+    originalDate: parseDate,
+    date: parseDate,
+    isRefund: parseBool,
+    vendor: parseStr,
+    type: parseStr
+  }
+}
 
-const mkLineParser = spec => line => {
+const parseLine = (line, spec) => {
   if (typeof line !== 'string') {
     return line
   }
-  const splitted = line.split(/\s*\|\s*/)
+  const splitted = line.split(rowRx)
   const obj = {}
   try {
     spec.forEach(([attr, parser], i) => {
@@ -51,8 +54,26 @@ const mkLineParser = spec => line => {
   return obj
 }
 
-const parseBillLine = mkLineParser(billLineSpec)
-const parseOperationLine = mkLineParser(operationLineSpec)
+const mkLineParser = (doctype, attrs) => {
+  const attrParsers = doctypes[doctype]
+  const spec = attrs.map(attr => {
+    const parser = attrParsers[attr]
+    if (!parser) {
+      throw new Error(
+        `Cannot make line parser: attribute "${attr}" does not have a parser (doctype: ${doctype})`
+      )
+    }
+    return [attr, parser]
+  })
+  return line => parseLine(line, spec)
+}
+
+const parseTable = (lines, doctype) => {
+  const header = lines[0]
+  const attrs = header.split(rowRx)
+  const parse = mkLineParser(doctype, attrs)
+  return lines.slice(1).map(parse)
+}
 
 const wrapAsFetchJSONResult = documents => {
   return {
@@ -65,4 +86,8 @@ const wrapAsFetchJSONResult = documents => {
   }
 }
 
-module.exports = { parseBillLine, parseOperationLine, wrapAsFetchJSONResult }
+module.exports = {
+  mkLineParser,
+  parseTable,
+  wrapAsFetchJSONResult
+}
