@@ -14,13 +14,22 @@ const parseStr = x => x
 
 const rowRx = /\s*\|\s*/
 
+const parseReimbursements = reimbursementStr => {
+  return reimbursementStr.split(';').map(amount => {
+    return {
+      amount: parseInt(amount, 10)
+    }
+  })
+}
+
 const doctypes = {
   'io.cozy.bank.operations': {
     _id: parseStr,
     date: parseDate,
     label: parseStr,
     amount: parseAmount,
-    automaticCategoryId: parseStr
+    automaticCategoryId: parseStr,
+    reimbursements: parseReimbursements
   },
   'io.cozy.bills': {
     _id: parseStr,
