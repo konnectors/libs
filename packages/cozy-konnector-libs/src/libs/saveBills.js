@@ -38,6 +38,8 @@ const log = require('cozy-logger').namespace('saveBills')
 const linkBankOperations = require('./linkBankOperations')
 const DOCTYPE = 'io.cozy.bills'
 
+const requiredAttributes = ['date', 'amount', 'vendor']
+
 // Encapsulate the saving of Bills : saves the files, saves the new data, and associate the files
 // to an existing bank operation
 module.exports = (entries, fields, options = {}) => {
@@ -45,13 +47,23 @@ module.exports = (entries, fields, options = {}) => {
     log('warn', 'saveBills: no bills to save')
     return Promise.resolve()
   }
+  if (
+    entries.filter(entry => !requiredAttributes.every(attr => entry[attr]))
+      .length
+  ) {
+    throw new Error(
+      `saveBills: some entries do not have required attributes : ${requiredAttributes.join(
+        ', '
+      )}`
+    )
+  }
 
   if (typeof fields === 'string') {
     fields = { folderPath: fields }
   }
 
   // Deduplicate on this keys
-  options.keys = options.keys || ['date', 'amount', 'vendor']
+  options.keys = options.keys || requiredAttributes
 
   options.postProcess = function(entry) {
     entry.currency = convertCurrency(entry.currency)
