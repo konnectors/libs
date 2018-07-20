@@ -37,33 +37,30 @@ const addData = require('./addData')
 const log = require('cozy-logger').namespace('saveBills')
 const linkBankOperations = require('./linkBankOperations')
 const DOCTYPE = 'io.cozy.bills'
+const _ = require('lodash')
 
-const requiredAttributes = ['date', 'amount', 'vendor']
+const requiredAttributes = {
+  date: 'isDate',
+  amount: 'isNumber',
+  vendor: 'isString'
+}
 
 // Encapsulate the saving of Bills : saves the files, saves the new data, and associate the files
 // to an existing bank operation
 module.exports = (entries, fields, options = {}) => {
-  if (entries.length === 0) {
+  if (!_.isArray(entries) || entries.length === 0) {
     log('warn', 'saveBills: no bills to save')
     return Promise.resolve()
   }
-  if (
-    entries.filter(entry => !requiredAttributes.every(attr => entry[attr]))
-      .length
-  ) {
-    throw new Error(
-      `saveBills: some entries do not have required attributes : ${requiredAttributes.join(
-        ', '
-      )}`
-    )
-  }
+
+  checkRequiredAttributes(entries)
 
   if (typeof fields === 'string') {
     fields = { folderPath: fields }
   }
 
   // Deduplicate on this keys
-  options.keys = options.keys || requiredAttributes
+  options.keys = options.keys || Object.keys(requiredAttributes)
 
   options.postProcess = function(entry) {
     entry.currency = convertCurrency(entry.currency)
@@ -94,5 +91,24 @@ function convertCurrency(currency) {
     }
   } else {
     return 'EUR'
+  }
+}
+
+function checkRequiredAttributes(entries) {
+  for (let entry of entries) {
+    for (let attr in requiredAttributes) {
+      if (entry[attr] == null) {
+        throw new Error(
+          `saveBills: an entry is missing the required ${attr} attribute`
+        )
+      }
+      const checkFunction = requiredAttributes[attr]
+      const isExpectedType = _(entry[attr])[checkFunction]()
+      if (isExpectedType === false) {
+        throw new Error(
+          `saveBills: an entry has a ${attr} which does not respect ${checkFunction}`
+        )
+      }
+    }
   }
 }
