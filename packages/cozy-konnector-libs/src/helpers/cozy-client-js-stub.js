@@ -1,45 +1,27 @@
 const fs = require('fs')
 const path = require('path')
 const log = require('cozy-logger').namespace('cozy-client-js-stub')
-const uuid = require('uuid/v5')
-const sha1 = require('uuid/lib/sha1')
-const bytesToUuid = require('uuid/lib/bytesToUuid')
 const mimetypes = require('mime-types')
+const low = require('lowdb')
+const lodashId = require('lodash-id')
+const FileSync = require('lowdb/adapters/FileSync')
+
 const rootPath = JSON.parse(
   process.env.COZY_FIELDS || '{"folder_to_save": "."}'
 ).folder_to_save
 
-let fixture = {}
-const FIXTURE_PATH = path.resolve('fixture.json')
-if (fs.existsSync(FIXTURE_PATH)) {
-  log('debug', `Found ${FIXTURE_PATH} fixture file`)
-  fixture = require(FIXTURE_PATH)
-}
+let db = setUpDb()
 
-let DUMP_PATH = 'importedData.json'
-const KONNECTOR_DEV_CONFIG_PATH = path.resolve('konnector-dev-config.json')
-if (fs.existsSync(KONNECTOR_DEV_CONFIG_PATH)) {
-  const KONNECTOR_DEV_CONFIG = require(KONNECTOR_DEV_CONFIG_PATH)
-  DUMP_PATH = path.join(
-    KONNECTOR_DEV_CONFIG.fields.folderPath || rootPath,
-    DUMP_PATH
-  )
-}
-
-function loadImportedDataJSON() {
-  let docStore = []
-  if (fs.existsSync(DUMP_PATH)) {
-    docStore = JSON.parse(fs.readFileSync(DUMP_PATH, 'utf8'))
-  }
-
-  return docStore
-}
-
-function dumpJSON(data) {
-  return JSON.stringify(data, null, 2)
+function setDefaults(doctype) {
+  const defaults = {}
+  defaults[doctype] = []
+  db.defaults(defaults).write()
 }
 
 module.exports = {
+  _setDb(newDb) {
+    db = newDb
+  },
   fetchJSON() {
     return Promise.resolve({
       rows: []
@@ -47,62 +29,53 @@ module.exports = {
   },
   data: {
     create(doctype, item) {
-      log('info', item, `creating ${doctype}`)
-      const ns = bytesToUuid(sha1(doctype))
-      const _id = uuid(dumpJSON(item), ns).replace(/-/gi, '')
+      setDefaults(doctype)
+      const doc = db
+        .get(doctype)
+        .insert(item)
+        .write()
 
-      // Dump created data in the imported data JSON dump
-      const docStore = loadImportedDataJSON(doctype)
-      const obj = { ...item, _id, doctype }
-      docStore.push(obj)
-      fs.writeFileSync(DUMP_PATH, dumpJSON(docStore), 'utf8')
-
-      return Promise.resolve(obj)
+      return Promise.resolve(doc)
     },
     updateAttributes(doctype, id, attrs) {
-      log('info', attrs, `updating ${id} in ${doctype}`)
-
-      // Update the imported data JSON dump
-      const docStore = loadImportedDataJSON()
-      const index = docStore.findIndex(function(item) {
-        return item._id === id
-      })
-      let obj = {}
-      if (index > -1) {
-        obj = Object.assign(docStore[index], attrs, { _id: id })
-        docStore[index] = obj
-      } else {
-        obj = Object.assign({}, attrs, { _id: id })
-      }
-      fs.writeFileSync(DUMP_PATH, dumpJSON(docStore), 'utf8')
-      return Promise.resolve(obj)
+      setDefaults(doctype)
+      const doc = db
+        .get(doctype)
+        .updateById(id, attrs)
+        .write()
+      return Promise.resolve(doc)
     },
     defineIndex(doctype) {
       return Promise.resolve({ doctype })
     },
-    query(index) {
-      let result = null
-      if (fixture[index.doctype]) {
-        result = fixture[index.doctype]
-      } else {
-        result = []
-      }
+    query(index, options) {
+      // this stub only supposes that there are keys defined in options.selectors
+      // this is only needed by the hydrateAndFilter function
+      // supporting all mango selectors is not planned here
+      const { doctype } = index
+      setDefaults(doctype)
+      const { selector } = options
+      const keys = Object.keys(selector)
+      const result = db
+        .get(doctype)
+        .filter(doc => keys.every(key => doc[key]))
+        .value()
       return Promise.resolve(result)
     },
     findAll(doctype) {
-      let result = null
-      if (fixture[doctype]) {
-        result = fixture[doctype]
-      } else {
-        result = []
-      }
+      setDefaults(doctype)
+      return Promise.resolve(db.get(doctype).value())
+    },
+    delete(doctype, doc) {
+      setDefaults(doctype)
+      const result = db
+        .get(doctype)
+        .removeById(doc._id)
+        .write()
       return Promise.resolve(result)
     },
-    delete() {
-      return Promise.resolve({})
-    },
-    find(doctype) {
-      // Find the doc in the fixture
+    find(doctype, id) {
+      setDefaults(doctype)
       // exeption for "io.cozy.accounts" doctype where we return konnector-dev-config.json content
       let result = null
       if (doctype === 'io.cozy.accounts') {
@@ -110,9 +83,10 @@ module.exports = {
         const config = require(configPath)
         result = { auth: config.fields }
       } else {
-        return Promise.reject(
-          new Error('find is not implemented yet in cozy-client-js stub')
-        )
+        result = db
+          .get(doctype)
+          .getById(id)
+          .value()
       }
       return Promise.resolve(result)
     },
@@ -181,4 +155,21 @@ module.exports = {
       })
     }
   }
+}
+
+function setUpDb() {
+  let DUMP_PATH = 'importedData.json'
+  const KONNECTOR_DEV_CONFIG_PATH = path.resolve('konnector-dev-config.json')
+  if (fs.existsSync(KONNECTOR_DEV_CONFIG_PATH)) {
+    const KONNECTOR_DEV_CONFIG = require(KONNECTOR_DEV_CONFIG_PATH)
+    DUMP_PATH = path.join(
+      KONNECTOR_DEV_CONFIG.fields.folderPath || rootPath,
+      DUMP_PATH
+    )
+  }
+
+  const db = low(new FileSync(DUMP_PATH))
+  db._.mixin(lodashId)
+  db._.id = '_id'
+  return db
 }
