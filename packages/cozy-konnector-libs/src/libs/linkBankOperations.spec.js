@@ -396,6 +396,27 @@ describe('linker', () => {
             reimbursements: [{ amount: 25 }, { amount: 25 }]
           }
         }
+      },
+      {
+        description:
+          'third party payments should not be considered',
+        dbOperations: [
+          '_id          | date       | label    | amount | automaticCategoryId | reimbursements',
+          'to_match     | 19-07-2018 | Ophtalmo | -50    | 400610              | 25',
+          'reimbur      | 20-07-2018 | CPAM     | 10     | 400610'
+        ],
+        bills: [
+          '_id | amount | groupAmount | originalAmount | originalDate | date       | isRefund | isThirdPartyPayer | type         | vendor',
+          'b1  | 10     | 10          | 50             | 19-07-2018   | 25-07-2018 | true     | true              | health_costs | Ameli'
+        ],
+        options: {
+          identifiers: ['CPAM']
+        },
+        operations: {
+          to_match: {
+            reimbursements: [{ amount: 25 }]
+          }
+        }
       }
     ]
 

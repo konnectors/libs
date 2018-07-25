@@ -40,7 +40,8 @@ const doctypes = {
     date: parseDate,
     isRefund: parseBool,
     vendor: parseStr,
-    type: parseStr
+    type: parseStr,
+    isThirdPartyPayer: parseBool
   }
 }
 
