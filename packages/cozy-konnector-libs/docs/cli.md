@@ -45,6 +45,7 @@ Options:
 
   --record  Record all the requests in the ./fixtures directory using the replay module
   --replay  Replay all the recorded requests
+  --persist Do not empty ./data/importedData.json at each run
   -h, --help  output usage information
 ```
 

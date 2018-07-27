@@ -12,6 +12,7 @@ program
     'Record all the requests in the ./fixtures directory using the replay module'
   )
   .option('--replay', 'Replay all the recorded requests')
+  .option('--persist', 'Do not empty ./data/importedData.json at each run')
   .parse(process.argv)
 
 process.env.NODE_ENV = 'standalone'
@@ -22,12 +23,6 @@ if (!fs.existsSync(rootPath)) fs.mkdirSync(rootPath)
 process.env.COZY_FIELDS = JSON.stringify({
   folder_to_save: rootPath
 })
-
-// ensure the importedData.json file exist or is initialized with default content
-let DUMP_PATH = path.join(rootPath, 'importedData.json')
-const initialContent = '[]'
-if (!fs.existsSync(DUMP_PATH))
-  fs.writeFileSync(DUMP_PATH, initialContent, 'utf8')
 
 const config = require('./init-konnector-config')()
 process.env.COZY_URL = config.COZY_URL
