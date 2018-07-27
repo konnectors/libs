@@ -56,7 +56,9 @@ const downloadEntry = function(entry, options) {
 
   const rq = requestFactory({
     json: false,
-    cheerio: false
+    cheerio: false,
+    userAgent: true,
+    jar: true
   })
   let filePromise = rq(reqOptions)
 
