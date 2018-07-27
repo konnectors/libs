@@ -398,8 +398,7 @@ describe('linker', () => {
         }
       },
       {
-        description:
-          'third party payments should not be considered',
+        description: 'third party payments should not be considered',
         dbOperations: [
           '_id          | date       | label    | amount | automaticCategoryId | reimbursements',
           'to_match     | 19-07-2018 | Ophtalmo | -50    | 400610              | 25',

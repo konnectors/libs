@@ -117,45 +117,6 @@ const filename = normalizeFilename(&#39;*foo/bar: &lt;baz&gt; \\&quot;qux&quot;\
 // `filename` === `foo bar baz qux.txt`
 </code></pre>
 </dd>
-<dt><a href="#module_requestFactory">requestFactory</a></dt>
-<dd><p>This is a function which returns an instance of
-<a href="https://www.npmjs.com/package/request-promise">request-promise</a> initialized with
-defaults often used in connector development.</p>
-<pre><code class="language-javascript">// Showing defaults
-req = requestFactory({
-  cheerio: false,
-  jar: true,
-  json: true
-})
-</code></pre>
-<p>Options :</p>
-<ul>
-<li><code>cheerio</code>:  will parse automatically the <code>response.body</code> in a cheerio instance</li>
-</ul>
-<pre><code class="lang-javascript">req = requestFactory({ cheerio: true })
-req(&#39;http://github.com&#39;, $ =&gt; {
-  const repos = $(&#39;#repo_listing .repo&#39;)
-})
-</code></pre>
-<ul>
-<li><code>jar</code>: is passed to <code>request</code> options. Remembers cookies for future use.</li>
-<li><code>json</code>: will parse the <code>response.body</code> as JSON</li>
-<li><code>json</code>: will parse the <code>response.body</code> as JSON</li>
-<li><code>resolveWithFullResponse</code>: The full response will be return in the promise. It is compatible
-with cheerio and json options.</li>
-</ul>
-<pre><code class="lang-javascript">req = requestFactory({
-   resolveWithFullResponse: true,
-   cheerio: true
-})
-req(&#39;http://github.com&#39;, response =&gt; {
-  console.log(response.statusCode)
-  const $ = response.body
-  const repos = $(&#39;#repo_listing .repo&#39;)
-})
-</code></pre>
-<p>You can find the full list of available options in <a href="https://github.com/request/request-promise">request-promise</a> and <a href="https://github.com/request/request">request</a> documentations.</p>
-</dd>
 <dt><a href="#module_saveBills">saveBills</a></dt>
 <dd><p>Combines the features of <code>saveFiles</code>, <code>filterData</code>, <code>addData</code> and <code>linkBankOperations</code> for a
 common case: bills.
@@ -311,6 +272,27 @@ fetch account information for your connector.</p>
 </dd>
 <dt><a href="#DISK_QUOTA_EXCEEDED">DISK_QUOTA_EXCEEDED</a> : <code>String</code></dt>
 <dd><p>Could not save a file to the cozy because of disk quota exceeded</p>
+</dd>
+<dt><a href="#CHALLENGE_ASKED">CHALLENGE_ASKED</a> : <code>String</code></dt>
+<dd><p>It seems that the website requires a second authentification factor that we don’t support yet.</p>
+</dd>
+<dt><a href="#LOGIN_FAILED_TOO_MANY_ATTEMPTS">LOGIN_FAILED_TOO_MANY_ATTEMPTS</a> : <code>String</code></dt>
+<dd><p>Temporarily blocked</p>
+</dd>
+<dt><a href="#USER_ACTION_NEEDED_OAUTH_OUTDATED">USER_ACTION_NEEDED_OAUTH_OUTDATED</a> : <code>String</code></dt>
+<dd><p>Access refresh required</p>
+</dd>
+<dt><a href="#USER_ACTION_NEEDED_ACCOUNT_REMOVED">USER_ACTION_NEEDED_ACCOUNT_REMOVED</a> : <code>String</code></dt>
+<dd><p>Unavailable account</p>
+</dd>
+<dt><a href="#USER_ACTION_NEEDED_CHANGE_PASSWORD">USER_ACTION_NEEDED_CHANGE_PASSWORD</a> : <code>String</code></dt>
+<dd><p>Unavailable account</p>
+</dd>
+<dt><a href="#USER_ACTION_NEEDED_PERMISSIONS_CHANGED">USER_ACTION_NEEDED_PERMISSIONS_CHANGED</a> : <code>String</code></dt>
+<dd><p>Password update required</p>
+</dd>
+<dt><a href="#USER_ACTION_NEEDED_CGU_FORM">USER_ACTION_NEEDED_CGU_FORM</a> : <code>String</code></dt>
+<dd><p>The user needs to accept a CGU form before accessing the rest of the website</p>
 </dd>
 </dl>
 
@@ -481,53 +463,6 @@ const { normalizeFilename } = require('cozy-konnector-libs')
 const filename = normalizeFilename('*foo/bar: <baz> \\"qux"\t???', '.txt')
 // `filename` === `foo bar baz qux.txt`
 ```
-
-<a name="module_requestFactory"></a>
-
-## requestFactory
-This is a function which returns an instance of
-[request-promise](https://www.npmjs.com/package/request-promise) initialized with
-defaults often used in connector development.
-
-```js
-// Showing defaults
-req = requestFactory({
-  cheerio: false,
-  jar: true,
-  json: true
-})
-```
-
-Options :
-
-- `cheerio`:  will parse automatically the `response.body` in a cheerio instance
-
-```javascript
-req = requestFactory({ cheerio: true })
-req('http://github.com', $ => {
-  const repos = $('#repo_listing .repo')
-})
-```
-
-- `jar`: is passed to `request` options. Remembers cookies for future use.
-- `json`: will parse the `response.body` as JSON
-- `json`: will parse the `response.body` as JSON
-- `resolveWithFullResponse`: The full response will be return in the promise. It is compatible
-  with cheerio and json options.
-
-```javascript
-req = requestFactory({
-   resolveWithFullResponse: true,
-   cheerio: true
-})
-req('http://github.com', response => {
-  console.log(response.statusCode)
-  const $ = response.body
-  const repos = $('#repo_listing .repo')
-})
-```
-
-You can find the full list of available options in [request-promise](https://github.com/request/request-promise) and [request](https://github.com/request/request) documentations.
 
 <a name="module_saveBills"></a>
 
@@ -816,6 +751,48 @@ There was a problem while saving a file
 
 ## DISK_QUOTA_EXCEEDED : <code>String</code>
 Could not save a file to the cozy because of disk quota exceeded
+
+**Kind**: global constant  
+<a name="CHALLENGE_ASKED"></a>
+
+## CHALLENGE_ASKED : <code>String</code>
+It seems that the website requires a second authentification factor that we don’t support yet.
+
+**Kind**: global constant  
+<a name="LOGIN_FAILED_TOO_MANY_ATTEMPTS"></a>
+
+## LOGIN_FAILED_TOO_MANY_ATTEMPTS : <code>String</code>
+Temporarily blocked
+
+**Kind**: global constant  
+<a name="USER_ACTION_NEEDED_OAUTH_OUTDATED"></a>
+
+## USER_ACTION_NEEDED_OAUTH_OUTDATED : <code>String</code>
+Access refresh required
+
+**Kind**: global constant  
+<a name="USER_ACTION_NEEDED_ACCOUNT_REMOVED"></a>
+
+## USER_ACTION_NEEDED_ACCOUNT_REMOVED : <code>String</code>
+Unavailable account
+
+**Kind**: global constant  
+<a name="USER_ACTION_NEEDED_CHANGE_PASSWORD"></a>
+
+## USER_ACTION_NEEDED_CHANGE_PASSWORD : <code>String</code>
+Unavailable account
+
+**Kind**: global constant  
+<a name="USER_ACTION_NEEDED_PERMISSIONS_CHANGED"></a>
+
+## USER_ACTION_NEEDED_PERMISSIONS_CHANGED : <code>String</code>
+Password update required
+
+**Kind**: global constant  
+<a name="USER_ACTION_NEEDED_CGU_FORM"></a>
+
+## USER_ACTION_NEEDED_CGU_FORM : <code>String</code>
+The user needs to accept a CGU form before accessing the rest of the website
 
 **Kind**: global constant  
 <a name="mkSpec"></a>
