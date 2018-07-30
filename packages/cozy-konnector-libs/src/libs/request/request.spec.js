@@ -94,6 +94,13 @@ describe('requestFactory', () => {
       })
       expect(options.json).toBe(false)
     })
+    test('should not activate json when cheerio false', () => {
+      const options = mergeDefaultOptions({
+        cheerio: false,
+        json: false
+      })
+      expect(options.json).toBe(false)
+    })
   })
 
   describe('TLS behavior assertions', () => {

@@ -68,7 +68,11 @@ function mergeDefaultOptions(options = {}) {
     headers: {},
     followAllRedirects: true
   }
-  return { ...defaultOptions, ...options, json: !options.cheerio }
+  if (options.cheerio === true) {
+    options.json = false
+  }
+
+  return { ...defaultOptions, ...options }
 }
 
 function transformWithCheerio(body, response, resolveWithFullResponse) {
