@@ -95,7 +95,7 @@ const hydrateAndFilter = (documents = [], doctype, options = {}) => {
     return index
   }
 
-  const getItems = index => {
+  const getItems = async index => {
     log('debug', index, 'index')
 
     const selector = options.selector
@@ -107,7 +107,18 @@ const hydrateAndFilter = (documents = [], doctype, options = {}) => {
 
     log('debug', selector, 'selector')
 
-    return cozy.data.query(index, { selector })
+    const result = []
+    while (true) {
+      log('debug', `Fetching next db items ${result.length}`)
+      const resp = await cozy.data.query(index, {
+        selector,
+        wholeResponse: true,
+        skip: result.length
+      })
+      result.push.apply(result, resp.docs)
+      if (!resp.next) break
+    }
+    return result
   }
 
   const populateStore = store => dbitems => {
