@@ -38,6 +38,7 @@ const bluebird = require('bluebird')
 const log = require('cozy-logger').namespace('hydrateAndFilter')
 const get = require('lodash/get')
 const uniqBy = require('lodash/uniqBy')
+const { queryAll } = require('./utils')
 
 /**
  * Since we can use methods or basic functions for
@@ -107,18 +108,7 @@ const hydrateAndFilter = (documents = [], doctype, options = {}) => {
 
     log('debug', selector, 'selector')
 
-    const result = []
-    while (true) {
-      log('debug', `Fetching next db items ${result.length}`)
-      const resp = await cozy.data.query(index, {
-        selector,
-        wholeResponse: true,
-        skip: result.length
-      })
-      result.push.apply(result, resp.docs)
-      if (!resp.next) break
-    }
-    return result
+    return await queryAll(doctype, selector, index)
   }
 
   const populateStore = store => dbitems => {
