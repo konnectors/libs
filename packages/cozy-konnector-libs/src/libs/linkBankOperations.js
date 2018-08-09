@@ -41,6 +41,20 @@ class Linker {
     this.groupVendors = ['Numéricable']
   }
 
+  async removeBillsFromOperations(bills, operations) {
+    const billsOperations = operations.filter(op => op.bills)
+    const ids = bills.map(bill => `io.cozy.bills:${bill._id}`)
+    await Promise.all(
+      billsOperations.map(async op => {
+        op.bills = op.bills || []
+        const bills = op.bills.filter(billId => !ids.includes(billId))
+        if (op.bills.length > bills.length) {
+          await this.updateAttributes(DOCTYPE_OPERATIONS, op, { bills })
+        }
+      })
+    )
+  }
+
   addBillToOperation(bill, operation) {
     if (!bill._id) {
       log('warn', 'bill has no id, impossible to add it to an operation')
@@ -196,6 +210,10 @@ class Linker {
     const result = {}
 
     const allOperations = await fetchAll('io.cozy.bank.operations')
+
+    if (options.billsToRemove && options.billsToRemove.length) {
+      this.removeBillsFromOperations(options.billsToRemove, allOperations)
+    }
 
     // when bill comes from a third party payer,
     // no transaction is visible on the bank account
@@ -361,6 +379,7 @@ module.exports = (bills, doctype, fields, options = {}) => {
   }
   const cozyClient = require('./cozyclient')
   const linker = new Linker(cozyClient)
+
   const prom = linker.linkBillsToOperations(bills, options).catch(err => {
     log('warn', err, 'Problem when linking operations')
   })

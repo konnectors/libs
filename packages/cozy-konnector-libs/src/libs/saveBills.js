@@ -77,8 +77,13 @@ module.exports = (entries, fields, options = {}) => {
   return saveFiles(entries, fields, options)
     .then(entries => hydrateAndFilter(entries, DOCTYPE, options))
     .then(entries => addData(entries, DOCTYPE, options))
-    .then(() => linkBankOperations(originalEntries, DOCTYPE, fields, options))
     .then(() => cleanDuplicates(options, vendor))
+    .then(toRemove => {
+      if (toRemove) {
+        options.billsToRemove = toRemove)
+      }
+      return linkBankOperations(originalEntries, DOCTYPE, fields, options)
+    })
 }
 
 async function cleanDuplicates(options, vendor) {
@@ -99,6 +104,7 @@ async function cleanDuplicates(options, vendor) {
     if (options.removeDuplicates) {
       log('info', 'Removing duplicated bills')
       await batchDelete(DOCTYPE, toRemove)
+      return toRemove
     }
   }
 }

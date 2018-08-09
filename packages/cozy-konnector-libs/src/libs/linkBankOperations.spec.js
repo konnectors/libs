@@ -50,6 +50,89 @@ const expectPropertyMatch = (obj, matcher) => {
 describe('linker', () => {
   const bill = { amount: 110, _id: 'b1' }
 
+  describe('removeBillsFromOperations', () => {
+    test('operations without bills and no bills', async () => {
+      const operations = [{ _id: 1 }, { _id: 2 }]
+
+      await linker.removeBillsFromOperations([], operations)
+      expect(linker.updateAttributes).not.toBeCalled()
+    })
+
+    test('operations without bills and bills', async () => {
+      const operations = [{ _id: 1 }, { _id: 2 }]
+      const bills = [bill]
+
+      await linker.removeBillsFromOperations(bills, operations)
+      expect(linker.toUpdate.length).toEqual(0)
+      expect(linker.updateAttributes).not.toBeCalled()
+    })
+
+    test('operations with bills and matching bill', async () => {
+      const operations = [{ _id: 1, bills: ['io.cozy.bills:b1'] }, { _id: 2 }]
+      const bills = [bill]
+
+      await linker.removeBillsFromOperations(bills, operations)
+      expect(linker.updateAttributes).lastCalledWith(
+        'io.cozy.bank.operations',
+        operations[0],
+        {
+          bills: []
+        }
+      )
+    })
+    test('operations with bills and matching bill and remaining bills', async () => {
+      const operations = [
+        {
+          _id: 1,
+          bills: ['io.cozy.bills:b1', 'io.cozy.bills:b2', 'io.cozy.bills:b3']
+        },
+        { _id: 2 }
+      ]
+      const bills = [bill]
+
+      await linker.removeBillsFromOperations(bills, operations)
+      expect(linker.updateAttributes).lastCalledWith(
+        'io.cozy.bank.operations',
+        operations[0],
+        {
+          bills: ['io.cozy.bills:b2', 'io.cozy.bills:b3']
+        }
+      )
+    })
+    test('bill id accross multiple operations', async () => {
+      linker.updateAttributes.mockReset()
+      const operations = [
+        {
+          _id: 1,
+          bills: ['io.cozy.bills:b1', 'io.cozy.bills:b2', 'io.cozy.bills:b3']
+        },
+        {
+          _id: 2,
+          bills: ['io.cozy.bills:b3', 'io.cozy.bills:b2', 'io.cozy.bills:b1']
+        }
+      ]
+      const bills = [{ amount: 110, _id: 'b1' }, { amount: 11, _id: 'b10' }]
+
+      await linker.removeBillsFromOperations(bills, operations)
+      expect(linker.updateAttributes.mock.calls).toEqual([
+        [
+          'io.cozy.bank.operations',
+          operations[0],
+          {
+            bills: ['io.cozy.bills:b2', 'io.cozy.bills:b3']
+          }
+        ],
+        [
+          'io.cozy.bank.operations',
+          operations[1],
+          {
+            bills: ['io.cozy.bills:b3', 'io.cozy.bills:b2']
+          }
+        ]
+      ])
+    })
+  })
+
   describe('addBillToOperation', () => {
     test('operation without bills', () => {
       const operation = { _id: 123456 }
