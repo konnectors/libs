@@ -33,7 +33,8 @@ module.exports = {
   submitForm: require('./libs/signin'),
   scrape: require('./libs/scrape'),
   mkdirp: require('./libs/mkdirp'),
-  normalizeFilename: require('./libs/normalizeFilename')
+  normalizeFilename: require('./libs/normalizeFilename'),
+  utils: require('./libs/utils')
 }
 
 function deprecate(wrapped, message) {

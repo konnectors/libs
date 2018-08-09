@@ -231,6 +231,58 @@ use this function.</p>
 is already saved in the cozy</li>
 </ul>
 </dd>
+<dt><a href="#module_filterData">filterData</a></dt>
+<dd><p>This module proposes some small utils regarding connectors</p>
+<p>Parameters:</p>
+<ul>
+<li><code>documents</code>: an array of objects corresponding to the data you want to save in the cozy</li>
+<li><code>doctype</code> (string): the doctype where you want to save data (ex: &#39;io.cozy.bills&#39;)</li>
+<li><code>options</code> :<ul>
+<li><code>keys</code> (array) : List of keys used to check that two items are the same. By default it is set to `[&#39;id&#39;]&#39;.</li>
+<li><code>index</code> (optionnal) : Return value returned by <code>cozy.data.defineIndex</code>, the default will correspond to all documents of the selected doctype.</li>
+<li><code>selector</code> (optionnal object) : Mango request to get records. Default is built from the keys <code>{selector: {_id: {&quot;$gt&quot;: null}}}</code> to get all the records.</li>
+</ul>
+</li>
+</ul>
+<pre><code class="lang-javascript">const documents = [
+  {
+    name: &#39;toto&#39;,
+    height: 1.8
+  },
+  {
+    name: &#39;titi&#39;,
+    height: 1.7
+  }
+]
+
+return filterData(documents, &#39;io.cozy.height&#39;, {
+  keys: [&#39;name&#39;]
+}).then(filteredDocuments =&gt; addData(filteredDocuments, &#39;io.cozy.height&#39;))
+
+</code></pre>
+</dd>
+<dt><a href="#module_utils">utils</a></dt>
+<dd><p>This function allows to fetch all documents for a given doctype. It is the fastest to get all
+documents but without filtering possibilities</p>
+<p>Parameters:</p>
+<ul>
+<li><code>doctype</code> (string): the doctype from which you want to fetch the data</li>
+</ul>
+</dd>
+<dt><a href="#module_utils">utils</a></dt>
+<dd><p>This function allows to fetch all documents for a given doctype exceeding the 100 limit.
+It is slower that fetchAll because it fetches the data 100 by 100 but allows to filter the data
+with a selector and an index</p>
+<p>Parameters:</p>
+<ul>
+<li><code>doctype</code> (string): the doctype from which you want to fetch the data</li>
+<li><code>selector</code> (object): the mango query selector</li>
+<li><code>index</code> (object): (optional) the query selector index. If not defined, the function will
+create it&#39;s own index with the keys specified in the selector</li>
+</ul>
+<pre><code class="lang-javascript">const documents = await queryAll(&#39;io.cozy.bills&#39;, {vendor: &#39;Direct Energie&#39;})
+</code></pre>
+</dd>
 </dl>
 
 ## Classes
@@ -580,6 +632,80 @@ Parameters:
 - `doctype` (string) is the cozy doctype where the entries should be saved
 - `matchingAttributes` (array of strings) is the list of attributes in each entry should be used to check if an entry
   is already saved in the cozy
+
+<a name="module_filterData"></a>
+
+## filterData
+This module proposes some small utils regarding connectors
+
+Parameters:
+
+* `documents`: an array of objects corresponding to the data you want to save in the cozy
+* `doctype` (string): the doctype where you want to save data (ex: 'io.cozy.bills')
+* `options` :
+   - `keys` (array) : List of keys used to check that two items are the same. By default it is set to `['id']'.
+   - `index` (optionnal) : Return value returned by `cozy.data.defineIndex`, the default will correspond to all documents of the selected doctype.
+   - `selector` (optionnal object) : Mango request to get records. Default is built from the keys `{selector: {_id: {"$gt": null}}}` to get all the records.
+
+```javascript
+const documents = [
+  {
+    name: 'toto',
+    height: 1.8
+  },
+  {
+    name: 'titi',
+    height: 1.7
+  }
+]
+
+return filterData(documents, 'io.cozy.height', {
+  keys: ['name']
+}).then(filteredDocuments => addData(filteredDocuments, 'io.cozy.height'))
+
+```
+
+<a name="module_filterData..suitableCall"></a>
+
+### filterData~suitableCall()
+Since we can use methods or basic functions for
+`shouldSave` and `shouldUpdate` we pass the
+appropriate `this` and `arguments`.
+
+If `funcOrMethod` is a method, it will be called
+with args[0] as `this` and the rest as `arguments`
+Otherwise, `this` will be null and `args` will be passed
+as `arguments`.
+
+**Kind**: inner method of [<code>filterData</code>](#module_filterData)  
+<a name="module_utils"></a>
+
+## utils
+This function allows to fetch all documents for a given doctype. It is the fastest to get all
+documents but without filtering possibilities
+
+Parameters:
+
+* `doctype` (string): the doctype from which you want to fetch the data
+
+<a name="module_utils"></a>
+
+## utils
+This function allows to fetch all documents for a given doctype exceeding the 100 limit.
+It is slower that fetchAll because it fetches the data 100 by 100 but allows to filter the data
+with a selector and an index
+
+Parameters:
+
+* `doctype` (string): the doctype from which you want to fetch the data
+* `selector` (object): the mango query selector
+* `index` (object): (optional) the query selector index. If not defined, the function will
+create it's own index with the keys specified in the selector
+
+
+```javascript
+const documents = await queryAll('io.cozy.bills', {vendor: 'Direct Energie'})
+```
 
 <a name="BaseKonnector"></a>
 
