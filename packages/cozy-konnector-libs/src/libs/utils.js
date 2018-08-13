@@ -31,6 +31,8 @@
  * @module filterData
  */
 const cozyClient = require('./cozyclient')
+const uniqBy = require('lodash/uniqBy')
+const differenceBy = require('lodash/differenceBy')
 
 /**
  * This function allows to fetch all documents for a given doctype. It is the fastest to get all
@@ -97,7 +99,112 @@ const queryAll = async (doctype, selector, index) => {
   return result
 }
 
+/**
+ * This function find duplicates in a given doctype, filtered by an optional mango selector
+ *
+ * Parameters:
+ *
+ * * `doctype` (string): the doctype from which you want to fetch the data
+ * * `selector` (object): (optional) the mango query selector
+ * * `options` :
+ *    - `keys` (array) : List of keys used to check that two items are the same.
+ *    - `index` (optionnal) : Return value returned by `cozy.data.defineIndex`, the default will correspond to all documents of the selected doctype.
+ *    - `selector` (optionnal object) : Mango request to get records. Gets all the records by default
+ *
+ * Returns an object with the following keys:
+ * * `toKeep`: this is the list of unique documents that you should keep in db
+ * * `toRemove`: this is the list of documents that can remove from db. If this is io.cozy.bills
+ * documents, do not forget to clean linked bank operations
+ *
+ * ```javascript
+ * const {toKeep, toRemove} = await findDuplicates('io.cozy.bills', {selector: {vendor: 'Direct Energie'}})
+ * ```
+ *
+ * @module utils
+ */
+const findDuplicates = async (doctype, options) => {
+  let hash = null
+  if (options.keys) {
+    hash = doc =>
+      options.keys
+        .map(key => {
+          let result = doc[key]
+          if (key === 'date') result = new Date(result)
+          return result
+        })
+        .join(',')
+  } else if (options.hash) {
+    hash = options.hash
+  } else {
+    throw new Error('findDuplicates: you must specify keys or hash option')
+  }
+
+  let documents = await queryAll(doctype, options.selector)
+
+  const toKeep = uniqBy(documents, hash)
+  const toRemove = differenceBy(documents, toKeep)
+  return { toKeep, toRemove }
+}
+
+/**
+ * This is a shortcut to update multiple documents in one call
+ *
+ * Parameters:
+ *
+ * * `doctype` (string): the doctype from which you want to fetch the data
+ * * `ids` (array): array of ids of documents to update
+ * * `transformation` (object): attributes to change with their values
+ * * `options` :
+ *    - `keys` (array) : List of keys used to check that two items are the same.
+ *    - `index` (optionnal) : Return value returned by `cozy.data.defineIndex`, the default will correspond to all documents of the selected doctype.
+ *    - `selector` (optionnal object) : Mango request to get records. Gets all the records by default
+ *
+ * Returns a promise which resolves with all the return values of updateAttributes
+ *
+ * ```javascript
+ * await batchUpdateAttributes('io.cozy.bills', [1, 2, 3], {vendor: 'Direct Energie'})
+ * ```
+ *
+ * @module utils
+ */
+const batchUpdateAttributes = (doctype, ids, transformation) => {
+  return Promise.all(
+    ids.map(id => cozyClient.data.updateAttributes(doctype, id, transformation))
+  )
+}
+
+/**
+ * This is a shortcut to delete multiple documents in one call
+ *
+ * Parameters:
+ *
+ * * `doctype` (string): the doctype from which you want to fetch the data
+ * * `documents` (array): documents to delete with their ids
+ * * `transformation` (object): attributes to change with their values
+ * * `options` :
+ *    - `keys` (array) : List of keys used to check that two items are the same.
+ *    - `index` (optionnal) : Return value returned by `cozy.data.defineIndex`, the default will correspond to all documents of the selected doctype.
+ *    - `selector` (optionnal object) : Mango request to get records. Gets all the records by default
+ *
+ * Returns a promise which resolves with all the return values of updateAttributes
+ *
+ * Example to remove all the documents for a given doctype
+ *
+ * ```javascript
+ * const documents = await fetchAll('io.cozy.marvel')
+ * await batchDelete('io.cozy.marvel', documents)
+ * ```
+ *
+ * @module utils
+ */
+const batchDelete = (doctype, documents) => {
+  return Promise.all(documents.map(doc => cozyClient.data.delete(doctype, doc)))
+}
+
 module.exports = {
   fetchAll,
-  queryAll
+  queryAll,
+  findDuplicates,
+  batchUpdateAttributes,
+  batchDelete
 }

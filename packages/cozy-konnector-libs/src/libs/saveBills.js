@@ -38,6 +38,7 @@ const log = require('cozy-logger').namespace('saveBills')
 const linkBankOperations = require('./linkBankOperations')
 const DOCTYPE = 'io.cozy.bills'
 const _ = require('lodash')
+const { findDuplicates, batchDelete } = require('./utils')
 
 const requiredAttributes = {
   date: 'isDate',
@@ -71,11 +72,35 @@ module.exports = (entries, fields, options = {}) => {
     return entry
   }
 
+  const vendor = entries[0].vendor
   const originalEntries = entries
   return saveFiles(entries, fields, options)
     .then(entries => hydrateAndFilter(entries, DOCTYPE, options))
     .then(entries => addData(entries, DOCTYPE, options))
     .then(() => linkBankOperations(originalEntries, DOCTYPE, fields, options))
+    .then(() => cleanDuplicates(options, vendor))
+}
+
+async function cleanDuplicates(options, vendor) {
+  const { toRemove } = await findDuplicates(DOCTYPE, {
+    selector: { vendor },
+    keys: options.keys
+  })
+  if (toRemove.length) {
+    log(
+      'warn',
+      `saveBills: there are ${
+        toRemove.length
+      } duplicated bills to remove according to ${options.keys.join(
+        ', '
+      )} attributes`
+    )
+
+    if (options.removeDuplicates) {
+      log('info', 'Removing duplicated bills')
+      await batchDelete(DOCTYPE, toRemove)
+    }
+  }
 }
 
 function convertCurrency(currency) {

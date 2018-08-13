@@ -56,10 +56,14 @@ module.exports = {
       setDefaults(doctype)
       const { selector } = options
       const keys = Object.keys(selector)
-      const result = db
+      let result = db
         .get(doctype)
         .filter(doc => keys.every(key => doc[key]))
         .value()
+
+      if (options.wholeResponse) {
+        result = { docs: result }
+      }
       return Promise.resolve(result)
     },
     findAll(doctype) {
