@@ -80,7 +80,7 @@ module.exports = (entries, fields, options = {}) => {
     .then(() => cleanDuplicates(options, vendor))
     .then(toRemove => {
       if (toRemove) {
-        options.billsToRemove = toRemove)
+        options.billsToRemove = toRemove
       }
       return linkBankOperations(originalEntries, DOCTYPE, fields, options)
     })
