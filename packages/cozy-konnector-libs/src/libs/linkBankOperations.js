@@ -20,7 +20,7 @@ const groupBy = require('lodash/groupBy')
 const flatten = require('lodash/flatten')
 const sumBy = require('lodash/sumBy')
 const geco = require('geco')
-const moment = require('moment')
+const format = require('date-fns/format')
 const cozyClient = require('./cozyclient')
 
 const DOCTYPE_OPERATIONS = 'io.cozy.bank.operations'
@@ -338,7 +338,7 @@ class Linker {
   groupBills(bills) {
     const billsToGroup = bills.filter(bill => this.billCanBeGrouped(bill))
     const groups = groupBy(billsToGroup, bill => {
-      return [moment(getBillDate(bill)).format('YYYY-MM-DD'), bill.vendor]
+      return [format(getBillDate(bill), 'YYYY-MM-DD'), bill.vendor]
     })
 
     return Object.values(groups)
