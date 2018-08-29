@@ -31,8 +31,7 @@
  * @module filterData
  */
 const cozyClient = require('./cozyclient')
-const uniqBy = require('lodash/uniqBy')
-const differenceBy = require('lodash/differenceBy')
+const groupBy = require('lodash/groupBy')
 const keyBy = require('lodash/keyBy')
 const sortBy = require('lodash/sortBy')
 
@@ -149,8 +148,21 @@ const findDuplicates = async (doctype, options) => {
     documents = sortBillsByLinkedOperationNumber(documents, operations)
   }
 
-  const toKeep = uniqBy(documents, hash)
-  const toRemove = differenceBy(documents, toKeep)
+  const groups = groupBy(documents, hash)
+  const toKeep = []
+  const toRemove = []
+  for (let key in groups) {
+    const group = groups[key]
+    toKeep.push(group[0])
+    toRemove.push.apply(
+      toRemove,
+      group.slice(1).map(doc => ({
+        ...doc,
+        original: group[0]._id
+      }))
+    )
+  }
+
   return { toKeep, toRemove }
 }
 

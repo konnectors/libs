@@ -22,6 +22,8 @@ const {
   sortBillsByLinkedOperationNumber
 } = require('./utils')
 
+const sortBy = require('lodash/sortBy')
+
 const asyncResolve = data =>
   new Promise(resolve => setImmediate(() => resolve(data)))
 
@@ -146,13 +148,22 @@ describe('findDuplicates', () => {
       })
     )
 
-    const { toKeep } = await findDuplicates('io.cozy.bills', {
+    const { toKeep, toRemove } = await findDuplicates('io.cozy.bills', {
       keys: ['amount']
     })
 
-    expect(toKeep).toEqual([
+    expect(sortBy(toKeep, '_id')).toEqual([
       { amount: 2, date, vendor, _id: 4, opNb: 2 },
       { amount: 1, date, vendor, _id: 5, opNb: 1 }
+    ])
+    expect(sortBy(toRemove, '_id')).toEqual([
+      { amount: 1, date, vendor, _id: 1, opNb: 0, original: 5 },
+      { amount: 2, date, vendor, _id: 2, opNb: 1, original: 4 },
+      { amount: 1, date, vendor, _id: 3, opNb: 1, original: 5 },
+      { amount: 2, date, vendor, _id: 6, opNb: 1, original: 4 },
+      { amount: 1, date, vendor, _id: 7, opNb: 0, original: 5 },
+      { amount: 2, date, vendor, _id: 8, opNb: 0, original: 4 },
+      { amount: 1, date, vendor, _id: 9, opNb: 0, original: 5 }
     ])
   })
 })
