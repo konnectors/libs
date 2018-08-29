@@ -145,21 +145,29 @@ const findDuplicates = async (doctype, options) => {
 
   if (doctype === 'io.cozy.bills') {
     // keep the bills with the highest number of operations linked to it
-    const operations = fetchAll('io.cozy.bank.operations')
-    const billsIndex = keyBy(documents, '_id')
-    operations.forEach(op => {
-      op.bills.forEach(billId => {
-        const bill = billsIndex[billId]
-        if (!bill.opNb) bill.opNb = 1
-        else bill.opNb++
-      })
-    })
-    documents = sortBy(Object.values(billsIndex), 'opNb')
+    const operations = await fetchAll('io.cozy.bank.operations')
+    documents = sortBillsByLinkedOperationNumber(documents, operations)
   }
 
   const toKeep = uniqBy(documents, hash)
   const toRemove = differenceBy(documents, toKeep)
   return { toKeep, toRemove }
+}
+
+const sortBillsByLinkedOperationNumber = (bills, operations) => {
+  bills = bills.map(bill => {
+    bill.opNb = 0
+    return bill
+  })
+  const billsIndex = keyBy(bills, '_id')
+  operations.forEach(op => {
+    op.bills.forEach(billId => {
+      const bill = billsIndex[billId]
+      bill.opNb++
+    })
+  })
+  const sorted = sortBy(Object.values(billsIndex), 'opNb').reverse()
+  return sorted
 }
 
 /**
@@ -221,6 +229,7 @@ module.exports = {
   fetchAll,
   queryAll,
   findDuplicates,
+  sortBillsByLinkedOperationNumber,
   batchUpdateAttributes,
   batchDelete
 }
