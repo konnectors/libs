@@ -29,8 +29,8 @@
  *   choice of the strategy for the parsing is one of : `raw`, `json` or
  *   `cheerio`. `cheerio` being the default.
  *
- * - `validate` is a predicate taking two arguments `statusCode` and
- *   `parsedBody`. If it is false, `LOGIN_FAILED` is thrown, otherwise the
+ * - `validate` is a predicate taking three arguments `statusCode`, `parsedBody` and `fullResponse`.
+ *   If it is false, `LOGIN_FAILED` is thrown, otherwise the
  *   signin resolves with `parsedBody` value.
  *
  * - `requestOpts` allows to pass eventual options to the `signin`'s
@@ -89,8 +89,8 @@ module.exports = function signin({
         parseBody
       )
     })
-    .then(([statusCode, parsedBody, response]) => {
-      if (!validate(statusCode, parsedBody, response)) {
+    .then(([statusCode, parsedBody, fullResponse]) => {
+      if (!validate(statusCode, parsedBody, fullResponse)) {
         throw new Error(errors.LOGIN_FAILED)
       } else {
         return Promise.resolve(parsedBody)

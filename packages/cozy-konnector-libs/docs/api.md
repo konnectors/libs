@@ -208,8 +208,8 @@ been parsed through <code>cheerio</code>.</p>
 choice of the strategy for the parsing is one of : <code>raw</code>, <code>json</code> or
 <code>cheerio</code>. <code>cheerio</code> being the default.</p>
 </li>
-<li><p><code>validate</code> is a predicate taking two arguments <code>statusCode</code> and
-<code>parsedBody</code>. If it is false, <code>LOGIN_FAILED</code> is thrown, otherwise the
+<li><p><code>validate</code> is a predicate taking three arguments <code>statusCode</code>, <code>parsedBody</code> and <code>fullResponse</code>.
+If it is false, <code>LOGIN_FAILED</code> is thrown, otherwise the
 signin resolves with <code>parsedBody</code> value.</p>
 </li>
 <li><p><code>requestOpts</code> allows to pass eventual options to the <code>signin</code>&#39;s
@@ -670,8 +670,8 @@ by user with `formData`.
   choice of the strategy for the parsing is one of : `raw`, `json` or
   `cheerio`. `cheerio` being the default.
 
-- `validate` is a predicate taking two arguments `statusCode` and
-  `parsedBody`. If it is false, `LOGIN_FAILED` is thrown, otherwise the
+- `validate` is a predicate taking three arguments `statusCode`, `parsedBody` and `fullResponse`.
+  If it is false, `LOGIN_FAILED` is thrown, otherwise the
   signin resolves with `parsedBody` value.
 
 - `requestOpts` allows to pass eventual options to the `signin`'s
