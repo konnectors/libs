@@ -33,6 +33,8 @@
 const cozyClient = require('./cozyclient')
 const uniqBy = require('lodash/uniqBy')
 const differenceBy = require('lodash/differenceBy')
+const keyBy = require('lodash/keyBy')
+const sortBy = require('lodash/sortBy')
 
 /**
  * This function allows to fetch all documents for a given doctype. It is the fastest to get all
@@ -140,6 +142,20 @@ const findDuplicates = async (doctype, options) => {
   }
 
   let documents = await queryAll(doctype, options.selector)
+
+  if (doctype === 'io.cozy.bills') {
+    // keep the bills with the highest number of operations linked to it
+    const operations = fetchAll('io.cozy.bank.operations')
+    const billsIndex = keyBy(documents, '_id')
+    operations.forEach(op => {
+      op.bills.forEach(billId => {
+        const bill = billsIndex[billId]
+        if (!bill.opNb) bill.opNb = 1
+        else bill.opNb++
+      })
+    })
+    documents = sortBy(Object.values(billsIndex), 'opNb')
+  }
 
   const toKeep = uniqBy(documents, hash)
   const toRemove = differenceBy(documents, toKeep)
