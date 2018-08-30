@@ -131,6 +131,24 @@ describe('linker', () => {
         ]
       ])
     })
+    test('bill that bring an original to link in operation', async () => {
+      const operations = [
+        {
+          _id: 1,
+          bills: ['io.cozy.bills:b1']
+        }
+      ]
+      const bills = [{...bill, original: 'b2'}]
+
+      await linker.removeBillsFromOperations(bills, operations)
+      expect(linker.updateAttributes).lastCalledWith(
+        'io.cozy.bank.operations',
+        operations[0],
+        {
+          bills: ['io.cozy.bills:b2']
+        }
+      )
+    })
   })
 
   describe('addBillToOperation', () => {
