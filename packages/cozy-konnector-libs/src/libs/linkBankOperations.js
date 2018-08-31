@@ -42,22 +42,25 @@ class Linker {
   }
 
   async removeBillsFromOperations(bills, operations) {
-    await Promise.all(
-      bills.map(async bill => {
-        for (let op of operations) {
-          const billLongId = `io.cozy.bills:${bill._id}`
-          op.bills = op.bills || []
-          // if bill id found in op bills, do something
-          if (op.bills.indexOf(billLongId) >= 0) {
-            let billsAttribut = op.bills.filter(billId => (billId != billLongId))
-            if (bill.original) {
-              billsAttribut.push(`io.cozy.bills:${bill.original}`)
-            }
-            await this.updateAttributes(DOCTYPE_OPERATIONS, op, { bills: billsAttribut })
+    for (let op of operations) {
+      let needUpdate = false
+      let billsAttribute = op.bills || []
+      for (let bill of bills) {
+        const billLongId = `io.cozy.bills:${bill._id}`
+        // if bill id found in op bills, do something
+        if (billsAttribute.indexOf(billLongId) >= 0) {
+          needUpdate = true
+          billsAttribute = billsAttribute.filter(billId => (billId !== billLongId &&
+                                                            billId !== `io.cozy.bills:${bill.original}`))
+          if (bill.original) {
+            billsAttribute.push(`io.cozy.bills:${bill.original}`)
           }
         }
-      })
-    )
+      }
+      if (needUpdate) {
+        await this.updateAttributes(DOCTYPE_OPERATIONS, op, { bills: billsAttribute })
+      }
+    }
   }
 
   addBillToOperation(bill, operation) {
