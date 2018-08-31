@@ -131,6 +131,62 @@ describe('linker', () => {
         ]
       ])
     })
+    test('bill with original', async () => {
+      const operations = [
+        {
+          _id: 1,
+          bills: ['io.cozy.bills:b1']
+        }
+      ]
+      const bills = [{...bill, original: 'b2'}]
+
+      await linker.removeBillsFromOperations(bills, operations)
+      expect(linker.updateAttributes).lastCalledWith(
+        'io.cozy.bank.operations',
+        operations[0],
+        {
+          bills: ['io.cozy.bills:b2']
+        }
+      )
+    })
+    test('2 bills with original', async () => {
+      const operations = [
+        {
+          _id: 3,
+          bills: ['io.cozy.bills:b1', 'io.cozy.bills:a1']
+        }
+      ]
+      const bills = [{...bill, original: 'b2'},
+                     {amount: 110, _id: 'a1', original: 'a2'}]
+
+      await linker.removeBillsFromOperations(bills, operations)
+      expect(linker.updateAttributes).lastCalledWith(
+        'io.cozy.bank.operations',
+        operations[0],
+        {
+          bills: ['io.cozy.bills:b2', 'io.cozy.bills:a2']
+        }
+      )
+    })
+    test('bill with original, and original present', async () => {
+      const operations = [
+        {
+          _id: 2,
+          bills: ['io.cozy.bills:b1', 'io.cozy.bills:b2']
+        }
+      ]
+      const bills = [{...bill, original: 'b2'},
+                     {amount: 110, _id: 'a1', original: 'a2'}]
+
+      await linker.removeBillsFromOperations(bills, operations)
+      expect(linker.updateAttributes).lastCalledWith(
+        'io.cozy.bank.operations',
+        operations[0],
+        {
+          bills: ['io.cozy.bills:b2']
+        }
+      )
+    })
   })
 
   describe('addBillToOperation', () => {

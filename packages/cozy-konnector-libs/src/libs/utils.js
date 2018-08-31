@@ -31,8 +31,9 @@
  * @module filterData
  */
 const cozyClient = require('./cozyclient')
-const uniqBy = require('lodash/uniqBy')
-const differenceBy = require('lodash/differenceBy')
+const groupBy = require('lodash/groupBy')
+const keyBy = require('lodash/keyBy')
+const sortBy = require('lodash/sortBy')
 
 /**
  * This function allows to fetch all documents for a given doctype. It is the fastest to get all
@@ -141,9 +142,44 @@ const findDuplicates = async (doctype, options) => {
 
   let documents = await queryAll(doctype, options.selector)
 
-  const toKeep = uniqBy(documents, hash)
-  const toRemove = differenceBy(documents, toKeep)
+  if (doctype === 'io.cozy.bills') {
+    // keep the bills with the highest number of operations linked to it
+    const operations = await fetchAll('io.cozy.bank.operations')
+    documents = sortBillsByLinkedOperationNumber(documents, operations)
+  }
+
+  const groups = groupBy(documents, hash)
+  const toKeep = []
+  const toRemove = []
+  for (let key in groups) {
+    const group = groups[key]
+    toKeep.push(group[0])
+    toRemove.push.apply(
+      toRemove,
+      group.slice(1).map(doc => ({
+        ...doc,
+        original: group[0]._id
+      }))
+    )
+  }
+
   return { toKeep, toRemove }
+}
+
+const sortBillsByLinkedOperationNumber = (bills, operations) => {
+  bills = bills.map(bill => {
+    bill.opNb = 0
+    return bill
+  })
+  const billsIndex = keyBy(bills, '_id')
+  operations.forEach(op => {
+    op.bills.forEach(billId => {
+      const bill = billsIndex[billId]
+      bill.opNb++
+    })
+  })
+  const sorted = sortBy(Object.values(billsIndex), 'opNb').reverse()
+  return sorted
 }
 
 /**
@@ -205,6 +241,7 @@ module.exports = {
   fetchAll,
   queryAll,
   findDuplicates,
+  sortBillsByLinkedOperationNumber,
   batchUpdateAttributes,
   batchDelete
 }

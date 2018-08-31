@@ -15,7 +15,14 @@ const db = [
 ]
 
 const cozy = require('./cozyclient')
-const { fetchAll, queryAll, findDuplicates } = require('./utils')
+const {
+  fetchAll,
+  queryAll,
+  findDuplicates,
+  sortBillsByLinkedOperationNumber
+} = require('./utils')
+
+const sortBy = require('lodash/sortBy')
 
 const asyncResolve = data =>
   new Promise(resolve => setImmediate(() => resolve(data)))
@@ -66,17 +73,17 @@ describe('queryAll', () => {
 })
 
 describe('findDuplicates', () => {
-  const db = [
-    { name: 'Thanos', id: 1 },
-    { name: 'Beyonder', id: 2 },
-    { name: 'Beyonder', id: 3 },
-    { name: 'Kubik', id: 4 },
-    { name: 'Kubik', id: 4 },
-    { name: 'Solar', id: 1 },
-    { name: 'Spawn', id: 4 }
-  ]
-
   it('should find duplicates and uniques', async () => {
+    const db = [
+      { name: 'Thanos', id: 1 },
+      { name: 'Beyonder', id: 2 },
+      { name: 'Beyonder', id: 3 },
+      { name: 'Kubik', id: 4 },
+      { name: 'Kubik', id: 4 },
+      { name: 'Solar', id: 1 },
+      { name: 'Spawn', id: 4 }
+    ]
+
     cozy.fetchJSON.mockReturnValue(
       asyncResolve({
         rows: db.map(doc => ({
@@ -98,7 +105,7 @@ describe('findDuplicates', () => {
     ])
     expect(toRemove).toEqual([{ name: 'Kubik', id: 4 }])
   })
-  it('should works with an empty list', async () => {
+  it('should work with an empty list', async () => {
     cozy.fetchJSON.mockReturnValue(asyncResolve({ rows: [] }))
     const { toKeep, toRemove } = await findDuplicates('io.cozy.marvel', {
       keys: ['name', 'id']
@@ -106,5 +113,93 @@ describe('findDuplicates', () => {
 
     expect(toKeep).toEqual([])
     expect(toRemove).toEqual([])
+  })
+
+  it('should keep linked bills by preference', async () => {
+    const date = new Date()
+    const vendor = 'vendor'
+    const bills = [
+      { amount: 1, date, vendor, _id: 1 },
+      { amount: 2, date, vendor, _id: 2 },
+      { amount: 1, date, vendor, _id: 3 },
+      { amount: 2, date, vendor, _id: 4 },
+      { amount: 1, date, vendor, _id: 5 },
+      { amount: 2, date, vendor, _id: 6 },
+      { amount: 1, date, vendor, _id: 7 },
+      { amount: 2, date, vendor, _id: 8 },
+      { amount: 1, date, vendor, _id: 9 }
+    ]
+    cozy.fetchJSON.mockReturnValueOnce(
+      asyncResolve({
+        rows: bills.map(doc => ({
+          id: '1',
+          doc
+        }))
+      })
+    )
+
+    const operations = [{ bills: [2, 3, 4] }, { bills: [4, 5, 6] }]
+    cozy.fetchJSON.mockReturnValueOnce(
+      asyncResolve({
+        rows: operations.map(doc => ({
+          id: '1',
+          doc
+        }))
+      })
+    )
+
+    const { toKeep, toRemove } = await findDuplicates('io.cozy.bills', {
+      keys: ['amount']
+    })
+
+    expect(sortBy(toKeep, '_id')).toEqual([
+      { amount: 2, date, vendor, _id: 4, opNb: 2 },
+      { amount: 1, date, vendor, _id: 5, opNb: 1 }
+    ])
+    expect(sortBy(toRemove, '_id')).toEqual([
+      { amount: 1, date, vendor, _id: 1, opNb: 0, original: 5 },
+      { amount: 2, date, vendor, _id: 2, opNb: 1, original: 4 },
+      { amount: 1, date, vendor, _id: 3, opNb: 1, original: 5 },
+      { amount: 2, date, vendor, _id: 6, opNb: 1, original: 4 },
+      { amount: 1, date, vendor, _id: 7, opNb: 0, original: 5 },
+      { amount: 2, date, vendor, _id: 8, opNb: 0, original: 4 },
+      { amount: 1, date, vendor, _id: 9, opNb: 0, original: 5 }
+    ])
+  })
+})
+
+describe('sortBillsByLinkedOperationNumber', () => {
+  it('should sort bills by number of linked operations', () => {
+    const date = new Date()
+    const vendor = 'vendor'
+    const bills = [
+      { amount: 1, date, vendor, _id: 1 },
+      { amount: 2, date, vendor, _id: 2 },
+      { amount: 1, date, vendor, _id: 3 },
+      { amount: 2, date, vendor, _id: 4 },
+      { amount: 1, date, vendor, _id: 5 },
+      { amount: 2, date, vendor, _id: 6 },
+      { amount: 1, date, vendor, _id: 7 },
+      { amount: 2, date, vendor, _id: 8 },
+      { amount: 1, date, vendor, _id: 9 }
+    ]
+
+    const operations = [{ bills: [2, 3, 4] }, { bills: [4, 5, 6] }]
+
+    const expected = [
+      { amount: 2, date, vendor, _id: 4, opNb: 2 },
+      { amount: 2, date, vendor, _id: 6, opNb: 1 },
+      { amount: 1, date, vendor, _id: 5, opNb: 1 },
+      { amount: 1, date, vendor, _id: 3, opNb: 1 },
+      { amount: 2, date, vendor, _id: 2, opNb: 1 },
+      { amount: 1, date, vendor, _id: 9, opNb: 0 },
+      { amount: 2, date, vendor, _id: 8, opNb: 0 },
+      { amount: 1, date, vendor, _id: 7, opNb: 0 },
+      { amount: 1, date, vendor, _id: 1, opNb: 0 }
+    ]
+
+    expect(sortBillsByLinkedOperationNumber(bills, operations)).toEqual(
+      expected
+    )
   })
 })
