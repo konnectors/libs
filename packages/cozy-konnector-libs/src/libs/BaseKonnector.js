@@ -111,7 +111,7 @@ class BaseKonnector {
     return cozy.data
       .find('io.cozy.accounts', cozyFields.account)
       .catch(err => {
-        log('error', err)
+        this.checkTOS(err)
         log('error', `Account ${cozyFields.account} does not exist`)
         this.terminate('CANNOT_FIND_ACCOUNT')
       })
@@ -202,6 +202,18 @@ class BaseKonnector {
     log('error', err)
     log('critical', err)
     captureExceptionAndDie(err)
+  }
+
+  checkTOS(err) {
+    if (
+      err &&
+      err.reason &&
+      err.reason.length &&
+      err.reason[0] &&
+      err.reason[0].title === 'TOS Updated'
+    ) {
+      throw new Error('TOS_NOT_ACCEPTED')
+    }
   }
 }
 
