@@ -291,7 +291,7 @@ const synchronizeBills = async (cozy, entries, synchronizationStrategy) => {
 
 Usage could be:
 
-```
+```jse
 synchronizeBills(cozy, entries, {
   findLegacyDocument: (entry, cozy) => {
     return cozy.files.statByPath(getEntryPath(entry))
