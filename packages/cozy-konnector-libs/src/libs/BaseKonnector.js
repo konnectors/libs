@@ -113,7 +113,7 @@ class BaseKonnector {
       .catch(err => {
         this.checkTOS(err)
         log('error', `Account ${cozyFields.account} does not exist`)
-        this.terminate('CANNOT_FIND_ACCOUNT')
+        throw new Error('CANNOT_FIND_ACCOUNT')
       })
       .then(account => {
         this.accountId = cozyFields.account
@@ -136,8 +136,7 @@ class BaseKonnector {
           .catch(err => {
             log('error', err)
             log('error', `error while getting the folder path of ${folderId}`)
-            this.terminate('NOT_EXISTING_DIRECTORY')
-            return {} // to avoid having an undefined account for next part
+            throw new Error('NOT_EXISTING_DIRECTORY')
           })
       })
       .then(account => {
@@ -199,7 +198,6 @@ class BaseKonnector {
    * @param  {string} message - The error code to be saved as connector result see [docs/ERROR_CODES.md]
    */
   terminate(err) {
-    log('error', err)
     log('critical', err)
     captureExceptionAndDie(err)
   }
