@@ -42,6 +42,7 @@ class Linker {
   }
 
   async removeBillsFromOperations(bills, operations) {
+    log('info', `Removing ${bills.length} bills from bank operations`)
     for (let op of operations) {
       let needUpdate = false
       let billsAttribute = op.bills || []
@@ -50,15 +51,26 @@ class Linker {
         // if bill id found in op bills, do something
         if (billsAttribute.indexOf(billLongId) >= 0) {
           needUpdate = true
-          billsAttribute = billsAttribute.filter(billId => (billId !== billLongId &&
-                                                            billId !== `io.cozy.bills:${bill.original}`))
+          billsAttribute = billsAttribute.filter(
+            billId =>
+              billId !== billLongId &&
+              billId !== `io.cozy.bills:${bill.original}`
+          )
           if (bill.original) {
             billsAttribute.push(`io.cozy.bills:${bill.original}`)
           }
         }
       }
       if (needUpdate) {
-        await this.updateAttributes(DOCTYPE_OPERATIONS, op, { bills: billsAttribute })
+        log(
+          'info',
+          `Bank operation ${op._id}:  Replacing ${JSON.stringify(
+            op.bills
+          )} by ${JSON.stringify(billsAttribute)}`
+        )
+        await this.updateAttributes(DOCTYPE_OPERATIONS, op, {
+          bills: billsAttribute
+        })
       }
     }
   }

@@ -87,7 +87,7 @@ module.exports = (entries, fields, options = {}) => {
 }
 
 async function cleanDuplicates(options, vendor) {
-  const { toRemove } = await findDuplicates(DOCTYPE, {
+  const { toRemove, toKeep } = await findDuplicates(DOCTYPE, {
     selector: { vendor },
     keys: options.keys
   })
@@ -102,7 +102,8 @@ async function cleanDuplicates(options, vendor) {
     )
 
     if (options.removeDuplicates) {
-      log('info', 'Removing duplicated bills')
+      log('info', `Removing duplicated ${toRemove.length} bills`)
+      log('info', `${toKeep.length} bills will remain`)
       await batchDelete(DOCTYPE, toRemove)
       return toRemove
     }
