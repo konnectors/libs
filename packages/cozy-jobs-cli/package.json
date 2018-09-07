@@ -21,7 +21,7 @@
     "btoa": "1.2.1",
     "cheerio": "1.0.0-rc.2",
     "cli-highlight": "2.0.0",
-    "commander": "2.17.0",
+    "commander": "2.18.0",
     "core-js": "2.5.7",
     "cozy-client-js": "0.9.0",
     "cozy-konnector-libs": "^4.8.2",
