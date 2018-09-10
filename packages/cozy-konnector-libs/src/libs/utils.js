@@ -172,12 +172,14 @@ const sortBillsByLinkedOperationNumber = (bills, operations) => {
     return bill
   })
   const billsIndex = keyBy(bills, '_id')
-  operations.forEach(op => {
-    op.bills.forEach(billId => {
-      const bill = billsIndex[billId]
-      bill.opNb++
+  if (operations)
+    operations.forEach(op => {
+      if (op.bills)
+        op.bills.forEach(billId => {
+          const bill = billsIndex[billId]
+          if (bill) bill.opNb++
+        })
     })
-  })
   const sorted = sortBy(Object.values(billsIndex), 'opNb').reverse()
   return sorted
 }
@@ -203,10 +205,17 @@ const sortBillsByLinkedOperationNumber = (bills, operations) => {
  *
  * @module utils
  */
-const batchUpdateAttributes = (doctype, ids, transformation) => {
-  return Promise.all(
-    ids.map(id => cozyClient.data.updateAttributes(doctype, id, transformation))
-  )
+const batchUpdateAttributes = async (doctype, ids, transformation) => {
+  const result = []
+  for (const id of ids) {
+    const updateResult = await cozyClient.data.updateAttributes(
+      doctype,
+      id,
+      transformation
+    )
+    result.push(updateResult)
+  }
+  return result
 }
 
 /**
@@ -233,8 +242,13 @@ const batchUpdateAttributes = (doctype, ids, transformation) => {
  *
  * @module utils
  */
-const batchDelete = (doctype, documents) => {
-  return Promise.all(documents.map(doc => cozyClient.data.delete(doctype, doc)))
+const batchDelete = async (doctype, documents) => {
+  const result = []
+  for (const doc of documents) {
+    const deleteResult = await cozyClient.data.delete(doctype, doc)
+    result.push(deleteResult)
+  }
+  return result
 }
 
 module.exports = {

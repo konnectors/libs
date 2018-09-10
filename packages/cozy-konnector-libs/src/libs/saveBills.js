@@ -28,7 +28,7 @@
  * })
  * ```
  *
- * @module  saveBills
+ * @module saveBills
  */
 
 const saveFiles = require('./saveFiles')
@@ -38,7 +38,6 @@ const log = require('cozy-logger').namespace('saveBills')
 const linkBankOperations = require('./linkBankOperations')
 const DOCTYPE = 'io.cozy.bills'
 const _ = require('lodash')
-const { findDuplicates, batchDelete } = require('./utils')
 
 const requiredAttributes = {
   date: 'isDate',
@@ -49,6 +48,7 @@ const requiredAttributes = {
 // Encapsulate the saving of Bills : saves the files, saves the new data, and associate the files
 // to an existing bank operation
 module.exports = (entries, fields, options = {}) => {
+  log('info', 'saving bills')
   if (!_.isArray(entries) || entries.length === 0) {
     log('warn', 'saveBills: no bills to save')
     return Promise.resolve()
@@ -72,42 +72,12 @@ module.exports = (entries, fields, options = {}) => {
     return entry
   }
 
-  const vendor = entries[0].vendor
   const originalEntries = entries
+  log('info', 'before save files')
   return saveFiles(entries, fields, options)
     .then(entries => hydrateAndFilter(entries, DOCTYPE, options))
     .then(entries => addData(entries, DOCTYPE, options))
-    .then(() => cleanDuplicates(options, vendor))
-    .then(toRemove => {
-      if (toRemove) {
-        options.billsToRemove = toRemove
-      }
-      return linkBankOperations(originalEntries, DOCTYPE, fields, options)
-    })
-}
-
-async function cleanDuplicates(options, vendor) {
-  const { toRemove, toKeep } = await findDuplicates(DOCTYPE, {
-    selector: { vendor },
-    keys: options.keys
-  })
-  if (toRemove.length) {
-    log(
-      'warn',
-      `saveBills: there are ${
-        toRemove.length
-      } duplicated bills to remove according to ${options.keys.join(
-        ', '
-      )} attributes`
-    )
-
-    if (options.removeDuplicates) {
-      log('info', `Removing duplicated ${toRemove.length} bills`)
-      log('info', `${toKeep.length} bills will remain`)
-      await batchDelete(DOCTYPE, toRemove)
-      return toRemove
-    }
-  }
+    .then(() => linkBankOperations(originalEntries, DOCTYPE, fields, options))
 }
 
 function convertCurrency(currency) {
