@@ -1,4 +1,4 @@
-/* global GIT_SHA */
+/* global __APP_VERSION__ */
 
 const log = require('cozy-logger')
 const Raven = require('raven')
@@ -48,7 +48,8 @@ const afterCaptureException = function(sendErr, eventId) {
 const setupSentry = function() {
   try {
     log('info', 'process.env.SENTRY_DSN found, setting up Raven')
-    const release = typeof GIT_SHA !== 'undefined' ? GIT_SHA : 'dev'
+    const release =
+      typeof __APP_VERSION__ !== 'undefined' ? __APP_VERSION__ : 'dev'
     const domain = getDomain()
     const environment = getEnvironmentFromDomain(domain)
     const instance = getInstance()
