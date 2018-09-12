@@ -65,6 +65,7 @@ module.exports = function signin({
     requestOpts.requestInstance ||
     requestFactory({
       jar: true,
+      json: false,
       ...requestOpts
     })
 
