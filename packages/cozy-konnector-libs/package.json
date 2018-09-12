@@ -26,7 +26,7 @@
     "cozy-logger": "^1.1.9",
     "date-fns": "1.29.0",
     "geco": "0.11.1",
-    "lodash": "4.17.10",
+    "lodash": "4.17.11",
     "lodash-id": "^0.14.0",
     "lowdb": "^1.0.0",
     "pdfjs": "2.0.0",
