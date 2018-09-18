@@ -113,9 +113,17 @@ module.exports = {
         log('debug', `Checking if ${pathToCheck} exists`)
         if (pathToCheck === '/') return resolve({ _id: '.' })
         const realpath = path.join(rootPath, pathToCheck)
+        log('info', realpath, 'realpath')
         log('debug', `Real path : ${realpath}`)
         if (fs.existsSync(realpath)) {
-          resolve({ _id: pathToCheck })
+          const extension = path.extname(pathToCheck).substr(1)
+          resolve({
+            _id: pathToCheck,
+            attributes: {
+              mime: mimetypes.lookup(extension),
+              name: pathToCheck
+            }
+          })
         } else {
           const err = new Error(`${pathToCheck} does not exist`)
           err.status = 404
