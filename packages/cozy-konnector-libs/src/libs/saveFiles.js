@@ -134,6 +134,7 @@ const saveEntry = function(entry, options) {
         log('debug', omit(entry, 'filestream'))
         logFileStream(entry.filestream)
         log('debug', `File ${filepath} does not exist yet or is not valid`)
+        entry._cozy_file_to_create = true
         return createFile(entry, options)
       }
     )
@@ -192,7 +193,10 @@ module.exports = async (entries, fields, options = {}) => {
     .mapSeries(entries, async entry => {
       if (canBeSaved(entry)) {
         entry = await saveEntry(entry, saveOptions)
-        savedFiles++
+        if (entry && entry._cozy_file_to_create) {
+          savedFiles++
+          delete entry._cozy_file_to_create
+        }
       }
       return entry
     })
@@ -200,9 +204,12 @@ module.exports = async (entries, fields, options = {}) => {
       // do not count TIMEOUT error as an error outside
       if (err.message !== 'TIMEOUT') throw err
     })
-    .finally(entries => {
+    .then(entries => {
       const logType = savedFiles ? 'info' : 'warn'
-      log(logType, `saveFiles downloaded ${savedFiles} file(s)`)
+      log(
+        logType,
+        `saveFiles created ${savedFiles} files for ${entries.length} entries`
+      )
       return entries
     })
 }
