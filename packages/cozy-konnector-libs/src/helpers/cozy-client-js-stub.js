@@ -37,6 +37,11 @@ module.exports = {
 
       return Promise.resolve(doc)
     },
+    update(doctype, doc, changes) {
+      setDefaults(doctype)
+      db.updateById(doc._id, changes).write()
+      return Promise.resolve(doc)
+    },
     updateAttributes(doctype, id, attrs) {
       setDefaults(doctype)
       const doc = db
