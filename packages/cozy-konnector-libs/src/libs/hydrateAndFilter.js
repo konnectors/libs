@@ -99,12 +99,7 @@ const hydrateAndFilter = (documents = [], doctype, options = {}) => {
   const getItems = async index => {
     log('debug', index, 'index')
 
-    const selector = options.selector
-      ? options.selector
-      : keys.reduce((memo, key) => {
-          memo[key] = { $gt: null }
-          return memo
-        }, {})
+    const selector = options.selector ? options.selector : null
 
     log('debug', selector, 'selector')
 
