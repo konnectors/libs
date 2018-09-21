@@ -65,7 +65,7 @@ const hydrateAndFilter = (documents = [], doctype, options = {}) => {
   const cozy = require('./cozyclient')
 
   log(
-    'debug',
+    'info',
     String(documents.length),
     'Number of items before hydrateAndFilter'
   )
@@ -153,7 +153,7 @@ const hydrateAndFilter = (documents = [], doctype, options = {}) => {
 
   const formatOutput = entries => {
     log(
-      'debug',
+      'info',
       String(entries.length),
       'Number of items after hydrateAndFilter'
     )
