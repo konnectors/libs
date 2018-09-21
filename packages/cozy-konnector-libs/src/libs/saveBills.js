@@ -73,6 +73,7 @@ module.exports = (entries, fields, options = {}) => {
   }
 
   const originalEntries = entries
+  options.shouldUpdate = (entry, dbEntry) => entry.invoice !== dbEntry.invoice
   log('info', 'before save files')
   return saveFiles(entries, fields, options)
     .then(entries => hydrateAndFilter(entries, DOCTYPE, options))
