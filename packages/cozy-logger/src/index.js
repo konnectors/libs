@@ -69,7 +69,11 @@ methods.forEach(level => {
 
 module.exports = log
 
-log.setNoRetry = obj => (obj.no_retry = true)
+log.setNoRetry = obj => {
+  if (obj) obj.no_retry = true
+  else obj = { no_retry: true }
+  return obj.no_retry
+}
 log.Secret = Secret
 log.namespace = function(namespace) {
   return function(type, message, label, ns = namespace) {

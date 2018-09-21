@@ -21,10 +21,10 @@ function prodFormat(type, message, label, namespace) {
   const log = { time: new Date(), type, label, namespace }
 
   if (typeof message === 'object') {
-    if (message.no_retry) {
+    if (message && message.no_retry) {
       log.no_retry = message.no_retry
     }
-    if (message.message) {
+    if (message && message.message) {
       log.message = message.message
     }
   } else {
