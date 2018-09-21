@@ -91,7 +91,7 @@ const hydrateAndFilter = (documents = [], doctype, options = {}) => {
 
   const getIndex = () => {
     const index = options.index
-      ? options.index
+      ? Promise.resolve(options.index)
       : cozy.data.defineIndex(doctype, keys)
     return index
   }
