@@ -141,13 +141,13 @@ class BaseKonnector {
       })
       .then(account => {
         this.fields = Object.assign(
+          account.auth,
+          account.oauth,
           cozyFields.folder_to_save
             ? {
                 folderPath: cozyFields.folder_to_save
               }
-            : {},
-          account.auth,
-          account.oauth
+            : {}
         )
 
         return this.fields
