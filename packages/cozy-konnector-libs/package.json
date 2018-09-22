@@ -29,7 +29,7 @@
     "lodash": "4.17.11",
     "lodash-id": "^0.14.0",
     "lowdb": "^1.0.0",
-    "pdfjs": "2.0.0",
+    "pdfjs": "2.1.0",
     "raven": "2.6.4",
     "request": "2.88.0",
     "request-debug": "0.2.0",
