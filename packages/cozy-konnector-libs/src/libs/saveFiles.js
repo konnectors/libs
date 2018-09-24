@@ -205,9 +205,8 @@ module.exports = async (entries, fields, options = {}) => {
       if (err.message !== 'TIMEOUT') throw err
     })
     .then(entries => {
-      const logType = savedFiles ? 'info' : 'warn'
       log(
-        logType,
+        'info',
         `saveFiles created ${savedFiles} files for ${entries.length} entries`
       )
       return entries

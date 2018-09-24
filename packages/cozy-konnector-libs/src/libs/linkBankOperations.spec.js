@@ -6,7 +6,7 @@ jest.mock('cozy-logger', () => ({
 }))
 const cozyClient = require('./cozyclient')
 const indexBy = require('lodash/keyBy')
-const { parseTable, wrapAsFetchJSONResult } = require('./testUtils')
+const { parseTable } = require('./testUtils')
 
 let linker
 
@@ -138,7 +138,7 @@ describe('linker', () => {
           bills: ['io.cozy.bills:b1']
         }
       ]
-      const bills = [{...bill, original: 'b2'}]
+      const bills = [{ ...bill, original: 'b2' }]
 
       await linker.removeBillsFromOperations(bills, operations)
       expect(linker.updateAttributes).lastCalledWith(
@@ -156,8 +156,10 @@ describe('linker', () => {
           bills: ['io.cozy.bills:b1', 'io.cozy.bills:a1']
         }
       ]
-      const bills = [{...bill, original: 'b2'},
-                     {amount: 110, _id: 'a1', original: 'a2'}]
+      const bills = [
+        { ...bill, original: 'b2' },
+        { amount: 110, _id: 'a1', original: 'a2' }
+      ]
 
       await linker.removeBillsFromOperations(bills, operations)
       expect(linker.updateAttributes).lastCalledWith(
@@ -175,8 +177,10 @@ describe('linker', () => {
           bills: ['io.cozy.bills:b1', 'io.cozy.bills:b2']
         }
       ]
-      const bills = [{...bill, original: 'b2'},
-                     {amount: 110, _id: 'a1', original: 'a2'}]
+      const bills = [
+        { ...bill, original: 'b2' },
+        { amount: 110, _id: 'a1', original: 'a2' }
+      ]
 
       await linker.removeBillsFromOperations(bills, operations)
       expect(linker.updateAttributes).lastCalledWith(
@@ -578,11 +582,9 @@ describe('linker', () => {
       // reset operations to operationsInit values
       operations = operationsInit.map(op => ({ ...op }))
       operationsById = indexBy(operations, '_id')
-      cozyClient.fetchJSON = jest
+      cozyClient.data.findAll = jest
         .fn()
-        .mockImplementation(() =>
-          Promise.resolve(wrapAsFetchJSONResult(operations))
-        )
+        .mockImplementation(() => Promise.resolve(operations))
       linker.updateAttributes.mockImplementation(updateOperation)
     })
 

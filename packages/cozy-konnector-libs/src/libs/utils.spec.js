@@ -1,9 +1,9 @@
 jest.mock('./cozyclient', () => ({
   data: {
     query: jest.fn(),
-    defineIndex: jest.fn()
-  },
-  fetchJSON: jest.fn()
+    defineIndex: jest.fn(),
+    findAll: jest.fn()
+  }
 }))
 
 const db = [
@@ -16,7 +16,6 @@ const db = [
 
 const cozy = require('./cozyclient')
 const {
-  fetchAll,
   queryAll,
   findDuplicates,
   sortBillsByLinkedOperationNumber
@@ -26,31 +25,6 @@ const sortBy = require('lodash/sortBy')
 
 const asyncResolve = data =>
   new Promise(resolve => setImmediate(() => resolve(data)))
-
-describe('fetchAll', () => {
-  it('should get all the doctype documents (nominal case)', async () => {
-    cozy.fetchJSON.mockReturnValue(
-      asyncResolve({
-        rows: db.map(doc => ({
-          id: '1',
-          doc
-        }))
-      })
-    )
-
-    const result = await fetchAll('io.cozy.marvel')
-
-    expect(result).toEqual(db)
-  })
-
-  it('should return an empty array if the doctype does not exist', async () => {
-    cozy.fetchJSON.mockReturnValue(asyncResolve(null))
-
-    const result = await fetchAll('io.cozy.marvel')
-
-    expect(result).toEqual([])
-  })
-})
 
 describe('queryAll', () => {
   it('should handle paging', async () => {
@@ -84,14 +58,7 @@ describe('findDuplicates', () => {
       { name: 'Spawn', id: 4 }
     ]
 
-    cozy.fetchJSON.mockReturnValue(
-      asyncResolve({
-        rows: db.map(doc => ({
-          id: '1',
-          doc
-        }))
-      })
-    )
+    cozy.data.findAll.mockReturnValue(asyncResolve(db))
     const { toKeep, toRemove } = await findDuplicates('io.cozy.marvel', {
       keys: ['name', 'id']
     })
@@ -106,7 +73,7 @@ describe('findDuplicates', () => {
     expect(toRemove).toEqual([{ name: 'Kubik', id: 4 }])
   })
   it('should work with an empty list', async () => {
-    cozy.fetchJSON.mockReturnValue(asyncResolve({ rows: [] }))
+    cozy.data.findAll.mockReturnValue(asyncResolve([]))
     const { toKeep, toRemove } = await findDuplicates('io.cozy.marvel', {
       keys: ['name', 'id']
     })
@@ -129,24 +96,10 @@ describe('findDuplicates', () => {
       { amount: 2, date, vendor, _id: 8 },
       { amount: 1, date, vendor, _id: 9 }
     ]
-    cozy.fetchJSON.mockReturnValueOnce(
-      asyncResolve({
-        rows: bills.map(doc => ({
-          id: '1',
-          doc
-        }))
-      })
-    )
+    cozy.data.findAll.mockReturnValueOnce(asyncResolve(bills))
 
     const operations = [{ bills: [2, 3, 4] }, { bills: [4, 5, 6] }]
-    cozy.fetchJSON.mockReturnValueOnce(
-      asyncResolve({
-        rows: operations.map(doc => ({
-          id: '1',
-          doc
-        }))
-      })
-    )
+    cozy.data.findAll.mockReturnValueOnce(asyncResolve(operations))
 
     const { toKeep, toRemove } = await findDuplicates('io.cozy.bills', {
       keys: ['amount']

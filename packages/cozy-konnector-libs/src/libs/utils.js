@@ -38,6 +38,7 @@ const sortBy = require('lodash/sortBy')
 /**
  * This function allows to fetch all documents for a given doctype. It is the fastest to get all
  * documents but without filtering possibilities
+ * deprecated by the findAll method from cozyClient
  *
  * Parameters:
  *
@@ -46,16 +47,7 @@ const sortBy = require('lodash/sortBy')
  * @module utils
  */
 const fetchAll = async doctype => {
-  const res = await cozyClient.fetchJSON(
-    'GET',
-    `/data/${doctype}/_all_docs?include_docs=true`
-  )
-
-  if (!(res && res.rows)) return []
-
-  return res.rows
-    .filter(doc => doc.id.indexOf('_design') === -1)
-    .map(doc => doc.doc)
+  return cozyClient.data.findAll(doctype)
 }
 
 /**
@@ -80,7 +72,7 @@ const fetchAll = async doctype => {
 const queryAll = async (doctype, selector, index) => {
   if (!selector) {
     // fetchAll is faster in this case
-    return await fetchAll(doctype)
+    return await cozyClient.data.findAll(doctype)
   }
 
   if (!index) {

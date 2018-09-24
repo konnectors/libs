@@ -65,7 +65,7 @@ const hydrateAndFilter = (documents = [], doctype, options = {}) => {
   const cozy = require('./cozyclient')
 
   log(
-    'debug',
+    'info',
     String(documents.length),
     'Number of items before hydrateAndFilter'
   )
@@ -91,7 +91,7 @@ const hydrateAndFilter = (documents = [], doctype, options = {}) => {
 
   const getIndex = () => {
     const index = options.index
-      ? options.index
+      ? Promise.resolve(options.index)
       : cozy.data.defineIndex(doctype, keys)
     return index
   }
@@ -99,12 +99,7 @@ const hydrateAndFilter = (documents = [], doctype, options = {}) => {
   const getItems = async index => {
     log('debug', index, 'index')
 
-    const selector = options.selector
-      ? options.selector
-      : keys.reduce((memo, key) => {
-          memo[key] = { $gt: null }
-          return memo
-        }, {})
+    const selector = options.selector ? options.selector : null
 
     log('debug', selector, 'selector')
 
@@ -158,7 +153,7 @@ const hydrateAndFilter = (documents = [], doctype, options = {}) => {
 
   const formatOutput = entries => {
     log(
-      'debug',
+      'info',
       String(entries.length),
       'Number of items after hydrateAndFilter'
     )

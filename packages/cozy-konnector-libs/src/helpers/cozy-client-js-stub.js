@@ -118,7 +118,7 @@ module.exports = {
         if (fs.existsSync(realpath)) {
           const extension = path.extname(pathToCheck).substr(1)
           resolve({
-            _id: pathToCheck,
+            _id: removeFirstSlash(pathToCheck),
             attributes: {
               mime: mimetypes.lookup(extension),
               name: pathToCheck
@@ -189,4 +189,11 @@ function setUpDb() {
   db._.mixin(lodashId)
   db._.id = '_id'
   return db
+}
+
+function removeFirstSlash(pathToCheck) {
+  if (pathToCheck[0] === '/') {
+    return pathToCheck.substr(1)
+  }
+  return pathToCheck
 }

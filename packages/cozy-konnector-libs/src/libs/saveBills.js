@@ -48,7 +48,6 @@ const requiredAttributes = {
 // Encapsulate the saving of Bills : saves the files, saves the new data, and associate the files
 // to an existing bank operation
 module.exports = (entries, fields, options = {}) => {
-  log('info', 'saving bills')
   if (!_.isArray(entries) || entries.length === 0) {
     log('warn', 'saveBills: no bills to save')
     return Promise.resolve()
@@ -74,7 +73,6 @@ module.exports = (entries, fields, options = {}) => {
 
   const originalEntries = entries
   options.shouldUpdate = (entry, dbEntry) => entry.invoice !== dbEntry.invoice
-  log('info', 'before save files')
   return saveFiles(entries, fields, options)
     .then(entries => hydrateAndFilter(entries, DOCTYPE, options))
     .then(entries => addData(entries, DOCTYPE, options))
