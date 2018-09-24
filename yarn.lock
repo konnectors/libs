@@ -6947,13 +6947,14 @@ path-type@^3.0.0:
   dependencies:
     pify "^3.0.0"
 
-pdfjs@2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/pdfjs/-/pdfjs-2.0.0.tgz#1f00f782f62252b516ec1ce6ded1db24a741d7c2"
+pdfjs@2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/pdfjs/-/pdfjs-2.1.0.tgz#6d5fca67401a9f1046b4554f2d4f89f5a998f735"
   dependencies:
     "@rkusa/linebreak" "^1.0.0"
     opentype.js "^0.8.0"
     pako "^1.0.6"
+    readable-stream "^2.3.6"
     unorm "^1.4.1"
     uuid "^3.0.1"
 
@@ -7489,7 +7490,7 @@ read@1, read@~1.0.1:
   dependencies:
     mute-stream "~0.0.4"
 
-"readable-stream@1 || 2", readable-stream@^2.0.0, readable-stream@^2.0.2, readable-stream@^2.0.4, readable-stream@^2.3.0, readable-stream@^2.3.5:
+"readable-stream@1 || 2", readable-stream@^2.0.0, readable-stream@^2.0.2, readable-stream@^2.0.4, readable-stream@^2.3.0, readable-stream@^2.3.5, readable-stream@^2.3.6:
   version "2.3.6"
   resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-2.3.6.tgz#b11c27d88b8ff1fbe070643cf94b0c79ae1b0aaf"
   dependencies:
