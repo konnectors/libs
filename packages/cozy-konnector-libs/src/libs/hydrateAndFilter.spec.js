@@ -1,7 +1,7 @@
 jest.mock('./cozyclient', () => ({
-  fetchJSON: jest.fn(),
   data: {
-    defineIndex: jest.fn()
+    defineIndex: jest.fn(),
+    findAll: jest.fn()
   }
 }))
 
@@ -25,13 +25,11 @@ const copy = data => JSON.parse(JSON.stringify(data))
 describe('hydrate and filter', () => {
   let entries, filtered
   beforeEach(async () => {
-    cozy.fetchJSON.mockReturnValue(
-      asyncResolve({
-        rows: [
-          { id: '', doc: { _id: 1, name: 'Marge', _rev: 2 } },
-          { id: '', doc: { _id: 2, name: 'Homer', _rev: 3 } }
-        ]
-      })
+    cozy.data.findAll.mockReturnValue(
+      asyncResolve([
+        { _id: 1, name: 'Marge', _rev: 2 },
+        { _id: 2, name: 'Homer', _rev: 3 }
+      ])
     )
     cozy.data.defineIndex.mockReturnValue(asyncResolve())
   })

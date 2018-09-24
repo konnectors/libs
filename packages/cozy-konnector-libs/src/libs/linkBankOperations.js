@@ -14,7 +14,6 @@ const {
   findCreditOperation
 } = require('./linker/billsToOperation')
 const fs = require('fs')
-const { fetchAll } = require('./utils')
 const defaults = require('lodash/defaults')
 const groupBy = require('lodash/groupBy')
 const flatten = require('lodash/flatten')
@@ -229,7 +228,9 @@ class Linker {
     options = this.getOptions(options)
     const result = {}
 
-    const allOperations = await fetchAll('io.cozy.bank.operations')
+    const allOperations = await this.cozyClient.data.findAll(
+      'io.cozy.bank.operations'
+    )
 
     if (options.billsToRemove && options.billsToRemove.length) {
       this.removeBillsFromOperations(options.billsToRemove, allOperations)
