@@ -147,7 +147,7 @@ const saveEntry = function(entry, options) {
       return options.postProcess ? options.postProcess(entry) : entry
     })
     .catch(err => {
-      if (err.statusCode === 413) {
+      if (getErrorStatus(err) === 413) {
         // the cozy quota is full
         throw new Error(errors.DISK_QUOTA_EXCEEDED)
       }
@@ -265,5 +265,13 @@ function logFileStream(fileStream) {
   } else {
     log('info', `The fileStream attribute is a ${typeof fileStream}`)
     // console.log(fileStream)
+  }
+}
+
+function getErrorStatus(err) {
+  try {
+    return Number(JSON.parse(err.message).errors[0].status)
+  } catch (e) {
+    return null
   }
 }
