@@ -10,8 +10,9 @@
  *     file name will be "smartly" guessed by the function. Use this attribute if the guess is not smart
  *   enough for you.
  *
- * - `folderPath` (string) is relative to the main path given by the `cozy-collect` application to the connector. If the connector is run
- * in standalone mode, the main path is the path of the connector.
+ * - `fields` (string) is the argument given to the main function of your connector by the BaseKonnector.
+ *      It especially contains a `folderPath` which is the string path configured by the user in
+ *      collect/home
  *
  * - `options` (object) is optional. Possible options :
  *
@@ -24,6 +25,12 @@
  *   downloaded, on the next run of the connector, it will be able to download some more
  *   files, and so on. If you want the timeout to be in 10s, do `Date.now() + 10*1000`.
  *   You can try it in the previous code.
+ *   + `contentType` (string) ex: 'application/pdf' used to force the contentType of documents when
+ *   they are badly recognized by cozy.
+ * @example
+ * ```javascript
+ * await saveFiles([{fileurl: 'https://...', filename: 'bill1.pdf'}], fields)
+ * ```
  *
  * @module saveFiles
  */
