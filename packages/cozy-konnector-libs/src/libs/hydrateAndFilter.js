@@ -25,13 +25,13 @@
  *   }
  * ]
  *
- * return filterData(documents, 'io.cozy.height', {
+ * return hydrateAndFilter(documents, 'io.cozy.height', {
  *   keys: ['name']
  * }).then(filteredDocuments => addData(filteredDocuments, 'io.cozy.height'))
  *
  * ```
  *
- * @module filterData
+ * @module hydrateAndFilter
  */
 
 const bluebird = require('bluebird')

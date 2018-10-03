@@ -37,7 +37,7 @@ You can refer to the <a href="https://cozy.github.io/cozy-client-js/">cozy-clien
 cozyClient.data.defineIndex(&#39;my.doctype&#39;, [&#39;_id&#39;])
 </code></pre>
 </dd>
-<dt><a href="#module_filterData">filterData</a></dt>
+<dt><a href="#module_hydrateAndFilter">hydrateAndFilter</a></dt>
 <dd><p>This function filters the passed array from data already present in the cozy so that there is
 not duplicated data in the cozy.
 You need at least the <code>GET</code> permission for the given doctype in your manifest, to be able to
@@ -64,7 +64,7 @@ use this function.</p>
   }
 ]
 
-return filterData(documents, &#39;io.cozy.height&#39;, {
+return hydrateAndFilter(documents, &#39;io.cozy.height&#39;, {
   keys: [&#39;name&#39;]
 }).then(filteredDocuments =&gt; addData(filteredDocuments, &#39;io.cozy.height&#39;))
 
@@ -118,11 +118,11 @@ const filename = normalizeFilename(&#39;*foo/bar: &lt;baz&gt; \\&quot;qux&quot;\
 </code></pre>
 </dd>
 <dt><a href="#module_saveBills">saveBills</a></dt>
-<dd><p>Combines the features of <code>saveFiles</code>, <code>filterData</code>, <code>addData</code> and <code>linkBankOperations</code> for a
+<dd><p>Combines the features of <code>saveFiles</code>, <code>hydrateAndFilter</code>, <code>addData</code> and <code>linkBankOperations</code> for a
 common case: bills.
 Will create <code>io.cozy.bills</code> objects. The default deduplication keys are <code>[&#39;date&#39;, &#39;amount&#39;, &#39;vendor&#39;]</code>.
 You need the full permission on <code>io.cozy.bills</code>, full permission on <code>io.cozy.files</code> and also
-full permission on <code>io.cozy.bank.operations</code> in your manifest, to be able to * use this function.</p>
+full permission on <code>io.cozy.bank.operations</code> in your manifest, to be able to use this function.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>documents</code> is an array of objects with any attributes with some mandatory attributes :<ul>
@@ -136,16 +136,6 @@ Please take a look at <a href="https://github.com/cozy/cozy-doctypes/blob/master
 <li><code>fields</code> (object) this is the first parameter given to BaseKonnector&#39;s constructor</li>
 <li><code>options</code> is passed directly to <code>saveFiles</code>, <code>hydrateAndFilter</code>, <code>addData</code> and <code>linkBankOperations</code>.</li>
 </ul>
-<pre><code class="lang-javascript">const { BaseKonnector, saveBills } = require(&#39;cozy-konnector-libs&#39;)
-
-module.exports = new BaseKonnector(function fetch (fields) {
-  const documents = []
-  // some code which fills documents
-  return saveBills(documents, fields, {
-    identifiers: [&#39;vendorj&#39;]
-  })
-})
-</code></pre>
 </dd>
 <dt><a href="#module_saveFiles">saveFiles</a></dt>
 <dd><p>The goal of this function is to save the given files in the given folder via the Cozy API.
@@ -160,8 +150,9 @@ file name will be &quot;smartly&quot; guessed by the function. Use this attribut
 enough for you.</li>
 </ul>
 </li>
-<li><p><code>folderPath</code> (string) is relative to the main path given by the <code>cozy-collect</code> application to the connector. If the connector is run
-in standalone mode, the main path is the path of the connector.</p>
+<li><p><code>fields</code> (string) is the argument given to the main function of your connector by the BaseKonnector.
+   It especially contains a <code>folderPath</code> which is the string path configured by the user in
+   collect/home</p>
 </li>
 <li><p><code>options</code> (object) is optional. Possible options :</p>
 <ul>
@@ -174,6 +165,8 @@ timeout is not too long. And since it is really fast to check that a file has al
 downloaded, on the next run of the connector, it will be able to download some more
 files, and so on. If you want the timeout to be in 10s, do <code>Date.now() + 10*1000</code>.
 You can try it in the previous code.</li>
+<li><code>contentType</code> (string) ex: &#39;application/pdf&#39; used to force the contentType of documents when
+they are badly recognized by cozy.</li>
 </ul>
 </li>
 </ul>
@@ -467,9 +460,9 @@ const {cozyClient} = require('cozy-konnector-libs')
 cozyClient.data.defineIndex('my.doctype', ['_id'])
 ```
 
-<a name="module_filterData"></a>
+<a name="module_hydrateAndFilter"></a>
 
-## filterData
+## hydrateAndFilter
 This function filters the passed array from data already present in the cozy so that there is
 not duplicated data in the cozy.
 You need at least the `GET` permission for the given doctype in your manifest, to be able to
@@ -496,15 +489,15 @@ const documents = [
   }
 ]
 
-return filterData(documents, 'io.cozy.height', {
+return hydrateAndFilter(documents, 'io.cozy.height', {
   keys: ['name']
 }).then(filteredDocuments => addData(filteredDocuments, 'io.cozy.height'))
 
 ```
 
-<a name="module_filterData..suitableCall"></a>
+<a name="module_hydrateAndFilter..suitableCall"></a>
 
-### filterData~suitableCall()
+### hydrateAndFilter~suitableCall()
 Since we can use methods or basic functions for
 `shouldSave` and `shouldUpdate` we pass the
 appropriate `this` and `arguments`.
@@ -514,7 +507,7 @@ with args[0] as `this` and the rest as `arguments`
 Otherwise, `this` will be null and `args` will be passed
 as `arguments`.
 
-**Kind**: inner method of [<code>filterData</code>](#module_filterData)
+**Kind**: inner method of [<code>hydrateAndFilter</code>](#module_hydrateAndFilter)  
 <a name="module_linkBankOperations"></a>
 
 ## linkBankOperations
@@ -580,11 +573,11 @@ const filename = normalizeFilename('*foo/bar: <baz> \\"qux"\t???', '.txt')
 <a name="module_saveBills"></a>
 
 ## saveBills
-Combines the features of `saveFiles`, `filterData`, `addData` and `linkBankOperations` for a
+Combines the features of `saveFiles`, `hydrateAndFilter`, `addData` and `linkBankOperations` for a
 common case: bills.
 Will create `io.cozy.bills` objects. The default deduplication keys are `['date', 'amount', 'vendor']`.
 You need the full permission on `io.cozy.bills`, full permission on `io.cozy.files` and also
-full permission on `io.cozy.bank.operations` in your manifest, to be able to * use this function.
+full permission on `io.cozy.bank.operations` in your manifest, to be able to use this function.
 
 Parameters:
 
@@ -597,6 +590,7 @@ Parameters:
 - `fields` (object) this is the first parameter given to BaseKonnector's constructor
 - `options` is passed directly to `saveFiles`, `hydrateAndFilter`, `addData` and `linkBankOperations`.
 
+**Example**  
 ```javascript
 const { BaseKonnector, saveBills } = require('cozy-konnector-libs')
 
@@ -604,11 +598,10 @@ module.exports = new BaseKonnector(function fetch (fields) {
   const documents = []
   // some code which fills documents
   return saveBills(documents, fields, {
-    identifiers: ['vendorj']
+    identifiers: ['vendor']
   })
 })
 ```
-
 <a name="module_saveFiles"></a>
 
 ## saveFiles
@@ -623,8 +616,9 @@ You need the full permission on `io.cozy.files` in your manifest to use this fun
     file name will be "smartly" guessed by the function. Use this attribute if the guess is not smart
   enough for you.
 
-- `folderPath` (string) is relative to the main path given by the `cozy-collect` application to the connector. If the connector is run
-in standalone mode, the main path is the path of the connector.
+- `fields` (string) is the argument given to the main function of your connector by the BaseKonnector.
+     It especially contains a `folderPath` which is the string path configured by the user in
+     collect/home
 
 - `options` (object) is optional. Possible options :
 
@@ -637,7 +631,13 @@ in standalone mode, the main path is the path of the connector.
   downloaded, on the next run of the connector, it will be able to download some more
   files, and so on. If you want the timeout to be in 10s, do `Date.now() + 10*1000`.
   You can try it in the previous code.
+  + `contentType` (string) ex: 'application/pdf' used to force the contentType of documents when
+  they are badly recognized by cozy.
 
+**Example**  
+```javascript
+await saveFiles([{fileurl: 'https://...', filename: 'bill1.pdf'}], fields)
+```
 <a name="module_signin"></a>
 
 ## signin
@@ -679,7 +679,7 @@ by user with `formData`.
   `requestFactory`. It could be useful for pages using `latin1` `encoding`
   for instance.
 
-**Example**
+**Example**  
 == basic example : ==
 ```javascript
 const $ = signin({
@@ -693,7 +693,7 @@ will allow you to:
  - detect if the credentials work or not -> LOGIN_FAILED
  - detect if actions from the user are needed -> USER_ACTION_NEEDED
  - detect if the targeted website is out -> VENDOR_DOWN
-**Example**
+**Example**  
 ```javascript
 const $ = signin({
   url: `http://quotes.toscrape.com/login`,
@@ -757,19 +757,6 @@ return filterData(documents, 'io.cozy.height', {
 
 ```
 
-<a name="module_filterData..suitableCall"></a>
-
-### filterData~suitableCall()
-Since we can use methods or basic functions for
-`shouldSave` and `shouldUpdate` we pass the
-appropriate `this` and `arguments`.
-
-If `funcOrMethod` is a method, it will be called
-with args[0] as `this` and the rest as `arguments`
-Otherwise, `this` will be null and `args` will be passed
-as `arguments`.
-
-**Kind**: inner method of [<code>filterData</code>](#module_filterData)
 <a name="module_utils"></a>
 
 ## utils
@@ -876,7 +863,7 @@ It takes a fetch function in parameter that must return a `Promise`.
 You need at least the `GET` permission on `io.cozy.accounts` in your manifest to allow it to
 fetch account information for your connector.
 
-**Kind**: global class
+**Kind**: global class  
 
 * [BaseKonnector](#BaseKonnector)
     * [new BaseKonnector(fetch)](#new_BaseKonnector_new)
@@ -907,7 +894,7 @@ this.terminate('LOGIN_FAILED')
 | --- | --- | --- |
 | fetch | <code>function</code> | Function to be run automatically after account data is fetched. This function will be binded to the current connector. If not fetch function is given. The connector will have to handle itself it's own exection and error handling |
 
-**Example**
+**Example**  
 ```javascript
 const { BaseKonnector } = require('cozy-konnector-libs')
 
@@ -925,20 +912,20 @@ module.exports = new BaseKonnector(function fetch () {
 ### baseKonnector.end()
 Hook called when the connector is ended
 
-**Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)
+**Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)  
 <a name="BaseKonnector+fail"></a>
 
 ### baseKonnector.fail()
 Hook called when the connector fails
 
-**Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)
+**Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)  
 <a name="BaseKonnector+init"></a>
 
 ### baseKonnector.init() ⇒ <code>Promise</code>
 Initializes the current connector with data comming from the associated account
 
-**Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)
-**Returns**: <code>Promise</code> - with the fields as an object
+**Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)  
+**Returns**: <code>Promise</code> - with the fields as an object  
 <a name="BaseKonnector+saveAccountData"></a>
 
 ### baseKonnector.saveAccountData(data, options) ⇒ <code>Promise</code>
@@ -952,7 +939,7 @@ By default, the data is merged to the remote data, use
 The data is saved under the `.data` attribute of the cozy
 account.
 
-**Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)
+**Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -964,14 +951,14 @@ account.
 ### baseKonnector.getAccountData() ⇒ <code>object</code>
 Get the data saved by saveAccountData
 
-**Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)
+**Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)  
 <a name="BaseKonnector+terminate"></a>
 
 ### baseKonnector.terminate(message)
 Send a special error code which is interpreted by the cozy stack to terminate the execution of the
 connector now
 
-**Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)
+**Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -985,7 +972,7 @@ Simple Model for Documents. Allows to specify
 
 Has useful `isEqual` method
 
-**Kind**: global class
+**Kind**: global class  
 <a name="Document+isEqual"></a>
 
 ### document.isEqual()
@@ -997,91 +984,91 @@ By default, will compare dates loosely since you often
 compare existing documents (dates in ISO string) with documents
 that just have been scraped where dates are `Date`s.
 
-**Kind**: instance method of [<code>Document</code>](#Document)
+**Kind**: instance method of [<code>Document</code>](#Document)  
 <a name="LOGIN_FAILED"></a>
 
 ## LOGIN_FAILED : <code>String</code>
 The konnector could not login
 
-**Kind**: global constant
+**Kind**: global constant  
 <a name="NOT_EXISTING_DIRECTORY"></a>
 
 ## NOT_EXISTING_DIRECTORY : <code>String</code>
 The folder specified as folder_to_save does not exist (checked by BaseKonnector)
 
-**Kind**: global constant
+**Kind**: global constant  
 <a name="VENDOR_DOWN"></a>
 
 ## VENDOR_DOWN : <code>String</code>
 The vendor's website is down
 
-**Kind**: global constant
+**Kind**: global constant  
 <a name="USER_ACTION_NEEDED"></a>
 
 ## USER_ACTION_NEEDED : <code>String</code>
 There was an unexpected error, please take a look at the logs to know what happened
 
-**Kind**: global constant
+**Kind**: global constant  
 <a name="FILE_DOWNLOAD_FAILED"></a>
 
 ## FILE_DOWNLOAD_FAILED : <code>String</code>
 There was a problem while downloading a file
 
-**Kind**: global constant
+**Kind**: global constant  
 <a name="SAVE_FILE_FAILED"></a>
 
 ## SAVE_FILE_FAILED : <code>String</code>
 There was a problem while saving a file
 
-**Kind**: global constant
+**Kind**: global constant  
 <a name="DISK_QUOTA_EXCEEDED"></a>
 
 ## DISK_QUOTA_EXCEEDED : <code>String</code>
 Could not save a file to the cozy because of disk quota exceeded
 
-**Kind**: global constant
+**Kind**: global constant  
 <a name="CHALLENGE_ASKED"></a>
 
 ## CHALLENGE_ASKED : <code>String</code>
 It seems that the website requires a second authentification factor that we don’t support yet.
 
-**Kind**: global constant
+**Kind**: global constant  
 <a name="LOGIN_FAILED_TOO_MANY_ATTEMPTS"></a>
 
 ## LOGIN_FAILED_TOO_MANY_ATTEMPTS : <code>String</code>
 Temporarily blocked
 
-**Kind**: global constant
+**Kind**: global constant  
 <a name="USER_ACTION_NEEDED_OAUTH_OUTDATED"></a>
 
 ## USER_ACTION_NEEDED_OAUTH_OUTDATED : <code>String</code>
 Access refresh required
 
-**Kind**: global constant
+**Kind**: global constant  
 <a name="USER_ACTION_NEEDED_ACCOUNT_REMOVED"></a>
 
 ## USER_ACTION_NEEDED_ACCOUNT_REMOVED : <code>String</code>
 Unavailable account
 
-**Kind**: global constant
+**Kind**: global constant  
 <a name="USER_ACTION_NEEDED_CHANGE_PASSWORD"></a>
 
 ## USER_ACTION_NEEDED_CHANGE_PASSWORD : <code>String</code>
 Unavailable account
 
-**Kind**: global constant
+**Kind**: global constant  
 <a name="USER_ACTION_NEEDED_PERMISSIONS_CHANGED"></a>
 
 ## USER_ACTION_NEEDED_PERMISSIONS_CHANGED : <code>String</code>
 Password update required
 
-**Kind**: global constant
+**Kind**: global constant  
 <a name="USER_ACTION_NEEDED_CGU_FORM"></a>
 
 ## USER_ACTION_NEEDED_CGU_FORM : <code>String</code>
 The user needs to accept a CGU form before accessing the rest of the website
 
-**Kind**: global constant
+**Kind**: global constant  
 <a name="mkSpec"></a>
 
 ## mkSpec()
@@ -1094,14 +1081,14 @@ Heavily inspired by [artoo] scraping method.
 
 [artoo]: https://medialab.github.io/artoo/
 
-**Kind**: global function
+**Kind**: global function  
 <a name="scrape"></a>
 
 ## scrape($, spec(s), [childSelector]) ⇒ <code>object</code> \| <code>array</code>
 Scrape a cheerio object for properties
 
-**Kind**: global function
-**Returns**: <code>object</code> \| <code>array</code> - - Item(s) scraped
+**Kind**: global function  
+**Returns**: <code>object</code> \| <code>array</code> - - Item(s) scraped  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -1109,7 +1096,7 @@ Scrape a cheerio object for properties
 | spec(s) | <code>object</code> \| <code>string</code> | Options object describing what you want to scrape |
 | [childSelector] | <code>string</code> | If passed, scrape will return an array of items |
 
-**Example**
+**Example**  
 `scrape` can be used to declaratively extract data :
 
 - For one object :

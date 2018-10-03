@@ -1,9 +1,9 @@
 /**
- * Combines the features of `saveFiles`, `filterData`, `addData` and `linkBankOperations` for a
+ * Combines the features of `saveFiles`, `hydrateAndFilter`, `addData` and `linkBankOperations` for a
  * common case: bills.
  * Will create `io.cozy.bills` objects. The default deduplication keys are `['date', 'amount', 'vendor']`.
  * You need the full permission on `io.cozy.bills`, full permission on `io.cozy.files` and also
- * full permission on `io.cozy.bank.operations` in your manifest, to be able to * use this function.
+ * full permission on `io.cozy.bank.operations` in your manifest, to be able to use this function.
  *
  * Parameters:
  *
@@ -16,6 +16,8 @@
  * - `fields` (object) this is the first parameter given to BaseKonnector's constructor
  * - `options` is passed directly to `saveFiles`, `hydrateAndFilter`, `addData` and `linkBankOperations`.
  *
+ * @example
+ *
  * ```javascript
  * const { BaseKonnector, saveBills } = require('cozy-konnector-libs')
  *
@@ -23,7 +25,7 @@
  *   const documents = []
  *   // some code which fills documents
  *   return saveBills(documents, fields, {
- *     identifiers: ['vendorj']
+ *     identifiers: ['vendor']
  *   })
  * })
  * ```
