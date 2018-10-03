@@ -1,6 +1,6 @@
 /**
  * The goal of this function is to provide an handy method to log the user in,
- * on html form pages. On success, it resolves a promise with a parsed body.
+ * on html form pages. On success, it resolves to a promise with a parsed body.
  *
  * Errors:
  *
@@ -36,6 +36,39 @@
  * - `requestOpts` allows to pass eventual options to the `signin`'s
  *   `requestFactory`. It could be useful for pages using `latin1` `encoding`
  *   for instance.
+ *
+ * @example
+ * == basic example : ==
+ * ```javascript
+ * const $ = signin({
+ *   url: `http://quotes.toscrape.com/login`,
+ *   formSelector: 'form',
+ *   formData: { username, password }
+ * })
+ * ```
+ * If the behavior of the targeted website is not standard. You can pass a validate function which
+ * will allow you to:
+ *  - detect if the credentials work or not -> LOGIN_FAILED
+ *  - detect if actions from the user are needed -> USER_ACTION_NEEDED
+ *  - detect if the targeted website is out -> VENDOR_DOWN
+ *
+ * @example
+ * ```javascript
+ * const $ = signin({
+ *   url: `http://quotes.toscrape.com/login`,
+ *   formSelector: 'form',
+ *   formData: { username, password },
+ *   validate: (statusCode, $, fullResponse) {
+ *    if (statusCode !== 200) return false // LOGIN_FAILED
+ *    if ($('.cgu').length) throw new Error('USER_ACTION_NEEDED')
+ *    if (fullResponse.request.uri.href.includes('error')) throw new Error('VENDOR_DOWN')
+ *   }
+ * })
+ * ```
+ *
+ * Do not forget that the use of the signin function is not mandatory in a connector and won't work
+ * if the signin page does not use html forms. Here, a simple POST request may be a lot more
+ * simple.
  *
  * @module signin
  */

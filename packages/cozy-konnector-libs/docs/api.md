@@ -180,7 +180,7 @@ You can try it in the previous code.</li>
 </dd>
 <dt><a href="#module_signin">signin</a></dt>
 <dd><p>The goal of this function is to provide an handy method to log the user in,
-on html form pages. On success, it resolves a promise with a parsed body.</p>
+on html form pages. On success, it resolves to a promise with a parsed body.</p>
 <p>Errors:</p>
 <ul>
 <li>LOGIN_FAILED if the validate predicate is false</li>
@@ -263,7 +263,8 @@ return filterData(documents, &#39;io.cozy.height&#39;, {
 </dd>
 <dt><a href="#module_utils">utils</a></dt>
 <dd><p>This function allows to fetch all documents for a given doctype. It is the fastest to get all
-documents but without filtering possibilities</p>
+documents but without filtering possibilities
+deprecated by the findAll method from cozyClient</p>
 <p>Parameters:</p>
 <ul>
 <li><code>doctype</code> (string): the doctype from which you want to fetch the data</li>
@@ -513,7 +514,7 @@ with args[0] as `this` and the rest as `arguments`
 Otherwise, `this` will be null and `args` will be passed
 as `arguments`.
 
-**Kind**: inner method of [<code>filterData</code>](#module_filterData)  
+**Kind**: inner method of [<code>filterData</code>](#module_filterData)
 <a name="module_linkBankOperations"></a>
 
 ## linkBankOperations
@@ -641,7 +642,7 @@ in standalone mode, the main path is the path of the connector.
 
 ## signin
 The goal of this function is to provide an handy method to log the user in,
-on html form pages. On success, it resolves a promise with a parsed body.
+on html form pages. On success, it resolves to a promise with a parsed body.
 
 Errors:
 
@@ -678,6 +679,37 @@ by user with `formData`.
   `requestFactory`. It could be useful for pages using `latin1` `encoding`
   for instance.
 
+**Example**
+== basic example : ==
+```javascript
+const $ = signin({
+  url: `http://quotes.toscrape.com/login`,
+  formSelector: 'form',
+  formData: { username, password }
+})
+```
+If the behavior of the targeted website is not standard. You can pass a validate function which
+will allow you to:
+ - detect if the credentials work or not -> LOGIN_FAILED
+ - detect if actions from the user are needed -> USER_ACTION_NEEDED
+ - detect if the targeted website is out -> VENDOR_DOWN
+**Example**
+```javascript
+const $ = signin({
+  url: `http://quotes.toscrape.com/login`,
+  formSelector: 'form',
+  formData: { username, password },
+  validate: (statusCode, $, fullResponse) {
+   if (statusCode !== 200) return false // LOGIN_FAILED
+   if ($('.cgu').length) throw new Error('USER_ACTION_NEEDED')
+   if (fullResponse.request.uri.href.includes('error')) throw new Error('VENDOR_DOWN')
+  }
+})
+```
+
+Do not forget that the use of the signin function is not mandatory in a connector and won't work
+if the signin page does not use html forms. Here, a simple POST request may be a lot more
+simple.
 <a name="module_updateOrCreate"></a>
 
 ## updateOrCreate
@@ -737,12 +769,13 @@ with args[0] as `this` and the rest as `arguments`
 Otherwise, `this` will be null and `args` will be passed
 as `arguments`.
 
-**Kind**: inner method of [<code>filterData</code>](#module_filterData)  
+**Kind**: inner method of [<code>filterData</code>](#module_filterData)
 <a name="module_utils"></a>
 
 ## utils
 This function allows to fetch all documents for a given doctype. It is the fastest to get all
 documents but without filtering possibilities
+deprecated by the findAll method from cozyClient
 
 Parameters:
 
@@ -843,7 +876,7 @@ It takes a fetch function in parameter that must return a `Promise`.
 You need at least the `GET` permission on `io.cozy.accounts` in your manifest to allow it to
 fetch account information for your connector.
 
-**Kind**: global class  
+**Kind**: global class
 
 * [BaseKonnector](#BaseKonnector)
     * [new BaseKonnector(fetch)](#new_BaseKonnector_new)
@@ -874,7 +907,7 @@ this.terminate('LOGIN_FAILED')
 | --- | --- | --- |
 | fetch | <code>function</code> | Function to be run automatically after account data is fetched. This function will be binded to the current connector. If not fetch function is given. The connector will have to handle itself it's own exection and error handling |
 
-**Example**  
+**Example**
 ```javascript
 const { BaseKonnector } = require('cozy-konnector-libs')
 
@@ -892,20 +925,20 @@ module.exports = new BaseKonnector(function fetch () {
 ### baseKonnector.end()
 Hook called when the connector is ended
 
-**Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)  
+**Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)
 <a name="BaseKonnector+fail"></a>
 
 ### baseKonnector.fail()
 Hook called when the connector fails
 
-**Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)  
+**Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)
 <a name="BaseKonnector+init"></a>
 
 ### baseKonnector.init() ⇒ <code>Promise</code>
 Initializes the current connector with data comming from the associated account
 
-**Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)  
-**Returns**: <code>Promise</code> - with the fields as an object  
+**Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)
+**Returns**: <code>Promise</code> - with the fields as an object
 <a name="BaseKonnector+saveAccountData"></a>
 
 ### baseKonnector.saveAccountData(data, options) ⇒ <code>Promise</code>
@@ -919,7 +952,7 @@ By default, the data is merged to the remote data, use
 The data is saved under the `.data` attribute of the cozy
 account.
 
-**Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)  
+**Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -931,14 +964,14 @@ account.
 ### baseKonnector.getAccountData() ⇒ <code>object</code>
 Get the data saved by saveAccountData
 
-**Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)  
+**Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)
 <a name="BaseKonnector+terminate"></a>
 
 ### baseKonnector.terminate(message)
 Send a special error code which is interpreted by the cozy stack to terminate the execution of the
 connector now
 
-**Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)  
+**Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -952,7 +985,7 @@ Simple Model for Documents. Allows to specify
 
 Has useful `isEqual` method
 
-**Kind**: global class  
+**Kind**: global class
 <a name="Document+isEqual"></a>
 
 ### document.isEqual()
@@ -964,91 +997,91 @@ By default, will compare dates loosely since you often
 compare existing documents (dates in ISO string) with documents
 that just have been scraped where dates are `Date`s.
 
-**Kind**: instance method of [<code>Document</code>](#Document)  
+**Kind**: instance method of [<code>Document</code>](#Document)
 <a name="LOGIN_FAILED"></a>
 
 ## LOGIN_FAILED : <code>String</code>
 The konnector could not login
 
-**Kind**: global constant  
+**Kind**: global constant
 <a name="NOT_EXISTING_DIRECTORY"></a>
 
 ## NOT_EXISTING_DIRECTORY : <code>String</code>
 The folder specified as folder_to_save does not exist (checked by BaseKonnector)
 
-**Kind**: global constant  
+**Kind**: global constant
 <a name="VENDOR_DOWN"></a>
 
 ## VENDOR_DOWN : <code>String</code>
 The vendor's website is down
 
-**Kind**: global constant  
+**Kind**: global constant
 <a name="USER_ACTION_NEEDED"></a>
 
 ## USER_ACTION_NEEDED : <code>String</code>
 There was an unexpected error, please take a look at the logs to know what happened
 
-**Kind**: global constant  
+**Kind**: global constant
 <a name="FILE_DOWNLOAD_FAILED"></a>
 
 ## FILE_DOWNLOAD_FAILED : <code>String</code>
 There was a problem while downloading a file
 
-**Kind**: global constant  
+**Kind**: global constant
 <a name="SAVE_FILE_FAILED"></a>
 
 ## SAVE_FILE_FAILED : <code>String</code>
 There was a problem while saving a file
 
-**Kind**: global constant  
+**Kind**: global constant
 <a name="DISK_QUOTA_EXCEEDED"></a>
 
 ## DISK_QUOTA_EXCEEDED : <code>String</code>
 Could not save a file to the cozy because of disk quota exceeded
 
-**Kind**: global constant  
+**Kind**: global constant
 <a name="CHALLENGE_ASKED"></a>
 
 ## CHALLENGE_ASKED : <code>String</code>
 It seems that the website requires a second authentification factor that we don’t support yet.
 
-**Kind**: global constant  
+**Kind**: global constant
 <a name="LOGIN_FAILED_TOO_MANY_ATTEMPTS"></a>
 
 ## LOGIN_FAILED_TOO_MANY_ATTEMPTS : <code>String</code>
 Temporarily blocked
 
-**Kind**: global constant  
+**Kind**: global constant
 <a name="USER_ACTION_NEEDED_OAUTH_OUTDATED"></a>
 
 ## USER_ACTION_NEEDED_OAUTH_OUTDATED : <code>String</code>
 Access refresh required
 
-**Kind**: global constant  
+**Kind**: global constant
 <a name="USER_ACTION_NEEDED_ACCOUNT_REMOVED"></a>
 
 ## USER_ACTION_NEEDED_ACCOUNT_REMOVED : <code>String</code>
 Unavailable account
 
-**Kind**: global constant  
+**Kind**: global constant
 <a name="USER_ACTION_NEEDED_CHANGE_PASSWORD"></a>
 
 ## USER_ACTION_NEEDED_CHANGE_PASSWORD : <code>String</code>
 Unavailable account
 
-**Kind**: global constant  
+**Kind**: global constant
 <a name="USER_ACTION_NEEDED_PERMISSIONS_CHANGED"></a>
 
 ## USER_ACTION_NEEDED_PERMISSIONS_CHANGED : <code>String</code>
 Password update required
 
-**Kind**: global constant  
+**Kind**: global constant
 <a name="USER_ACTION_NEEDED_CGU_FORM"></a>
 
 ## USER_ACTION_NEEDED_CGU_FORM : <code>String</code>
 The user needs to accept a CGU form before accessing the rest of the website
 
-**Kind**: global constant  
+**Kind**: global constant
 <a name="mkSpec"></a>
 
 ## mkSpec()
@@ -1061,14 +1094,14 @@ Heavily inspired by [artoo] scraping method.
 
 [artoo]: https://medialab.github.io/artoo/
 
-**Kind**: global function  
+**Kind**: global function
 <a name="scrape"></a>
 
 ## scrape($, spec(s), [childSelector]) ⇒ <code>object</code> \| <code>array</code>
 Scrape a cheerio object for properties
 
-**Kind**: global function  
-**Returns**: <code>object</code> \| <code>array</code> - - Item(s) scraped  
+**Kind**: global function
+**Returns**: <code>object</code> \| <code>array</code> - - Item(s) scraped
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -1076,7 +1109,7 @@ Scrape a cheerio object for properties
 | spec(s) | <code>object</code> \| <code>string</code> | Options object describing what you want to scrape |
 | [childSelector] | <code>string</code> | If passed, scrape will return an array of items |
 
-**Example**  
+**Example**
 `scrape` can be used to declaratively extract data :
 
 - For one object :
