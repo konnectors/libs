@@ -120,6 +120,9 @@ class BaseKonnector {
         this._account = account
 
         // folder ID will be stored in cozyFields.folder_to_save when first connection
+        if (!cozyFields.folder_to_save) {
+          log('warn', `No folder_to_save available in the trigger`)
+        }
         const folderId = cozyFields.folder_to_save || account.folderId
         if (!folderId) {
           // if no folder needed
