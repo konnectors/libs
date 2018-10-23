@@ -22,7 +22,7 @@ describe('requestFactory', () => {
       )
       expect(options.transform).toBeDefined()
       expect(options.headers['User-Agent']).toBe(
-        'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:36.0) Gecko/20100101 Firefox/36.0'
+        'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:62.0) Gecko/20100101 Firefox/62.0'
       )
     })
     test('user-defined UserAgent is preserved', () => {
@@ -44,7 +44,7 @@ describe('requestFactory', () => {
       )
       expect(options.transform).toBeDefined()
       expect(options.headers['User-Agent']).toBe(
-        'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:36.0) Gecko/20100101 Firefox/36.0'
+        'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:62.0) Gecko/20100101 Firefox/62.0'
       )
     })
   })
