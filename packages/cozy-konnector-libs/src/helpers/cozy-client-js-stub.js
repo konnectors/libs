@@ -89,7 +89,7 @@ module.exports = {
       let result = null
       if (doctype === 'io.cozy.accounts') {
         const configPath = path.resolve('konnector-dev-config.json')
-        const config = require(configPath)
+        const config = JSON.parse(fs.readFileSync(configPath))
         result = { auth: config.fields }
       } else {
         result = db
@@ -170,6 +170,10 @@ module.exports = {
         fs.mkdirSync(finalPath)
         resolve({ _id: returnPath, path: returnPath })
       })
+    },
+    downloadByPath(filePath) {
+      const realpath = path.join(rootPath, filePath)
+      return fs.createReadStream(realpath)
     }
   }
 }
@@ -178,7 +182,9 @@ function setUpDb() {
   let DUMP_PATH = 'importedData.json'
   const KONNECTOR_DEV_CONFIG_PATH = path.resolve('konnector-dev-config.json')
   if (fs.existsSync(KONNECTOR_DEV_CONFIG_PATH)) {
-    const KONNECTOR_DEV_CONFIG = require(KONNECTOR_DEV_CONFIG_PATH)
+    const KONNECTOR_DEV_CONFIG = JSON.stringify(
+      fs.readFileSync(KONNECTOR_DEV_CONFIG_PATH)
+    )
     DUMP_PATH = path.join(
       KONNECTOR_DEV_CONFIG.fields.folderPath || rootPath,
       DUMP_PATH
