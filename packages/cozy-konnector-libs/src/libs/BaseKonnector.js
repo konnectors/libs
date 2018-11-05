@@ -89,6 +89,7 @@ class BaseKonnector {
    */
   fail(err) {
     log('warn', 'Error caught by BaseKonnector')
+    log('error', JSON.stringify(err.stack))
 
     const error = err.message || err
 
@@ -144,6 +145,7 @@ class BaseKonnector {
       })
       .then(account => {
         this.fields = Object.assign(
+          {},
           account.auth,
           account.oauth,
           cozyFields.folder_to_save
