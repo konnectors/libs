@@ -10,7 +10,12 @@
       ],
       "minor": {
         "automerge": true
-      }
+      },
+      "packageRules": [
+        {
+          "schedule": "before 5am every monday"
+        }
+      ]
     }
   }
 }
