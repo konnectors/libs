@@ -6,22 +6,16 @@
   "renovate-config": {
     "default": {
       "extends": [
-        "config:base"
+        "cozy"
       ],
-      "timezone": "Europe/Paris",
       "minor": {
         "automerge": true
       },
       "packageRules": [
         {
-          "excludePackageNames": [
-            "cozy-konnector-libs",
-            "cozy-app-publish"
-          ],
           "schedule": "before 5am every monday"
         }
-      ],
-      "prHourlyLimit": 0
+      ]
     }
   }
 }
