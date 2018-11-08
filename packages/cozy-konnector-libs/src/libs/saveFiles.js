@@ -172,7 +172,7 @@ const saveEntry = function(entry, options) {
 
 // Saves the files given in the fileurl attribute of each entries
 module.exports = async (entries, fields, options = {}) => {
-  if (entries.length === 0) {
+  if (!entries || entries.length === 0) {
     log('warn', 'No file to download')
   }
   if (typeof fields !== 'object') {
@@ -214,9 +214,10 @@ module.exports = async (entries, fields, options = {}) => {
     .then(entries => {
       log(
         'info',
-        `saveFiles created ${savedFiles} files for ${entries.length} entries`
+        `saveFiles created ${savedFiles} files for ${
+          entries ? entries.length : 'n'
+        } entries`
       )
-      return entries
     })
 }
 
