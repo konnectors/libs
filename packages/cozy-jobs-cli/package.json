@@ -23,7 +23,7 @@
     "cli-highlight": "2.0.0",
     "commander": "2.19.0",
     "core-js": "2.5.7",
-    "cozy-client-js": "0.9.0",
+    "cozy-client-js": "0.14.2",
     "cozy-konnector-libs": "^4.11.4",
     "cozy-logger": "^1.2.0",
     "isomorphic-fetch": "2.2.1",
