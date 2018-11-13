@@ -182,8 +182,8 @@ function setUpDb() {
   let DUMP_PATH = 'importedData.json'
   const KONNECTOR_DEV_CONFIG_PATH = path.resolve('konnector-dev-config.json')
   if (fs.existsSync(KONNECTOR_DEV_CONFIG_PATH)) {
-    const KONNECTOR_DEV_CONFIG = JSON.stringify(
-      fs.readFileSync(KONNECTOR_DEV_CONFIG_PATH)
+    const KONNECTOR_DEV_CONFIG = JSON.parse(
+      fs.readFileSync(KONNECTOR_DEV_CONFIG_PATH, 'utf-8')
     )
     DUMP_PATH = path.join(
       KONNECTOR_DEV_CONFIG.fields.folderPath || rootPath,
