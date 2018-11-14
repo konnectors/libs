@@ -218,6 +218,7 @@ module.exports = async (entries, fields, options = {}) => {
           entries ? entries.length : 'n'
         } entries`
       )
+      return entries
     })
 }
 
