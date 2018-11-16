@@ -5,6 +5,7 @@ const mimetypes = require('mime-types')
 const low = require('lowdb')
 const lodashId = require('lodash-id')
 const FileSync = require('lowdb/adapters/FileSync')
+const rawBody = require('raw-body')
 
 const rootPath = JSON.parse(
   process.env.COZY_FIELDS || '{"folder_to_save": "."}'
@@ -172,8 +173,15 @@ module.exports = {
       })
     },
     downloadByPath(filePath) {
-      const realpath = path.join(rootPath, filePath)
-      return fs.createReadStream(realpath)
+      return this.downloadById(filePath)
+    },
+    downloadById(fileId) {
+      const realpath = path.join(rootPath, fileId)
+      const stream = fs.createReadStream(realpath)
+      return {
+        body: stream,
+        buffer: () => rawBody(stream)
+      }
     }
   }
 }
