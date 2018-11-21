@@ -224,118 +224,8 @@ use this function.</p>
 is already saved in the cozy</li>
 </ul>
 </dd>
-<dt><a href="#module_filterData">filterData</a></dt>
+<dt><a href="#module_utils">utils</a></dt>
 <dd><p>This module proposes some small utils regarding connectors</p>
-<p>Parameters:</p>
-<ul>
-<li><code>documents</code>: an array of objects corresponding to the data you want to save in the cozy</li>
-<li><code>doctype</code> (string): the doctype where you want to save data (ex: &#39;io.cozy.bills&#39;)</li>
-<li><code>options</code> :<ul>
-<li><code>keys</code> (array) : List of keys used to check that two items are the same. By default it is set to `[&#39;id&#39;]&#39;.</li>
-<li><code>index</code> (optionnal) : Return value returned by <code>cozy.data.defineIndex</code>, the default will correspond to all documents of the selected doctype.</li>
-<li><code>selector</code> (optionnal object) : Mango request to get records. Default is built from the keys <code>{selector: {_id: {&quot;$gt&quot;: null}}}</code> to get all the records.</li>
-</ul>
-</li>
-</ul>
-<pre><code class="lang-javascript">const documents = [
-  {
-    name: &#39;toto&#39;,
-    height: 1.8
-  },
-  {
-    name: &#39;titi&#39;,
-    height: 1.7
-  }
-]
-
-return filterData(documents, &#39;io.cozy.height&#39;, {
-  keys: [&#39;name&#39;]
-}).then(filteredDocuments =&gt; addData(filteredDocuments, &#39;io.cozy.height&#39;))
-
-</code></pre>
-</dd>
-<dt><a href="#module_utils">utils</a></dt>
-<dd><p>This function allows to fetch all documents for a given doctype. It is the fastest to get all
-documents but without filtering possibilities
-deprecated by the findAll method from cozyClient</p>
-<p>Parameters:</p>
-<ul>
-<li><code>doctype</code> (string): the doctype from which you want to fetch the data</li>
-</ul>
-</dd>
-<dt><a href="#module_utils">utils</a></dt>
-<dd><p>This function allows to fetch all documents for a given doctype exceeding the 100 limit.
-It is slower that fetchAll because it fetches the data 100 by 100 but allows to filter the data
-with a selector and an index</p>
-<p>Parameters:</p>
-<ul>
-<li><code>doctype</code> (string): the doctype from which you want to fetch the data</li>
-<li><code>selector</code> (object): the mango query selector</li>
-<li><code>index</code> (object): (optional) the query selector index. If not defined, the function will
-create it&#39;s own index with the keys specified in the selector</li>
-</ul>
-<pre><code class="lang-javascript">const documents = await queryAll(&#39;io.cozy.bills&#39;, {vendor: &#39;Direct Energie&#39;})
-</code></pre>
-</dd>
-<dt><a href="#module_utils">utils</a></dt>
-<dd><p>This function find duplicates in a given doctype, filtered by an optional mango selector</p>
-<p>Parameters:</p>
-<ul>
-<li><code>doctype</code> (string): the doctype from which you want to fetch the data</li>
-<li><code>selector</code> (object): (optional) the mango query selector</li>
-<li><code>options</code> :<ul>
-<li><code>keys</code> (array) : List of keys used to check that two items are the same.</li>
-<li><code>index</code> (optionnal) : Return value returned by <code>cozy.data.defineIndex</code>, the default will correspond to all documents of the selected doctype.</li>
-<li><code>selector</code> (optionnal object) : Mango request to get records. Gets all the records by default</li>
-</ul>
-</li>
-</ul>
-<p>Returns an object with the following keys:</p>
-<ul>
-<li><code>toKeep</code>: this is the list of unique documents that you should keep in db</li>
-<li><code>toRemove</code>: this is the list of documents that can remove from db. If this is io.cozy.bills
-documents, do not forget to clean linked bank operations</li>
-</ul>
-<pre><code class="lang-javascript">const {toKeep, toRemove} = await findDuplicates(&#39;io.cozy.bills&#39;, {selector: {vendor: &#39;Direct Energie&#39;}})
-</code></pre>
-</dd>
-<dt><a href="#module_utils">utils</a></dt>
-<dd><p>This is a shortcut to update multiple documents in one call</p>
-<p>Parameters:</p>
-<ul>
-<li><code>doctype</code> (string): the doctype from which you want to fetch the data</li>
-<li><code>ids</code> (array): array of ids of documents to update</li>
-<li><code>transformation</code> (object): attributes to change with their values</li>
-<li><code>options</code> :<ul>
-<li><code>keys</code> (array) : List of keys used to check that two items are the same.</li>
-<li><code>index</code> (optionnal) : Return value returned by <code>cozy.data.defineIndex</code>, the default will correspond to all documents of the selected doctype.</li>
-<li><code>selector</code> (optionnal object) : Mango request to get records. Gets all the records by default</li>
-</ul>
-</li>
-</ul>
-<p>Returns a promise which resolves with all the return values of updateAttributes</p>
-<pre><code class="lang-javascript">await batchUpdateAttributes(&#39;io.cozy.bills&#39;, [1, 2, 3], {vendor: &#39;Direct Energie&#39;})
-</code></pre>
-</dd>
-<dt><a href="#module_utils">utils</a></dt>
-<dd><p>This is a shortcut to delete multiple documents in one call</p>
-<p>Parameters:</p>
-<ul>
-<li><code>doctype</code> (string): the doctype from which you want to fetch the data</li>
-<li><code>documents</code> (array): documents to delete with their ids</li>
-<li><code>transformation</code> (object): attributes to change with their values</li>
-<li><code>options</code> :<ul>
-<li><code>keys</code> (array) : List of keys used to check that two items are the same.</li>
-<li><code>index</code> (optionnal) : Return value returned by <code>cozy.data.defineIndex</code>, the default will correspond to all documents of the selected doctype.</li>
-<li><code>selector</code> (optionnal object) : Mango request to get records. Gets all the records by default</li>
-</ul>
-</li>
-</ul>
-<p>Returns a promise which resolves with all the return values of updateAttributes</p>
-<p>Example to remove all the documents for a given doctype</p>
-<pre><code class="lang-javascript">const documents = await fetchAll(&#39;io.cozy.marvel&#39;)
-await batchDelete(&#39;io.cozy.marvel&#39;, documents)
-</code></pre>
 </dd>
 </dl>
 
@@ -725,41 +615,22 @@ Parameters:
 - `matchingAttributes` (array of strings) is the list of attributes in each entry should be used to check if an entry
   is already saved in the cozy
 
-<a name="module_filterData"></a>
-
-## filterData
-This module proposes some small utils regarding connectors
-
-Parameters:
-
-* `documents`: an array of objects corresponding to the data you want to save in the cozy
-* `doctype` (string): the doctype where you want to save data (ex: 'io.cozy.bills')
-* `options` :
-   - `keys` (array) : List of keys used to check that two items are the same. By default it is set to `['id']'.
-   - `index` (optionnal) : Return value returned by `cozy.data.defineIndex`, the default will correspond to all documents of the selected doctype.
-   - `selector` (optionnal object) : Mango request to get records. Default is built from the keys `{selector: {_id: {"$gt": null}}}` to get all the records.
-
-```javascript
-const documents = [
-  {
-    name: 'toto',
-    height: 1.8
-  },
-  {
-    name: 'titi',
-    height: 1.7
-  }
-]
-
-return filterData(documents, 'io.cozy.height', {
-  keys: ['name']
-}).then(filteredDocuments => addData(filteredDocuments, 'io.cozy.height'))
-
-```
-
 <a name="module_utils"></a>
 
 ## utils
+This module proposes some small utils regarding connectors
+
+
+* [utils](#module_utils)
+    * [~fetchAll()](#module_utils..fetchAll)
+    * [~queryAll()](#module_utils..queryAll)
+    * [~findDuplicates()](#module_utils..findDuplicates)
+    * [~batchUpdateAttributes()](#module_utils..batchUpdateAttributes)
+    * [~batchDelete()](#module_utils..batchDelete)
+
+<a name="module_utils..fetchAll"></a>
+
+### utils~fetchAll()
 This function allows to fetch all documents for a given doctype. It is the fastest to get all
 documents but without filtering possibilities
 deprecated by the findAll method from cozyClient
@@ -768,9 +639,10 @@ Parameters:
 
 * `doctype` (string): the doctype from which you want to fetch the data
 
-<a name="module_utils"></a>
+**Kind**: inner method of [<code>utils</code>](#module_utils)  
+<a name="module_utils..queryAll"></a>
 
-## utils
+### utils~queryAll()
 This function allows to fetch all documents for a given doctype exceeding the 100 limit.
 It is slower that fetchAll because it fetches the data 100 by 100 but allows to filter the data
 with a selector and an index
@@ -787,9 +659,10 @@ create it's own index with the keys specified in the selector
 const documents = await queryAll('io.cozy.bills', {vendor: 'Direct Energie'})
 ```
 
-<a name="module_utils"></a>
+**Kind**: inner method of [<code>utils</code>](#module_utils)  
+<a name="module_utils..findDuplicates"></a>
 
-## utils
+### utils~findDuplicates()
 This function find duplicates in a given doctype, filtered by an optional mango selector
 
 Parameters:
@@ -810,9 +683,10 @@ documents, do not forget to clean linked bank operations
 const {toKeep, toRemove} = await findDuplicates('io.cozy.bills', {selector: {vendor: 'Direct Energie'}})
 ```
 
-<a name="module_utils"></a>
+**Kind**: inner method of [<code>utils</code>](#module_utils)  
+<a name="module_utils..batchUpdateAttributes"></a>
 
-## utils
+### utils~batchUpdateAttributes()
 This is a shortcut to update multiple documents in one call
 
 Parameters:
@@ -831,9 +705,10 @@ Returns a promise which resolves with all the return values of updateAttributes
 await batchUpdateAttributes('io.cozy.bills', [1, 2, 3], {vendor: 'Direct Energie'})
 ```
 
-<a name="module_utils"></a>
+**Kind**: inner method of [<code>utils</code>](#module_utils)  
+<a name="module_utils..batchDelete"></a>
 
-## utils
+### utils~batchDelete()
 This is a shortcut to delete multiple documents in one call
 
 Parameters:
@@ -855,6 +730,7 @@ const documents = await fetchAll('io.cozy.marvel')
 await batchDelete('io.cozy.marvel', documents)
 ```
 
+**Kind**: inner method of [<code>utils</code>](#module_utils)  
 <a name="BaseKonnector"></a>
 
 ## BaseKonnector

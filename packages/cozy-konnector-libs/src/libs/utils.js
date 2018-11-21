@@ -1,34 +1,7 @@
 /**
  * This module proposes some small utils regarding connectors
  *
- * Parameters:
- *
- * * `documents`: an array of objects corresponding to the data you want to save in the cozy
- * * `doctype` (string): the doctype where you want to save data (ex: 'io.cozy.bills')
- * * `options` :
- *    - `keys` (array) : List of keys used to check that two items are the same. By default it is set to `['id']'.
- *    - `index` (optionnal) : Return value returned by `cozy.data.defineIndex`, the default will correspond to all documents of the selected doctype.
- *    - `selector` (optionnal object) : Mango request to get records. Default is built from the keys `{selector: {_id: {"$gt": null}}}` to get all the records.
- *
- * ```javascript
- * const documents = [
- *   {
- *     name: 'toto',
- *     height: 1.8
- *   },
- *   {
- *     name: 'titi',
- *     height: 1.7
- *   }
- * ]
- *
- * return filterData(documents, 'io.cozy.height', {
- *   keys: ['name']
- * }).then(filteredDocuments => addData(filteredDocuments, 'io.cozy.height'))
- *
- * ```
- *
- * @module filterData
+ * @module utils
  */
 const cozyClient = require('./cozyclient')
 const groupBy = require('lodash/groupBy')
@@ -44,7 +17,6 @@ const sortBy = require('lodash/sortBy')
  *
  * * `doctype` (string): the doctype from which you want to fetch the data
  *
- * @module utils
  */
 const fetchAll = async doctype => {
   return cozyClient.data.findAll(doctype)
@@ -66,8 +38,6 @@ const fetchAll = async doctype => {
  * ```javascript
  * const documents = await queryAll('io.cozy.bills', {vendor: 'Direct Energie'})
  * ```
- *
- * @module utils
  */
 const queryAll = async (doctype, selector, index) => {
   if (!selector) {
@@ -112,8 +82,6 @@ const queryAll = async (doctype, selector, index) => {
  * ```javascript
  * const {toKeep, toRemove} = await findDuplicates('io.cozy.bills', {selector: {vendor: 'Direct Energie'}})
  * ```
- *
- * @module utils
  */
 const findDuplicates = async (doctype, options) => {
   let hash = null
@@ -194,8 +162,6 @@ const sortBillsByLinkedOperationNumber = (bills, operations) => {
  * ```javascript
  * await batchUpdateAttributes('io.cozy.bills', [1, 2, 3], {vendor: 'Direct Energie'})
  * ```
- *
- * @module utils
  */
 const batchUpdateAttributes = async (doctype, ids, transformation) => {
   const result = []
@@ -231,8 +197,6 @@ const batchUpdateAttributes = async (doctype, ids, transformation) => {
  * const documents = await fetchAll('io.cozy.marvel')
  * await batchDelete('io.cozy.marvel', documents)
  * ```
- *
- * @module utils
  */
 const batchDelete = async (doctype, documents) => {
   const result = []
