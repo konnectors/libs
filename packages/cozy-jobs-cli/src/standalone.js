@@ -65,5 +65,6 @@ function initReplay() {
   process.env.REPLAY =
     replayOption || (process.env.REPLAY ? process.env.REPLAY : 'bloody')
 
+  if (process.env.REPLAY !== 'bloody') require('replay')
   require('replay')
 }
