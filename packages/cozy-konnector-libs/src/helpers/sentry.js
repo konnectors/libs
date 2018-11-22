@@ -76,7 +76,7 @@ module.exports.captureExceptionAndDie = function(err) {
   } else {
     try {
       log('info', 'Sending exception to Sentry')
-      Raven.captureException(err, afterCaptureException)
+      Raven.captureException(err, { fingerprint: [err.message || err] }, afterCaptureException)
     } catch (e) {
       log('warn', 'Could not send error to Sentry, exiting...')
       log('warn', e)
