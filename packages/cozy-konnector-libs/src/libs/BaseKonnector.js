@@ -100,7 +100,7 @@ class BaseKonnector {
   }
 
   /**
-   * Initializes the current connector with data comming from the associated account
+   * Initializes the current connector with data coming from the associated account
    *
    * @return {Promise} with the fields as an object
    */
