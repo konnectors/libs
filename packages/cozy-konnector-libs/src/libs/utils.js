@@ -7,6 +7,8 @@ const cozyClient = require('./cozyclient')
 const groupBy = require('lodash/groupBy')
 const keyBy = require('lodash/keyBy')
 const sortBy = require('lodash/sortBy')
+const range = require('lodash/range')
+const pdfjs = require('pdfjs-dist')
 
 /**
  * This function allows to fetch all documents for a given doctype. It is the fastest to get all
@@ -207,11 +209,52 @@ const batchDelete = async (doctype, documents) => {
   return result
 }
 
+/**
+ * This function can read the content of a cozy pdf file and output its text
+ *
+ * Parameters:
+ *
+ * * `fileId` (string): the id of the file in the cozy
+ * * `options` :
+ *    - `pages` (array or number) : The list of page you want to interpret
+ *
+ * Returns a promise which resolves with an object with the following attributes:
+ *    - `text` (string) : The full text of the pdf
+ *    - `1` : The full pdfjs data for page 1
+ *    - `n` : The full pdfjs data for page n
+ *
+ * Example:
+ *
+ * ```javascript
+ * const pdfText = (await getPdfText('887ABCFE87687')).text
+ * ```
+ */
+const getPdfText = async (fileId, options = {}) => {
+  const response = await cozyClient.files.downloadById(fileId)
+  const buffer = await response.buffer()
+  const document = await pdfjs.getDocument(buffer)
+  let pages
+  if (options.pages) {
+    pages = Array.isArray(options.pages) ? options.pages : [options.pages]
+  } else {
+    pages = range(1, document.numPages + 1)
+  }
+  const result = { text: '' }
+  for (const pageNum of pages) {
+    const page = await document.getPage(pageNum)
+    const pageItems = (await page.getTextContent()).items
+    result.text += pageItems.map(doc => doc.str).join('\n')
+    result[pageNum] = pageItems
+  }
+  return result
+}
+
 module.exports = {
   fetchAll,
   queryAll,
   findDuplicates,
   sortBillsByLinkedOperationNumber,
   batchUpdateAttributes,
-  batchDelete
+  batchDelete,
+  getPdfText
 }

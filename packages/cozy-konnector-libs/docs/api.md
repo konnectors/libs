@@ -118,6 +118,10 @@ const filename = normalizeFilename(&#39;*foo/bar: &lt;baz&gt; \\&quot;qux&quot;\
 </code></pre>
 </dd>
 <dt><a href="#module_saveBills">saveBills</a></dt>
+<dd><p>Encapsulate the saving of Bills : saves the files, saves the new data, and associate the files
+to an existing bank operation</p>
+</dd>
+<dt><a href="#module_saveBills">saveBills</a></dt>
 <dd><p>Combines the features of <code>saveFiles</code>, <code>hydrateAndFilter</code>, <code>addData</code> and <code>linkBankOperations</code> for a
 common case: bills.
 Will create <code>io.cozy.bills</code> objects. The default deduplication keys are <code>[&#39;date&#39;, &#39;amount&#39;, &#39;vendor&#39;]</code>.
@@ -463,6 +467,12 @@ const filename = normalizeFilename('*foo/bar: <baz> \\"qux"\t???', '.txt')
 <a name="module_saveBills"></a>
 
 ## saveBills
+Encapsulate the saving of Bills : saves the files, saves the new data, and associate the files
+to an existing bank operation
+
+<a name="module_saveBills"></a>
+
+## saveBills
 Combines the features of `saveFiles`, `hydrateAndFilter`, `addData` and `linkBankOperations` for a
 common case: bills.
 Will create `io.cozy.bills` objects. The default deduplication keys are `['date', 'amount', 'vendor']`.
@@ -627,6 +637,7 @@ This module proposes some small utils regarding connectors
     * [~findDuplicates()](#module_utils..findDuplicates)
     * [~batchUpdateAttributes()](#module_utils..batchUpdateAttributes)
     * [~batchDelete()](#module_utils..batchDelete)
+    * [~getPdfText()](#module_utils..getPdfText)
 
 <a name="module_utils..fetchAll"></a>
 
@@ -731,6 +742,29 @@ await batchDelete('io.cozy.marvel', documents)
 ```
 
 **Kind**: inner method of [<code>utils</code>](#module_utils)  
+<a name="module_utils..getPdfText"></a>
+
+### utils~getPdfText()
+This function can read the content of a cozy pdf file and output its text
+
+Parameters:
+
+* `fileId` (string): the id of the file in the cozy
+* `options` :
+   - `pages` (array or number) : The list of page you want to interpret
+
+Returns a promise which resolves with an object with the following attributes:
+   - `text` (string) : The full text of the pdf
+   - `1` : The full pdfjs data for page 1
+   - `n` : The full pdfjs data for page n
+
+Example:
+
+```javascript
+const pdfText = (await getPdfText('887ABCFE87687')).text
+```
+
+**Kind**: inner method of [<code>utils</code>](#module_utils)  
 <a name="BaseKonnector"></a>
 
 ## BaseKonnector
@@ -798,7 +832,7 @@ Hook called when the connector fails
 <a name="BaseKonnector+init"></a>
 
 ### baseKonnector.init() ⇒ <code>Promise</code>
-Initializes the current connector with data comming from the associated account
+Initializes the current connector with data coming from the associated account
 
 **Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)  
 **Returns**: <code>Promise</code> - with the fields as an object  
