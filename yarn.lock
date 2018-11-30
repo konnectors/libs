@@ -8428,13 +8428,13 @@ replace-comments-x@^2.0.0:
     require-coercible-to-string-x "^1.0.0"
     to-string-x "^1.4.2"
 
-replay@2.3.0:
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/replay/-/replay-2.3.0.tgz#cc9ad4e82094dd001f8fd2f1d0a0add29b5cff85"
-  integrity sha512-4RHtkRz1vsTLWDro4gUIIGBluukkol4VQlyuOc9TLCZAkXYHy1bASs85DxkCJL0TACY02Tm71BOB6vIkygnxRQ==
+replay@2.4.0:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/replay/-/replay-2.4.0.tgz#8100e7b5733b1b30477e265a3e3b329265f667cc"
+  integrity sha512-Ij6gKW+DijjTchAJCjdLU2YbjthwyhP6CClSrJxeZvRk9/QSysJo/CRUT1WJSWaH8ZlYk1yFEw6Cu/WEag+wwQ==
   dependencies:
     babel-runtime "^6.26.0"
-    debug "^3.1.0"
+    debug "^4.0.1"
     js-string-escape "^1.0.1"
 
 request-debug@0.2.0:
