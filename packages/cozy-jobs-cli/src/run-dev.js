@@ -1,30 +1,22 @@
+#!/usr/bin/env node
 /* eslint no-console: off */
 
 process.env.NODE_ENV = 'development'
 
-const config = require('./init-konnector-config')()
-
 if (!process.env.DEBUG) process.env.DEBUG = '*'
-process.env.COZY_URL = config.COZY_URL
 
 const program = require('commander')
 const path = require('path')
 const fs = require('fs')
-require('./open-in-browser')
-
+const { spawn } = require('child_process')
 const authenticate = require('./cozy-authenticate')
+
+let file, manifest
 
 const DEFAULT_MANIFEST_PATH = path.resolve('manifest.konnector')
 const DEFAULT_TOKEN_PATH = path.resolve('.token.json')
 
-let file, manifest
-
 program
-  .usage('[options] <file>')
-  .arguments('<file>')
-  .action(_file => {
-    file = _file
-  })
   .option(
     '-t, --token [value]',
     'Token file location (will be created if does not exist)',
@@ -37,8 +29,6 @@ program
   )
   .parse(process.argv)
 
-file = abspath(file || process.env.npm_package_main || './src/index.js')
-
 // Check for a .konnector file next to the launched file
 manifest = program.manifest
 if (!manifest && file) {
@@ -48,37 +38,21 @@ if (!manifest && file) {
   }
 }
 
-file = abspath(file || process.env.npm_package_main || './src/index.js')
 manifest = manifest || DEFAULT_MANIFEST_PATH
 const token = program.token || DEFAULT_TOKEN_PATH
 authenticate({ tokenPath: token, manifestPath: manifest })
   .then(result => {
     const credentials = result.creds
-
-    // check if the token is valid
     process.env.COZY_CREDENTIALS = JSON.stringify(credentials)
   })
   .then(() => {
-    const { BaseKonnector, mkdirp } = require('cozy-konnector-libs')
-    BaseKonnector.prototype.init = async () => {
-      const rootPath = '/cozy-konnector-dev-root'
-      await mkdirp(rootPath)
-      return {
-        ...config.fields,
-        folderPath: rootPath
-      }
-    }
-
-    // sentry is not needed in dev mode
-    process.env.SENTRY_DSN = 'false'
-
-    if (fs.existsSync(file)) {
-      return require(file)
-    } else {
-      console.log(
-        `ERROR: File ${file} does not exist. cozy-run-dev cannot run it.`
-      )
-    }
+    const spawned = spawn(program.args[0], program.args.slice(1), { stdio: 'pipe' })
+    spawned.stdout.on('data', (data) => {
+      console.log(`${data}`);
+    });
+    spawned.stderr.on('data', (data) => {
+      console.error(`${data}`);
+    })
   })
   .catch(err => {
     console.log(err, 'unexpected error')
