@@ -29,7 +29,7 @@
     "opn": "5.4.0",
     "pretty": "2.0.0",
     "regenerator-runtime": "0.12.1",
-    "replay": "2.3.0"
+    "replay": "2.4.0"
   },
   "scripts": {
     "lint": "standard --fix src/*"
