@@ -1,4 +1,26 @@
 /**
+ * Encapsulate the saving of Bills : saves the files, saves the new data, and associate the files
+ * to an existing bank operation
+ *
+ * @module saveBills
+ */
+
+const utils = require('./utils')
+const saveFiles = require('./saveFiles')
+const hydrateAndFilter = require('./hydrateAndFilter')
+const addData = require('./addData')
+const log = require('cozy-logger').namespace('saveBills')
+const linkBankOperations = require('./linkBankOperations')
+const DOCTYPE = 'io.cozy.bills'
+const _ = require('lodash')
+
+const requiredAttributes = {
+  date: 'isDate',
+  amount: 'isNumber',
+  vendor: 'isString'
+}
+
+/**
  * Combines the features of `saveFiles`, `hydrateAndFilter`, `addData` and `linkBankOperations` for a
  * common case: bills.
  * Will create `io.cozy.bills` objects. The default deduplication keys are `['date', 'amount', 'vendor']`.
@@ -32,30 +54,11 @@
  *
  * @module saveBills
  */
-
-const saveFiles = require('./saveFiles')
-const hydrateAndFilter = require('./hydrateAndFilter')
-const addData = require('./addData')
-const log = require('cozy-logger').namespace('saveBills')
-const linkBankOperations = require('./linkBankOperations')
-const DOCTYPE = 'io.cozy.bills'
-const _ = require('lodash')
-
-const requiredAttributes = {
-  date: 'isDate',
-  amount: 'isNumber',
-  vendor: 'isString'
-}
-
-// Encapsulate the saving of Bills : saves the files, saves the new data, and associate the files
-// to an existing bank operation
-module.exports = (entries, fields, options = {}) => {
+module.exports = async (entries, fields, options = {}) => {
   if (!_.isArray(entries) || entries.length === 0) {
     log('warn', 'saveBills: no bills to save')
     return Promise.resolve()
   }
-
-  checkRequiredAttributes(entries)
 
   if (typeof fields === 'string') {
     fields = { folderPath: fields }
@@ -64,21 +67,52 @@ module.exports = (entries, fields, options = {}) => {
   // Deduplicate on this keys
   options.keys = options.keys || Object.keys(requiredAttributes)
 
-  options.postProcess = function(entry) {
+  const originalEntries = entries
+  options.shouldUpdate = (entry, dbEntry) => entry.invoice !== dbEntry.invoice
+
+  let tempEntries = entries
+  tempEntries = await saveFiles(tempEntries, fields, options)
+
+  if (options.processPdf) {
+    for (let entry of tempEntries) {
+      if (entry.fileDocument) {
+        let pdfContent
+        try {
+          pdfContent = await utils.getPdfText(entry.fileDocument._id)
+          await options.processPdf(entry, pdfContent.text, pdfContent)
+        } catch (err) {
+          log(
+            'warn',
+            `processPdf: Failed to read pdf content in ${JSON.stringify(
+              entry.fileDocument
+            )}`
+          )
+          log('warn', err.message)
+        }
+      }
+    }
+  }
+
+  tempEntries = tempEntries.map(entry => {
     entry.currency = convertCurrency(entry.currency)
     if (entry.fileDocument) {
       entry.invoice = `io.cozy.files:${entry.fileDocument._id}`
     }
     delete entry.fileDocument
     return entry
-  }
+  })
 
-  const originalEntries = entries
-  options.shouldUpdate = (entry, dbEntry) => entry.invoice !== dbEntry.invoice
-  return saveFiles(entries, fields, options)
-    .then(entries => hydrateAndFilter(entries, DOCTYPE, options))
-    .then(entries => addData(entries, DOCTYPE, options))
-    .then(() => linkBankOperations(originalEntries, DOCTYPE, fields, options))
+  checkRequiredAttributes(entries)
+
+  tempEntries = await hydrateAndFilter(tempEntries, DOCTYPE, options)
+  tempEntries = await addData(tempEntries, DOCTYPE, options)
+  tempEntries = await linkBankOperations(
+    originalEntries,
+    DOCTYPE,
+    fields,
+    options
+  )
+  return tempEntries
 }
 
 function convertCurrency(currency) {
