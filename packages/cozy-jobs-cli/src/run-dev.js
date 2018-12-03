@@ -40,6 +40,11 @@ if (!manifest && file) {
 
 manifest = manifest || DEFAULT_MANIFEST_PATH
 const token = program.token || DEFAULT_TOKEN_PATH
+
+process.env.COZY_URL = process.env.COZY_URL
+  ? process.env.COZY_URL
+  : 'http://cozy.tools:8080'
+
 authenticate({ tokenPath: token, manifestPath: manifest })
   .then(result => {
     const credentials = result.creds
