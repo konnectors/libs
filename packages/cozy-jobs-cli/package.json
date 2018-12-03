@@ -28,7 +28,7 @@
     "cozy-logger": "^1.2.0",
     "opn": "5.4.0",
     "pretty": "2.0.0",
-    "regenerator-runtime": "0.12.1",
+    "regenerator-runtime": "0.13.1",
     "replay": "2.4.0"
   },
   "scripts": {
