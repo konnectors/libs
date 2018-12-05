@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 /* eslint no-console: off */
 
 process.env.NODE_ENV = 'development'
