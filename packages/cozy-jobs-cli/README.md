@@ -6,6 +6,7 @@ you want a program to connect to a cozy.
 
 - [`cozy-run-dev`](#cozy-run-dev)
 - [`cozy-konnector-dev`](#cozy-konnector-dev)
+- [`cozy-konnector-standalone`](#cozy-konnector-standalone)
 
 <!-- /MarkdownTOC -->
 
@@ -18,7 +19,11 @@ You can use `COZY_URL` to connect to another cozy.
 
 ### `cozy-konnector-dev`
 
-- Provides `COZY_CREDENTIALS` to the underlying process
-- Creates automatically `konnector-dev-config.json` and `importedData.json`
+- Provides `COZY_CREDENTIALS` to the locally running connector from `konnector-dev-config.json` (which is created if it does not exist)
 
-You can use `COZY_URL` to connect to another cozy.
+### `cozy-konnector-standalone`
+
+- Provides `COZY_CREDENTIALS` to the locally running connector from `konnector-dev-config.json` (which is created if it does not exist)
+- Does not save the data in a real cozy but instead dumps the data to `importedData.json`
+
+You can use `COZY_URL` to connect to another cozy. The default one is `cozy.tools:8080`.
