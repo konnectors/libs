@@ -88,10 +88,10 @@ module.exports = function signin({
 } = {}) {
   // Check for mandatory arguments
   if (url === undefined) {
-    throw 'signin: `url` must be defined'
+    throw new Error('signin: `url` must be defined')
   }
   if (formSelector === undefined) {
-    throw 'signin: `formSelector` must be defined'
+    throw new Error('signin: `formSelector` must be defined')
   }
 
   const rq =
@@ -192,7 +192,7 @@ function handleRequestErrors(err) {
     err instanceof rerrors.StatusCodeError
   ) {
     log('error', err)
-    throw errors.VENDOR_DOWN
+    throw new Error(errors.VENDOR_DOWN)
   } else {
     return Promise.reject(err)
   }
