@@ -1,9 +1,11 @@
 const chalk = require('chalk')
 const util = require('util')
 const stringify = require('json-stringify-safe')
-util.inspect.defaultOptions.maxArrayLength = null
-util.inspect.defaultOptions.depth = 2
-util.inspect.defaultOptions.colors = true
+if (util && util.inspect && util.inspect.defaultOptions) {
+  util.inspect.defaultOptions.maxArrayLength = null
+  util.inspect.defaultOptions.depth = 2
+  util.inspect.defaultOptions.colors = true
+}
 
 const LOG_LENGTH_LIMIT = 64 * 1024 - 1
 
