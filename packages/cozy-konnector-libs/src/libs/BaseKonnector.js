@@ -88,13 +88,12 @@ class BaseKonnector {
    * Hook called when the connector fails
    */
   fail(err) {
-    log('warn', 'Error caught by BaseKonnector')
-    log('error', JSON.stringify(err.stack))
+    log('info', 'Error caught by BaseKonnector')
 
     const error = err.message || err
 
     // if we have an unexpected error, display the stack trace
-    if (!errors[error]) log('warn', err)
+    if (!errors[error]) log('warn', JSON.stringify(err.stack))
 
     this.terminate(error)
   }
