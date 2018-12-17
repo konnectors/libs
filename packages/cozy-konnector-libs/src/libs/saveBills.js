@@ -1,6 +1,5 @@
 /**
- * Encapsulate the saving of Bills : saves the files, saves the new data, and associate the files
- * to an existing bank operation
+ * Encapsulate the saving of Bills : saves the files, saves the new data
  *
  * @module saveBills
  */

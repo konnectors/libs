@@ -11,7 +11,6 @@ module.exports = {
   log,
   saveFiles: require('./libs/saveFiles'),
   saveBills: require('./libs/saveBills'),
-  linkBankOperations: require('./libs/linkBankOperations'),
   addData: require('./libs/addData'),
   hydrateAndFilter,
   htmlToPDF: require('./libs/html2pdf').htmlToPDF,
