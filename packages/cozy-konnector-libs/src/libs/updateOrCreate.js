@@ -1,15 +1,6 @@
 /**
- * The goal of this function is create or update the given entries according to if they already
+ * Creates or updates the given entries according to if they already
  * exist in the cozy or not
- * You need the full permission for the given doctype in your manifest, to be able to
- * use this function.
- *
- * Parameters:
- *
- * - `entries` is an array of objects with any attributes :
- * - `doctype` (string) is the cozy doctype where the entries should be saved
- * - `matchingAttributes` (array of strings) is the list of attributes in each entry should be used to check if an entry
- *   is already saved in the cozy
  *
  * @module updateOrCreate
  */
@@ -17,6 +8,20 @@ const bluebird = require('bluebird')
 const log = require('cozy-logger').namespace('updateOrCreate')
 const cozy = require('./cozyclient')
 
+/**
+ * Creates or updates the given entries according to if they already
+ * exist in the cozy or not
+ *
+ * You need the full permission for the given doctype in your manifest, to be able to
+ * use this function.
+ *
+ * @param  {Object[]}  entries - Documents to save
+ * @param  {String} doctype - Doctype of the documents
+ * @param  {String[]}  matchingAttributes - attributes in each entry used to check if an entry already exists in the Cozy
+ * @return {Promise}
+ *
+ * @alias module:updateOrCreate
+ */
 module.exports = (entries = [], doctype, matchingAttributes = []) => {
   return cozy.data.findAll(doctype).then(existings =>
     bluebird.mapSeries(entries, entry => {

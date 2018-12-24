@@ -1,17 +1,7 @@
 /**
- * This is a [cozy-client-js](https://cozy.github.io/cozy-client-js/) instance already initialized and ready to use
+ * [cozy-client-js](https://cozy.github.io/cozy-client-js/) instance already
+ * initialized and ready to use.
  *
- * If you want to access cozy-client-js directly, this method gives you directly an instance of it,
- * initialized according to `COZY_URL` and `COZY_CREDENTIALS` environment variable given by cozy-stack
- * You can refer to the [cozy-client-js documentation](https://cozy.github.io/cozy-client-js/) for more information.
- *
- * Example :
- *
- * ```javascript
- * const {cozyClient} = require('cozy-konnector-libs')
- *
- * cozyClient.data.defineIndex('my.doctype', ['_id'])
- * ```
  * @module cozyClient
  */
 
@@ -76,8 +66,25 @@ const getCozyClient = function(environment = 'production') {
   return cozyClient
 }
 
-// webpack 4 now changes the NODE_ENV environment variable when you change its 'mode' option
-// since we do not want to minimize the built file, we recognize the 'none' mode as production mode
+/**
+ * [cozy-client-js](https://cozy.github.io/cozy-client-js/) instance already initialized and ready to use.
+ *
+ * If you want to access cozy-client-js directly, this method gives you directly an instance of it,
+ * initialized according to `COZY_URL` and `COZY_CREDENTIALS` environment variable given by cozy-stack
+ * You can refer to the [cozy-client-js documentation](https://cozy.github.io/cozy-client-js/) for more information.
+ *
+ * Example :
+ *
+ * ```javascript
+ * const {cozyClient} = require('cozy-konnector-libs')
+ *
+ * cozyClient.data.defineIndex('my.doctype', ['_id'])
+ * ```
+ *
+ * @alias module:cozyClient
+ */
 module.exports = getCozyClient(
+  // webpack 4 now changes the NODE_ENV environment variable when you change its 'mode' option
+  // since we do not want to minimize the built file, we recognize the 'none' mode as production mode
   process.env.NODE_ENV === 'none' ? 'production' : process.env.NODE_ENV
 )

@@ -2,6 +2,16 @@
  * Returns the given name, replacing characters that could be an issue when
  * used in a filename with spaces.
  *
+ * @module normalizeFilename
+ */
+
+const normalizableCharsRegExp = /[<>:"/\\|?*\0\s]+/g
+
+
+/**
+ * Returns the given name, replacing characters that could be an issue when
+ * used in a filename with spaces.
+ *
  * Replaced characters include:
  *
  * - Those forbidden on one or many popular OS or filesystem: `<>:"/\|?*`
@@ -24,11 +34,8 @@
  * // `filename` === `foo bar baz qux.txt`
  * ```
  *
- * @module normalizeFilename
+ * @alias module:normalizeFilename
  */
-
-const normalizableCharsRegExp = /[<>:"/\\|?*\0\s]+/g
-
 const normalizeFilename = (basename, ext) => {
   const filename = basename.replace(normalizableCharsRegExp, ' ').trim()
 
