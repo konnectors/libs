@@ -4,232 +4,42 @@
 
 <dl>
 <dt><a href="#module_addData">addData</a></dt>
-<dd><p>This function saves the data into the cozy blindly without check
-You need at least the <code>POST</code> permission for the given doctype in your manifest, to be able to
-use this function.</p>
-<p>Parameters:</p>
-<ul>
-<li><code>documents</code>: an array of objects corresponding to the data you want to save in the cozy</li>
-<li><code>doctype</code> (string): the doctype where you want to save data (ex: &#39;io.cozy.bills&#39;)</li>
-</ul>
-<pre><code class="lang-javascript">const documents = [
-  {
-    name: &#39;toto&#39;,
-    height: 1.8
-  },
-  {
-    name: &#39;titi&#39;,
-    height: 1.7
-  }
-]
-
-return addData(documents, &#39;io.cozy.height&#39;)
-</code></pre>
+<dd><p>Saves the data into the cozy blindly without check.</p>
 </dd>
 <dt><a href="#module_cozyClient">cozyClient</a></dt>
-<dd><p>This is a <a href="https://cozy.github.io/cozy-client-js/">cozy-client-js</a> instance already initialized and ready to use</p>
-<p>If you want to access cozy-client-js directly, this method gives you directly an instance of it,
-initialized according to <code>COZY_URL</code> and <code>COZY_CREDENTIALS</code> environment variable given by cozy-stack
-You can refer to the <a href="https://cozy.github.io/cozy-client-js/">cozy-client-js documentation</a> for more information.</p>
-<p>Example :</p>
-<pre><code class="lang-javascript">const {cozyClient} = require(&#39;cozy-konnector-libs&#39;)
-
-cozyClient.data.defineIndex(&#39;my.doctype&#39;, [&#39;_id&#39;])
-</code></pre>
+<dd><p><a href="https://cozy.github.io/cozy-client-js/">cozy-client-js</a> instance already
+initialized and ready to use.</p>
 </dd>
 <dt><a href="#module_hydrateAndFilter">hydrateAndFilter</a></dt>
-<dd><p>This function filters the passed array from data already present in the cozy so that there is
-not duplicated data in the cozy.
-You need at least the <code>GET</code> permission for the given doctype in your manifest, to be able to
-use this function.</p>
-<p>Parameters:</p>
-<ul>
-<li><code>documents</code>: an array of objects corresponding to the data you want to save in the cozy</li>
-<li><code>doctype</code> (string): the doctype where you want to save data (ex: &#39;io.cozy.bills&#39;)</li>
-<li><code>options</code> :<ul>
-<li><code>keys</code> (array) : List of keys used to check that two items are the same. By default it is set to `[&#39;id&#39;]&#39;.</li>
-<li><code>index</code> (optionnal) : Return value returned by <code>cozy.data.defineIndex</code>, the default will correspond to all documents of the selected doctype.</li>
-<li><code>selector</code> (optionnal object) : Mango request to get records. Default is built from the keys <code>{selector: {_id: {&quot;$gt&quot;: null}}}</code> to get all the records.</li>
-</ul>
-</li>
-</ul>
-<pre><code class="lang-javascript">const documents = [
-  {
-    name: &#39;toto&#39;,
-    height: 1.8
-  },
-  {
-    name: &#39;titi&#39;,
-    height: 1.7
-  }
-]
-
-return hydrateAndFilter(documents, &#39;io.cozy.height&#39;, {
-  keys: [&#39;name&#39;]
-}).then(filteredDocuments =&gt; addData(filteredDocuments, &#39;io.cozy.height&#39;))
-
-</code></pre>
+<dd><p>Filters the passed array from data already present in the cozy so that there is
+not duplicated data in the Cozy.</p>
 </dd>
 <dt><a href="#module_linkBankOperations">linkBankOperations</a></dt>
-<dd><h3 id="linkbankoperations-entries-doctype-fields-options-">linkBankOperations ( entries, doctype, fields, options = {} )</h3>
-<p>This function will soon move to a dedicated service. You should not use it.
-The goal of this function is to find links between bills and bank operations.</p>
+<dd><p>Finds links between bills and bank operations.</p>
 </dd>
 <dt><a href="#module_mkdirp">mkdirp</a></dt>
-<dd><p>Creates a directory and its missing ancestors as needed.</p>
-<p>Options :</p>
-<ul>
-<li><code>...pathComponents</code>:  one or many path components to be joined</li>
-</ul>
-<pre><code class="lang-javascript">await mkdirp(&#39;/foo&#39;) // Creates /foo
-await mkdirp(&#39;/foo&#39;) // Does nothing as /foo already exists
-await mkdirp(&#39;/bar/baz&#39;) // Creates /bar, then /bar/baz
-await mkdirp(&#39;/foo/bar/baz&#39;) // Creates /foo/bar, then /foo/bar/baz, not /foo
-await mkdirp(&#39;/&#39;) // Does nothing
-await mkdirp(&#39;/qux&#39;, &#39;qux2/qux3&#39;, &#39;qux4&#39;) // Creates /qux, then /qux/qux2,
-                                          // then /qux/qux2/qux3 and
-                                          // finally /qux/qux2/qux3/qux4
-</code></pre>
-<p>The function will automatically add a leading slash when missing:</p>
-<pre><code class="lang-javascript">await mkdirp(&#39;foo&#39;, &#39;bar&#39;) // Creates /foo, then /foo/bar
-</code></pre>
-</dd>
+<dd></dd>
 <dt><a href="#module_normalizeFilename">normalizeFilename</a></dt>
 <dd><p>Returns the given name, replacing characters that could be an issue when
 used in a filename with spaces.</p>
-<p>Replaced characters include:</p>
-<ul>
-<li>Those forbidden on one or many popular OS or filesystem: <code>&lt;&gt;:&quot;/\|?*</code></li>
-<li>Those forbidden by the cozy-stack <code>\0</code>, <code>\r</code> and <code>\n</code></li>
-<li>Multiple spaces and/or tabs are replaced with a single space</li>
-<li>Leading &amp; trailing spaces and/or tabs are removed</li>
-</ul>
-<p>An exception will be thrown in case there is not any filename-compatible
-character in the given name.</p>
-<p>Parameters:</p>
-<ul>
-<li><code>basename</code> is whatever string you want to generate the filename from</li>
-<li><code>ext</code> is an optional file extension, with or without leading dot</li>
-</ul>
-<pre><code class="lang-javascript">const { normalizeFilename } = require(&#39;cozy-konnector-libs&#39;)
-
-const filename = normalizeFilename(&#39;*foo/bar: &lt;baz&gt; \\&quot;qux&quot;\t???&#39;, &#39;.txt&#39;)
-// `filename` === `foo bar baz qux.txt`
-</code></pre>
 </dd>
 <dt><a href="#module_saveBills">saveBills</a></dt>
-<dd><p>Encapsulate the saving of Bills : saves the files, saves the new data, and associate the files
+<dd><p>Encapsulates the saving of Bills : saves the files, saves the new data, and associate the files
 to an existing bank operation</p>
 </dd>
-<dt><a href="#module_saveBills">saveBills</a></dt>
-<dd><p>Combines the features of <code>saveFiles</code>, <code>hydrateAndFilter</code>, <code>addData</code> and <code>linkBankOperations</code> for a
-common case: bills.
-Will create <code>io.cozy.bills</code> objects. The default deduplication keys are <code>[&#39;date&#39;, &#39;amount&#39;, &#39;vendor&#39;]</code>.
-You need the full permission on <code>io.cozy.bills</code>, full permission on <code>io.cozy.files</code> and also
-full permission on <code>io.cozy.bank.operations</code> in your manifest, to be able to use this function.</p>
-<p>Parameters:</p>
-<ul>
-<li><code>documents</code> is an array of objects with any attributes with some mandatory attributes :<ul>
-<li><code>amount</code> (Number): the amount of the bill used to match bank operations</li>
-<li><code>date</code> (Date): the date of the bill also used to match bank operations</li>
-<li><code>vendor</code> (String): the name of the vendor associated to the bill. Ex: &#39;trainline&#39;
-You can also pass attributes expected by <code>saveFiles</code>
-Please take a look at <a href="https://github.com/cozy/cozy-doctypes/blob/master/docs/io.cozy.bills.md">io.cozy.bills doctype documentation</a></li>
-</ul>
-</li>
-<li><code>fields</code> (object) this is the first parameter given to BaseKonnector&#39;s constructor</li>
-<li><code>options</code> is passed directly to <code>saveFiles</code>, <code>hydrateAndFilter</code>, <code>addData</code> and <code>linkBankOperations</code>.</li>
-</ul>
-</dd>
 <dt><a href="#module_saveFiles">saveFiles</a></dt>
-<dd><p>The goal of this function is to save the given files in the given folder via the Cozy API.
-You need the full permission on <code>io.cozy.files</code> in your manifest to use this function.</p>
-<ul>
-<li><p><code>files</code> is an array of <code>{ fileurl, filename }</code> :</p>
-<ul>
-<li>fileurl: The url of the file. This attribute is mandatory or
-this item will be ignored</li>
-<li>filename : The file name of the item written on disk. This attribute is optional and as default value, the
-file name will be &quot;smartly&quot; guessed by the function. Use this attribute if the guess is not smart
-enough for you.</li>
-</ul>
-</li>
-<li><p><code>fields</code> (string) is the argument given to the main function of your connector by the BaseKonnector.
-   It especially contains a <code>folderPath</code> which is the string path configured by the user in
-   collect/home</p>
-</li>
-<li><p><code>options</code> (object) is optional. Possible options :</p>
-<ul>
-<li><code>timeout</code> (timestamp) can be used if your connector needs to fetch a lot of files and if the
-stack does not give enough time to your connector to fetch it all. It could happen that the
-connector is stopped right in the middle of the download of the file and the file will be
-broken. With the <code>timeout</code> option, the <code>saveFiles</code> function will check if the timeout has
-passed right after downloading each file and then will be sure to be stopped cleanly if the
-timeout is not too long. And since it is really fast to check that a file has already been
-downloaded, on the next run of the connector, it will be able to download some more
-files, and so on. If you want the timeout to be in 10s, do <code>Date.now() + 10*1000</code>.
-You can try it in the previous code.</li>
-<li><code>contentType</code> (string) ex: &#39;application/pdf&#39; used to force the contentType of documents when
-they are badly recognized by cozy.</li>
-</ul>
-</li>
-</ul>
+<dd><p>Saves the given files in the given folder via the Cozy API.</p>
 </dd>
 <dt><a href="#module_signin">signin</a></dt>
-<dd><p>The goal of this function is to provide an handy method to log the user in,
-on html form pages. On success, it resolves to a promise with a parsed body.</p>
-<p>Errors:</p>
-<ul>
-<li>LOGIN_FAILED if the validate predicate is false</li>
-<li>INVALID_FORM if the element matched by <code>formSelector</code> is not a form or has
-no <code>action</code> attribute</li>
-<li>UNKNOWN_PARSING_STRATEGY if <code>parse</code> is not one of the accepted values:
-<code>raw</code>, <code>cheerio</code>, <code>json</code>.</li>
-<li>VENDOR_DOWN if a request throws a RequestError, or StatusCodeError</li>
-</ul>
-<p>It does not submit values provided through <code>select</code> tags, except if populated
-by user with <code>formData</code>.</p>
-<ul>
-<li><p><code>url</code> is the url to access the html form</p>
-</li>
-<li><p><code>formSelector</code> is used by cheerio to uniquely identify the form in which to
-log in</p>
-</li>
-<li><p><code>formData</code> is an object <code>{ name: value, … }</code>. It is used to populate the
-form, in the proper inputs with the same name as the properties of this
-object, before submitting it. It can also be a function that returns this
-object. The page at <code>url</code> would be given as argument, right after having
-been parsed through <code>cheerio</code>.</p>
-</li>
-<li><p><code>parse</code> allow the user to resolve <code>signin</code> with a preparsed body. The
-choice of the strategy for the parsing is one of : <code>raw</code>, <code>json</code> or
-<code>cheerio</code>. <code>cheerio</code> being the default.</p>
-</li>
-<li><p><code>validate</code> is a predicate taking three arguments <code>statusCode</code>, <code>parsedBody</code> and <code>fullResponse</code>.
-If it is false, <code>LOGIN_FAILED</code> is thrown, otherwise the
-signin resolves with <code>parsedBody</code> value.</p>
-</li>
-<li><p><code>requestOpts</code> allows to pass eventual options to the <code>signin</code>&#39;s
-<code>requestFactory</code>. It could be useful for pages using <code>latin1</code> <code>encoding</code>
-for instance.</p>
-</li>
-</ul>
+<dd><p>Provides an handy method to log the user in,
+on HTML form pages. On success, it resolves to a promise with a parsed body.</p>
 </dd>
 <dt><a href="#module_updateOrCreate">updateOrCreate</a></dt>
-<dd><p>The goal of this function is create or update the given entries according to if they already
-exist in the cozy or not
-You need the full permission for the given doctype in your manifest, to be able to
-use this function.</p>
-<p>Parameters:</p>
-<ul>
-<li><code>entries</code> is an array of objects with any attributes :</li>
-<li><code>doctype</code> (string) is the cozy doctype where the entries should be saved</li>
-<li><code>matchingAttributes</code> (array of strings) is the list of attributes in each entry should be used to check if an entry
-is already saved in the cozy</li>
-</ul>
+<dd><p>Creates or updates the given entries according to if they already
+exist in the cozy or not</p>
 </dd>
 <dt><a href="#module_utils">utils</a></dt>
-<dd><p>This module proposes some small utils regarding connectors</p>
+<dd><p>Small utilities helping to develop konnectors.</p>
 </dd>
 </dl>
 
@@ -313,7 +123,13 @@ instead of imperatively building them.</p>
 <a name="module_addData"></a>
 
 ## addData
-This function saves the data into the cozy blindly without check
+Saves the data into the cozy blindly without check.
+
+<a name="exp_module_addData--module.exports"></a>
+
+### module.exports() ⏏
+Saves the data into the cozy blindly without check.
+
 You need at least the `POST` permission for the given doctype in your manifest, to be able to
 use this function.
 
@@ -337,10 +153,17 @@ const documents = [
 return addData(documents, 'io.cozy.height')
 ```
 
+**Kind**: Exported function  
 <a name="module_cozyClient"></a>
 
 ## cozyClient
-This is a [cozy-client-js](https://cozy.github.io/cozy-client-js/) instance already initialized and ready to use
+[cozy-client-js](https://cozy.github.io/cozy-client-js/) instance already
+initialized and ready to use.
+
+<a name="exp_module_cozyClient--module.exports"></a>
+
+### module.exports ⏏
+This is a [cozy-client-js](https://cozy.github.io/cozy-client-js/) instance already initialized and ready to use.
 
 If you want to access cozy-client-js directly, this method gives you directly an instance of it,
 initialized according to `COZY_URL` and `COZY_CREDENTIALS` environment variable given by cozy-stack
@@ -354,11 +177,24 @@ const {cozyClient} = require('cozy-konnector-libs')
 cozyClient.data.defineIndex('my.doctype', ['_id'])
 ```
 
+**Kind**: Exported member  
 <a name="module_hydrateAndFilter"></a>
 
 ## hydrateAndFilter
-This function filters the passed array from data already present in the cozy so that there is
-not duplicated data in the cozy.
+Filters the passed array from data already present in the cozy so that there is
+not duplicated data in the Cozy.
+
+
+* [hydrateAndFilter](#module_hydrateAndFilter)
+    * [hydrateAndFilter()](#exp_module_hydrateAndFilter--hydrateAndFilter) ⏏
+        * [~suitableCall()](#module_hydrateAndFilter--hydrateAndFilter..suitableCall)
+
+<a name="exp_module_hydrateAndFilter--hydrateAndFilter"></a>
+
+### hydrateAndFilter() ⏏
+Filters the passed array from data already present in the cozy so that there is
+not duplicated data in the Cozy.
+
 You need at least the `GET` permission for the given doctype in your manifest, to be able to
 use this function.
 
@@ -389,9 +225,10 @@ return hydrateAndFilter(documents, 'io.cozy.height', {
 
 ```
 
-<a name="module_hydrateAndFilter..suitableCall"></a>
+**Kind**: Exported function  
+<a name="module_hydrateAndFilter--hydrateAndFilter..suitableCall"></a>
 
-### hydrateAndFilter~suitableCall()
+#### hydrateAndFilter~suitableCall()
 Since we can use methods or basic functions for
 `shouldSave` and `shouldUpdate` we pass the
 appropriate `this` and `arguments`.
@@ -401,18 +238,26 @@ with args[0] as `this` and the rest as `arguments`
 Otherwise, `this` will be null and `args` will be passed
 as `arguments`.
 
-**Kind**: inner method of [<code>hydrateAndFilter</code>](#module_hydrateAndFilter)  
+**Kind**: inner method of [<code>hydrateAndFilter</code>](#exp_module_hydrateAndFilter--hydrateAndFilter)  
 <a name="module_linkBankOperations"></a>
 
 ## linkBankOperations
-### linkBankOperations ( entries, doctype, fields, options = {} )
+Finds links between bills and bank operations.
 
-This function will soon move to a dedicated service. You should not use it.
-The goal of this function is to find links between bills and bank operations.
+<a name="exp_module_linkBankOperations--module.exports"></a>
 
+### module.exports() ⏏
+Will soon move to a dedicated service. You should not use it.
+
+Finds links between bills and bank operations.
+
+**Kind**: Exported function  
 <a name="module_mkdirp"></a>
 
 ## mkdirp
+<a name="exp_module_mkdirp--module.exports"></a>
+
+### module.exports ⏏
 Creates a directory and its missing ancestors as needed.
 
 Options :
@@ -436,9 +281,16 @@ The function will automatically add a leading slash when missing:
 await mkdirp('foo', 'bar') // Creates /foo, then /foo/bar
 ```
 
+**Kind**: Exported member  
 <a name="module_normalizeFilename"></a>
 
 ## normalizeFilename
+Returns the given name, replacing characters that could be an issue when
+used in a filename with spaces.
+
+<a name="exp_module_normalizeFilename--normalizeFilename"></a>
+
+### normalizeFilename() ⏏
 Returns the given name, replacing characters that could be an issue when
 used in a filename with spaces.
 
@@ -464,15 +316,16 @@ const filename = normalizeFilename('*foo/bar: <baz> \\"qux"\t???', '.txt')
 // `filename` === `foo bar baz qux.txt`
 ```
 
+**Kind**: Exported function  
 <a name="module_saveBills"></a>
 
 ## saveBills
-Encapsulate the saving of Bills : saves the files, saves the new data, and associate the files
+Encapsulates the saving of Bills : saves the files, saves the new data, and associate the files
 to an existing bank operation
 
-<a name="module_saveBills"></a>
+<a name="exp_module_saveBills--module.exports"></a>
 
-## saveBills
+### module.exports() ⏏
 Combines the features of `saveFiles`, `hydrateAndFilter`, `addData` and `linkBankOperations` for a
 common case: bills.
 Will create `io.cozy.bills` objects. The default deduplication keys are `['date', 'amount', 'vendor']`.
@@ -490,6 +343,7 @@ Parameters:
 - `fields` (object) this is the first parameter given to BaseKonnector's constructor
 - `options` is passed directly to `saveFiles`, `hydrateAndFilter`, `addData` and `linkBankOperations`.
 
+**Kind**: Exported function  
 **Example**  
 ```javascript
 const { BaseKonnector, saveBills } = require('cozy-konnector-libs')
@@ -505,7 +359,13 @@ module.exports = new BaseKonnector(function fetch (fields) {
 <a name="module_saveFiles"></a>
 
 ## saveFiles
-The goal of this function is to save the given files in the given folder via the Cozy API.
+Saves the given files in the given folder via the Cozy API.
+
+<a name="exp_module_saveFiles--saveFiles"></a>
+
+### saveFiles() ⏏
+Saves the files given in the fileurl attribute of each entries
+
 You need the full permission on `io.cozy.files` in your manifest to use this function.
 
 - `files` is an array of `{ fileurl, filename }` :
@@ -534,6 +394,7 @@ You need the full permission on `io.cozy.files` in your manifest to use this fun
   + `contentType` (string) ex: 'application/pdf' used to force the contentType of documents when
   they are badly recognized by cozy.
 
+**Kind**: Exported function  
 **Example**  
 ```javascript
 await saveFiles([{fileurl: 'https://...', filename: 'bill1.pdf'}], fields)
@@ -541,8 +402,14 @@ await saveFiles([{fileurl: 'https://...', filename: 'bill1.pdf'}], fields)
 <a name="module_signin"></a>
 
 ## signin
-The goal of this function is to provide an handy method to log the user in,
-on html form pages. On success, it resolves to a promise with a parsed body.
+Provides an handy method to log the user in,
+on HTML form pages. On success, it resolves to a promise with a parsed body.
+
+<a name="exp_module_signin--signin"></a>
+
+### signin() ⏏
+Provides an handy method to log the user in,
+on HTML form pages. On success, it resolves to a promise with a parsed body.
 
 Errors:
 
@@ -579,6 +446,7 @@ by user with `formData`.
   `requestFactory`. It could be useful for pages using `latin1` `encoding`
   for instance.
 
+**Kind**: Exported function  
 **Example**  
 == basic example : ==
 ```javascript
@@ -613,22 +481,30 @@ simple.
 <a name="module_updateOrCreate"></a>
 
 ## updateOrCreate
-The goal of this function is create or update the given entries according to if they already
+Creates or updates the given entries according to if they already
 exist in the cozy or not
+
+<a name="exp_module_updateOrCreate--module.exports"></a>
+
+### module.exports(entries, doctype, matchingAttributes) ⇒ <code>Promise</code> ⏏
+Creates or updates the given entries according to if they already
+exist in the cozy or not
+
 You need the full permission for the given doctype in your manifest, to be able to
 use this function.
 
-Parameters:
+**Kind**: Exported function  
 
-- `entries` is an array of objects with any attributes :
-- `doctype` (string) is the cozy doctype where the entries should be saved
-- `matchingAttributes` (array of strings) is the list of attributes in each entry should be used to check if an entry
-  is already saved in the cozy
+| Param | Type | Description |
+| --- | --- | --- |
+| entries | <code>Array.&lt;Object&gt;</code> | Documents to save |
+| doctype | <code>String</code> | Doctype of the documents |
+| matchingAttributes | <code>Array.&lt;String&gt;</code> | attributes in each entry used to check if an entry already exists in the Cozy |
 
 <a name="module_utils"></a>
 
 ## utils
-This module proposes some small utils regarding connectors
+Small utilities helping to develop konnectors.
 
 
 * [utils](#module_utils)

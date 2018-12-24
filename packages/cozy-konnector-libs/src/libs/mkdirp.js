@@ -1,4 +1,17 @@
 /**
+ * @module mkdirp
+ */
+
+const { basename, dirname, join } = require('path').posix
+const cozyClient = require('./cozyclient')
+
+const log = () => {}
+
+// The default exported `mkdirp` function is configured with the `cozyClient`
+// from `cozy-konnector-libs`.
+const mkdirp = fromCozy(cozyClient)
+
+/**
  * Creates a directory and its missing ancestors as needed.
  *
  * Options :
@@ -22,17 +35,8 @@
  * await mkdirp('foo', 'bar') // Creates /foo, then /foo/bar
  * ```
  *
- * @module mkdirp
+ * @alias module:mkdirp
  */
-
-const { basename, dirname, join } = require('path').posix
-const cozyClient = require('./cozyclient')
-
-const log = () => {}
-
-// The default exported `mkdirp` function is configured with the `cozyClient`
-// from `cozy-konnector-libs`.
-const mkdirp = fromCozy(cozyClient)
 module.exports = mkdirp
 
 // `fromCozy()` builds an mkdirp() function for the given Cozy client.

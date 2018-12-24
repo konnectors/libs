@@ -1,6 +1,18 @@
 /**
- * The goal of this function is to provide an handy method to log the user in,
- * on html form pages. On success, it resolves to a promise with a parsed body.
+ * Provides an handy method to log the user in,
+ * on HTML form pages. On success, it resolves to a promise with a parsed body.
+ *
+ * @module signin
+ */
+const errors = require('../helpers/errors')
+const rerrors = require('request-promise/errors')
+const log = require('cozy-logger').namespace('cozy-konnector-libs')
+const requestFactory = require('./request')
+const cheerio = require('cheerio')
+
+/**
+ * Provides an handy method to log the user in,
+ * on HTML form pages. On success, it resolves to a promise with a parsed body.
  *
  * Errors:
  *
@@ -70,14 +82,8 @@
  * if the signin page does not use html forms. Here, a simple POST request may be a lot more
  * simple.
  *
- * @module signin
+ * @alias module:signin
  */
-const errors = require('../helpers/errors')
-const rerrors = require('request-promise/errors')
-const log = require('cozy-logger').namespace('cozy-konnector-libs')
-const requestFactory = require('./request')
-const cheerio = require('cheerio')
-
 module.exports = function signin({
   url,
   formSelector,

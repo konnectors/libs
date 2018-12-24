@@ -1,5 +1,5 @@
 /**
- * Encapsulate the saving of Bills : saves the files, saves the new data, and associate the files
+ * Encapsulates the saving of Bills : saves the files, saves the new data, and associate the files
  * to an existing bank operation
  *
  * @module saveBills
@@ -52,7 +52,7 @@ const requiredAttributes = {
  * })
  * ```
  *
- * @module saveBills
+ * @alias module:saveBills
  */
 module.exports = async (entries, fields, options = {}) => {
   if (!_.isArray(entries) || entries.length === 0) {

@@ -43,7 +43,7 @@
     "transpile": "rm -r dist/* ; babel src --out-dir dist",
     "prepublishOnly": "yarn run transpile",
     "test": "cross-env LOG_LEVEL=info jest ./src",
-    "doc": "jsdoc2md --template jsdoc2md/README.hbs src/libs/*.js src/helpers/*.js > docs/api.md"
+    "docs": "jsdoc2md --template jsdoc2md/README.hbs src/libs/*.js src/helpers/*.js > docs/api.md"
   },
   "standard": {
     "globals": [

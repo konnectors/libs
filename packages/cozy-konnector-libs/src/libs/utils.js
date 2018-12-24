@@ -1,5 +1,5 @@
 /**
- * This module proposes some small utils regarding connectors
+ * Small utilities helping to develop konnectors.
  *
  * @module utils
  */

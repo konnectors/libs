@@ -1,5 +1,15 @@
 /**
- * This function saves the data into the cozy blindly without check
+ * Saves the data into the cozy blindly without check.
+ *
+ * @module addData
+ */
+const bluebird = require('bluebird')
+const omit = require('lodash/omit')
+const log = require('cozy-logger').namespace('addData')
+
+/**
+ * Saves the data into the cozy blindly without check.
+ *
  * You need at least the `POST` permission for the given doctype in your manifest, to be able to
  * use this function.
  *
@@ -23,12 +33,8 @@
  * return addData(documents, 'io.cozy.height')
  * ```
  *
- * @module addData
+ * @alias module:addData
  */
-const bluebird = require('bluebird')
-const omit = require('lodash/omit')
-const log = require('cozy-logger').namespace('addData')
-
 module.exports = (entries, doctype) => {
   const cozy = require('./cozyclient')
   return bluebird.mapSeries(entries, async entry => {

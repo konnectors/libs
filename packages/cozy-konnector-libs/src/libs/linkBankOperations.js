@@ -1,8 +1,5 @@
 /**
- * ### linkBankOperations ( entries, doctype, fields, options = {} )
- *
- * This function will soon move to a dedicated service. You should not use it.
- * The goal of this function is to find links between bills and bank operations.
+ * Finds links between bills and bank operations.
  *
  * @module linkBankOperations
  */
@@ -393,6 +390,13 @@ const jsonTee = filename => res => {
   return res
 }
 
+/**
+ * Will soon move to a dedicated service. You should not use it.
+ *
+ * Finds links between bills and bank operations.
+ *
+ * @alias module:linkBankOperations
+ */
 module.exports = (bills, doctype, fields, options = {}) => {
   // Use the custom bank identifier from user if any
   if (fields.bank_identifier && fields.bank_identifier.length) {

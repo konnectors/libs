@@ -1,36 +1,5 @@
 /**
- * The goal of this function is to save the given files in the given folder via the Cozy API.
- * You need the full permission on `io.cozy.files` in your manifest to use this function.
- *
- * - `files` is an array of `{ fileurl, filename }` :
- *
- *   + fileurl: The url of the file. This attribute is mandatory or
- *     this item will be ignored
- *   + filename : The file name of the item written on disk. This attribute is optional and as default value, the
- *     file name will be "smartly" guessed by the function. Use this attribute if the guess is not smart
- *   enough for you.
- *
- * - `fields` (string) is the argument given to the main function of your connector by the BaseKonnector.
- *      It especially contains a `folderPath` which is the string path configured by the user in
- *      collect/home
- *
- * - `options` (object) is optional. Possible options :
- *
- *   + `timeout` (timestamp) can be used if your connector needs to fetch a lot of files and if the
- *   stack does not give enough time to your connector to fetch it all. It could happen that the
- *   connector is stopped right in the middle of the download of the file and the file will be
- *   broken. With the `timeout` option, the `saveFiles` function will check if the timeout has
- *   passed right after downloading each file and then will be sure to be stopped cleanly if the
- *   timeout is not too long. And since it is really fast to check that a file has already been
- *   downloaded, on the next run of the connector, it will be able to download some more
- *   files, and so on. If you want the timeout to be in 10s, do `Date.now() + 10*1000`.
- *   You can try it in the previous code.
- *   + `contentType` (string) ex: 'application/pdf' used to force the contentType of documents when
- *   they are badly recognized by cozy.
- * @example
- * ```javascript
- * await saveFiles([{fileurl: 'https://...', filename: 'bill1.pdf'}], fields)
- * ```
+ * Saves the given files in the given folder via the Cozy API.
  *
  * @module saveFiles
  */
@@ -170,8 +139,44 @@ const saveEntry = function(entry, options) {
     })
 }
 
-// Saves the files given in the fileurl attribute of each entries
-module.exports = async (entries, fields, options = {}) => {
+/**
+ * Saves the files given in the fileurl attribute of each entries
+ *
+ * You need the full permission on `io.cozy.files` in your manifest to use this function.
+ *
+ * - `files` is an array of `{ fileurl, filename }` :
+ *
+ *   + fileurl: The url of the file. This attribute is mandatory or
+ *     this item will be ignored
+ *   + filename : The file name of the item written on disk. This attribute is optional and as default value, the
+ *     file name will be "smartly" guessed by the function. Use this attribute if the guess is not smart
+ *   enough for you.
+ *
+ * - `fields` (string) is the argument given to the main function of your connector by the BaseKonnector.
+ *      It especially contains a `folderPath` which is the string path configured by the user in
+ *      collect/home
+ *
+ * - `options` (object) is optional. Possible options :
+ *
+ *   + `timeout` (timestamp) can be used if your connector needs to fetch a lot of files and if the
+ *   stack does not give enough time to your connector to fetch it all. It could happen that the
+ *   connector is stopped right in the middle of the download of the file and the file will be
+ *   broken. With the `timeout` option, the `saveFiles` function will check if the timeout has
+ *   passed right after downloading each file and then will be sure to be stopped cleanly if the
+ *   timeout is not too long. And since it is really fast to check that a file has already been
+ *   downloaded, on the next run of the connector, it will be able to download some more
+ *   files, and so on. If you want the timeout to be in 10s, do `Date.now() + 10*1000`.
+ *   You can try it in the previous code.
+ *   + `contentType` (string) ex: 'application/pdf' used to force the contentType of documents when
+ *   they are badly recognized by cozy.
+ * @example
+ * ```javascript
+ * await saveFiles([{fileurl: 'https://...', filename: 'bill1.pdf'}], fields)
+ * ```
+ *
+ * @alias module:saveFiles
+ */
+const saveFiles = async (entries, fields, options = {}) => {
   if (!entries || entries.length === 0) {
     log('warn', 'No file to download')
   }
@@ -221,6 +226,8 @@ module.exports = async (entries, fields, options = {}) => {
       return entries
     })
 }
+
+module.exports = saveFiles
 
 function getFileName(entry) {
   let filename
