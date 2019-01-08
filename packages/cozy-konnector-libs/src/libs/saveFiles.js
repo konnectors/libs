@@ -201,30 +201,42 @@ const saveFiles = async (entries, fields, options = {}) => {
     entry.fileurl || entry.requestOptions || entry.filestream
 
   let savedFiles = 0
-  return bluebird
-    .mapSeries(entries, async entry => {
-      if (canBeSaved(entry)) {
-        entry = await saveEntry(entry, saveOptions)
-        if (entry && entry._cozy_file_to_create) {
-          savedFiles++
-          delete entry._cozy_file_to_create
+  const savedEntries = []
+  try {
+    await bluebird.map(
+      entries,
+      async entry => {
+        if (canBeSaved(entry)) {
+          entry = await saveEntry(entry, saveOptions)
+          if (entry && entry._cozy_file_to_create) {
+            savedFiles++
+            delete entry._cozy_file_to_create
+          }
         }
-      }
-      return entry
-    })
-    .catch(err => {
-      // do not count TIMEOUT error as an error outside
-      if (err.message !== 'TIMEOUT') throw err
-    })
-    .then(entries => {
+        savedEntries.push(entry)
+      },
+      { concurrency: 1 }
+    )
+  } catch (err) {
+    if (err.message !== 'TIMEOUT') {
+      throw err
+    } else {
       log(
-        'info',
-        `saveFiles created ${savedFiles} files for ${
-          entries ? entries.length : 'n'
-        } entries`
+        'warn',
+        `saveFile timeout: still ${entries.length - savedEntries.length} / ${
+          entries.length
+        } to download`
       )
-      return entries
-    })
+    }
+  }
+
+  log(
+    'info',
+    `saveFiles created ${savedFiles} files for ${
+      savedEntries ? savedEntries.length : 'n'
+    } entries`
+  )
+  return savedEntries
 }
 
 module.exports = saveFiles
