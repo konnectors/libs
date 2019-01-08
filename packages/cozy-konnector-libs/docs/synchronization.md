@@ -67,10 +67,16 @@ To store synchronization data, we are using a `sync` attribute in document `meta
 {
   "metadata": {
     "sync": {
-      "id": "7ee401e841c94159addb47f190903139",
-      "konnector": "trainline",
-      "last_sync": "Mon, 12 Feb 2018 16:25:34 GMT"
-    }
+      "7ee401e841c94159addb47f190903139": {
+        "id": "7ee401e841c94159addb47f190903139",
+        "konnector": "trainline",
+        "last_sync": "Mon, 12 Feb 2018 16:25:34 GMT"
+      },
+      "7ee401e841c94159addb47f1909ZZZZ": {
+        "id": "7ee401e841c94159addb47f1909ZZZZZ",
+        "konnector": "icloud",
+        "last_sync": "Mon, 18 Feb 2018 16:25:34 GMT"
+      },
   }
 }
 ```
