@@ -13,6 +13,7 @@ const mimetypes = require('mime-types')
 const errors = require('../helpers/errors')
 const stream = require('stream')
 const DEFAULT_TIMEOUT = Date.now() + 4 * 60 * 1000 // 4 minutes by default since the stack allows 5 minutes
+const DEFAULT_CONCURRENCY = 1
 
 const sanitizeEntry = function(entry) {
   delete entry.requestOptions
@@ -192,6 +193,7 @@ const saveFiles = async (entries, fields, options = {}) => {
   const saveOptions = {
     folderPath: fields.folderPath,
     timeout: options.timeout || DEFAULT_TIMEOUT,
+    concurrency: options.concurrency || DEFAULT_CONCURRENCY,
     postProcess: options.postProcess,
     postProcessFile: options.postProcessFile,
     contentType: options.contentType
@@ -215,7 +217,7 @@ const saveFiles = async (entries, fields, options = {}) => {
         }
         savedEntries.push(entry)
       },
-      { concurrency: 1 }
+      { concurrency: saveOptions.concurrency }
     )
   } catch (err) {
     if (err.message !== 'TIMEOUT') {
