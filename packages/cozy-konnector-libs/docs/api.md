@@ -163,7 +163,7 @@ initialized and ready to use.
 <a name="exp_module_cozyClient--module.exports"></a>
 
 ### module.exports ⏏
-This is a [cozy-client-js](https://cozy.github.io/cozy-client-js/) instance already initialized and ready to use.
+[cozy-client-js](https://cozy.github.io/cozy-client-js/) instance already initialized and ready to use.
 
 If you want to access cozy-client-js directly, this method gives you directly an instance of it,
 initialized according to `COZY_URL` and `COZY_CREDENTIALS` environment variable given by cozy-stack
@@ -405,9 +405,9 @@ await saveFiles([{fileurl: 'https://...', filename: 'bill1.pdf'}], fields)
 Provides an handy method to log the user in,
 on HTML form pages. On success, it resolves to a promise with a parsed body.
 
-<a name="exp_module_signin--signin"></a>
+<a name="exp_module_signin--module.exports"></a>
 
-### signin() ⏏
+### module.exports() ⏏
 Provides an handy method to log the user in,
 on HTML form pages. On success, it resolves to a promise with a parsed body.
 
@@ -658,6 +658,7 @@ fetch account information for your connector.
     * [.init()](#BaseKonnector+init) ⇒ <code>Promise</code>
     * [.saveAccountData(data, options)](#BaseKonnector+saveAccountData) ⇒ <code>Promise</code>
     * [.getAccountData()](#BaseKonnector+getAccountData) ⇒ <code>object</code>
+    * [.updateAccountAttributes()](#BaseKonnector+updateAccountAttributes)
     * [.terminate(message)](#BaseKonnector+terminate)
 
 <a name="new_BaseKonnector_new"></a>
@@ -736,6 +737,12 @@ account.
 
 ### baseKonnector.getAccountData() ⇒ <code>object</code>
 Get the data saved by saveAccountData
+
+**Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)  
+<a name="BaseKonnector+updateAccountAttributes"></a>
+
+### baseKonnector.updateAccountAttributes()
+Update account attributes and cache the account
 
 **Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)  
 <a name="BaseKonnector+terminate"></a>
