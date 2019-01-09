@@ -393,6 +393,9 @@ You need the full permission on `io.cozy.files` in your manifest to use this fun
   You can try it in the previous code.
   + `contentType` (string) ex: 'application/pdf' used to force the contentType of documents when
   they are badly recognized by cozy.
+  + `concurrency` (number) default: `1` sets the maximum number of concurrent downloads
+  + `fileAttributes` (object) ex: `{created_at: new Date()}` sets some additionnal file
+  attributes passed to cozyClient.file.create
 
 **Kind**: Exported function  
 **Example**  

@@ -59,13 +59,15 @@ const downloadEntry = function(entry, options) {
 
 const createFile = async function(entry, options) {
   const folder = await cozy.files.statByPath(options.folderPath)
-  const createFileOptions = {
+  let createFileOptions = {
     name: getFileName(entry),
     dirID: folder._id
   }
   if (options.contentType) {
     createFileOptions.contentType = options.contentType
   }
+  if (options.fileAttributes)
+    createFileOptions = { ...createFileOptions, ...options.fileAttributes }
 
   const toCreate = entry.filestream || downloadEntry(entry, options)
   let fileDocument = await cozy.files.create(toCreate, createFileOptions)
@@ -170,6 +172,9 @@ const saveEntry = function(entry, options) {
  *   You can try it in the previous code.
  *   + `contentType` (string) ex: 'application/pdf' used to force the contentType of documents when
  *   they are badly recognized by cozy.
+ *   + `concurrency` (number) default: `1` sets the maximum number of concurrent downloads
+ *   + `fileAttributes` (object) ex: `{created_at: new Date()}` sets some additionnal file
+ *   attributes passed to cozyClient.file.create
  * @example
  * ```javascript
  * await saveFiles([{fileurl: 'https://...', filename: 'bill1.pdf'}], fields)
