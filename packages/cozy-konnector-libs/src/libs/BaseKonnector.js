@@ -178,12 +178,7 @@ class BaseKonnector {
     options.merge = options.merge === undefined ? true : options.merge
     const start = options.merge ? Object.assign({}, this.getAccountData()) : {}
     const newData = Object.assign({}, start, data)
-    return cozy.data
-      .updateAttributes('io.cozy.accounts', this.accountId, { data: newData })
-      .then(account => {
-        this._account = account
-        return account.data
-      })
+    return this.updateAccountAttributes({ data: newData }).then(account => account.data)
   }
 
   /**
@@ -193,6 +188,18 @@ class BaseKonnector {
    */
   getAccountData() {
     return new Secret(this._account.data || {})
+  }
+
+
+  /**
+   * Update account attributes and cache the account
+   */
+  updateAccountAttributes(attributes) {
+    return cozy.data.updateAttributes('io.cozy.accounts', this.accountId, attributes)
+      .then(account => {
+        this._account = account
+        return account
+      })
   }
 
   /**
