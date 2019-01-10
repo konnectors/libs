@@ -66,8 +66,9 @@ const createFile = async function(entry, options) {
   if (options.contentType) {
     createFileOptions.contentType = options.contentType
   }
-  if (options.fileAttributes)
-    createFileOptions = { ...createFileOptions, ...options.fileAttributes }
+  if (entry.fileAttributes) {
+    createFileOptions = { ...createFileOptions, ...entry.fileAttributes }
+  }
 
   const toCreate = entry.filestream || downloadEntry(entry, options)
   let fileDocument = await cozy.files.create(toCreate, createFileOptions)
@@ -154,6 +155,8 @@ const saveEntry = function(entry, options) {
  *   + filename : The file name of the item written on disk. This attribute is optional and as default value, the
  *     file name will be "smartly" guessed by the function. Use this attribute if the guess is not smart
  *   enough for you.
+ *   + `fileAttributes` (object) ex: `{created_at: new Date()}` sets some additionnal file
+ *   attributes passed to cozyClient.file.create
  *
  * - `fields` (string) is the argument given to the main function of your connector by the BaseKonnector.
  *      It especially contains a `folderPath` which is the string path configured by the user in
@@ -173,8 +176,6 @@ const saveEntry = function(entry, options) {
  *   + `contentType` (string) ex: 'application/pdf' used to force the contentType of documents when
  *   they are badly recognized by cozy.
  *   + `concurrency` (number) default: `1` sets the maximum number of concurrent downloads
- *   + `fileAttributes` (object) ex: `{created_at: new Date()}` sets some additionnal file
- *   attributes passed to cozyClient.file.create
  * @example
  * ```javascript
  * await saveFiles([{fileurl: 'https://...', filename: 'bill1.pdf'}], fields)
