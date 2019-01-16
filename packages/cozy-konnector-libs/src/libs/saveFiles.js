@@ -9,6 +9,7 @@ const requestFactory = require('./request')
 const omit = require('lodash/omit')
 const log = require('cozy-logger').namespace('saveFiles')
 const cozy = require('./cozyclient')
+const { queryAll } = require('./utils')
 const mimetypes = require('mime-types')
 const errors = require('../helpers/errors')
 const stream = require('stream')
@@ -155,6 +156,8 @@ const saveEntry = function(entry, options) {
  *   + filename : The file name of the item written on disk. This attribute is optional and as default value, the
  *     file name will be "smartly" guessed by the function. Use this attribute if the guess is not smart
  *   enough for you.
+ *   + `shouldReplaceName` (string) default: `undefined` use to select the old filename to replace
+ *   by filename if possible
  *   + `fileAttributes` (object) ex: `{created_at: new Date()}` sets some additionnal file
  *   attributes passed to cozyClient.file.create
  *
@@ -208,13 +211,22 @@ const saveFiles = async (entries, fields, options = {}) => {
   const canBeSaved = entry =>
     entry.fileurl || entry.requestOptions || entry.filestream
 
+  let filesArray = undefined
   let savedFiles = 0
   const savedEntries = []
   try {
     await bluebird.map(
       entries,
       async entry => {
-        if (canBeSaved(entry)) {
+        if (entry.shouldReplaceName) {
+          // At first encounter of a rename, we set the filenamesList
+          if(filesArray === undefined) {
+            log('debug', 'initialize files list for renamming')
+            filesArray = await getFiles(fields.folderPath)
+          }
+          await renameFile(filesArray, entry)
+        }
+        else if (canBeSaved(entry)) {
           entry = await saveEntry(entry, saveOptions)
           if (entry && entry._cozy_file_to_create) {
             savedFiles++
@@ -301,6 +313,24 @@ function logFileStream(fileStream) {
   } else {
     log('info', `The fileStream attribute is a ${typeof fileStream}`)
     // console.log(fileStream)
+  }
+}
+
+async function getFiles(folderPath) {
+  const dir = await cozy.files.statByPath(folderPath)
+  const files = await queryAll('io.cozy.files', {dir_id: dir._id})
+  return files
+}
+
+async function renameFile(filesArray, entry) {
+  if (!entry.filename) {
+    throw new Error('shouldReplaceName needs a filename')
+  }
+  for (let file of filesArray) {
+    if (file.name === entry.shouldReplaceName) {
+      log('debug', `Renaming ${file.name} to ${entry.filename}`)
+      await cozy.files.updateAttributesById(file._id, { name: entry.filename})
+    }
   }
 }
 
