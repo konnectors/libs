@@ -36,7 +36,7 @@ module.exports = (entries = [], doctype, matchingAttributes = []) => {
       )
 
       if (toUpdate) {
-        log('debug', 'upating')
+        log('debug', 'updating')
         return cozy.data.updateAttributes(doctype, toUpdate._id, entry)
       } else {
         log('debug', 'creating')
