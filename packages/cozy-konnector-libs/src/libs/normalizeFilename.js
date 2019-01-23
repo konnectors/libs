@@ -7,7 +7,6 @@
 
 const normalizableCharsRegExp = /[<>:"/\\|?*\0\s]+/g
 
-
 /**
  * Returns the given name, replacing characters that could be an issue when
  * used in a filename with spaces.

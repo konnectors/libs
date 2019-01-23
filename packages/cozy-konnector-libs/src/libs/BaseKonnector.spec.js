@@ -17,14 +17,17 @@ describe('BaseKonnector', () => {
   })
 
   it('should update account attributes and cache the account', async () => {
-    client.data.updateAttributes.mockImplementation((doctype, id, attrs) => new Promise(resolve => {
-      resolve({
-        data: {
-          preexistingData: 'here'
-        },
-        ...attrs
-      })
-    }))
+    client.data.updateAttributes.mockImplementation(
+      (doctype, id, attrs) =>
+        new Promise(resolve => {
+          resolve({
+            data: {
+              preexistingData: 'here'
+            },
+            ...attrs
+          })
+        })
+    )
 
     const newAuth = {
       login: '12345',
@@ -33,12 +36,16 @@ describe('BaseKonnector', () => {
     await konn.updateAccountAttributes({
       auth: newAuth
     })
-    expect(client.data.updateAttributes).toHaveBeenCalledWith('io.cozy.accounts', 'account-id', {
-      auth: newAuth
-    })
+    expect(client.data.updateAttributes).toHaveBeenCalledWith(
+      'io.cozy.accounts',
+      'account-id',
+      {
+        auth: newAuth
+      }
+    )
     expect(konn._account).toMatchObject({
       data: {
-        preexistingData: 'here',
+        preexistingData: 'here'
       },
       auth: newAuth
     })

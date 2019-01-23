@@ -40,7 +40,9 @@ module.exports = {
     },
     update(doctype, doc, changes) {
       setDefaults(doctype)
-      db.updateById(doc._id, changes).write()
+      db.get(doctype)
+        .updateById(doc._id, changes)
+        .write()
       return Promise.resolve(doc)
     },
     updateAttributes(doctype, id, attrs) {
@@ -86,17 +88,20 @@ module.exports = {
     },
     find(doctype, id) {
       setDefaults(doctype)
-      // exeption for "io.cozy.accounts" doctype where we return konnector-dev-config.json content
-      let result = null
+      let result = db
+        .get(doctype)
+        .getById(id)
+        .value()
+      const accountExists = Boolean(result)
       if (doctype === 'io.cozy.accounts') {
         const configPath = path.resolve('konnector-dev-config.json')
         const config = JSON.parse(fs.readFileSync(configPath))
-        result = { auth: config.fields }
-      } else {
-        result = db
-          .get(doctype)
-          .getById(id)
-          .value()
+        result = { _id: id, ...result, auth: config.fields }
+        if (!accountExists) {
+          this.create(doctype, result)
+        } else {
+          this.update(doctype, result, result)
+        }
       }
       return Promise.resolve(result)
     },

@@ -22,7 +22,8 @@ if (!process.env.DEBUG) process.env.DEBUG = '*'
 const rootPath = path.resolve('./data')
 if (!fs.existsSync(rootPath)) fs.mkdirSync(rootPath)
 process.env.COZY_FIELDS = JSON.stringify({
-  folder_to_save: rootPath
+  folder_to_save: rootPath,
+  account: 'default_account_id'
 })
 
 const config = require('./init-konnector-config')()

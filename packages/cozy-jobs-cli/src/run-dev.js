@@ -51,12 +51,14 @@ authenticate({ tokenPath: token, manifestPath: manifest })
     process.env.COZY_CREDENTIALS = JSON.stringify(credentials)
   })
   .then(() => {
-    const spawned = spawn(program.args[0], program.args.slice(1), { stdio: 'pipe' })
-    spawned.stdout.on('data', (data) => {
-      console.log(`${data}`);
-    });
-    spawned.stderr.on('data', (data) => {
-      console.error(`${data}`);
+    const spawned = spawn(program.args[0], program.args.slice(1), {
+      stdio: 'pipe'
+    })
+    spawned.stdout.on('data', data => {
+      console.log(`${data}`)
+    })
+    spawned.stderr.on('data', data => {
+      console.error(`${data}`)
     })
   })
   .catch(err => {
