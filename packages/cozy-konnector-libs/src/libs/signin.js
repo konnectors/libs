@@ -126,7 +126,8 @@ module.exports = function signin({
         rq,
         require('url').resolve(url, action),
         inputs,
-        parseBody
+        parseBody,
+        url
       )
     })
     .then(([statusCode, parsedBody, fullResponse]) => {
@@ -177,7 +178,7 @@ function parseForm($, formSelector, currentUrl) {
   return [action, inputs]
 }
 
-function submitForm(rq, uri, inputs, parseBody) {
+function submitForm(rq, uri, inputs, parseBody, referer) {
   return rq({
     uri: uri,
     method: 'POST',
@@ -188,7 +189,10 @@ function submitForm(rq, uri, inputs, parseBody) {
       response.statusCode,
       parseBody(body),
       response
-    ]
+    ],
+    headers: {
+      Referer: referer
+    }
   }).catch(handleRequestErrors)
 }
 
