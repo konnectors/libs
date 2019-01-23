@@ -224,9 +224,17 @@ const saveFiles = async (entries, fields, options = {}) => {
             log('debug', 'initialize files list for renamming')
             filesArray = await getFiles(fields.folderPath)
           }
-          await renameFile(filesArray, entry)
+          const fileFound = filesArray.find(f => f.name === entry.shouldReplaceName)
+          if (fileFound) {
+            await renameFile(fileFound, entry)
+            return
+          } else {
+            delete entry.shouldReplaceName
+            // And continue as normal
+          }
         }
-        else if (canBeSaved(entry)) {
+
+        if (canBeSaved(entry)) {
           entry = await saveEntry(entry, saveOptions)
           if (entry && entry._cozy_file_to_create) {
             savedFiles++
@@ -322,16 +330,12 @@ async function getFiles(folderPath) {
   return files
 }
 
-async function renameFile(filesArray, entry) {
+async function renameFile(file, entry) {
   if (!entry.filename) {
     throw new Error('shouldReplaceName needs a filename')
   }
-  for (let file of filesArray) {
-    if (file.name === entry.shouldReplaceName) {
-      log('debug', `Renaming ${file.name} to ${entry.filename}`)
-      await cozy.files.updateAttributesById(file._id, { name: entry.filename})
-    }
-  }
+  log('debug', `Renaming ${file.name} to ${entry.filename}`)
+  await cozy.files.updateAttributesById(file._id, { name: entry.filename})
 }
 
 function getErrorStatus(err) {
