@@ -1,5 +1,7 @@
 jest.mock('./cozyclient')
 const cozyClient = require('./cozyclient')
+//jest.mock('./utils')
+//const { queryAll } = require('./utils')
 const logger = require('cozy-logger')
 const saveFiles = require('./saveFiles')
 const asyncResolve = val => {
@@ -143,6 +145,41 @@ describe('saveFiles', function() {
       })
     })
   }
+
+
+  // // Renaming Test, not working due to not sucessfully mock updateAttributesById
+  // describe('when entry have shouldReplaceName', () => {
+  //   beforeEach(async () => {
+  //     cozyClient.files.statByPath.mockImplementation(path => {
+  //       return asyncResolve({ _id: 'folderId' })
+  //     })
+  //     queryAll.mockImplementation( () => {
+  //       // Watch out, not the same format as cozyClient.files
+  //       return [ { name: '201712_freemobile.pdf', _id: 'idToRename' } ]
+  //     })
+  //     cozyClient.files.updateAttributesById.mockReset()
+  //     cozyClient.files.updateAttributesById.mockImplementation((id, obj) => {
+  //       return
+  //     })
+  //   })
+  //   const billWithShouldReplaceName = [
+  //     {
+  //       amount: 20.09,
+  //       date: '2017-12-12T23:00:00.000Z',
+  //       vendor: 'Free Mobile',
+  //       type: 'phone',
+  //       fileurl: 'https://mobile.free.fr/moncompte/index.php?page=suiviconso&action=getFacture&format=dl&l=14730097&id=7c7dfbfc8707b75fb478f68a50b42fc6&date=20171213&multi=0',
+  //       filename: '201712_freemobile_nicename.pdf',
+  //       shouldReplaceName: '201712_freemobile.pdf'
+  //     }
+  //   ]
+
+  //   it('should replace filename', async () => {
+  //     await saveFiles(billWithShouldReplaceName, options)
+  //     expect(cozyClient.files.create).not.toHaveBeenCalled()
+  //     expect(cozyClient.files.updateAttributesById).toHaveBeenCalled()
+  //   })
+  // })
 
   const billWithoutFilename = [
     {
