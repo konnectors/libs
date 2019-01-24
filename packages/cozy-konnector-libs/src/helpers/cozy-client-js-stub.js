@@ -146,25 +146,29 @@ module.exports = {
         log('debug', `Creating new file ${options.name}`)
         const finalPath = path.join(rootPath, options.dirID, options.name)
         log('debug', `Real path : ${finalPath}`)
-        let writeStream = fs.createWriteStream(finalPath)
-        file.pipe(writeStream)
+        if (file.pipe) {
+          let writeStream = fs.createWriteStream(finalPath)
+          file.pipe(writeStream)
 
-        file.on('end', () => {
-          log('info', `File ${finalPath} created`)
-          const extension = path.extname(options.name).substr(1)
-          resolve({
-            _id: options.name,
-            attributes: {
-              mime: mimetypes.lookup(extension),
-              name: options.name
-            }
+          file.on('end', () => {
+            log('info', `File ${finalPath} created`)
+            const extension = path.extname(options.name).substr(1)
+            resolve({
+              _id: options.name,
+              attributes: {
+                mime: mimetypes.lookup(extension),
+                name: options.name
+              }
+            })
           })
-        })
-
-        writeStream.on('error', err => {
-          log('warn', `Error : ${err} while trying to write file`)
-          reject(new Error(err))
-        })
+          writeStream.on('error', err => {
+            log('warn', `Error : ${err} while trying to write file`)
+            reject(new Error(err))
+          })
+        } else {
+          // file is a string
+          fs.writeFileSync(finalPath, file)
+        }
       })
     },
     createDirectory(options) {
