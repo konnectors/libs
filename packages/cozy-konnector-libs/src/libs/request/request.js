@@ -88,6 +88,7 @@ function requestFactory({ debug, ...options } = { debug: false }) {
 }
 
 function setDebugFunction(debug) {
+  /* eslint no-console: off */
   if (debug === 'simple') {
     return (type, data) => console.error(requestToStrings(type, data).oneline)
   } else if (debug === 'full') {
