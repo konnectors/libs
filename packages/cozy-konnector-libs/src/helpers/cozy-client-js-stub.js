@@ -168,6 +168,12 @@ module.exports = {
         } else {
           // file is a string
           fs.writeFileSync(finalPath, file)
+          resolve({
+            _id: options.name,
+            attributes: {
+              name: options.name
+            }
+          })
         }
       })
     },

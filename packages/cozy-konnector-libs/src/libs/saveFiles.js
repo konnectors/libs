@@ -22,23 +22,39 @@ const sanitizeEntry = function(entry) {
   return entry
 }
 
-const downloadEntry = function(entry, options) {
-  const reqOptions = Object.assign(
-    {
-      uri: entry.fileurl,
-      method: 'GET',
-      jar: true
-    },
-    entry.requestOptions
-  )
+function getRequestInstance(entry, options) {
+  return options.requestInstance
+    ? options.requestInstance
+    : requestFactory({
+        json: false,
+        cheerio: false,
+        userAgent: true,
+        jar: true
+      })
+}
 
-  const rq = requestFactory({
-    json: false,
-    cheerio: false,
-    userAgent: true,
-    jar: true
-  })
-  let filePromise = rq(reqOptions)
+function getRequestOptions(entry, options) {
+  const defaultRequestOptions = {
+    uri: entry.fileurl,
+    method: 'GET'
+  }
+
+  if (!options.requestInstance) {
+    // if requestInstance is already set, we suppose that the connecteur want to handle the cookie
+    // jar itself
+    defaultRequestOptions.jar = true
+  }
+
+  return {
+    ...defaultRequestOptions,
+    ...entry.requestOptions
+  }
+}
+
+const downloadEntry = function(entry, options) {
+  let filePromise = getRequestInstance(entry, options)(
+    getRequestOptions(entry, options)
+  )
 
   if (options.contentType) {
     // the developper wants to foce the contentType of the document
@@ -71,7 +87,7 @@ const createFile = async function(entry, options) {
     createFileOptions = { ...createFileOptions, ...entry.fileAttributes }
   }
 
-  const toCreate = await (entry.filestream || downloadEntry(entry, options))
+  const toCreate = entry.filestream || downloadEntry(entry, options)
   let fileDocument = await cozy.files.create(toCreate, createFileOptions)
 
   // This allows us to have the warning message at the first run
@@ -207,7 +223,8 @@ const saveFiles = async (entries, fields, options = {}) => {
     concurrency: options.concurrency || DEFAULT_CONCURRENCY,
     postProcess: options.postProcess,
     postProcessFile: options.postProcessFile,
-    contentType: options.contentType
+    contentType: options.contentType,
+    requestInstance: options.requestInstance
   }
 
   const canBeSaved = entry =>
@@ -224,8 +241,8 @@ const saveFiles = async (entries, fields, options = {}) => {
           'fileurl',
           'filename',
           'shouldReplaceName',
-          'requestOptions',
-          'filestream'
+          'requestOptions'
+          // 'filestream'
         ].forEach(key => {
           if (entry[key])
             entry[key] = getValOrFnResult(entry[key], entry, options)
