@@ -375,6 +375,10 @@ You need the full permission on `io.cozy.files` in your manifest to use this fun
   + filename : The file name of the item written on disk. This attribute is optional and as default value, the
     file name will be "smartly" guessed by the function. Use this attribute if the guess is not smart
   enough for you.
+  + `shouldReplaceName` (string) default: `undefined` use to select the old filename to replace
+  by filename if possible
+  + `fileAttributes` (object) ex: `{created_at: new Date()}` sets some additionnal file
+  attributes passed to cozyClient.file.create
 
 - `fields` (string) is the argument given to the main function of your connector by the BaseKonnector.
      It especially contains a `folderPath` which is the string path configured by the user in
@@ -394,8 +398,6 @@ You need the full permission on `io.cozy.files` in your manifest to use this fun
   + `contentType` (string) ex: 'application/pdf' used to force the contentType of documents when
   they are badly recognized by cozy.
   + `concurrency` (number) default: `1` sets the maximum number of concurrent downloads
-  + `fileAttributes` (object) ex: `{created_at: new Date()}` sets some additionnal file
-  attributes passed to cozyClient.file.create
 
 **Kind**: Exported function  
 **Example**  

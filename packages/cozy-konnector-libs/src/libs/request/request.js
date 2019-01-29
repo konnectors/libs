@@ -39,6 +39,32 @@
  *   const repos = $('#repo_listing .repo')
  * })
  * ```
+ * - `debug`: will display request and responses details in error output. Possible values :
+ *   * true : display request and response in full json format
+ *   * 'simple' : display main information about each request and response
+ *   ```
+ *   GET -> http://books.toscrape.com/media/cache/26/0c/260c6ae16bce31c8f8c95daddd9f4a1c.jpg
+ *   <- 200  Content-Length: 7095
+ *   ```
+ *   * 'full' : display comple information about each request and response
+ *   ```
+ *   GET -> http://quotes.toscrape.com/login
+ *
+ *   BEGIN HEADERS
+ *   host: quotes.toscrape.com
+ *   END HEADERS
+ *
+ *   <- 200  Content-Length: 1869
+ *
+ *   BEGIN HEADERS
+ *   server: nginx/1.12.1
+ *   ...
+ *   END HEADERS
+ *
+ *   BEGIN BODY
+ *   <html>....
+ *   END BODY
+ *   ```
  *
  * You can find the full list of available options in [request-promise](https://github.com/request/request-promise) and [request](https://github.com/request/request) documentations.
  *
@@ -56,8 +82,71 @@ exports = module.exports = {
 }
 
 function requestFactory({ debug, ...options } = { debug: false }) {
-  debug && requestdebug(request)
+  const logFn = setDebugFunction(debug)
+  debug && requestdebug(request, logFn)
   return request.defaults(getRequestOptions(mergeDefaultOptions(options)))
+}
+
+function setDebugFunction(debug) {
+  /* eslint no-console: off */
+  if (debug === 'simple') {
+    return (type, data) => console.error(requestToStrings(type, data).oneline)
+  } else if (debug === 'full') {
+    return (type, data) => {
+      const { oneline, headers, body } = requestToStrings(type, data)
+      console.error(
+        `${oneline}
+
+BEGIN HEADERS
+${headers}
+END HEADERS
+
+` +
+          (body
+            ? `BEGIN BODY
+${body}
+END BODY
+
+`
+            : '')
+      )
+    }
+  } else if (typeof debug === 'function') {
+    return (type, data, resp) =>
+      debug({
+        strings: requestToStrings(type, data),
+        type,
+        data,
+        resp
+      })
+  }
+}
+
+function requestToStrings(type, data) {
+  const result = {}
+  if (type === 'request') {
+    result.oneline = `${data.method} -> ${data.uri} ${
+      data.headers['content-length']
+        ? 'Content-Length: ' + data.headers['content-length']
+        : ''
+    }`
+  } else if (type === 'response') {
+    result.oneline = `<- ${data.statusCode}  ${
+      data.headers['content-length']
+        ? 'Content-Length: ' + data.headers['content-length']
+        : ''
+    }`
+  } else {
+    result.oneline = `<- ${data.statusCode} ${data.uri}`
+  }
+
+  result.headers = Object.keys(data.headers)
+    .map(key => `${key}: ${data.headers[key]}`)
+    .join('\n')
+
+  result.body = data.body
+
+  return result
 }
 
 function mergeDefaultOptions(options = {}) {
