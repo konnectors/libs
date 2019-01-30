@@ -6,6 +6,7 @@ require('./libs/error')
 
 module.exports = {
   BaseKonnector: require('./libs/BaseKonnector'),
+  CookieKonnector: require('./libs/CookieKonnector'),
   cozyClient: require('./libs/cozyclient'),
   errors: require('./helpers/errors'),
   log,

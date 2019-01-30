@@ -52,6 +52,15 @@ It takes a fetch function in parameter that must return a <code>Promise</code>.
 You need at least the <code>GET</code> permission on <code>io.cozy.accounts</code> in your manifest to allow it to
 fetch account information for your connector.</p>
 </dd>
+<dt><a href="#CookieKonnector">CookieKonnector</a></dt>
+<dd><p>Connector base class extending BaseKonnector which handles cookie session in a central way
+It also handles saving cookie session in the account and automatically restore it for the next
+connector run.
+All cozy-konnector-libs tools using request are proposed as methods of this class to force them
+to use the central cookie which can be saved/restored.
+You need at least the <code>GET</code> and <code>PUT</code> permissions on <code>io.cozy.accounts</code> in your manifest to allow
+it to save/restore cookies</p>
+</dd>
 <dt><a href="#Document">Document</a></dt>
 <dd><p>Simple Model for Documents. Allows to specify
 <code>shouldSave</code>, <code>shouldUpdate</code> as methods.</p>
@@ -764,6 +773,127 @@ connector now
 | --- | --- | --- |
 | message | <code>string</code> | The error code to be saved as connector result see [docs/ERROR_CODES.md] |
 
+<a name="CookieKonnector"></a>
+
+## CookieKonnector
+Connector base class extending BaseKonnector which handles cookie session in a central way
+It also handles saving cookie session in the account and automatically restore it for the next
+connector run.
+All cozy-konnector-libs tools using request are proposed as methods of this class to force them
+to use the central cookie which can be saved/restored.
+You need at least the `GET` and `PUT` permissions on `io.cozy.accounts` in your manifest to allow
+it to save/restore cookies
+
+**Kind**: global class  
+
+* [CookieKonnector](#CookieKonnector)
+    * [new CookieKonnector(requestFactoryOptions)](#new_CookieKonnector_new)
+    * [.init()](#CookieKonnector+init) ⇒ <code>Promise</code>
+    * [.end()](#CookieKonnector+end)
+    * [.requestFactory(options)](#CookieKonnector+requestFactory) ⇒ <code>object</code>
+    * [.resetSession()](#CookieKonnector+resetSession) ⇒ <code>Promise</code>
+    * [.initSession()](#CookieKonnector+initSession) ⇒ <code>Promise</code>
+    * [.saveSession()](#CookieKonnector+saveSession) ⇒ <code>Promise</code>
+    * [.signin()](#CookieKonnector+signin) ⇒ <code>Promise</code>
+    * [.saveFiles()](#CookieKonnector+saveFiles) ⇒ <code>Promise</code>
+    * [.saveBills()](#CookieKonnector+saveBills) ⇒ <code>Promise</code>
+
+<a name="new_CookieKonnector_new"></a>
+
+### new CookieKonnector(requestFactoryOptions)
+Constructor
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| requestFactoryOptions | <code>function</code> | Option object passed to requestFactory to initialize this.request. It is still possible to change this.request doing : ```javascript this.request = this.requestFactory(...) ``` Please not you have to run the connector yourself doing : ```javascript connector.run() ``` |
+
+**Example**  
+```javascript
+const { CookieKonnector } = require('cozy-konnector-libs')
+class MyConnector extends CookieKonnector {
+  async fetch(fields) {
+     // the code of your connector
+     await this.request('https://...')
+  }
+  async testSession() {
+     const $ = await this.request('https://...')
+     return $('')
+  }
+}
+const connector = new MyKonnector({
+  cheerio: true,
+  json: false
+})
+connector.run()
+```
+<a name="CookieKonnector+init"></a>
+
+### cookieKonnector.init() ⇒ <code>Promise</code>
+Initializes the current connector with data coming from the associated account
+and also the session
+
+**Kind**: instance method of [<code>CookieKonnector</code>](#CookieKonnector)  
+**Returns**: <code>Promise</code> - with the fields as an object  
+<a name="CookieKonnector+end"></a>
+
+### cookieKonnector.end()
+Hook called when the connector is ended
+
+**Kind**: instance method of [<code>CookieKonnector</code>](#CookieKonnector)  
+<a name="CookieKonnector+requestFactory"></a>
+
+### cookieKonnector.requestFactory(options) ⇒ <code>object</code>
+Calls cozy-konnector-libs requestFactory forcing this._jar as the cookie
+
+**Kind**: instance method of [<code>CookieKonnector</code>](#CookieKonnector)  
+**Returns**: <code>object</code> - - The resulting request object  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| options | <code>object</code> | requestFactory option |
+
+<a name="CookieKonnector+resetSession"></a>
+
+### cookieKonnector.resetSession() ⇒ <code>Promise</code>
+Reset cookie session with a new empty session and save it to the associated account
+
+**Kind**: instance method of [<code>CookieKonnector</code>](#CookieKonnector)  
+<a name="CookieKonnector+initSession"></a>
+
+### cookieKonnector.initSession() ⇒ <code>Promise</code>
+Get the cookie session from the account if any
+
+**Kind**: instance method of [<code>CookieKonnector</code>](#CookieKonnector)  
+**Returns**: <code>Promise</code> - true or false if the session in the account exists or not  
+<a name="CookieKonnector+saveSession"></a>
+
+### cookieKonnector.saveSession() ⇒ <code>Promise</code>
+Saves the current cookie session to the account
+
+**Kind**: instance method of [<code>CookieKonnector</code>](#CookieKonnector)  
+<a name="CookieKonnector+signin"></a>
+
+### cookieKonnector.signin() ⇒ <code>Promise</code>
+This is signin function from cozy-konnector-libs which is forced to use the current cookies
+and current request from CookieKonnector. It also automatically saves the session after
+signin if it is a success.
+
+**Kind**: instance method of [<code>CookieKonnector</code>](#CookieKonnector)  
+<a name="CookieKonnector+saveFiles"></a>
+
+### cookieKonnector.saveFiles() ⇒ <code>Promise</code>
+This is saveFiles function from cozy-konnector-libs which is forced to use the current cookies
+and current request from CookieKonnector.
+
+**Kind**: instance method of [<code>CookieKonnector</code>](#CookieKonnector)  
+<a name="CookieKonnector+saveBills"></a>
+
+### cookieKonnector.saveBills() ⇒ <code>Promise</code>
+This is saveBills function from cozy-konnector-libs which is forced to use the current cookies
+and current request from CookieKonnector.
+
+**Kind**: instance method of [<code>CookieKonnector</code>](#CookieKonnector)  
 <a name="Document"></a>
 
 ## Document

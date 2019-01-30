@@ -73,7 +73,7 @@ class BaseKonnector {
         }
         return prom
       })
-      .then(this.end)
+      .then(this.end.bind(this))
       .catch(this.fail.bind(this))
   }
 
