@@ -22,23 +22,39 @@ const sanitizeEntry = function(entry) {
   return entry
 }
 
-const downloadEntry = function(entry, options) {
-  const reqOptions = Object.assign(
-    {
-      uri: entry.fileurl,
-      method: 'GET',
-      jar: true
-    },
-    entry.requestOptions
-  )
+function getRequestInstance(entry, options) {
+  return options.requestInstance
+    ? options.requestInstance
+    : requestFactory({
+        json: false,
+        cheerio: false,
+        userAgent: true,
+        jar: true
+      })
+}
 
-  const rq = requestFactory({
-    json: false,
-    cheerio: false,
-    userAgent: true,
-    jar: true
-  })
-  let filePromise = rq(reqOptions)
+function getRequestOptions(entry, options) {
+  const defaultRequestOptions = {
+    uri: entry.fileurl,
+    method: 'GET'
+  }
+
+  if (!options.requestInstance) {
+    // if requestInstance is already set, we suppose that the connecteur want to handle the cookie
+    // jar itself
+    defaultRequestOptions.jar = true
+  }
+
+  return {
+    ...defaultRequestOptions,
+    ...entry.requestOptions
+  }
+}
+
+const downloadEntry = function(entry, options) {
+  let filePromise = getRequestInstance(entry, options)(
+    getRequestOptions(entry, options)
+  )
 
   if (options.contentType) {
     // the developper wants to foce the contentType of the document
@@ -151,13 +167,15 @@ const saveEntry = function(entry, options) {
  *
  * - `files` is an array of `{ fileurl, filename }` :
  *
- *   + fileurl: The url of the file. This attribute is mandatory or
- *     this item will be ignored
+ *   + fileurl: The url of the file. This attribute is mandatory or this item will be ignored (can be a function returning the value)
+ *   + filestream: the stream which will be directly passed to cozyClient.files.create (can also be
+ *   function returning the stream)
+ *   + requestOptions (object) : The options passed to request to fetch fileurl (can be a function returning the value)
  *   + filename : The file name of the item written on disk. This attribute is optional and as default value, the
  *     file name will be "smartly" guessed by the function. Use this attribute if the guess is not smart
- *   enough for you.
+ *   enough for you (can be a function returning the value).
  *   + `shouldReplaceName` (string) default: `undefined` use to select the old filename to replace
- *   by filename if possible
+ *   by filename if possible (can be a function returning the value)
  *   + `fileAttributes` (object) ex: `{created_at: new Date()}` sets some additionnal file
  *   attributes passed to cozyClient.file.create
  *
@@ -205,7 +223,8 @@ const saveFiles = async (entries, fields, options = {}) => {
     concurrency: options.concurrency || DEFAULT_CONCURRENCY,
     postProcess: options.postProcess,
     postProcessFile: options.postProcessFile,
-    contentType: options.contentType
+    contentType: options.contentType,
+    requestInstance: options.requestInstance
   }
 
   const canBeSaved = entry =>
@@ -218,13 +237,25 @@ const saveFiles = async (entries, fields, options = {}) => {
     await bluebird.map(
       entries,
       async entry => {
+        ;[
+          'fileurl',
+          'filename',
+          'shouldReplaceName',
+          'requestOptions'
+          // 'filestream'
+        ].forEach(key => {
+          if (entry[key])
+            entry[key] = getValOrFnResult(entry[key], entry, options)
+        })
         if (entry.shouldReplaceName) {
           // At first encounter of a rename, we set the filenamesList
-          if(filesArray === undefined) {
+          if (filesArray === undefined) {
             log('debug', 'initialize files list for renamming')
             filesArray = await getFiles(fields.folderPath)
           }
-          const fileFound = filesArray.find(f => f.name === entry.shouldReplaceName)
+          const fileFound = filesArray.find(
+            f => f.name === entry.shouldReplaceName
+          )
           if (fileFound) {
             await renameFile(fileFound, entry)
             return
@@ -320,13 +351,12 @@ function logFileStream(fileStream) {
     )
   } else {
     log('info', `The fileStream attribute is a ${typeof fileStream}`)
-    // console.log(fileStream)
   }
 }
 
 async function getFiles(folderPath) {
   const dir = await cozy.files.statByPath(folderPath)
-  const files = await queryAll('io.cozy.files', {dir_id: dir._id})
+  const files = await queryAll('io.cozy.files', { dir_id: dir._id })
   return files
 }
 
@@ -335,7 +365,7 @@ async function renameFile(file, entry) {
     throw new Error('shouldReplaceName needs a filename')
   }
   log('debug', `Renaming ${file.name} to ${entry.filename}`)
-  await cozy.files.updateAttributesById(file._id, { name: entry.filename})
+  await cozy.files.updateAttributesById(file._id, { name: entry.filename })
 }
 
 function getErrorStatus(err) {
@@ -344,4 +374,10 @@ function getErrorStatus(err) {
   } catch (e) {
     return null
   }
+}
+
+function getValOrFnResult(val, ...args) {
+  if (typeof val === 'function') {
+    return val.apply(val, args)
+  } else return val
 }
