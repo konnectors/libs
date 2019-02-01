@@ -256,5 +256,64 @@ module.exports = {
   sortBillsByLinkedOperationNumber,
   batchUpdateAttributes,
   batchDelete,
-  getPdfText
+  getPdfText,
+  formatDate,
+  formatFrenchDate
+}
+
+
+/**
+ * This function convert a Date Object to a french date string (31-07-2018)
+ *
+ * Parameters:
+ *
+ * * `date` (Date): the id of the file in the cozy
+ *
+ * Returns a string
+ *
+ * Example:
+ *
+ * ```javascript
+ * const date = formatFrenchDate(New Date.now())
+ * ```
+ */
+function formatDate(date) {
+  let year = date.getFullYear()
+  let month = date.getMonth() + 1
+  let day = date.getDate()
+  if (month < 10) {
+    month = '0' + month
+  }
+  if (day < 10) {
+    day = '0' + day
+  }
+  return `${year}-${month}-${day}`
+}
+
+/**
+ * This function convert a Date Object to a ISO date string (2018-07-31)
+ *
+ * Parameters:
+ *
+ * * `date` (Date): the id of the file in the cozy
+ *
+ * Returns a string
+ *
+ * Example:
+ *
+ * ```javascript
+ * const date = formatDate(New Date.now())
+ * ```
+ */
+function formatFrenchDate(date) {
+  let year = date.getFullYear()
+  let month = date.getMonth() + 1
+  let day = date.getDate()
+  if (month < 10) {
+    month = '0' + month
+  }
+  if (day < 10) {
+    day = '0' + day
+  }
+  return `${day}-${month}-${year}`
 }
