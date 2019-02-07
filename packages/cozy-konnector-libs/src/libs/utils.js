@@ -9,6 +9,7 @@ const keyBy = require('lodash/keyBy')
 const sortBy = require('lodash/sortBy')
 const range = require('lodash/range')
 const pdfjs = require('pdfjs-dist')
+const format = require('date-fns/format')
 
 /**
  * This function allows to fetch all documents for a given doctype. It is the fastest to get all
@@ -256,5 +257,25 @@ module.exports = {
   sortBillsByLinkedOperationNumber,
   batchUpdateAttributes,
   batchDelete,
-  getPdfText
+  getPdfText,
+  formatDate
+}
+
+/**
+ * This function convert a Date Object to a ISO date string (2018-07-31)
+ *
+ * Parameters:
+ *
+ * * `date` (Date): the id of the file in the cozy
+ *
+ * Returns a string
+ *
+ * Example:
+ *
+ * ```javascript
+ * const date = formatFrenchDate(New Date.now())
+ * ```
+ */
+function formatDate(date) {
+  return format(date, 'YYYY-MM-DD')
 }
