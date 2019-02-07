@@ -118,7 +118,7 @@ It could be for example the filename or a hash generated with the document conte
 
 ## Saving document based on synchronization strategy
 
-To solve the synchronization process weed need to:
+To solve the synchronization process we need to:
 * be able to add synchronization data on any type of document
 * be able to compare external entries to current database state
 * provide a default implementation while letting the contributors to define their own ones
