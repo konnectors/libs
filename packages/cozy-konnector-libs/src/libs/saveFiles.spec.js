@@ -146,7 +146,6 @@ describe('saveFiles', function() {
     })
   }
 
-
   // // Renaming Test, not working due to not sucessfully mock updateAttributesById
   // describe('when entry have shouldReplaceName', () => {
   //   beforeEach(async () => {
