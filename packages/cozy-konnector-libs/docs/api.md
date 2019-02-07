@@ -530,6 +530,7 @@ Small utilities helping to develop konnectors.
     * [~batchUpdateAttributes()](#module_utils..batchUpdateAttributes)
     * [~batchDelete()](#module_utils..batchDelete)
     * [~getPdfText()](#module_utils..getPdfText)
+    * [~formatDate()](#module_utils..formatDate)
 
 <a name="module_utils..fetchAll"></a>
 
@@ -654,6 +655,24 @@ Example:
 
 ```javascript
 const pdfText = (await getPdfText('887ABCFE87687')).text
+```
+
+**Kind**: inner method of [<code>utils</code>](#module_utils)  
+<a name="module_utils..formatDate"></a>
+
+### utils~formatDate()
+This function convert a Date Object to a ISO date string (2018-07-31)
+
+Parameters:
+
+* `date` (Date): the id of the file in the cozy
+
+Returns a string
+
+Example:
+
+```javascript
+const date = formatFrenchDate(New Date.now())
 ```
 
 **Kind**: inner method of [<code>utils</code>](#module_utils)  
