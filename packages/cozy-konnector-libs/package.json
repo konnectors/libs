@@ -63,6 +63,7 @@
     "core-js": "2.5.7",
     "cross-env": "5.2.0",
     "eslint-config-cozy-app": "1.1.8",
+    "eslint-plugin-prettier": "3.0.1",
     "express": "4.16.4",
     "jest": "22.4.4",
     "jsdoc-to-markdown": "4.0.1",
