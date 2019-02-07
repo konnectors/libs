@@ -19,8 +19,7 @@ const {
   queryAll,
   findDuplicates,
   sortBillsByLinkedOperationNumber,
-  formatDate,
-  formatFrenchDate
+  formatDate
 } = require('./utils')
 
 const sortBy = require('lodash/sortBy')
@@ -163,12 +162,5 @@ describe('formatDate', () => {
   it('should format date correctly', () => {
     const date = new Date('1995-01-30T12:00:00')
     expect(formatDate(date)).toEqual('1995-01-30')
-  })
-})
-
-describe('formatFrenchDate', () => {
-  it('should format date correctly', () => {
-    const date = new Date('1995-01-30T12:00:00')
-    expect(formatFrenchDate(date)).toEqual('30-01-1995')
   })
 })
