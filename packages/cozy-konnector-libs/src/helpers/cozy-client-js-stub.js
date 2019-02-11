@@ -119,7 +119,6 @@ module.exports = {
         log('debug', `Checking if ${pathToCheck} exists`)
         if (pathToCheck === '/') return resolve({ _id: '.' })
         const realpath = path.join(rootPath, pathToCheck)
-        log('info', realpath, 'realpath')
         log('debug', `Real path : ${realpath}`)
         if (fs.existsSync(realpath)) {
           const extension = path.extname(pathToCheck).substr(1)
@@ -127,7 +126,8 @@ module.exports = {
             _id: removeFirstSlash(pathToCheck),
             attributes: {
               mime: mimetypes.lookup(extension),
-              name: pathToCheck
+              name: pathToCheck,
+              size: fs.statSync(realpath).size
             }
           })
         } else {

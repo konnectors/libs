@@ -388,6 +388,8 @@ You need the full permission on `io.cozy.files` in your manifest to use this fun
   enough for you (can be a function returning the value).
   + `shouldReplaceName` (string) default: `undefined` use to select the old filename to replace
   by filename if possible (can be a function returning the value)
+  + `shouldReplaceFile` (function) default: use this function to state if the current file
+  should be redownloaded and replaced. You can use the same attribute directly in the entry.
   + `fileAttributes` (object) ex: `{created_at: new Date()}` sets some additionnal file
   attributes passed to cozyClient.file.create
 

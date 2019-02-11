@@ -102,6 +102,26 @@ const attachFileToEntry = function(entry, fileDocument) {
   return entry
 }
 
+const shouldReplaceFile = function(file, entry, options, filepath) {
+  const isValid =
+    checkMimeWithPath(file.attributes.mime, filepath) && checkFileSize(file)
+  if (!isValid) {
+    log('warn', `${filepath} is invalid. Downloading it one more time`)
+    throw new Error('BAD_DOWNLOADED_FILE')
+  }
+  const defaultShouldReplaceFile = () => false
+  const shouldReplaceFileFn =
+    entry.shouldReplaceFile ||
+    options.shouldReplaceFile ||
+    defaultShouldReplaceFile
+
+  return shouldReplaceFileFn(file, entry)
+}
+
+const removeFile = function(file) {
+  return cozy.files.trashById(file._id)
+}
+
 const saveEntry = function(entry, options) {
   if (options.timeout && Date.now() > options.timeout) {
     const remainingTime = Math.floor((options.timeout - Date.now()) / 1000)
@@ -112,14 +132,10 @@ const saveEntry = function(entry, options) {
   const filepath = path.join(options.folderPath, getFileName(entry))
   return cozy.files
     .statByPath(filepath)
-    .then(file => {
-      // check that the extension and mime type of the existing file in cozy match
-      // if this is not the case, we redownload it
-      const mime = file.attributes.mime
-      if (!checkMimeWithPath(mime, filepath) || !checkFileSize(file)) {
-        return cozy.files
-          .trashById(file._id)
-          .then(() => Promise.reject(new Error('BAD_DOWNLOADED_FILE')))
+    .then(async file => {
+      if (shouldReplaceFile(file, entry, options, filepath)) {
+        log('info', `Replacing ${filepath}...`)
+        await removeFile(file)
       }
       return file
     })
@@ -176,6 +192,8 @@ const saveEntry = function(entry, options) {
  *   enough for you (can be a function returning the value).
  *   + `shouldReplaceName` (string) default: `undefined` use to select the old filename to replace
  *   by filename if possible (can be a function returning the value)
+ *   + `shouldReplaceFile` (function) default: use this function to state if the current file
+ *   should be redownloaded and replaced. You can use the same attribute directly in the entry.
  *   + `fileAttributes` (object) ex: `{created_at: new Date()}` sets some additionnal file
  *   attributes passed to cozyClient.file.create
  *
@@ -224,7 +242,8 @@ const saveFiles = async (entries, fields, options = {}) => {
     postProcess: options.postProcess,
     postProcessFile: options.postProcessFile,
     contentType: options.contentType,
-    requestInstance: options.requestInstance
+    requestInstance: options.requestInstance,
+    shouldReplaceFile: options.shouldReplaceFile
   }
 
   const canBeSaved = entry =>
