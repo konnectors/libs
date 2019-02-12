@@ -13,7 +13,6 @@ program
     'Record all the requests in the ./fixtures directory using the replay module'
   )
   .option('--replay', 'Replay all the recorded requests')
-  .option('--persist', 'Do not empty ./data/importedData.json at each run')
   .parse(process.argv)
 
 process.env.NODE_ENV = 'standalone'
@@ -28,6 +27,7 @@ process.env.COZY_FIELDS = JSON.stringify({
 
 const config = require('./init-konnector-config')()
 process.env.COZY_URL = config.COZY_URL
+process.env.COZY_PARAMETERS = JSON.stringify(config.COZY_PARAMETERS)
 
 const filename =
   program.args[0] || process.env.npm_package_main || './src/index.js'

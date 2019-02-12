@@ -63,7 +63,8 @@ class BaseKonnector {
   run() {
     return this.init()
       .then(requiredFields => {
-        const prom = this.fetch(requiredFields)
+        const cozyParameters = JSON.parse(process.env.COZY_PARAMETERS || '{}')
+        const prom = this.fetch(requiredFields, cozyParameters)
         if (!prom || !prom.then) {
           log(
             'warn',
@@ -104,8 +105,7 @@ class BaseKonnector {
    * @return {Promise} with the fields as an object
    */
   init() {
-    const cozyFields = JSON.parse(process.env.COZY_FIELDS)
-    log('debug', cozyFields, 'cozyFields in fetch')
+    const cozyFields = JSON.parse(process.env.COZY_FIELDS || '{}')
 
     // First get the account related to the specified account id
     return cozy.data

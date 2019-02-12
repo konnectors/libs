@@ -7,6 +7,7 @@ const config = require('./init-konnector-config')()
 
 if (!process.env.DEBUG) process.env.DEBUG = '*'
 process.env.COZY_URL = config.COZY_URL
+process.env.COZY_PARAMETERS = JSON.stringify(config.COZY_PARAMETERS)
 
 const program = require('commander')
 const path = require('path')
