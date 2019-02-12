@@ -48,7 +48,7 @@ module.exports = async (params = {}) => {
     timeout: TIMEOUT
   }
 
-  params = { ...defaultParams, params }
+  params = { ...defaultParams, ...params }
 
   if (params.type === 'recaptcha') {
     const secrets = JSON.parse(process.env.COZY_PARAMETERS || '{}').secret
