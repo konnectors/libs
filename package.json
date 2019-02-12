@@ -11,6 +11,7 @@
     "cross-env": "5.2.0",
     "eslint": "5.13.0",
     "eslint-config-cozy-app": "1.1.8",
+    "eslint-plugin-prettier": "3.0.1",
     "lerna": "3.10.8",
     "lerna-changelog": "0.8.2"
   },
@@ -31,7 +32,7 @@
     "test": "cross-env LOG_LEVEL=info jest"
   },
   "jest": {
-    "testPathIgnorePatterns" : [
+    "testPathIgnorePatterns": [
       "<rootDir>/node_modules/",
       "<rootDir>/packages/.*/dist"
     ]
