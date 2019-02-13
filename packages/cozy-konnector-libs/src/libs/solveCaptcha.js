@@ -10,7 +10,7 @@ const request = require('request-promise')
 const sleep = require('util').promisify(global.setTimeout)
 
 const connectorStartTime = Date.now()
-const TIMEOUT = connectorStartTime + 4 * 60 * 1000 // 4 minutes by default since the stack allows 5 minutes
+const DEFAULT_TIMEOUT = connectorStartTime + 3 * 60 * 1000 // 3 minutes by default to let 1 min to the connector to fetch files
 
 /**
  * Use every possible means to solve a captcha. At the moment, Anticaptcha web service is used if
@@ -45,7 +45,7 @@ const TIMEOUT = connectorStartTime + 4 * 60 * 1000 // 4 minutes by default since
 module.exports = async (params = {}) => {
   const defaultParams = {
     type: 'recaptcha',
-    timeout: TIMEOUT
+    timeout: DEFAULT_TIMEOUT
   }
 
   params = { ...defaultParams, ...params }
@@ -86,10 +86,11 @@ module.exports = async (params = {}) => {
             }
           )
           if (resp.status === 'ready') {
-            log(
-              'info',
-              `  Found Recaptcha response : ${resp.solution.gRecaptchaResponse}`
-            )
+            if (resp.errorId) {
+              log('error', `Anticaptcha error: ${JSON.stringify(resp)}`)
+              throw new Error(errors.CAPTCHA_RESOLUTION_FAILED)
+            }
+            log('warn', `  Found Recaptcha response : ${JSON.stringify(resp)}`)
             return resp.solution.gRecaptchaResponse
           } else {
             log(
@@ -98,7 +99,7 @@ module.exports = async (params = {}) => {
             )
             if (Date.now() > params.timeout) {
               log('warn', `  Captcha resolution timeout`)
-              throw new Error(errors.CHALLENGE_ASKED)
+              throw new Error(errors.CAPTCHA_RESOLUTION_FAILED + '.TIMEOUT')
             }
             await sleep(10000)
           }
