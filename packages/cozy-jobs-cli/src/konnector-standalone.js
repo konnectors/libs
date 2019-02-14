@@ -27,7 +27,9 @@ process.env.COZY_FIELDS = JSON.stringify({
 
 const config = require('./init-konnector-config')()
 process.env.COZY_URL = config.COZY_URL
-process.env.COZY_PARAMETERS = JSON.stringify(config.COZY_PARAMETERS)
+if (config.COZY_PARAMETERS) {
+  process.env.COZY_PARAMETERS = config.COZY_PARAMETERS
+}
 
 const filename =
   program.args[0] || process.env.npm_package_main || './src/index.js'
