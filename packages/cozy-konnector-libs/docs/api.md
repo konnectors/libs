@@ -117,6 +117,9 @@ it to save/restore cookies</p>
 <dt><a href="#USER_ACTION_NEEDED_CGU_FORM">USER_ACTION_NEEDED_CGU_FORM</a> : <code>String</code></dt>
 <dd><p>The user needs to accept a CGU form before accessing the rest of the website</p>
 </dd>
+<dt><a href="#CAPTCHA_RESOLUTION_FAILED">CAPTCHA_RESOLUTION_FAILED</a> : <code>String</code></dt>
+<dd><p>solveCaptcha failed to solve the captcha</p>
+</dd>
 </dl>
 
 ## Functions
@@ -1057,6 +1060,12 @@ Password update required
 
 ## USER_ACTION_NEEDED_CGU_FORM : <code>String</code>
 The user needs to accept a CGU form before accessing the rest of the website
+
+**Kind**: global constant  
+<a name="CAPTCHA_RESOLUTION_FAILED"></a>
+
+## CAPTCHA_RESOLUTION_FAILED : <code>String</code>
+solveCaptcha failed to solve the captcha
 
 **Kind**: global constant  
 <a name="mkSpec"></a>
