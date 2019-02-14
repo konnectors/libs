@@ -34,7 +34,7 @@ class Linker {
   constructor(cozyClient) {
     this.cozyClient = cozyClient
     this.toUpdate = []
-    this.groupVendors = ['Numéricable']
+    this.groupVendors = ['Numéricable', 'Ameli', 'MGEN', 'Humanis']
   }
 
   async removeBillsFromOperations(bills, operations) {
