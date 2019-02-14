@@ -34,6 +34,10 @@ to an existing bank operation</p>
 <dd><p>Provides an handy method to log the user in,
 on HTML form pages. On success, it resolves to a promise with a parsed body.</p>
 </dd>
+<dt><a href="#module_solveCaptcha">solveCaptcha</a></dt>
+<dd><p>Use every possible means to solve a captcha. At the moment, Anticaptcha web service is used if
+any related secret key is found in COZY_PARAMETERS environment variable.</p>
+</dd>
 <dt><a href="#module_updateOrCreate">updateOrCreate</a></dt>
 <dd><p>Creates or updates the given entries according to if they already
 exist in the cozy or not</p>
@@ -496,6 +500,41 @@ const $ = signin({
 Do not forget that the use of the signin function is not mandatory in a connector and won't work
 if the signin page does not use html forms. Here, a simple POST request may be a lot more
 simple.
+<a name="module_solveCaptcha"></a>
+
+## solveCaptcha
+Use every possible means to solve a captcha. At the moment, Anticaptcha web service is used if
+any related secret key is found in COZY_PARAMETERS environment variable.
+
+<a name="exp_module_solveCaptcha--module.exports"></a>
+
+### module.exports() ⏏
+Use every possible means to solve a captcha. At the moment, Anticaptcha web service is used if
+any related secret key is found in COZY_PARAMETERS environment variable.
+If you do not want to solve the captcha each time the connector is run, please also use
+CookieKonnector which will help you save the session.
+
+Parameters:
+
+- `params` is an array of objects with any attributes with some mandatory attributes :
+  + `type` (String): (default recaptcha) type of captcha to solve
+  + `timeout` (Number): (default 4 minutes after now) time when the solver should stop trying to
+  solve the captcha
+  + `websiteKey` (String): the key you can find on the targeted website
+  + `websiteURL` (String): The URL of the page showing the captcha
+Returns: Promise with the solved captcha response as a string
+
+**Kind**: Exported function  
+**Example**  
+```javascript
+const { solveCaptcha } = require('cozy-konnector-libs')
+
+const solvedKey = await solveCaptcha({
+  websiteKey: 'the key in the webpage',
+  websiteURL: 'http://quotes.toscrape.com/login',
+})
+// now use the solveKey to submit your form
+```
 <a name="module_updateOrCreate"></a>
 
 ## updateOrCreate

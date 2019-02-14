@@ -35,7 +35,8 @@ module.exports = {
   scrape: require('./libs/scrape'),
   mkdirp: require('./libs/mkdirp'),
   normalizeFilename: require('./libs/normalizeFilename'),
-  utils: require('./libs/utils')
+  utils: require('./libs/utils'),
+  solveCaptcha: require('./libs/solveCaptcha')
 }
 
 function deprecate(wrapped, message) {
