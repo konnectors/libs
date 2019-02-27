@@ -137,7 +137,8 @@ class BaseKonnector {
             return account
           })
           .catch(err => {
-            log('error', err)
+            log('error', err.message)
+            log('error', JSON.stringify(err.stack))
             log('error', `error while getting the folder path of ${folderId}`)
             throw new Error('NOT_EXISTING_DIRECTORY')
           })
