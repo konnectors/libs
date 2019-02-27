@@ -19,6 +19,7 @@ const DEFAULT_CONCURRENCY = 1
 const sanitizeEntry = function(entry) {
   delete entry.requestOptions
   delete entry.filestream
+  delete entry.shouldReplaceFile
   return entry
 }
 
@@ -136,6 +137,7 @@ const saveEntry = function(entry, options) {
       if (shouldReplaceFile(file, entry, options, filepath)) {
         log('info', `Replacing ${filepath}...`)
         await removeFile(file)
+        throw new Error('REPLACE_FILE')
       }
       return file
     })
@@ -143,7 +145,8 @@ const saveEntry = function(entry, options) {
       file => {
         return file
       },
-      () => {
+      err => {
+        log('info', `${err.message}`)
         log('debug', omit(entry, 'filestream'))
         logFileStream(entry.filestream)
         log('debug', `File ${filepath} does not exist yet or is not valid`)

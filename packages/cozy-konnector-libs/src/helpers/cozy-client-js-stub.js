@@ -197,6 +197,11 @@ module.exports = {
         body: stream,
         buffer: () => rawBody(stream)
       }
+    },
+    trashById(fileId) {
+      const realpath = path.join(rootPath, fileId)
+      fs.unlinkSync(realpath)
+      return Promise.resolve()
     }
   }
 }
