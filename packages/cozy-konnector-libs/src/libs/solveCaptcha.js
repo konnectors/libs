@@ -104,13 +104,15 @@ module.exports = async (params = {}) => {
             await sleep(10000)
           }
         }
+      } else {
+        log('warn', 'Could not create anticaptcha task')
       }
     } else {
       log('warn', 'Could not find any anticaptcha secret key')
     }
   }
 
-  throw new Error(errors.CHALLENGE_ASKED)
+  throw new Error(errors.CAPTCHA_RESOLUTION_FAILED)
 }
 
 function checkMandatoryParams(params = {}, mandatoryParams = []) {
