@@ -119,8 +119,9 @@ const shouldReplaceFile = function(file, entry, options, filepath) {
   return shouldReplaceFileFn(file, entry)
 }
 
-const removeFile = function(file) {
-  return cozy.files.trashById(file._id)
+const removeFile = async function(file) {
+  await cozy.files.trashById(file._id)
+  await cozy.files.destroyById(file._id)
 }
 
 const saveEntry = function(entry, options) {
@@ -134,7 +135,15 @@ const saveEntry = function(entry, options) {
   return cozy.files
     .statByPath(filepath)
     .then(async file => {
-      if (shouldReplaceFile(file, entry, options, filepath)) {
+      let shouldReplace = false
+      try {
+        shouldReplace = shouldReplaceFile(file, entry, options, filepath)
+      } catch (err) {
+        log('info', `Error in shouldReplace : ${err.message}`)
+        shouldReplace = true
+      }
+
+      if (shouldReplace) {
         log('info', `Replacing ${filepath}...`)
         await removeFile(file)
         throw new Error('REPLACE_FILE')
@@ -146,6 +155,7 @@ const saveEntry = function(entry, options) {
         return file
       },
       err => {
+        log('info', `error while removing`)
         log('info', `${err.message}`)
         log('debug', omit(entry, 'filestream'))
         logFileStream(entry.filestream)

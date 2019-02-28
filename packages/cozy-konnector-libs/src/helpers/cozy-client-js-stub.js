@@ -202,6 +202,10 @@ module.exports = {
       const realpath = path.join(rootPath, fileId)
       fs.unlinkSync(realpath)
       return Promise.resolve()
+    },
+    destroyById() {
+      // there is no trash with the stub
+      return Promise.resolve()
     }
   }
 }
