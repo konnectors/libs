@@ -68,7 +68,15 @@ module.exports = async (entries, fields, options = {}) => {
   options.keys = options.keys || Object.keys(requiredAttributes)
 
   const originalEntries = entries
-  options.shouldUpdate = (entry, dbEntry) => entry.invoice !== dbEntry.invoice
+  const defaultShouldUpdate = (entry, dbEntry) =>
+    entry.invoice !== dbEntry.invoice
+  if (!options.shouldUpdate) {
+    options.shouldUpdate = defaultShouldUpdate
+  } else {
+    options.shouldUpdate = (entry, dbEntry) => {
+      entry.invoice !== dbEntry.invoice || defaultShouldUpdate(entry, dbEntry)
+    }
+  }
 
   let tempEntries = entries
   tempEntries = await saveFiles(tempEntries, fields, options)
