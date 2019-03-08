@@ -10,7 +10,7 @@
     "babel-preset-env": "1.7.0",
     "cross-env": "5.2.0",
     "eslint": "5.14.1",
-    "eslint-config-cozy-app": "1.1.9",
+    "eslint-config-cozy-app": "1.1.10",
     "eslint-plugin-prettier": "3.0.1",
     "lerna": "3.13.1",
     "lerna-changelog": "0.8.2"
