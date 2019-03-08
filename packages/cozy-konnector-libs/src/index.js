@@ -36,8 +36,8 @@ module.exports = {
   mkdirp: require('./libs/mkdirp'),
   normalizeFilename: require('./libs/normalizeFilename'),
   utils: require('./libs/utils'),
-  solveCaptcha: require('./libs/solveCaptcha'),
-  manifest: require('./libs/manifest')
+  solveCaptcha: require('./libs/solveCaptcha')
+  // manifest: require('./libs/manifest')
 }
 
 function deprecate(wrapped, message) {
