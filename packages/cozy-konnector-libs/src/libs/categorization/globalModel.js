@@ -2,6 +2,7 @@ const bayes = require('classificator')
 const logger = require('cozy-logger')
 const maxBy = require('lodash/maxBy')
 const cozyClient = require('../cozyclient')
+const { getLabelWithTags } = require('./helpers')
 
 const log = logger.namespace('global-categorization-model')
 
@@ -46,42 +47,6 @@ const fetchParameters = async () => {
     log('info', e.message)
     throw new Error(PARAMETERS_NOT_FOUND)
   }
-}
-
-const titleRx = /(?:^|\s)\S/g
-const titleCase = label =>
-  label.toLowerCase().replace(titleRx, a => a.toUpperCase())
-
-const getTransactionLabel = transaction => titleCase(transaction.label)
-
-const getAmountSignTag = amount => (amount < 0 ? 'tag_neg' : 'tag_pos')
-const getAmountTag = amount => {
-  if (amount < -550) {
-    return 'tag_v_b_expense'
-  } else if (amount < -100) {
-    return 'tag_b_expense'
-  } else if (amount < -20) {
-    return 'tag_expense'
-  } else if (amount < 0) {
-    return 'tag_noise_neg'
-  } else if (amount < 50) {
-    return 'tag_noise_pos'
-  } else if (amount < 200) {
-    return 'tag_income'
-  } else if (amount < 1200) {
-    return 'tag_b_income'
-  } else {
-    return 'tag_activity_income'
-  }
-}
-
-const getLabelWithTags = transaction => {
-  const label = getTransactionLabel(transaction).toLowerCase()
-
-  const amountSignTag = getAmountSignTag(transaction.amount)
-  const amountTag = getAmountTag(transaction.amount)
-
-  return `${amountSignTag} ${amountTag} ${label}`
 }
 
 const globalModel = async (classifierOptions, transactions) => {
