@@ -83,5 +83,6 @@ const globalModel = async (classifierOptions, transactions) => {
 }
 
 module.exports = {
-  createClassifier
+  createClassifier,
+  globalModel
 }
