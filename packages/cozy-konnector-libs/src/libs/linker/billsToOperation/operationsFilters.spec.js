@@ -1,11 +1,11 @@
-import {
+const {
   filterByIdentifiers,
   filterByDates,
   filterByAmounts,
   filterByCategory,
   filterByReimbursements,
   operationsFilters
-} from './operationsFilters'
+} = require('./operationsFilters')
 
 describe('operations filters', () => {
   test('filtering by identifiers', () => {

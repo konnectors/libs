@@ -1,4 +1,4 @@
-import { Linker } from './linkBankOperations'
+const { Linker } = require('./linkBankOperations')
 
 jest.mock('./cozyclient')
 jest.mock('cozy-logger', () => ({

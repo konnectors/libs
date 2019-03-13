@@ -1,7 +1,7 @@
-import {
+const {
   findByMangoQuerySimple,
   findNeighboringOperations
-} from './findNeighboringOperations'
+} = require('./findNeighboringOperations')
 jest.mock('../../cozyclient')
 const cozyClient = require('../../cozyclient')
 

@@ -41,7 +41,7 @@ const normalizeFilename = (basename, ext) => {
   if (filename === '') {
     throw new Error(
       'Cannot find any filename-compatible character in ' +
-        JSON.stringify(name) +
+        JSON.stringify(filename) +
         '!'
     )
   }

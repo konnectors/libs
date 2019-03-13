@@ -17,7 +17,7 @@
   },
   "eslintConfig": {
     "extends": [
-      "eslint-config-cozy-app"
+      "cozy-app"
     ]
   },
   "prettier": {
@@ -35,7 +35,8 @@
     "testPathIgnorePatterns": [
       "<rootDir>/node_modules/",
       "<rootDir>/packages/.*/dist"
-    ]
+    ],
+    "testEnvironment": "node"
   },
   "dependencies": {}
 }

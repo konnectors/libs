@@ -1,4 +1,4 @@
-import {
+const {
   getIdentifiers,
   getOperationAmountFromBill,
   getOperationDateFromBill,
@@ -6,7 +6,7 @@ import {
   getAmountRangeFromBill,
   getTotalReimbursements,
   sortedOperations
-} from './helpers'
+} = require('./helpers')
 
 const OK = 'ok'
 
