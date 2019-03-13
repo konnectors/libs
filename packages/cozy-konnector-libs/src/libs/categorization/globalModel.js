@@ -8,21 +8,7 @@ const log = logger.namespace('global-categorization-model')
 
 const PARAMETERS_NOT_FOUND = 'Classifier files is not configured.'
 
-const createClassifier = (data, options = {}) => {
-  // Use for automated tests only while we don't have a clean parameters JSON file
-  // We can remove this when we have it, and update the tests to use it
-  if (!data) {
-    const toLearn = require('./set_label_cat.json')
-
-    const classifier = bayes(options)
-
-    for (const { label, category } of toLearn) {
-      classifier.learn(label, category)
-    }
-
-    return classifier
-  }
-
+const createClassifier = (data = {}, options = {}) => {
   data.options = {
     ...data.options,
     ...options

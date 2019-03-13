@@ -5,8 +5,10 @@
 const createClassifier = require('./globalModel').createClassifier
 const { tokenizer, predictProbaMax, categorize } = require('./helpers')
 
+jest.mock('./globalModel')
+
 describe('estimate proba', () => {
-  const classifier = createClassifier(null, { tokenizer })
+  const classifier = createClassifier(undefined, { tokenizer })
 
   const N_DIGITS = 4
   it('Should compute correct probabilities', () => {
@@ -202,7 +204,7 @@ describe('estimate proba', () => {
 })
 
 describe('categorize', () => {
-  const classifier = createClassifier(null, { tokenizer })
+  const classifier = createClassifier(undefined, { tokenizer })
 
   it('Should categorize transactions', () => {
     expect(categorize(classifier, 'traineline')).toEqual('400110')
