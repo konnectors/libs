@@ -1,10 +1,17 @@
 #!/usr/bin/env node
 
 /* eslint no-console: off */
+
 const http = require('http')
 const fs = require('fs')
 const log = require('cozy-logger').namespace('cozy-authenticate')
-const { Client, MemoryStorage } = require('cozy-client-js')
+
+// to allow cozy-stack-client to work
+require('isomorphic-fetch')
+global.URL = require('url').URL
+global.btoa = require('btoa')
+const { OAuthClient } = require('cozy-stack-client')
+
 const manifest = require('./manifest')
 
 const cozyURL = process.env.COZY_URL
@@ -50,36 +57,33 @@ function onRegistered(client, url) {
   )
 }
 
-function authenticate({ manifestPath, tokenPath }) {
+async function authenticate({ manifestPath, tokenPath }) {
   const scopes = manifest.getScopes(manifestPath)
-  if (!scopes.includes('io.cozy.accounts')) {
-    scopes.push('io.cozy.accounts')
-  }
   if (fs.existsSync(tokenPath)) {
     log('debug', 'token file already present')
-    return Promise.resolve({
-      creds: JSON.parse(fs.readFileSync(tokenPath)),
+    const creds = JSON.parse(fs.readFileSync(tokenPath))
+    return { creds, scopes }
+  } else {
+    const cozy = new OAuthClient({
+      uri: cozyURL,
+      oauth: {
+        client_name: manifest.getSlug(manifestPath),
+        software_id: 'foobar',
+        redirect_uris: 'http://localhost:3333/do_access'
+      },
       scopes
     })
-  } else {
-    const cozy = new Client({
-      cozyURL,
-      oauth: {
-        storage: new MemoryStorage(),
-        clientParams: {
-          redirectURI: 'http://localhost:3333/do_access',
-          softwareID: 'foobar',
-          clientName: 'konnector', // should be the connector name (package.json's name ?)
-          scopes
-        },
-        onRegistered
-      }
-    })
 
-    return cozy.authorize().then(creds => {
-      fs.writeFileSync(tokenPath, JSON.stringify(creds))
-      return { creds, scopes }
-    })
+    const client = await cozy.register()
+    const stateCode = cozy.generateStateCode()
+    const url = cozy.getAuthCodeURL(stateCode, scopes)
+
+    const urlAccess = await onRegistered(cozy, url)
+    const accessCode = cozy.getAccessCodeFromURL(cozyURL + urlAccess, stateCode)
+    const token = await cozy.fetchAccessToken(accessCode)
+
+    fs.writeFileSync(tokenPath, JSON.stringify({ client, token }))
+    return { creds: { client, token }, scopes }
   }
 }
 

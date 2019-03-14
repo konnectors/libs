@@ -45,7 +45,7 @@ if (fs.existsSync(path.resolve(filename))) {
   console.log(
     `ERROR: File ${path.resolve(
       filename
-    )} does not exist. cozy-run-standalone cannot run it.`
+    )} does not exist. cozy-konnector-standalone cannot run it.`
   )
 }
 

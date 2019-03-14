@@ -109,6 +109,19 @@ class BaseKonnector {
    * @return {Promise} with the fields as an object
    */
   init() {
+    if (process.env.COZY_DEV_ACCOUNT_AUTH) {
+      // this is dev or standalone mode
+      // no real account is used
+      const fields = JSON.parse(process.env.COZY_DEV_ACCOUNT_AUTH)
+      this.accountId = 'default_account_id'
+      this.account = {
+        _id: this.accountId,
+        auth: fields
+      }
+
+      return { ...fields, folderPath: fields.folder_to_save }
+    }
+
     const cozyFields = JSON.parse(process.env.COZY_FIELDS || '{}')
 
     // First get the account related to the specified account id

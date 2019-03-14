@@ -63,6 +63,7 @@ authenticate({ tokenPath: token, manifestPath: manifest })
     process.env.COZY_CREDENTIALS = JSON.stringify(credentials)
   })
   .then(() => {
+    // TODO should use cozy-stack client to do the mkdirp
     const { BaseKonnector, mkdirp } = require('cozy-konnector-libs')
     BaseKonnector.prototype.init = async () => {
       let rootPath = '/cozy-konnector-dev-root'
@@ -87,7 +88,7 @@ authenticate({ tokenPath: token, manifestPath: manifest })
       return require(file)
     } else {
       console.log(
-        `ERROR: File ${file} does not exist. cozy-run-dev cannot run it.`
+        `ERROR: File ${file} does not exist. cozy-konnector-dev cannot run it.`
       )
     }
   })
