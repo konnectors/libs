@@ -36,7 +36,8 @@ module.exports = {
   mkdirp: require('./libs/mkdirp'),
   normalizeFilename: require('./libs/normalizeFilename'),
   utils: require('./libs/utils'),
-  solveCaptcha: require('./libs/solveCaptcha')
+  solveCaptcha: require('./libs/solveCaptcha'),
+  categorize: require('./libs/categorization')
   // manifest: require('./libs/manifest')
 }
 
