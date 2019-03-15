@@ -35,7 +35,7 @@ const fetchParameters = async () => {
   }
 }
 
-const globalModel = async (classifierOptions, transactions) => {
+async function globalModel(classifierOptions, transactions) {
   log('info', 'Fetching parameters from the stack')
   let parameters
 
