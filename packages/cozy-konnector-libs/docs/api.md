@@ -45,6 +45,9 @@ exist in the cozy or not</p>
 <dt><a href="#module_utils">utils</a></dt>
 <dd><p>Small utilities helping to develop konnectors.</p>
 </dd>
+<dt><a href="#module_categorization">categorization</a></dt>
+<dd><p>Bank transactions categorization</p>
+</dd>
 </dl>
 
 ## Classes
@@ -720,6 +723,46 @@ const date = formatFrenchDate(New Date.now())
 ```
 
 **Kind**: inner method of [<code>utils</code>](#module_utils)  
+<a name="module_categorization"></a>
+
+## categorization
+Bank transactions categorization
+
+<a name="module_categorization..categorize"></a>
+
+### categorization~categorize(transactions) ⇒ <code>Array.&lt;Object&gt;</code>
+Apply both global and local categorization models to an array of transactions.
+
+The global model is a model specific to hosted Cozy instances. It is not available for self-hosted instances. It will just do nothing in that case.
+
+The local model is based on the user manual categorizations.
+
+Each model adds two properties to the transactions:
+  * The global model adds `cozyCategoryId` and `cozyCategoryProba`
+  * The local model adds `localCategoryId` and `localCategoryProba`
+
+In the end, each transaction can have up to four different categories. An application can use these categories to show the most significant for the user. See https://github.com/cozy/cozy-doctypes/blob/master/docs/io.cozy.bank.md#categories for more informations.
+
+**Kind**: inner method of [<code>categorization</code>](#module_categorization)  
+**Returns**: <code>Array.&lt;Object&gt;</code> - The categorized transactions  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| transactions | <code>Array.&lt;Object&gt;</code> | The transactions to categorize |
+
+**Example**  
+```js
+const { BaseKonnector, categorize } = require('cozy-konnector-libs')
+
+class BankingKonnector extends BaseKonnector {
+  saveTransactions() {
+    const transactions = await this.fetchTransactions()
+    const categorizedTransactions = await categorize(transactions)
+
+    // Save categorizedTransactions
+  }
+}
+```
 <a name="BaseKonnector"></a>
 
 ## BaseKonnector
