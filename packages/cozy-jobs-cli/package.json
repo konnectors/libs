@@ -22,7 +22,7 @@
     "cli-highlight": "2.0.0",
     "commander": "2.19.0",
     "core-js": "2.6.5",
-    "cozy-client-js": "0.9.0",
+    "cozy-client-js": "https://github.com/doubleface/cozy-client-js.git#cfd25fd9577dba68f9f1882cc7abd6708b5379c2",
     "cozy-konnector-libs": "^4.14.13",
     "cozy-logger": "^1.3.1",
     "opn": "5.4.0",
