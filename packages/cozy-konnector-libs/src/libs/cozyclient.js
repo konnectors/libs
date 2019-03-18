@@ -7,6 +7,9 @@
 
 /* eslint no-console: off */
 
+// pouchdb-browser needs it
+require('isomorphic-fetch')
+
 const { Client, MemoryStorage } = require('cozy-client-js')
 
 const getCredentials = function(environment) {
