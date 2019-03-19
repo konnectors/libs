@@ -2,6 +2,7 @@
  * @jest-environment node
  */
 
+require('isomorphic-fetch')
 const categorize = require('.')
 const { globalModel } = require('./globalModel')
 const { localModel } = require('./localModel')
