@@ -1,12 +1,9 @@
-const cozyClient = require('../cozyclient')
 const logger = require('cozy-logger')
-const { BankTransaction } = require('cozy-doctypes')
 const uniq = require('lodash/uniq')
 const maxBy = require('lodash/maxBy')
 const bayes = require('classificator')
 const { getLabelWithTags, tokenizer } = require('./helpers')
-
-BankTransaction.registerClient(cozyClient)
+const fetchTransactionsWithManualCat = require('./fetchTransactionsWithManualCat')
 
 const log = logger.namespace('local-categorization-model')
 
@@ -129,9 +126,7 @@ const createLocalClassifier = (
 
 const createLocalModel = async classifierOptions => {
   log('info', 'Fetching manually categorized transactions')
-  const transactionsWithManualCat = await BankTransaction.queryAll({
-    manualCategoryId: { $exists: true }
-  })
+  const transactionsWithManualCat = await fetchTransactionsWithManualCat()
   log(
     'info',
     `Fetched ${
