@@ -6,6 +6,8 @@ const maxBy = require('lodash/maxBy')
 const bayes = require('classificator')
 const { getLabelWithTags, tokenizer } = require('./helpers')
 
+BankTransaction.registerClient(cozyClient)
+
 const log = logger.namespace('local-categorization-model')
 
 const ALPHA_MIN = 2
@@ -127,7 +129,6 @@ const createLocalClassifier = (
 
 const createLocalModel = async classifierOptions => {
   log('info', 'Fetching manually categorized transactions')
-  BankTransaction.registerClient(cozyClient)
   const transactionsWithManualCat = await BankTransaction.queryAll({
     manualCategoryId: { $exists: true }
   })
