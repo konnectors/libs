@@ -11,14 +11,13 @@ const {
 } = require('./localModel')
 
 const { tokenizer } = require('./helpers')
-const { BankTransaction } = require('cozy-doctypes')
 
-jest
-  .spyOn(BankTransaction, 'queryAll')
-  .mockResolvedValue([
+jest.mock('./fetchTransactionsWithManualCat', () => () =>
+  Promise.resolve([
     { amount: 3001.71, label: 'AAAA BBBB', manualCategoryId: '200110' },
     { amount: 3001.71, label: 'AAAA BBBB', manualCategoryId: '200110' }
   ])
+)
 
 const transactions = [
   { amount: 3001.71, label: 'AAAA BBBB' },
