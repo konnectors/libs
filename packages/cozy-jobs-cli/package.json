@@ -19,7 +19,7 @@
   "dependencies": {
     "btoa": "1.2.1",
     "cheerio": "1.0.0-rc.2",
-    "cli-highlight": "2.0.0",
+    "cli-highlight": "2.1.0",
     "commander": "2.19.0",
     "core-js": "2.6.5",
     "cozy-client-js": "0.15.0",
