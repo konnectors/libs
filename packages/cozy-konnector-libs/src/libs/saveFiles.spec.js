@@ -1,4 +1,3 @@
-require('isomorphic-fetch')
 jest.mock('./cozyclient')
 const cozyClient = require('./cozyclient')
 //jest.mock('./utils')
