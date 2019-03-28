@@ -114,12 +114,15 @@ module.exports = async (entries, fields, options = {}) => {
 
   tempEntries = await hydrateAndFilter(tempEntries, DOCTYPE, options)
   tempEntries = await addData(tempEntries, DOCTYPE, options)
-  tempEntries = await linkBankOperations(
-    originalEntries,
-    DOCTYPE,
-    fields,
-    options
-  )
+  if (options.linkBankOperations !== false) {
+    tempEntries = await linkBankOperations(
+      originalEntries,
+      DOCTYPE,
+      fields,
+      options
+    )
+  }
+  log('info', 'after linkbankoperation')
   return tempEntries
 }
 

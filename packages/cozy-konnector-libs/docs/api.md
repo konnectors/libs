@@ -78,6 +78,16 @@ it to save/restore cookies</p>
 ## Constants
 
 <dl>
+<dt><a href="#fs">fs</a></dt>
+<dd><p>Manifest is provided differently in developement that in production.</p>
+<ul>
+<li><p>In production, the manifest has been &quot;merged&quot; via Webpack via the
+DefinePlugin</p>
+</li>
+<li><p>In development/test, we simply read the manifest from the fs</p>
+</li>
+</ul>
+</dd>
 <dt><a href="#LOGIN_FAILED">LOGIN_FAILED</a> : <code>String</code></dt>
 <dd><p>The konnector could not login</p>
 </dd>
@@ -1021,93 +1031,104 @@ compare existing documents (dates in ISO string) with documents
 that just have been scraped where dates are `Date`s.
 
 **Kind**: instance method of [<code>Document</code>](#Document)  
+<a name="fs"></a>
+
+## fs
+Manifest is provided differently in developement that in production.
+
+- In production, the manifest has been "merged" via Webpack via the
+  DefinePlugin
+
+- In development/test, we simply read the manifest from the fs
+
+**Kind**: global constant  
 <a name="LOGIN_FAILED"></a>
 
-## LOGIN_FAILED : <code>String</code>
+## LOGIN\_FAILED : <code>String</code>
 The konnector could not login
 
 **Kind**: global constant  
 <a name="NOT_EXISTING_DIRECTORY"></a>
 
-## NOT_EXISTING_DIRECTORY : <code>String</code>
+## NOT\_EXISTING\_DIRECTORY : <code>String</code>
 The folder specified as folder_to_save does not exist (checked by BaseKonnector)
 
 **Kind**: global constant  
 <a name="VENDOR_DOWN"></a>
 
-## VENDOR_DOWN : <code>String</code>
+## VENDOR\_DOWN : <code>String</code>
 The vendor's website is down
 
 **Kind**: global constant  
 <a name="USER_ACTION_NEEDED"></a>
 
-## USER_ACTION_NEEDED : <code>String</code>
+## USER\_ACTION\_NEEDED : <code>String</code>
 There was an unexpected error, please take a look at the logs to know what happened
 
 **Kind**: global constant  
 <a name="FILE_DOWNLOAD_FAILED"></a>
 
-## FILE_DOWNLOAD_FAILED : <code>String</code>
+## FILE\_DOWNLOAD\_FAILED : <code>String</code>
 There was a problem while downloading a file
 
 **Kind**: global constant  
 <a name="SAVE_FILE_FAILED"></a>
 
-## SAVE_FILE_FAILED : <code>String</code>
+## SAVE\_FILE\_FAILED : <code>String</code>
 There was a problem while saving a file
 
 **Kind**: global constant  
 <a name="DISK_QUOTA_EXCEEDED"></a>
 
-## DISK_QUOTA_EXCEEDED : <code>String</code>
+## DISK\_QUOTA\_EXCEEDED : <code>String</code>
 Could not save a file to the cozy because of disk quota exceeded
 
 **Kind**: global constant  
 <a name="CHALLENGE_ASKED"></a>
 
-## CHALLENGE_ASKED : <code>String</code>
+## CHALLENGE\_ASKED : <code>String</code>
 It seems that the website requires a second authentification factor that we don’t support yet.
 
 **Kind**: global constant  
 <a name="LOGIN_FAILED_TOO_MANY_ATTEMPTS"></a>
 
-## LOGIN_FAILED_TOO_MANY_ATTEMPTS : <code>String</code>
+## LOGIN\_FAILED\_TOO\_MANY\_ATTEMPTS : <code>String</code>
 Temporarily blocked
 
 **Kind**: global constant  
 <a name="USER_ACTION_NEEDED_OAUTH_OUTDATED"></a>
 
-## USER_ACTION_NEEDED_OAUTH_OUTDATED : <code>String</code>
+## USER\_ACTION\_NEEDED\_OAUTH\_OUTDATED : <code>String</code>
 Access refresh required
 
 **Kind**: global constant  
 <a name="USER_ACTION_NEEDED_ACCOUNT_REMOVED"></a>
 
-## USER_ACTION_NEEDED_ACCOUNT_REMOVED : <code>String</code>
+## USER\_ACTION\_NEEDED\_ACCOUNT\_REMOVED : <code>String</code>
 Unavailable account
 
 **Kind**: global constant  
 <a name="USER_ACTION_NEEDED_CHANGE_PASSWORD"></a>
 
-## USER_ACTION_NEEDED_CHANGE_PASSWORD : <code>String</code>
+## USER\_ACTION\_NEEDED\_CHANGE\_PASSWORD : <code>String</code>
 Unavailable account
 
 **Kind**: global constant  
 <a name="USER_ACTION_NEEDED_PERMISSIONS_CHANGED"></a>
 
-## USER_ACTION_NEEDED_PERMISSIONS_CHANGED : <code>String</code>
+## USER\_ACTION\_NEEDED\_PERMISSIONS\_CHANGED : <code>String</code>
 Password update required
 
 **Kind**: global constant  
 <a name="USER_ACTION_NEEDED_CGU_FORM"></a>
 
-## USER_ACTION_NEEDED_CGU_FORM : <code>String</code>
+## USER\_ACTION\_NEEDED\_CGU\_FORM : <code>String</code>
 The user needs to accept a CGU form before accessing the rest of the website
 
 **Kind**: global constant  
 <a name="CAPTCHA_RESOLUTION_FAILED"></a>
 
-## CAPTCHA_RESOLUTION_FAILED : <code>String</code>
+## CAPTCHA\_RESOLUTION\_FAILED : <code>String</code>
 solveCaptcha failed to solve the captcha
 
 **Kind**: global constant  
