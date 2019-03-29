@@ -37,8 +37,8 @@ module.exports = {
   normalizeFilename: require('./libs/normalizeFilename'),
   utils: require('./libs/utils'),
   solveCaptcha: require('./libs/solveCaptcha'),
-  categorize: require('./libs/categorization')
-  // manifest: require('./libs/manifest')
+  categorize: require('./libs/categorization'),
+  manifest: require('./libs/manifest')
 }
 
 function deprecate(wrapped, message) {
