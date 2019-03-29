@@ -12,11 +12,15 @@
 const fs = require('fs')
 const path = require('path')
 
-const manifest =
+let manifest =
   typeof __WEBPACK_PROVIDED_MANIFEST__ !== 'undefined'
     ? __WEBPACK_PROVIDED_MANIFEST__
-    : JSON.parse(
-        fs.readFileSync(path.join(process.cwd(), 'manifest.konnector'))
-      )
+    : {}
+
+if (process.env.NODE_ENV !== 'none' && process.env.NODE_ENV !== 'production') {
+  manifest = JSON.parse(
+    fs.readFileSync(path.join(process.cwd(), 'manifest.konnector'))
+  )
+}
 
 module.exports = manifest
