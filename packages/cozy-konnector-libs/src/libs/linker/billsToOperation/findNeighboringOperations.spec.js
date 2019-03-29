@@ -2,7 +2,6 @@ const {
   findByMangoQuerySimple,
   findNeighboringOperations
 } = require('./findNeighboringOperations')
-require('isomorphic-fetch')
 jest.mock('../../cozyclient')
 const cozyClient = require('../../cozyclient')
 

@@ -1,4 +1,3 @@
-require('isomorphic-fetch')
 const log = require('cozy-logger').namespace('cozy-konnector-libs')
 const requestFactory = require('./libs/request')
 const hydrateAndFilter = require('./libs/hydrateAndFilter')

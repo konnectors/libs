@@ -1,7 +1,6 @@
 /**
  * @jest-environment node
  */
-require('isomorphic-fetch')
 const {
   getUniqueCategories,
   getAlphaParameter,
