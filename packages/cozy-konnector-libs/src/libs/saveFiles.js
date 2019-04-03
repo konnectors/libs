@@ -4,17 +4,21 @@
  * @module saveFiles
  */
 const bluebird = require('bluebird')
+const retry = require('bluebird-retry')
+const mimetypes = require('mime-types')
 const path = require('path')
 const requestFactory = require('./request')
 const omit = require('lodash/omit')
 const log = require('cozy-logger').namespace('saveFiles')
 const cozy = require('./cozyclient')
 const { queryAll } = require('./utils')
-const mimetypes = require('mime-types')
 const errors = require('../helpers/errors')
 const stream = require('stream')
 const DEFAULT_TIMEOUT = Date.now() + 4 * 60 * 1000 // 4 minutes by default since the stack allows 5 minutes
 const DEFAULT_CONCURRENCY = 1
+const DEFAULT_RETRY = 1 // do not retry by default
+const DEFAULT_VALIDATE_FILE = fileDocument =>
+  checkFileSize(fileDocument) && checkMimeWithPath(fileDocument)
 
 const sanitizeEntry = function(entry) {
   delete entry.requestOptions
@@ -88,13 +92,13 @@ const createFile = async function(entry, options) {
     createFileOptions = { ...createFileOptions, ...entry.fileAttributes }
   }
 
-  const toCreate = entry.filestream || downloadEntry(entry, options)
+  const toCreate =
+    entry.filestream || downloadEntry(entry, { ...options, simple: false })
   let fileDocument = await cozy.files.create(toCreate, createFileOptions)
 
-  // This allows us to have the warning message at the first run
-  checkMimeWithPath(fileDocument.attributes.mime, fileDocument.attributes.name)
-
-  checkFileSize(fileDocument)
+  if (options.validateFile && !options.validateFile(fileDocument)) {
+    throw new Error('BAD_DOWNLOADED_FILE')
+  }
   return fileDocument
 }
 
@@ -104,8 +108,7 @@ const attachFileToEntry = function(entry, fileDocument) {
 }
 
 const shouldReplaceFile = function(file, entry, options, filepath) {
-  const isValid =
-    checkMimeWithPath(file.attributes.mime, filepath) && checkFileSize(file)
+  const isValid = !options.validateFile || options.validateFile(file)
   if (!isValid) {
     log('warn', `${filepath} is invalid. Downloading it one more time`)
     throw new Error('BAD_DOWNLOADED_FILE')
@@ -161,7 +164,18 @@ const saveEntry = function(entry, options) {
         logFileStream(entry.filestream)
         log('debug', `File ${filepath} does not exist yet or is not valid`)
         entry._cozy_file_to_create = true
-        return createFile(entry, options)
+        return retry(createFile, {
+          interval: 1000,
+          throw_original: true,
+          max_tries: options.retry,
+          args: [entry, options]
+        }).catch(err => {
+          if (err.message === 'BAD_DOWNLOADED_FILE') {
+            log('warn', `Could not download file after ${options.retry} tries`)
+          } else {
+            log('warn', 'unknown file download error: ' + err.message)
+          }
+        })
       }
     )
     .then(file => {
@@ -252,11 +266,13 @@ const saveFiles = async (entries, fields, options = {}) => {
     folderPath: fields.folderPath,
     timeout: options.timeout || DEFAULT_TIMEOUT,
     concurrency: options.concurrency || DEFAULT_CONCURRENCY,
+    retry: options.retry || DEFAULT_RETRY,
     postProcess: options.postProcess,
     postProcessFile: options.postProcessFile,
     contentType: options.contentType,
     requestInstance: options.requestInstance,
-    shouldReplaceFile: options.shouldReplaceFile
+    shouldReplaceFile: options.shouldReplaceFile,
+    validateFile: options.validate || DEFAULT_VALIDATE_FILE
   }
 
   const canBeSaved = entry =>
@@ -361,10 +377,11 @@ function checkFileSize(fileobject) {
   return true
 }
 
-function checkMimeWithPath(mime, filepath) {
-  const extension = path.extname(filepath).substr(1)
+function checkMimeWithPath(fileDocument) {
+  const { mime, name } = fileDocument.attributes
+  const extension = path.extname(name).substr(1)
   if (extension && mime && mimetypes.lookup(extension) !== mime) {
-    log('warn', `${filepath} and ${mime} do not correspond`)
+    log('warn', `${name} and ${mime} do not correspond`)
     log('warn', 'BAD_MIME_TYPE')
     return false
   }
