@@ -14,11 +14,29 @@ const cozy = require('./cozyclient')
 const { queryAll } = require('./utils')
 const errors = require('../helpers/errors')
 const stream = require('stream')
+const fileType = require('file-type')
 const DEFAULT_TIMEOUT = Date.now() + 4 * 60 * 1000 // 4 minutes by default since the stack allows 5 minutes
 const DEFAULT_CONCURRENCY = 1
 const DEFAULT_RETRY = 1 // do not retry by default
 const DEFAULT_VALIDATE_FILE = fileDocument =>
   checkFileSize(fileDocument) && checkMimeWithPath(fileDocument)
+const DEFAULT_VALIDATE_FILECONTENT = async fileDocument => {
+  const response = await cozy.files.downloadById(fileDocument._id)
+  const fileTypeFromContent = fileType(await response.buffer())
+  if (!fileTypeFromContent) {
+    log('warn', `Could not find mime type from file content`)
+    return false
+  }
+
+  if (!DEFAULT_VALIDATE_FILE(fileDocument)) {
+    fileDocument.attributes.mime = fileTypeFromContent.mime
+    log(
+      'warn',
+      `Wrong file type from content ${JSON.stringify(fileTypeFromContent)}`
+    )
+    return false
+  }
+}
 
 const sanitizeEntry = function(entry) {
   delete entry.requestOptions
@@ -96,9 +114,21 @@ const createFile = async function(entry, options) {
     entry.filestream || downloadEntry(entry, { ...options, simple: false })
   let fileDocument = await cozy.files.create(toCreate, createFileOptions)
 
-  if (options.validateFile && !options.validateFile(fileDocument)) {
-    throw new Error('BAD_DOWNLOADED_FILE')
+  if (options.validateFile) {
+    if ((await options.validateFile(fileDocument)) === false) {
+      await removeFile(fileDocument)
+      throw new Error('BAD_DOWNLOADED_FILE')
+    }
+
+    if (
+      options.validateFileContent &&
+      !(await DEFAULT_VALIDATE_FILECONTENT(fileDocument))
+    ) {
+      await removeFile(fileDocument)
+      throw new Error('BAD_DOWNLOADED_FILE')
+    }
   }
+
   return fileDocument
 }
 
@@ -107,8 +137,8 @@ const attachFileToEntry = function(entry, fileDocument) {
   return entry
 }
 
-const shouldReplaceFile = function(file, entry, options, filepath) {
-  const isValid = !options.validateFile || options.validateFile(file)
+const shouldReplaceFile = async function(file, entry, options, filepath) {
+  const isValid = !options.validateFile || (await options.validateFile(file))
   if (!isValid) {
     log('warn', `${filepath} is invalid. Downloading it one more time`)
     throw new Error('BAD_DOWNLOADED_FILE')
@@ -140,7 +170,7 @@ const saveEntry = function(entry, options) {
     .then(async file => {
       let shouldReplace = false
       try {
-        shouldReplace = shouldReplaceFile(file, entry, options, filepath)
+        shouldReplace = await shouldReplaceFile(file, entry, options, filepath)
       } catch (err) {
         log('info', `Error in shouldReplace : ${err.message}`)
         shouldReplace = true
@@ -171,7 +201,12 @@ const saveEntry = function(entry, options) {
           args: [entry, options]
         }).catch(err => {
           if (err.message === 'BAD_DOWNLOADED_FILE') {
-            log('warn', `Could not download file after ${options.retry} tries`)
+            log(
+              'warn',
+              `Could not download file after ${
+                options.retry
+              } tries removing the file`
+            )
           } else {
             log('warn', 'unknown file download error: ' + err.message)
           }
@@ -242,6 +277,9 @@ const saveEntry = function(entry, options) {
  *   + `contentType` (string) ex: 'application/pdf' used to force the contentType of documents when
  *   they are badly recognized by cozy.
  *   + `concurrency` (number) default: `1` sets the maximum number of concurrent downloads
+ *   + `validateFile` (function) default: do not validate if file is empty or has bad mime type
+ *   + `validateFileContent` (boolean) default false. Also check the content of the file to
+ *   recognize the mime type
  * @example
  * ```javascript
  * await saveFiles([{fileurl: 'https://...', filename: 'bill1.pdf'}], fields)
@@ -272,7 +310,8 @@ const saveFiles = async (entries, fields, options = {}) => {
     contentType: options.contentType,
     requestInstance: options.requestInstance,
     shouldReplaceFile: options.shouldReplaceFile,
-    validateFile: options.validate || DEFAULT_VALIDATE_FILE
+    validateFile: options.validate || DEFAULT_VALIDATE_FILE,
+    validateFileContent: options.validateFileContent
   }
 
   const canBeSaved = entry =>

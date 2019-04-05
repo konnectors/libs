@@ -101,14 +101,15 @@ module.exports = async (entries, fields, options = {}) => {
     }
   }
 
-  tempEntries = tempEntries.map(entry => {
-    entry.currency = convertCurrency(entry.currency)
-    if (entry.fileDocument) {
+  tempEntries = tempEntries
+    // we do not save bills without associated file anymore
+    .filter(entry => entry.fileDocument)
+    .map(entry => {
+      entry.currency = convertCurrency(entry.currency)
       entry.invoice = `io.cozy.files:${entry.fileDocument._id}`
-    }
-    delete entry.fileDocument
-    return entry
-  })
+      delete entry.fileDocument
+      return entry
+    })
 
   checkRequiredAttributes(entries)
 
