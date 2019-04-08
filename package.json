@@ -12,7 +12,7 @@
     "eslint": "5.15.3",
     "eslint-config-cozy-app": "1.1.12",
     "eslint-plugin-prettier": "3.0.1",
-    "lerna": "3.13.1",
+    "lerna": "3.13.2",
     "lerna-changelog": "0.8.2"
   },
   "eslintConfig": {
