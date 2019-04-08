@@ -40,7 +40,8 @@
  * })
  * ```
  * - `debug`: will display request and responses details in error output. Possible values :
- *   * true : display request and response in full json format
+ *   * true : display request and response in normal request-debug json format
+ *   * 'json' : display request and response in full json format
  *   * 'simple' : display main information about each request and response
  *   ```
  *   GET -> http://books.toscrape.com/media/cache/26/0c/260c6ae16bce31c8f8c95daddd9f4a1c.jpg
@@ -91,6 +92,8 @@ function setDebugFunction(debug) {
   /* eslint no-console: off */
   if (debug === 'simple') {
     return (type, data) => console.error(requestToStrings(type, data).oneline)
+  } else if (debug === 'json') {
+    return (type, data) => console.error(JSON.stringify({ type, data }))
   } else if (debug === 'full') {
     return (type, data) => {
       const { oneline, headers, body } = requestToStrings(type, data)
