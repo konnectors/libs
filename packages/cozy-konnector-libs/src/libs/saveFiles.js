@@ -4,17 +4,39 @@
  * @module saveFiles
  */
 const bluebird = require('bluebird')
+const retry = require('bluebird-retry')
+const mimetypes = require('mime-types')
 const path = require('path')
 const requestFactory = require('./request')
 const omit = require('lodash/omit')
 const log = require('cozy-logger').namespace('saveFiles')
 const cozy = require('./cozyclient')
 const { queryAll } = require('./utils')
-const mimetypes = require('mime-types')
 const errors = require('../helpers/errors')
 const stream = require('stream')
+const fileType = require('file-type')
 const DEFAULT_TIMEOUT = Date.now() + 4 * 60 * 1000 // 4 minutes by default since the stack allows 5 minutes
 const DEFAULT_CONCURRENCY = 1
+const DEFAULT_RETRY = 1 // do not retry by default
+const DEFAULT_VALIDATE_FILE = fileDocument =>
+  checkFileSize(fileDocument) && checkMimeWithPath(fileDocument)
+const DEFAULT_VALIDATE_FILECONTENT = async fileDocument => {
+  const response = await cozy.files.downloadById(fileDocument._id)
+  const fileTypeFromContent = fileType(await response.buffer())
+  if (!fileTypeFromContent) {
+    log('warn', `Could not find mime type from file content`)
+    return false
+  }
+
+  if (!DEFAULT_VALIDATE_FILE(fileDocument)) {
+    fileDocument.attributes.mime = fileTypeFromContent.mime
+    log(
+      'warn',
+      `Wrong file type from content ${JSON.stringify(fileTypeFromContent)}`
+    )
+    return false
+  }
+}
 
 const sanitizeEntry = function(entry) {
   delete entry.requestOptions
@@ -88,13 +110,25 @@ const createFile = async function(entry, options) {
     createFileOptions = { ...createFileOptions, ...entry.fileAttributes }
   }
 
-  const toCreate = entry.filestream || downloadEntry(entry, options)
+  const toCreate =
+    entry.filestream || downloadEntry(entry, { ...options, simple: false })
   let fileDocument = await cozy.files.create(toCreate, createFileOptions)
 
-  // This allows us to have the warning message at the first run
-  checkMimeWithPath(fileDocument.attributes.mime, fileDocument.attributes.name)
+  if (options.validateFile) {
+    if ((await options.validateFile(fileDocument)) === false) {
+      await removeFile(fileDocument)
+      throw new Error('BAD_DOWNLOADED_FILE')
+    }
 
-  checkFileSize(fileDocument)
+    if (
+      options.validateFileContent &&
+      !(await DEFAULT_VALIDATE_FILECONTENT(fileDocument))
+    ) {
+      await removeFile(fileDocument)
+      throw new Error('BAD_DOWNLOADED_FILE')
+    }
+  }
+
   return fileDocument
 }
 
@@ -103,9 +137,8 @@ const attachFileToEntry = function(entry, fileDocument) {
   return entry
 }
 
-const shouldReplaceFile = function(file, entry, options, filepath) {
-  const isValid =
-    checkMimeWithPath(file.attributes.mime, filepath) && checkFileSize(file)
+const shouldReplaceFile = async function(file, entry, options, filepath) {
+  const isValid = !options.validateFile || (await options.validateFile(file))
   if (!isValid) {
     log('warn', `${filepath} is invalid. Downloading it one more time`)
     throw new Error('BAD_DOWNLOADED_FILE')
@@ -137,7 +170,7 @@ const saveEntry = function(entry, options) {
     .then(async file => {
       let shouldReplace = false
       try {
-        shouldReplace = shouldReplaceFile(file, entry, options, filepath)
+        shouldReplace = await shouldReplaceFile(file, entry, options, filepath)
       } catch (err) {
         log('info', `Error in shouldReplace : ${err.message}`)
         shouldReplace = true
@@ -161,7 +194,23 @@ const saveEntry = function(entry, options) {
         logFileStream(entry.filestream)
         log('debug', `File ${filepath} does not exist yet or is not valid`)
         entry._cozy_file_to_create = true
-        return createFile(entry, options)
+        return retry(createFile, {
+          interval: 1000,
+          throw_original: true,
+          max_tries: options.retry,
+          args: [entry, options]
+        }).catch(err => {
+          if (err.message === 'BAD_DOWNLOADED_FILE') {
+            log(
+              'warn',
+              `Could not download file after ${
+                options.retry
+              } tries removing the file`
+            )
+          } else {
+            log('warn', 'unknown file download error: ' + err.message)
+          }
+        })
       }
     )
     .then(file => {
@@ -228,6 +277,9 @@ const saveEntry = function(entry, options) {
  *   + `contentType` (string) ex: 'application/pdf' used to force the contentType of documents when
  *   they are badly recognized by cozy.
  *   + `concurrency` (number) default: `1` sets the maximum number of concurrent downloads
+ *   + `validateFile` (function) default: do not validate if file is empty or has bad mime type
+ *   + `validateFileContent` (boolean) default false. Also check the content of the file to
+ *   recognize the mime type
  * @example
  * ```javascript
  * await saveFiles([{fileurl: 'https://...', filename: 'bill1.pdf'}], fields)
@@ -252,11 +304,14 @@ const saveFiles = async (entries, fields, options = {}) => {
     folderPath: fields.folderPath,
     timeout: options.timeout || DEFAULT_TIMEOUT,
     concurrency: options.concurrency || DEFAULT_CONCURRENCY,
+    retry: options.retry || DEFAULT_RETRY,
     postProcess: options.postProcess,
     postProcessFile: options.postProcessFile,
     contentType: options.contentType,
     requestInstance: options.requestInstance,
-    shouldReplaceFile: options.shouldReplaceFile
+    shouldReplaceFile: options.shouldReplaceFile,
+    validateFile: options.validate || DEFAULT_VALIDATE_FILE,
+    validateFileContent: options.validateFileContent
   }
 
   const canBeSaved = entry =>
@@ -361,10 +416,11 @@ function checkFileSize(fileobject) {
   return true
 }
 
-function checkMimeWithPath(mime, filepath) {
-  const extension = path.extname(filepath).substr(1)
+function checkMimeWithPath(fileDocument) {
+  const { mime, name } = fileDocument.attributes
+  const extension = path.extname(name).substr(1)
   if (extension && mime && mimetypes.lookup(extension) !== mime) {
-    log('warn', `${filepath} and ${mime} do not correspond`)
+    log('warn', `${name} and ${mime} do not correspond`)
     log('warn', 'BAD_MIME_TYPE')
     return false
   }
