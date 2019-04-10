@@ -428,9 +428,13 @@ You need the full permission on `io.cozy.files` in your manifest to use this fun
   downloaded, on the next run of the connector, it will be able to download some more
   files, and so on. If you want the timeout to be in 10s, do `Date.now() + 10*1000`.
   You can try it in the previous code.
-  + `contentType` (string) ex: 'application/pdf' used to force the contentType of documents when
-  they are badly recognized by cozy.
+  + `contentType` (string or boolean) ex: 'application/pdf' used to force the contentType of documents when
+  they are badly recognized by cozy. If "true" the content type will be recognized from the file
+  name and forced the same way.
   + `concurrency` (number) default: `1` sets the maximum number of concurrent downloads
+  + `validateFile` (function) default: do not validate if file is empty or has bad mime type
+  + `validateFileContent` (boolean) default false. Also check the content of the file to
+  recognize the mime type
 
 **Kind**: Exported function  
 **Example**  
