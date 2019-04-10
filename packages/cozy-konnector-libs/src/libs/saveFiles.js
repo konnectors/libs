@@ -104,7 +104,11 @@ const createFile = async function(entry, options) {
     dirID: folder._id
   }
   if (options.contentType) {
-    createFileOptions.contentType = options.contentType
+    if (options.contentType === true && entry.filename) {
+      createFileOptions.contentType = mimetypes.contentType(entry.filename)
+    } else {
+      createFileOptions.contentType = options.contentType
+    }
   }
   if (entry.fileAttributes) {
     createFileOptions = { ...createFileOptions, ...entry.fileAttributes }
@@ -274,8 +278,9 @@ const saveEntry = function(entry, options) {
  *   downloaded, on the next run of the connector, it will be able to download some more
  *   files, and so on. If you want the timeout to be in 10s, do `Date.now() + 10*1000`.
  *   You can try it in the previous code.
- *   + `contentType` (string) ex: 'application/pdf' used to force the contentType of documents when
- *   they are badly recognized by cozy.
+ *   + `contentType` (string or boolean) ex: 'application/pdf' used to force the contentType of documents when
+ *   they are badly recognized by cozy. If "true" the content type will be recognized from the file
+ *   name and forced the same way.
  *   + `concurrency` (number) default: `1` sets the maximum number of concurrent downloads
  *   + `validateFile` (function) default: do not validate if file is empty or has bad mime type
  *   + `validateFileContent` (boolean) default false. Also check the content of the file to
