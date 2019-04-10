@@ -65,8 +65,14 @@ authenticate({ tokenPath: token, manifestPath: manifest })
   .then(() => {
     const { BaseKonnector, mkdirp } = require('cozy-konnector-libs')
     BaseKonnector.prototype.init = async () => {
-      const rootPath = '/cozy-konnector-dev-root'
-      await mkdirp(rootPath)
+      let rootPath = '/cozy-konnector-dev-root'
+      try {
+        await mkdirp(rootPath)
+      }
+      catch (e) {
+        console.log(`Could not create folder ${rootPath}, using / as base folder.`)
+        rootPath = '/'
+      }
       return {
         ...config.fields,
         folderPath: rootPath
