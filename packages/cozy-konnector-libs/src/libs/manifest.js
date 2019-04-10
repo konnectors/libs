@@ -18,9 +18,13 @@ let manifest =
     : {}
 
 if (process.env.NODE_ENV !== 'none' && process.env.NODE_ENV !== 'production') {
-  manifest = JSON.parse(
-    fs.readFileSync(path.join(process.cwd(), 'manifest.konnector'))
-  )
+  try {
+    manifest = JSON.parse(
+      fs.readFileSync(path.join(process.cwd(), 'manifest.konnector'))
+    )
+  } catch (err) {
+    manifest = {}
+  }
 }
 
 module.exports = manifest
