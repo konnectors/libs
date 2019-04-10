@@ -310,7 +310,7 @@ const saveFiles = async (entries, fields, options = {}) => {
     contentType: options.contentType,
     requestInstance: options.requestInstance,
     shouldReplaceFile: options.shouldReplaceFile,
-    validateFile: options.validate || DEFAULT_VALIDATE_FILE,
+    validateFile: options.validateFile || DEFAULT_VALIDATE_FILE,
     validateFileContent: options.validateFileContent
   }
 
