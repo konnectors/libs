@@ -20,7 +20,7 @@
   "dependencies": {
     "bluebird": "3.5.4",
     "bluebird-retry": "0.11.0",
-    "cheerio": "1.0.0-rc.2",
+    "cheerio": "1.0.0-rc.3",
     "classificator": "0.3.3",
     "cozy-client-js": "0.15.1",
     "cozy-doctypes": "1.38.6",
