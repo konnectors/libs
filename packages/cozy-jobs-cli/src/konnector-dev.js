@@ -68,9 +68,10 @@ authenticate({ tokenPath: token, manifestPath: manifest })
       let rootPath = '/cozy-konnector-dev-root'
       try {
         await mkdirp(rootPath)
-      }
-      catch (e) {
-        console.log(`Could not create folder ${rootPath}, using / as base folder.`)
+      } catch (e) {
+        console.log(
+          `Could not create folder ${rootPath}, using / as base folder.`
+        )
         rootPath = '/'
       }
       return {
