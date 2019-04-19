@@ -1,10 +1,10 @@
 const logger = require('cozy-logger')
 const maxBy = require('lodash/maxBy')
-const { getLabelWithTags } = require('./helpers')
-const fetchParameters = require('./globalModel/fetchParameters')
-const createClassifier = require('./globalModel/createClassifier')
+const { getLabelWithTags } = require('../helpers')
+const fetchParameters = require('./fetchParameters')
+const createClassifier = require('./createClassifier')
 
-const log = logger.namespace('global-categorization-model')
+const log = logger.namespace('global-categorization-model/createModel')
 
 async function globalModel(classifierOptions, transactions) {
   log('info', 'Fetching parameters from the stack')
