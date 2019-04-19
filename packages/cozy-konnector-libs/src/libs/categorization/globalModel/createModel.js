@@ -1,12 +1,11 @@
 const logger = require('cozy-logger')
-const maxBy = require('lodash/maxBy')
-const { getLabelWithTags } = require('../helpers')
 const fetchParameters = require('./fetchParameters')
 const createClassifier = require('./createClassifier')
+const categorize = require('./categorize')
 
 const log = logger.namespace('global-categorization-model/createModel')
 
-async function globalModel(classifierOptions, transactions) {
+async function createModel(classifierOptions) {
   log('info', 'Fetching parameters from the stack')
   let parameters
 
@@ -21,25 +20,9 @@ async function globalModel(classifierOptions, transactions) {
   log('info', 'Instanciating a new classifier')
   const classifier = createClassifier(parameters, classifierOptions)
 
-  for (const transaction of transactions) {
-    const label = getLabelWithTags(transaction)
-    log('info', `Applying model to ${label}`)
-
-    const { category, proba } = maxBy(
-      classifier.categorize(label).likelihoods,
-      'proba'
-    )
-
-    transaction.cozyCategoryId = category
-    transaction.cozyCategoryProba = proba
-
-    log('info', `Results for ${label} :`)
-    log('info', `cozyCategory: ${category}`)
-    log('info', `cozyProba: ${proba}`)
+  return {
+    categorize: transactions => categorize(classifier, transactions)
   }
 }
 
-module.exports = {
-  createClassifier,
-  globalModel
-}
+module.exports = createModel

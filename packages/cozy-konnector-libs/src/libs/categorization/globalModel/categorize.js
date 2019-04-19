@@ -1,6 +1,6 @@
 const logger = require('cozy-logger')
 const maxBy = require('lodash/maxBy')
-const { getLabelWithTags } = require('./helpers')
+const { getLabelWithTags } = require('../helpers')
 
 const log = logger.namespace('global-categorization-model/categorize')
 

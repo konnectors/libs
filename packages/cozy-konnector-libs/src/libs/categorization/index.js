@@ -4,7 +4,7 @@
  */
 
 const { tokenizer } = require('./helpers')
-const { globalModel } = require('./globalModel')
+const createGlobalModel = require('./globalModel')
 const { localModel } = require('./localModel')
 
 /**
@@ -37,9 +37,11 @@ const { localModel } = require('./localModel')
  */
 async function categorize(transactions) {
   const classifierOptions = { tokenizer }
+  console.log(createGlobalModel)
+  const globalModel = await createGlobalModel(classifierOptions)
 
   await Promise.all([
-    globalModel(classifierOptions, transactions),
+    globalModel.categorize(transactions),
     localModel(classifierOptions, transactions)
   ])
 
