@@ -2,10 +2,10 @@
  * @jest-environment node
  */
 
-const createClassifier = require('./globalModel').createClassifier
+const createClassifier = require('./globalModel/createClassifier')
 const { tokenizer, predictProbaMax, categorize } = require('./helpers')
 
-jest.mock('./globalModel')
+jest.mock('./globalModel/createClassifier')
 
 describe('estimate proba', () => {
   const classifier = createClassifier(undefined, { tokenizer })

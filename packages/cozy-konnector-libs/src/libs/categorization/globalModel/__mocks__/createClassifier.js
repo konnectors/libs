@@ -1,8 +1,6 @@
 const bayes = require('classificator')
 const toLearn = require('./set_label_cat.json')
 
-const globalModel = jest.fn()
-
 const createClassifier = (data, options = {}) => {
   const classifier = bayes(options)
 
@@ -13,7 +11,4 @@ const createClassifier = (data, options = {}) => {
   return classifier
 }
 
-module.exports = {
-  globalModel,
-  createClassifier
-}
+module.exports = createClassifier

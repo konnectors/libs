@@ -1,24 +1,10 @@
-const bayes = require('classificator')
 const logger = require('cozy-logger')
 const maxBy = require('lodash/maxBy')
 const { getLabelWithTags } = require('./helpers')
 const fetchParameters = require('./globalModel/fetchParameters')
+const createClassifier = require('./globalModel/createClassifier')
 
 const log = logger.namespace('global-categorization-model')
-
-const createClassifier = (data = {}, options = {}) => {
-  data.options = {
-    ...data.options,
-    ...options
-  }
-
-  const classifier = bayes.fromJson(data)
-
-  // Display classifier to compare with python file
-  // console.log('classifier', classifier.toJson())
-
-  return classifier
-}
 
 async function globalModel(classifierOptions, transactions) {
   log('info', 'Fetching parameters from the stack')
