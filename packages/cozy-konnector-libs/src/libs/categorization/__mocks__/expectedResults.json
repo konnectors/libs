@@ -1,0 +1,278 @@
+{
+  "proba": [
+    {
+      "label": "paris bio c bon idf pi",
+      "proba": 0.980355297751457
+    },
+    {
+      "label": "almabio biocoop",
+      "proba": 0.5326864434882714
+    },
+    {
+      "label": "paris welcome bio",
+      "proba": 0.924016618312778
+    },
+    {
+      "label": "welcome bio",
+      "proba": 0.8675998260173043
+    },
+    {
+      "label": "paris welcome bio",
+      "proba": 0.924016618312778
+    },
+    {
+      "label": "welcome bio",
+      "proba": 0.8675998260173043
+    },
+    {
+      "label": "sncf",
+      "proba": 0.5207380303521498
+    },
+    {
+      "label": "sncf ouigo",
+      "proba": 0.9598679691280859
+    },
+    {
+      "label": "sncf",
+      "proba": 0.5207380303521498
+    },
+    {
+      "label": "sncf ouigo",
+      "proba": 0.9598679691280859
+    },
+    {
+      "label": "sncf ouigo",
+      "proba": 0.9598679691280859
+    },
+    {
+      "label": "sncf ouigo",
+      "proba": 0.9598679691280859
+    },
+    {
+      "label": "notes de frais cozy cozy cloud",
+      "proba": 0.9999709876322864
+    },
+    {
+      "label": "cozy cloud cozycloudmcd tag_date weberf",
+      "proba": 0.9795024473771434
+    },
+    {
+      "label": "cozy cloud cozycloudmcd tag_date weberf",
+      "proba": 0.9795024473771434
+    },
+    {
+      "label": "cozy cloud cozycloudmcd tag_date weberf",
+      "proba": 0.9795024473771434
+    },
+    {
+      "label": "notes de frais cozy cozy cloud",
+      "proba": 0.9999709876322864
+    },
+    {
+      "label": "sepa navigo annuel gie c tag_date tag_date navigo annuel",
+      "proba": 0.999999995703007
+    },
+    {
+      "label": "sepa navigo annuel gie c tag_date tag_date navigo annuel",
+      "proba": 0.999999995703007
+    },
+    {
+      "label": "sepa navigo annuel gie c tag_date tag_date navigo annuel",
+      "proba": 0.999999995703007
+    },
+    {
+      "label": "trainline",
+      "proba": 0.3507459634812909
+    },
+    {
+      "label": "trainline",
+      "proba": 0.3507459634812909
+    },
+    {
+      "label": "trainline",
+      "proba": 0.3507459634812909
+    },
+    {
+      "label": "trainline",
+      "proba": 0.3507459634812909
+    },
+    {
+      "label": "trainline",
+      "proba": 0.3507459634812909
+    },
+    {
+      "label": "mgptipeee t",
+      "proba": 0.1846719522946759
+    },
+    {
+      "label": "mgptipeee t",
+      "proba": 0.1846719522946759
+    },
+    {
+      "label": "mgptipeee t",
+      "proba": 0.1846719522946759
+    },
+    {
+      "label": "paris sama beyrouth",
+      "proba": 0.7326873266767611
+    },
+    {
+      "label": "bio strasbourg",
+      "proba": 0.36835218571647105
+    },
+    {
+      "label": "bio ouigo",
+      "proba": 0.44378750308699877
+    },
+    {
+      "label": "youpi",
+      "proba": 0.20689655172413784
+    },
+    {
+      "label": "sncf",
+      "proba": 0.5207380303521498
+    },
+    {
+      "label": "sncf ouigo welcome bio strasbourg",
+      "proba": 0.7203724061159654
+    }
+  ],
+  "categoryId": [
+    {
+      "label": "paris bio c bon idf pi",
+      "categoryId": "cat_1"
+    },
+    {
+      "label": "almabio biocoop",
+      "categoryId": "400110"
+    },
+    {
+      "label": "paris welcome bio",
+      "categoryId": "400110"
+    },
+    {
+      "label": "welcome bio",
+      "categoryId": "400110"
+    },
+    {
+      "label": "paris welcome bio",
+      "categoryId": "400110"
+    },
+    {
+      "label": "welcome bio",
+      "categoryId": "400110"
+    },
+    {
+      "label": "sncf",
+      "categoryId": "400850"
+    },
+    {
+      "label": "sncf ouigo",
+      "categoryId": "400850"
+    },
+    {
+      "label": "sncf",
+      "categoryId": "400850"
+    },
+    {
+      "label": "sncf ouigo",
+      "categoryId": "400850"
+    },
+    {
+      "label": "sncf ouigo",
+      "categoryId": "400850"
+    },
+    {
+      "label": "sncf ouigo",
+      "categoryId": "400850"
+    },
+    {
+      "label": "notes de frais cozy cozy cloud",
+      "categoryId": "600140"
+    },
+    {
+      "label": "cozy cloud cozycloudmcd tag_date weberf",
+      "categoryId": "200110"
+    },
+    {
+      "label": "cozy cloud cozycloudmcd tag_date weberf",
+      "categoryId": "200110"
+    },
+    {
+      "label": "cozy cloud cozycloudmcd tag_date weberf",
+      "categoryId": "200110"
+    },
+    {
+      "label": "notes de frais cozy cozy cloud",
+      "categoryId": "600140"
+    },
+    {
+      "label": "sepa navigo annuel gie c tag_date tag_date navigo annuel",
+      "categoryId": "400280"
+    },
+    {
+      "label": "sepa navigo annuel gie c tag_date tag_date navigo annuel",
+      "categoryId": "400280"
+    },
+    {
+      "label": "sepa navigo annuel gie c tag_date tag_date navigo annuel",
+      "categoryId": "400280"
+    },
+    {
+      "label": "trainline",
+      "categoryId": "400850"
+    },
+    {
+      "label": "trainline",
+      "categoryId": "400850"
+    },
+    {
+      "label": "trainline",
+      "categoryId": "400850"
+    },
+    {
+      "label": "trainline",
+      "categoryId": "400850"
+    },
+    {
+      "label": "trainline",
+      "categoryId": "400850"
+    },
+    {
+      "label": "mgptipeee t",
+      "categoryId": "400850"
+    },
+    {
+      "label": "mgptipeee t",
+      "categoryId": "400850"
+    },
+    {
+      "label": "mgptipeee t",
+      "categoryId": "400850"
+    },
+    {
+      "label": "paris sama beyrouth",
+      "categoryId": "400160"
+    },
+    {
+      "label": "bio strasbourg",
+      "categoryId": "400110"
+    },
+    {
+      "label": "bio ouigo",
+      "categoryId": "400850"
+    },
+    {
+      "label": "youpi",
+      "categoryId": "400850"
+    },
+    {
+      "label": "sncf",
+      "categoryId": "400850"
+    },
+    {
+      "label": "sncf ouigo welcome bio strasbourg",
+      "categoryId": "400850"
+    }
+  ]
+}
