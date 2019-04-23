@@ -2,18 +2,28 @@
  * @jest-environment node
  */
 
-const categorize = require('.')
-const { globalModel } = require('./globalModel')
-const { localModel } = require('./localModel')
+const { createCategorizer } = require('.')
+const { createModel: createGlobalModel } = require('./globalModel')
+const { createModel: createLocalModel } = require('./localModel')
 
 jest.mock('./globalModel')
 jest.mock('./localModel')
 
-it('should apply both global and local models to transactions', async () => {
-  const transactions = [{ label: 't1' }, { label: 't2' }, { label: 't3' }]
+describe('createCategorizer', () => {
+  afterEach(() => {
+    jest.clearAllMocks()
+  })
 
-  await categorize(transactions)
+  it('should create an object with a categorize method', async () => {
+    const categorizer = await createCategorizer()
 
-  expect(globalModel).toHaveBeenCalled()
-  expect(localModel).toHaveBeenCalled()
+    expect(typeof categorizer.categorize).toBe('function')
+  })
+
+  it('should initialize global and local models', async () => {
+    await createCategorizer()
+
+    expect(createGlobalModel).toHaveBeenCalled()
+    expect(createLocalModel).toHaveBeenCalled()
+  })
 })
