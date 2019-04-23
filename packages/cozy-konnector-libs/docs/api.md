@@ -742,10 +742,16 @@ const date = formatFrenchDate(New Date.now())
 ## categorization
 Bank transactions categorization
 
-<a name="module_categorization..categorize"></a>
 
-### categorization~categorize(transactions) ⇒ <code>Array.&lt;Object&gt;</code>
-Apply both global and local categorization models to an array of transactions.
+* [categorization](#module_categorization)
+    * [~createCategorizer()](#module_categorization..createCategorizer) ⇒ <code>Object</code>
+    * [~categorize()](#module_categorization..categorize) ⇒ <code>Array.&lt;Object&gt;</code>
+
+<a name="module_categorization..createCategorizer"></a>
+
+### categorization~createCategorizer() ⇒ <code>Object</code>
+Initialize global and local models and return an object exposing a
+`categorize` function that applies both models on an array of transactions
 
 The global model is a model specific to hosted Cozy instances. It is not available for self-hosted instances. It will just do nothing in that case.
 
@@ -758,18 +764,35 @@ Each model adds two properties to the transactions:
 In the end, each transaction can have up to four different categories. An application can use these categories to show the most significant for the user. See https://github.com/cozy/cozy-doctypes/blob/master/docs/io.cozy.bank.md#categories for more informations.
 
 **Kind**: inner method of [<code>categorization</code>](#module_categorization)  
-**Returns**: <code>Array.&lt;Object&gt;</code> - The categorized transactions  
+**Returns**: <code>Object</code> - an object with a `categorize` method  
+**Example**  
+```js
+const { BaseKonnector, createCategorizer } = require('cozy-konnector-libs')
 
-| Param | Type | Description |
-| --- | --- | --- |
-| transactions | <code>Array.&lt;Object&gt;</code> | The transactions to categorize |
+class BankingKonnector extends BaseKonnector {
+  async saveTransactions() {
+    const transactions = await this.fetchTransactions()
+    const categorizer = await createCategorizer
+    const categorizedTransactions = await categorizer.categorize(transactions)
 
+    // Save categorizedTransactions
+  }
+}
+```
+<a name="module_categorization..categorize"></a>
+
+### categorization~categorize() ⇒ <code>Array.&lt;Object&gt;</code>
+Initialize global and local models and categorize the given array of transactions
+
+**Kind**: inner method of [<code>categorization</code>](#module_categorization)  
+**Returns**: <code>Array.&lt;Object&gt;</code> - the categorized transactions  
+**See**: [createCategorizer](createCategorizer) for more informations about models initialization  
 **Example**  
 ```js
 const { BaseKonnector, categorize } = require('cozy-konnector-libs')
 
 class BankingKonnector extends BaseKonnector {
-  saveTransactions() {
+  async saveTransactions() {
     const transactions = await this.fetchTransactions()
     const categorizedTransactions = await categorize(transactions)
 

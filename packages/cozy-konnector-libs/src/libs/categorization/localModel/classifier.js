@@ -1,28 +1,20 @@
-const logger = require('cozy-logger')
-const uniq = require('lodash/uniq')
-const maxBy = require('lodash/maxBy')
+const { fetchTransactionsWithManualCat } = require('./parameters')
+const { getUniqueCategories, getAlphaParameter } = require('./helpers')
 const bayes = require('classificator')
-const { getLabelWithTags, tokenizer } = require('./helpers')
-const fetchTransactionsWithManualCat = require('./fetchTransactionsWithManualCat')
+const { getLabelWithTags } = require('../helpers')
+const logger = require('cozy-logger')
 
-const log = logger.namespace('local-categorization-model')
+const log = logger.namespace('categorization/localModel/classifier')
 
 const ALPHA_MIN = 2
 const ALPHA_MAX = 4
 const ALPHA_MAX_SMOOTHING = 12
+
 const FAKE_TRANSACTION = {
   label: 'thisisafaketransaction',
   manualCategoryId: '0'
 }
-const LOCAL_MODEL_CATEG_FALLBACK = '0'
-const LOCAL_MODEL_PROBA_FALLBACK = 0.1
-const LOCAL_MODEL_PCT_TOKENS_IN_VOC_THRESHOLD = 0.1
 
-/**
- * List of every combinations of tokens related to amounts:
- * - a tag for the amount's sign
- * - a tag for the amount's magnitude
- */
 const TOKENS_TO_REWEIGHT = [
   'tag_neg',
   'tag_v_b_expense',
@@ -43,19 +35,6 @@ const TOKENS_TO_REWEIGHT = [
   'tag_activity_income',
   'tag_pos tag_activity_income'
 ]
-
-const getUniqueCategories = transactions => {
-  return uniq(transactions.map(t => t.manualCategoryId))
-}
-
-const getAlphaParameter = (nbUniqueCategories, min, max, maxSmoothing) => {
-  if (nbUniqueCategories === 1) {
-    return 1
-  } else {
-    const alpha = maxSmoothing / (nbUniqueCategories + 1)
-    return Math.max(min, Math.min(max, alpha))
-  }
-}
 
 const getClassifierOptions = transactionsWithManualCat => {
   const uniqueCategories = getUniqueCategories(transactionsWithManualCat)
@@ -100,11 +79,9 @@ const createLocalClassifier = (
   configurationOptions
 ) => {
   if (transactionsToLearn.length === 0) {
-    log(
-      'info',
+    throw new Error(
       'Impossible to instanciate a classifier since there is no manually categorized transactions to learn from'
     )
-    return null
   }
 
   const classifier = bayes(initializationOptions)
@@ -121,27 +98,6 @@ const createLocalClassifier = (
     classifier.learn(FAKE_TRANSACTION.label, FAKE_TRANSACTION.manualCategoryId)
   }
 
-  return classifier
-}
-
-const createLocalModel = async classifierOptions => {
-  log('info', 'Fetching manually categorized transactions')
-  const transactionsWithManualCat = await fetchTransactionsWithManualCat()
-  log(
-    'info',
-    `Fetched ${
-      transactionsWithManualCat.length
-    } manually categorized transactions`
-  )
-
-  log('info', 'Instanciating a new classifier')
-
-  const options = getClassifierOptions(transactionsWithManualCat)
-  const classifier = createLocalClassifier(
-    transactionsWithManualCat,
-    { ...classifierOptions, ...options.initialization },
-    options.configuration
-  )
   return classifier
 }
 
@@ -187,68 +143,41 @@ const reweightModel = classifier => {
   }
 }
 
-const pctOfTokensInVoc = (tokens, vocabularyArray) => {
-  const n_tokens = tokens.length
-  const intersection = tokens.filter(t => -1 !== vocabularyArray.indexOf(t))
-  return intersection.length / n_tokens
-}
+const createClassifier = async options => {
+  log('info', 'Fetching manually categorized transactions')
+  const transactionsWithManualCat = await fetchTransactionsWithManualCat()
 
-const localModel = async (classifierOptions, transactions) => {
-  const classifier = await createLocalModel(classifierOptions)
+  log(
+    'info',
+    `Fetched ${
+      transactionsWithManualCat.length
+    } manually categorized transactions`
+  )
 
-  if (classifier) {
-    log(
-      'info',
-      'Reweighting model to lower the impact of amount in the prediction'
-    )
-    reweightModel(classifier)
+  log('info', 'Instanciating a new classifier')
 
-    log('info', `Applying model to ${transactions.length} transactions`)
+  const classifierOptions = getClassifierOptions(transactionsWithManualCat)
+  const classifier = createLocalClassifier(
+    transactionsWithManualCat,
+    { ...options, ...classifierOptions.initialization },
+    classifierOptions.configuration
+  )
 
-    log(
-      'info',
-      'Reweighting model to lower the impact of amount in the prediction'
-    )
-    reweightModel(classifier)
+  log(
+    'info',
+    'Reweighting model to lower the impact of amount in the prediction'
+  )
+  reweightModel(classifier)
 
-    const vocabulary = Object.keys(classifier.vocabulary)
-    for (const transaction of transactions) {
-      const label = getLabelWithTags(transaction)
-      const tokens = tokenizer(transaction.label)
-      const pctOfThisTokensInVoc = pctOfTokensInVoc(tokens, vocabulary)
-      let category
-      let proba
-      // First : check if tokens from the transaction's label are in the model
-      if (pctOfThisTokensInVoc > LOCAL_MODEL_PCT_TOKENS_IN_VOC_THRESHOLD) {
-        // If OK : continue
-        log('info', `Applying model to ${label}`)
-        ;({ category, proba } = maxBy(
-          classifier.categorize(label).likelihoods,
-          'proba'
-        ))
-        transaction.localCategoryId = category
-        transaction.localCategoryProba = proba
-      } else {
-        // If KO : abort with category '0' and proba 1/nbUniqueCat
-        log('info', `Giving up for ${label}`)
-        category = LOCAL_MODEL_CATEG_FALLBACK
-        proba = LOCAL_MODEL_PROBA_FALLBACK
-        transaction.localCategoryId = category
-        transaction.localCategoryProba = proba
-      }
-      log('info', `Results for ${label} :`)
-      log('info', `localCategory: ${category}`)
-      log('info', `localProba: ${proba}`)
-    }
-  } else {
-    log('info', 'No classifier, impossible to categorize transactions')
-  }
+  log(
+    'info',
+    'Reweighting model to lower the impact of amount in the prediction'
+  )
+  reweightModel(classifier)
+
+  return classifier
 }
 
 module.exports = {
-  getUniqueCategories,
-  getAlphaParameter,
-  createLocalClassifier,
-  localModel,
-  LOCAL_MODEL_PROBA_FALLBACK
+  createClassifier
 }

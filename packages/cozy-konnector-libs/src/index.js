@@ -1,6 +1,7 @@
 const log = require('cozy-logger').namespace('cozy-konnector-libs')
 const requestFactory = require('./libs/request')
 const hydrateAndFilter = require('./libs/hydrateAndFilter')
+const categorization = require('./libs/categorization')
 
 require('./libs/error')
 
@@ -37,7 +38,8 @@ module.exports = {
   normalizeFilename: require('./libs/normalizeFilename'),
   utils: require('./libs/utils'),
   solveCaptcha: require('./libs/solveCaptcha'),
-  categorize: require('./libs/categorization'),
+  createCategorizer: categorization.createCategorizer,
+  categorize: categorization.categorize,
   manifest: require('./libs/manifest')
 }
 

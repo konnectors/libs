@@ -1,30 +1,4 @@
-/**
- * @jest-environment node
- */
-const {
-  getUniqueCategories,
-  getAlphaParameter,
-  createLocalClassifier,
-  localModel,
-  LOCAL_MODEL_PROBA_FALLBACK
-} = require('./localModel')
-
-const { tokenizer } = require('./helpers')
-
-jest.mock('./fetchTransactionsWithManualCat', () => () =>
-  Promise.resolve([
-    { amount: 3001.71, label: 'AAAA BBBB', manualCategoryId: '200110' },
-    { amount: 3001.71, label: 'AAAA BBBB', manualCategoryId: '200110' }
-  ])
-)
-
-const transactions = [
-  { amount: 3001.71, label: 'AAAA BBBB' },
-  { amount: -37.71, label: 'CCCC DDDD' },
-  { amount: -387.71, label: 'EEEE' },
-  { amount: 387.71, label: 'HHHH AAAA BBBB' },
-  { amount: -907.71, label: 'FFFF GGGG' }
-]
+const { getUniqueCategories, getAlphaParameter } = require('./helpers')
 
 describe('getUniqueCategories', () => {
   it('Should return the list of unique categories for the given transactions', () => {
@@ -73,34 +47,5 @@ describe('getAlphaParemeter', () => {
     expect(getAlphaParameter(10, MIN, MAX, MAX_SMOOTHING)).toBe(2)
     expect(getAlphaParameter(20, MIN, MAX, MAX_SMOOTHING)).toBe(2)
     expect(getAlphaParameter(3, MIN, MAX, MAX_SMOOTHING)).toBe(3)
-  })
-})
-
-describe('createLocalClassifier', () => {
-  it('Should return null when passed no transaction', () => {
-    const classifier = createLocalClassifier([])
-
-    expect(classifier).toBeNull()
-  })
-})
-
-describe('localModel', () => {
-  it('Should give correct local probas', async () => {
-    await localModel({ tokenizer }, transactions)
-
-    expect(transactions[0].localCategoryProba).toBeCloseTo(0.8072, 3)
-    expect(transactions[1].localCategoryProba).toBeCloseTo(
-      LOCAL_MODEL_PROBA_FALLBACK,
-      3
-    )
-    expect(transactions[2].localCategoryProba).toBeCloseTo(
-      LOCAL_MODEL_PROBA_FALLBACK,
-      3
-    )
-    expect(transactions[3].localCategoryProba).toBeCloseTo(0.6667, 3)
-    expect(transactions[4].localCategoryProba).toBeCloseTo(
-      LOCAL_MODEL_PROBA_FALLBACK,
-      3
-    )
   })
 })

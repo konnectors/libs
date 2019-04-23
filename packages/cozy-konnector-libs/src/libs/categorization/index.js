@@ -4,11 +4,15 @@
  */
 
 const { tokenizer } = require('./helpers')
-const { globalModel } = require('./globalModel')
-const { localModel } = require('./localModel')
+const { createModel: createGlobalModel } = require('./globalModel')
+const { createModel: createLocalModel } = require('./localModel')
+const logger = require('cozy-logger')
+
+const log = logger.namespace('categorization')
 
 /**
- * Apply both global and local categorization models to an array of transactions.
+ * Initialize global and local models and return an object exposing a
+ * `categorize` function that applies both models on an array of transactions
  *
  * The global model is a model specific to hosted Cozy instances. It is not available for self-hosted instances. It will just do nothing in that case.
  *
@@ -20,14 +24,65 @@ const { localModel } = require('./localModel')
  *
  * In the end, each transaction can have up to four different categories. An application can use these categories to show the most significant for the user. See https://github.com/cozy/cozy-doctypes/blob/master/docs/io.cozy.bank.md#categories for more informations.
  *
- * @param {Object[]} transactions The transactions to categorize
- * @return {Object[]} The categorized transactions
+ * @return {Object} an object with a `categorize` method
+ *
+ * @example
+ * const { BaseKonnector, createCategorizer } = require('cozy-konnector-libs')
+ *
+ * class BankingKonnector extends BaseKonnector {
+ *   async saveTransactions() {
+ *     const transactions = await this.fetchTransactions()
+ *     const categorizer = await createCategorizer
+ *     const categorizedTransactions = await categorizer.categorize(transactions)
+ *
+ *     // Save categorizedTransactions
+ *   }
+ * }
+ */
+async function createCategorizer() {
+  const classifierOptions = { tokenizer }
+
+  // We can't initialize the model in parallel using `Promise.all` because with
+  // it is not possible to manage errors separately
+  let globalModel, localModel
+
+  try {
+    globalModel = await createGlobalModel(classifierOptions)
+  } catch (e) {
+    log('info', 'Failed to create global model:')
+    log('info', e.message)
+  }
+
+  try {
+    localModel = await createLocalModel(classifierOptions)
+  } catch (e) {
+    log('info', 'Failed to create local model:')
+    log('info', e.message)
+  }
+
+  const modelsToApply = [globalModel, localModel].filter(Boolean)
+
+  const categorize = transactions => {
+    modelsToApply.forEach(model => model.categorize(transactions))
+
+    return transactions
+  }
+
+  return { categorize }
+}
+
+/**
+ * Initialize global and local models and categorize the given array of transactions
+ *
+ * @see {@link createCategorizer} for more informations about models initialization
+ *
+ * @return {Object[]} the categorized transactions
  *
  * @example
  * const { BaseKonnector, categorize } = require('cozy-konnector-libs')
  *
  * class BankingKonnector extends BaseKonnector {
- *   saveTransactions() {
+ *   async saveTransactions() {
  *     const transactions = await this.fetchTransactions()
  *     const categorizedTransactions = await categorize(transactions)
  *
@@ -36,14 +91,12 @@ const { localModel } = require('./localModel')
  * }
  */
 async function categorize(transactions) {
-  const classifierOptions = { tokenizer }
+  const categorizer = await createCategorizer()
 
-  await Promise.all([
-    globalModel(classifierOptions, transactions),
-    localModel(classifierOptions, transactions)
-  ])
-
-  return transactions
+  return categorizer.categorize(transactions)
 }
 
-module.exports = categorize
+module.exports = {
+  createCategorizer,
+  categorize
+}
