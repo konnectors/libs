@@ -21,11 +21,12 @@ const DEFAULT_TIMEOUT = connectorStartTime + 3 * 60 * 1000 // 3 minutes by defau
  * Parameters:
  *
  * - `params` is an array of objects with any attributes with some mandatory attributes :
- *   + `type` (String): (default recaptcha) type of captcha to solve
- *   + `timeout` (Number): (default 4 minutes after now) time when the solver should stop trying to
+ *   + `type` (String): (default recaptcha) type of captcha to solve. can be "recaptcha" or "image" at the moment
+ *   + `timeout` (Number): (default 3 minutes after now) time when the solver should stop trying to
  *   solve the captcha
- *   + `websiteKey` (String): the key you can find on the targeted website
- *   + `websiteURL` (String): The URL of the page showing the captcha
+ *   + `websiteKey` (String): the key you can find on the targeted website (for recaptcha)
+ *   + `websiteURL` (String): The URL of the page showing the captcha (for recaptcha)
+ *   + `body` (String): The base64 encoded image (for image captcha)
  * Returns: Promise with the solved captcha response as a string
  *
  * @example
@@ -50,69 +51,26 @@ module.exports = async (params = {}) => {
 
   params = { ...defaultParams, ...params }
 
+  const secrets = JSON.parse(process.env.COZY_PARAMETERS || '{}').secret
+
   if (params.type === 'recaptcha') {
-    const secrets = JSON.parse(process.env.COZY_PARAMETERS || '{}').secret
-    const startTime = Date.now()
     checkMandatoryParams(params, ['websiteKey', 'websiteURL'])
-    const antiCaptchaApiUrl = 'https://api.anti-captcha.com'
-    let gRecaptchaResponse = null
-
-    // we try to solve the captcha with anticaptcha
-    const clientKey = secrets.antiCaptchaClientKey
-    if (clientKey) {
-      log('info', '  Creating captcha resolution task...')
-      const task = await request.post(`${antiCaptchaApiUrl}/createTask`, {
-        body: {
-          clientKey,
-          task: {
-            type: 'NoCaptchaTaskProxyless',
-            websiteURL: params.websiteURL,
-            websiteKey: params.websiteKey
-          }
-        },
-        json: true
-      })
-      if (task && task.taskId) {
-        log('info', `    Task id : ${task.taskId}`)
-        while (!gRecaptchaResponse) {
-          const resp = await request.post(
-            `${antiCaptchaApiUrl}/getTaskResult`,
-            {
-              body: {
-                clientKey,
-                taskId: task.taskId
-              },
-              json: true
-            }
-          )
-          if (resp.status === 'ready') {
-            if (resp.errorId) {
-              log('error', `Anticaptcha error: ${JSON.stringify(resp)}`)
-              throw new Error(errors.CAPTCHA_RESOLUTION_FAILED)
-            }
-            log('warn', `  Found Recaptcha response : ${JSON.stringify(resp)}`)
-            return resp.solution.gRecaptchaResponse
-          } else {
-            log(
-              'info',
-              `    ${Math.round((Date.now() - startTime) / 1000)}s...`
-            )
-            if (Date.now() > params.timeout) {
-              log('warn', `  Captcha resolution timeout`)
-              throw new Error(errors.CAPTCHA_RESOLUTION_FAILED + '.TIMEOUT')
-            }
-            await sleep(10000)
-          }
-        }
-      } else {
-        log('warn', 'Could not create anticaptcha task')
-      }
-    } else {
-      log('warn', 'Could not find any anticaptcha secret key')
-    }
+    const { websiteKey, websiteURL } = params
+    return solveWithAntiCaptcha(
+      { websiteKey, websiteURL, type: 'NoCaptchaTaskProxyless' },
+      params.timeout,
+      secrets,
+      'gRecaptchaResponse'
+    )
+  } else if (params.type === 'image') {
+    checkMandatoryParams(params, ['body'])
+    return solveWithAntiCaptcha(
+      { body: params.body, type: 'ImageToTextTask' },
+      params.timeout,
+      secrets,
+      'text'
+    )
   }
-
-  throw new Error(errors.CAPTCHA_RESOLUTION_FAILED)
 }
 
 function checkMandatoryParams(params = {}, mandatoryParams = []) {
@@ -123,4 +81,61 @@ function checkMandatoryParams(params = {}, mandatoryParams = []) {
       `${missingKeys.join(', ')} are mandatory to solve the captcha`
     )
   }
+}
+
+async function solveWithAntiCaptcha(
+  taskParams,
+  timeout = DEFAULT_TIMEOUT,
+  secrets,
+  resultAttribute = 'gRecaptchaResponse'
+) {
+  const antiCaptchaApiUrl = 'https://api.anti-captcha.com'
+  let gRecaptchaResponse = null
+  const startTime = Date.now()
+
+  // we try to solve the captcha with anticaptcha
+  const clientKey = secrets.antiCaptchaClientKey
+  if (clientKey) {
+    log('info', '  Creating captcha resolution task...')
+    const task = await request.post(`${antiCaptchaApiUrl}/createTask`, {
+      body: {
+        clientKey,
+        task: taskParams
+      },
+      json: true
+    })
+    if (task && task.taskId) {
+      log('info', `    Task id : ${task.taskId}`)
+      while (!gRecaptchaResponse) {
+        const resp = await request.post(`${antiCaptchaApiUrl}/getTaskResult`, {
+          body: {
+            clientKey,
+            taskId: task.taskId
+          },
+          json: true
+        })
+        if (resp.status === 'ready') {
+          if (resp.errorId) {
+            log('error', `Anticaptcha error: ${JSON.stringify(resp)}`)
+            throw new Error(errors.CAPTCHA_RESOLUTION_FAILED)
+          }
+          log('warn', `  Found Recaptcha response : ${JSON.stringify(resp)}`)
+          return resp.solution[resultAttribute]
+        } else {
+          log('info', `    ${Math.round((Date.now() - startTime) / 1000)}s...`)
+          if (Date.now() > timeout) {
+            log('warn', `  Captcha resolution timeout`)
+            throw new Error(errors.CAPTCHA_RESOLUTION_FAILED + '.TIMEOUT')
+          }
+          await sleep(10000)
+        }
+      }
+    } else {
+      log('warn', 'Could not create anticaptcha task')
+    }
+  } else {
+    log('warn', 'Could not find any anticaptcha secret key')
+  }
+
+  throw new Error(errors.CAPTCHA_RESOLUTION_FAILED)
 }
