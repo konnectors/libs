@@ -4,6 +4,7 @@ const UNNECESSARY_CHARS_REGEX = /[^a-zA-Z_ ]/g
 const MAX_WORD = 3
 const DEFAULT_CATEGORY = '0'
 const PROBA_LIMIT = 10 / 100
+const DESIRED_TAGS = ['sign', 'amount', 'label']
 
 const format = label => {
   const stripAccents = label => {
@@ -49,27 +50,18 @@ const predictProbaMax = (classifier, label) => {
 const categorize = (classifier, label) => {
   const predicted = classifier.categorize(label, true)
 
-  // Display likelihoods (statistic)
-  // console.log(predicted.likelihoods)
-
   const categoryId =
     predicted.likelihoods[0].proba > PROBA_LIMIT
       ? predicted.predictedCategory
       : DEFAULT_CATEGORY
 
-  // Display category name
-  // console.log(categoryId, categorizesTree[categoryId])
-
   return categoryId
 }
 
-const titleRx = /(?:^|\s)\S/g
-const titleCase = label =>
-  label.toLowerCase().replace(titleRx, a => a.toUpperCase())
-
-const getTransactionLabel = transaction => titleCase(transaction.label)
+const getTransactionLabel = transaction => transaction.label.toLowerCase()
 
 const getAmountSignTag = amount => (amount < 0 ? 'tag_neg' : 'tag_pos')
+
 const getAmountTag = amount => {
   if (amount < -550) {
     return 'tag_v_b_expense'
@@ -90,13 +82,48 @@ const getAmountTag = amount => {
   }
 }
 
+const getDayOfMonthTag = dateStr => {
+  const dayOfMonthStr = Number(dateStr.slice(9, 10))
+  if (dayOfMonthStr < 4 || dayOfMonthStr >= 28) {
+    return 'tag_A'
+  } else if (dayOfMonthStr < 12 && dayOfMonthStr >= 4) {
+    return 'tag_B'
+  } else if (dayOfMonthStr < 20 && dayOfMonthStr >= 12) {
+    return 'tag_C'
+  } else if (dayOfMonthStr < 28 && dayOfMonthStr >= 20) {
+    return 'tag_D'
+  }
+}
+
+const getDigitsTag = amount => {
+  const amountString = String(amount)
+  return amountString.includes('.') ? 'tag_float' : 'tag_integer'
+}
+
 const getLabelWithTags = transaction => {
-  const label = getTransactionLabel(transaction).toLowerCase()
-
-  const amountSignTag = getAmountSignTag(transaction.amount)
-  const amountTag = getAmountTag(transaction.amount)
-
-  return `${amountSignTag} ${amountTag} ${label}`
+  let label = ''
+  for (const keyword of DESIRED_TAGS) {
+    if (keyword.includes('amount')) {
+      const tag = getAmountTag(transaction.amount)
+      label = `${label} ${tag}`
+    } else if (keyword.includes('sign')) {
+      const tag = getAmountSignTag(transaction.amount)
+      label = `${label} ${tag}`
+    } else if (keyword.includes('day')) {
+      const tag = getDayOfMonthTag(transaction.date)
+      label = `${label} ${tag}`
+    } else if (keyword.includes('label')) {
+      const tag = transaction.label.toLowerCase()
+      label = `${label} ${tag}`
+    } else if (keyword.includes('digits')) {
+      const tag = getDigitsTag(transaction.amount)
+      label = `${label} ${tag}`
+    } else if (keyword.includes('original')) {
+      const tag = getTransactionLabel(transaction).toLowerCase()
+      label = `${label} ${tag}`
+    }
+  }
+  return label
 }
 
 module.exports = {
