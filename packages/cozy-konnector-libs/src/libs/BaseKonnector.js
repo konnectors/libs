@@ -207,17 +207,17 @@ class BaseKonnector {
   }
 
   /**
-   * Tells Home that 2FA code is needed and wait for the user to submit it.
-   * It uses the account to do the communication with Home
+   * Notices that 2FA code is needed and wait for the user to submit it.
+   * It uses the account to do the communication with the user
    *
    * Parameters:
    *
    * - `params` object with some mandatory attributes :
    *   + `type` (String): (default email) this is the type of expected 2FA code. The message displayed
-   *   to the user in Home will follow it. Possible values: email, sms
+   *   to the user will follow it. Possible values: email, sms
    *   + `timeout` (Number): (default 3 minutes after now) time when the function will stop waiting
    *   for a code and fail
-   *   + `hartBeat` (Number): (default 5s) how much time is waited between each code check
+   *   + `heartBeat` (Number): (default 5s) how much time is waited between each code check
    * Returns: Promise with sucessfull code if any
    *
    * @example
