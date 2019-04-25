@@ -537,11 +537,12 @@ CookieKonnector which will help you save the session.
 Parameters:
 
 - `params` is an array of objects with any attributes with some mandatory attributes :
-  + `type` (String): (default recaptcha) type of captcha to solve
-  + `timeout` (Number): (default 4 minutes after now) time when the solver should stop trying to
+  + `type` (String): (default recaptcha) type of captcha to solve. can be "recaptcha" or "image" at the moment
+  + `timeout` (Number): (default 3 minutes after now) time when the solver should stop trying to
   solve the captcha
-  + `websiteKey` (String): the key you can find on the targeted website
-  + `websiteURL` (String): The URL of the page showing the captcha
+  + `websiteKey` (String): the key you can find on the targeted website (for recaptcha)
+  + `websiteURL` (String): The URL of the page showing the captcha (for recaptcha)
+  + `body` (String): The base64 encoded image (for image captcha)
 Returns: Promise with the solved captcha response as a string
 
 **Kind**: Exported function  
