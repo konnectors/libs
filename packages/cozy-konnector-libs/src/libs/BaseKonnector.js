@@ -8,6 +8,7 @@ const {
   wrapIfSentrySetUp,
   captureExceptionAndDie
 } = require('../helpers/sentry')
+const sleep = require('util').promisify(global.setTimeout)
 
 /**
  * @class
@@ -203,6 +204,72 @@ class BaseKonnector {
         this._account = account
         return account
       })
+  }
+
+  /**
+   * Notices that 2FA code is needed and wait for the user to submit it.
+   * It uses the account to do the communication with the user
+   *
+   * Parameters:
+   *
+   * - `params` object with some mandatory attributes :
+   *   + `type` (String): (default email) this is the type of expected 2FA code. The message displayed
+   *   to the user will follow it. Possible values: email, sms
+   *   + `timeout` (Number): (default 3 minutes after now) time when the function will stop waiting
+   *   for a code and fail
+   *   + `heartBeat` (Number): (default 5s) how much time is waited between each code check
+   * Returns: Promise with sucessfull code if any
+   *
+   * @example
+   *
+   * ```javascript
+   * const { BaseKonnector } = require('cozy-konnector-libs')
+   *
+   * module.exports = new BaseKonnector(start)
+   *
+   * async function start() {
+   *    // we detect the need of a 2FA code
+   *    const code = this.waitForTwoFaCode({
+   *      type: 'email',
+   *      timeout: 5 * 60 * 1000
+   *    })
+   *    // send the code to the targeted site
+   * }
+   * ```
+   */
+  async waitForTwoFaCode(params = {}) {
+    const startTime = Date.now()
+    const defaultParams = {
+      type: 'email',
+      timeout: startTime + 3 * 60 * 1000,
+      heartBeat: 5000
+    }
+    params = { ...defaultParams, ...params }
+    let account = {}
+    let state = 'TWOFA_NEEDED'
+    if (params.type === 'email') state += '.EMAIL'
+    if (params.type === 'sms') state += '.SMS'
+    log('info', `Setting ${state} state into the current account`)
+    await this.updateAccountAttributes({ state })
+
+    // init code to null in the account
+    await this.updateAccountAttributes({
+      twofa_code: null
+    })
+
+    while (Date.now() < params.timeout && !account.twofa_code) {
+      await sleep(params.heartBeat)
+      account = await cozy.data.find('io.cozy.accounts', this.accountId)
+      log('info', `current twofa_code : ${account.twofa_code}`)
+    }
+
+    if (account.twofa_code) {
+      await this.updateAccountAttributes({
+        twofa_code: null
+      })
+      return account.twofa_code
+    }
+    throw new Error('USER_ACTION_NEEDED.TWOFA_EXPIRED')
   }
 
   /**
