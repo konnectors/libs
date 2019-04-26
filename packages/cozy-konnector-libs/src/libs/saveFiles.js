@@ -247,19 +247,21 @@ const saveEntry = function(entry, options) {
  *
  * You need the full permission on `io.cozy.files` in your manifest to use this function.
  *
- * - `files` is an array of `{ fileurl, filename }` :
+ * - `files` is an array of object with the following possible attributes :
  *
- *   + fileurl: The url of the file. This attribute is mandatory or this item will be ignored (can be a function returning the value)
+ *   + fileurl: The url of the file (can be a function returning the value). Ignored if `filestream`
+ *   is given
  *   + filestream: the stream which will be directly passed to cozyClient.files.create (can also be
  *   function returning the stream)
  *   + requestOptions (object) : The options passed to request to fetch fileurl (can be a function returning the value)
  *   + filename : The file name of the item written on disk. This attribute is optional and as default value, the
  *     file name will be "smartly" guessed by the function. Use this attribute if the guess is not smart
- *   enough for you (can be a function returning the value).
- *   + `shouldReplaceName` (string) default: `undefined` use to select the old filename to replace
- *   by filename if possible (can be a function returning the value)
- *   + `shouldReplaceFile` (function) default: use this function to state if the current file
- *   should be redownloaded and replaced. You can use the same attribute directly in the entry.
+ *   enough for you, or if you use `filestream` (can be a function returning the value).
+ *   + `shouldReplaceName` (string) used to migrate filename. If saveFiles find a file linked to this entry and this
+ *   file name matches `shouldReplaceName`, the file is renames to `filename` (can be a function returning the value)
+ *   + `shouldReplaceFile` (function) use this function to state if the current entry should be forced
+ *   to be redownloaded and replaced. Usefull if we know the file content can change and we always
+ *   want the last version.
  *   + `fileAttributes` (object) ex: `{created_at: new Date()}` sets some additionnal file
  *   attributes passed to cozyClient.file.create
  *
