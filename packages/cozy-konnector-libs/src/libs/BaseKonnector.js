@@ -250,12 +250,7 @@ class BaseKonnector {
     if (params.type === 'email') state += '.EMAIL'
     if (params.type === 'sms') state += '.SMS'
     log('info', `Setting ${state} state into the current account`)
-    await this.updateAccountAttributes({ state })
-
-    // init code to null in the account
-    await this.updateAccountAttributes({
-      twofa_code: null
-    })
+    await this.updateAccountAttributes({ state, twofa_code: null })
 
     while (Date.now() < params.timeout && !account.twofa_code) {
       await sleep(params.heartBeat)
@@ -265,6 +260,7 @@ class BaseKonnector {
 
     if (account.twofa_code) {
       await this.updateAccountAttributes({
+        state: null,
         twofa_code: null
       })
       return account.twofa_code
