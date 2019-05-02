@@ -29,14 +29,11 @@ describe('BaseKonnector', () => {
     const code = await konn.waitForTwoFaCode({ heartBeat: 100 })
     expect(code).toEqual('expected code')
     expect(client.data.find).toHaveBeenCalled()
-    expect(client.data.updateAttributes).toHaveBeenCalledTimes(3)
+    expect(client.data.updateAttributes).toHaveBeenCalledTimes(2)
     expect(client.data.updateAttributes.mock.calls[0][2].state).toEqual(
       'TWOFA_NEEDED.EMAIL'
     )
     expect(client.data.updateAttributes.mock.calls[1][2].twofa_code).toEqual(
-      null
-    )
-    expect(client.data.updateAttributes.mock.calls[2][2].twofa_code).toEqual(
       null
     )
   })
