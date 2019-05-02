@@ -26,6 +26,7 @@ describe('BaseKonnector', () => {
       asyncResolve({ twofa_code: 'expected code' })
     )
     client.data.updateAttributes.mockReturnValue(asyncResolve({}))
+    process.env.COZY_JOB_MANUAL_EXECUTION = 'true'
     const code = await konn.waitForTwoFaCode({ heartBeat: 100 })
     expect(code).toEqual('expected code')
     expect(client.data.find).toHaveBeenCalled()
