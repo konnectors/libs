@@ -238,6 +238,14 @@ class BaseKonnector {
    * ```
    */
   async waitForTwoFaCode(params = {}) {
+    if (process.env.COZY_JOB_MANUAL_EXECUTION !== 'true') {
+      log(
+        'warn',
+        `waitForTwoFaCode: this in not a manual execution. It is not possible to handle 2FA here.`
+      )
+      throw new Error('USER_ACTION_NEEDED.TWOFA_EXPIRED')
+    }
+
     const startTime = Date.now()
     const defaultParams = {
       type: 'email',
