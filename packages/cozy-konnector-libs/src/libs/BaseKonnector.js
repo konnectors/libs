@@ -218,6 +218,8 @@ class BaseKonnector {
    *   + `timeout` (Number): (default 3 minutes after now) time when the function will stop waiting
    *   for a code and fail
    *   + `heartBeat` (Number): (default 5s) how much time is waited between each code check
+   *   + `retry` (boolen): (default false) is it a retry. If true, an error message will be
+   *   displayed to the user
    * Returns: Promise with sucessfull code if any
    *
    * @example
@@ -250,11 +252,12 @@ class BaseKonnector {
     const defaultParams = {
       type: 'email',
       timeout: startTime + 3 * 60 * 1000,
-      heartBeat: 5000
+      heartBeat: 5000,
+      retry: false
     }
     params = { ...defaultParams, ...params }
     let account = {}
-    let state = 'TWOFA_NEEDED'
+    let state = params.retry ? 'TWOFA_NEEDED_RETRY' : 'TWOFA_NEEDED'
     if (params.type === 'email') state += '.EMAIL'
     if (params.type === 'sms') state += '.SMS'
     log('info', `Setting ${state} state into the current account`)
