@@ -120,12 +120,24 @@ class CookieKonnector extends BaseKonnector {
    * @return {Promise} true or false if the session in the account exists or not
    */
   async initSession() {
+    const accountData = this.getAccountData()
     try {
-      const accountData = this.getAccountData()
+      if (accountData.state === 'RESET_SESSION') {
+        log('info', 'RESET_SESSION state found')
+        await this.resetSession()
+        await this.updateAccountAttributes({ state: null })
+      }
+    } catch (err) {
+      log('warn', 'Could not reset the session')
+      log('warn', err.message)
+    }
+
+    try {
       let jar = null
       if (accountData && accountData.auth) {
         jar = JSON.parse(accountData.auth[JAR_ACCOUNT_KEY])
       }
+
       if (jar) {
         log('info', 'found saved session, using it...')
         this._jar._jar = CookieJar.fromJSON(jar, this._jar._jar.store)
