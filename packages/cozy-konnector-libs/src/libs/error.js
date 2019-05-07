@@ -5,6 +5,10 @@ process.on('uncaughtException', err => {
   log('critical', err.message, 'uncaught exception')
   process.exit(1)
 })
+process.on('unhandledRejection', err => {
+  log('critical', err.message, 'unhandled exception')
+  process.exit(1)
+})
 process.on('SIGTERM', () => {
   log('critical', 'The konnector got a SIGTERM')
   process.exit(128 + 15)
