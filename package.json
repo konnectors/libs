@@ -12,12 +12,17 @@
     "eslint": "5.16.0",
     "eslint-config-cozy-app": "1.1.12",
     "eslint-plugin-prettier": "3.0.1",
+    "eslint-plugin-security": "^1.4.0",
     "lerna": "3.13.4",
     "lerna-changelog": "0.8.2"
   },
   "eslintConfig": {
+    "plugins": [
+      "security"
+    ],
     "extends": [
-      "cozy-app"
+      "cozy-app",
+      "plugin:security/recommended"
     ]
   },
   "prettier": {
