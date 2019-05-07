@@ -39,7 +39,8 @@ update the COZY_URL field in [./konnector-dev-config.json].
 
 After that, your konnector is running but should not work since you did not specify any credentials to
 the target service. You can do this also in [./konnector-dev-config.json] in the "fields"
-attribute.
+attribute. You can also add js comments in this json configuration file, they will be stripped out
+when read by cozy-jobs-cli
 
 Now run `yarn dev` one more time, it should be ok.
 
