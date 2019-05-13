@@ -23,7 +23,7 @@ describe('BaseKonnector', () => {
 
   it('waitForTwoFaCode should wait for 2FA code', async () => {
     client.data.find.mockReturnValue(
-      asyncResolve({ twofa_code: 'expected code' })
+      asyncResolve({ twoFACode: 'expected code' })
     )
     client.data.updateAttributes.mockReturnValue(asyncResolve({}))
     process.env.COZY_JOB_MANUAL_EXECUTION = 'true'
@@ -34,13 +34,13 @@ describe('BaseKonnector', () => {
     expect(client.data.updateAttributes.mock.calls[0][2].state).toEqual(
       'TWOFA_NEEDED.EMAIL'
     )
-    expect(client.data.updateAttributes.mock.calls[1][2].twofa_code).toEqual(
+    expect(client.data.updateAttributes.mock.calls[1][2].twoFACode).toEqual(
       null
     )
   })
 
   it('waitForTwoFaCode should throw on timeout', async () => {
-    client.data.find.mockReturnValue(asyncResolve({ twofa_code: null }))
+    client.data.find.mockReturnValue(asyncResolve({ twoFACode: null }))
     client.data.updateAttributes.mockReturnValue(asyncResolve({}))
     try {
       await konn.waitForTwoFaCode({ timeout: Date.now() })
