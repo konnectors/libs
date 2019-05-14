@@ -261,20 +261,20 @@ class BaseKonnector {
     if (params.type === 'email') state += '.EMAIL'
     if (params.type === 'sms') state += '.SMS'
     log('info', `Setting ${state} state into the current account`)
-    await this.updateAccountAttributes({ state, twofa_code: null })
+    await this.updateAccountAttributes({ state, twoFACode: null })
 
-    while (Date.now() < params.timeout && !account.twofa_code) {
+    while (Date.now() < params.timeout && !account.twoFACode) {
       await sleep(params.heartBeat)
       account = await cozy.data.find('io.cozy.accounts', this.accountId)
-      log('info', `current twofa_code : ${account.twofa_code}`)
+      log('info', `current twoFACode : ${account.twoFACode}`)
     }
 
-    if (account.twofa_code) {
+    if (account.twoFACode) {
       await this.updateAccountAttributes({
         state: null,
-        twofa_code: null
+        twoFACode: null
       })
-      return account.twofa_code
+      return account.twoFACode
     }
     throw new Error('USER_ACTION_NEEDED.TWOFA_EXPIRED')
   }
