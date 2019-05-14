@@ -3,6 +3,7 @@
 const fs = require('fs')
 const path = require('path')
 const log = require('cozy-logger')
+const stripJsonComments = require('strip-json-comments')
 
 module.exports = getKonnectorConfig
 
@@ -10,7 +11,8 @@ const configPath = path.resolve('konnector-dev-config.json')
 
 function getKonnectorConfig() {
   if (!fs.existsSync(configPath)) createKonnectorConfig()
-  return require(configPath)
+
+  return JSON.parse(stripJsonComments(fs.readFileSync(configPath)))
 }
 
 const template = {

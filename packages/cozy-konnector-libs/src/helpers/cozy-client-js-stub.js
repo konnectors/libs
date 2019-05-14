@@ -6,6 +6,7 @@ const low = require('lowdb')
 const lodashId = require('lodash-id')
 const FileSync = require('lowdb/adapters/FileSync')
 const rawBody = require('raw-body')
+const stripJsonComments = require('strip-json-comments')
 
 const rootPath = JSON.parse(
   process.env.COZY_FIELDS || '{"folder_to_save": "."}'
@@ -95,7 +96,9 @@ module.exports = {
       const accountExists = Boolean(result)
       if (doctype === 'io.cozy.accounts') {
         const configPath = path.resolve('konnector-dev-config.json')
-        const config = JSON.parse(fs.readFileSync(configPath))
+        const config = JSON.parse(
+          stripJsonComments(fs.readFileSync(configPath))
+        )
         result = { _id: id, ...result, auth: config.fields }
         if (!accountExists) {
           this.create(doctype, result)

@@ -37,7 +37,8 @@
     "raw-body": "2.4.0",
     "request": "2.88.0",
     "request-debug": "0.2.0",
-    "request-promise": "4.2.4"
+    "request-promise": "4.2.4",
+    "strip-json-comments": "^3.0.1"
   },
   "scripts": {
     "build": "npm run transpile",
