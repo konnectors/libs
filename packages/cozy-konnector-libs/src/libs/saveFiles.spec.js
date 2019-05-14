@@ -216,4 +216,24 @@ describe('saveFiles', function() {
       expect(cozyClient.files.create).not.toHaveBeenCalled()
     })
   })
+
+  describe('when timeout is reached', () => {
+    it('should do nothing', async () => {
+      expect.assertions(1)
+      await saveFiles(
+        [
+          {
+            amount: 62.93,
+            fileurl: 'https://coucou.com/filetodownload.pdf',
+            filename: 'bill.pdf',
+            date: '2018-03-03T23:00:00.000Z',
+            vendor: 'coucou'
+          }
+        ],
+        options,
+        { timeout: 1 }
+      )
+      expect(cozyClient.files.create).not.toHaveBeenCalled()
+    })
+  })
 })
