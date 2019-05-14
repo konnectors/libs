@@ -927,6 +927,8 @@ Parameters:
   + `timeout` (Number): (default 3 minutes after now) time when the function will stop waiting
   for a code and fail
   + `heartBeat` (Number): (default 5s) how much time is waited between each code check
+  + `retry` (boolen): (default false) is it a retry. If true, an error message will be
+  displayed to the user
 Returns: Promise with sucessfull code if any
 
 **Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)  
