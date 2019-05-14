@@ -440,7 +440,7 @@ You need the full permission on `io.cozy.files` in your manifest to use this fun
   name and forced the same way.
   + `concurrency` (number) default: `1` sets the maximum number of concurrent downloads
   + `validateFile` (function) default: do not validate if file is empty or has bad mime type
-  + `validateFileContent` (boolean) default false. Also check the content of the file to
+  + `validateFileContent` (boolean or function) default false. Also check the content of the file to
   recognize the mime type
 
 **Kind**: Exported function  
