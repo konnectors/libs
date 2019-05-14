@@ -122,7 +122,7 @@ class CookieKonnector extends BaseKonnector {
   async initSession() {
     const accountData = this.getAccountData()
     try {
-      if (accountData.state === 'RESET_SESSION') {
+      if (this._account.state === 'RESET_SESSION') {
         log('info', 'RESET_SESSION state found')
         await this.resetSession()
         await this.updateAccountAttributes({ state: null })
