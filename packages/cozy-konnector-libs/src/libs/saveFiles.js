@@ -126,7 +126,7 @@ const createFile = async function(entry, options) {
 
     if (
       options.validateFileContent &&
-      !(await DEFAULT_VALIDATE_FILECONTENT(fileDocument))
+      !(await options.validateFileContent(fileDocument))
     ) {
       await removeFile(fileDocument)
       throw new Error('BAD_DOWNLOADED_FILE')
@@ -285,7 +285,7 @@ const saveEntry = function(entry, options) {
  *   name and forced the same way.
  *   + `concurrency` (number) default: `1` sets the maximum number of concurrent downloads
  *   + `validateFile` (function) default: do not validate if file is empty or has bad mime type
- *   + `validateFileContent` (boolean) default false. Also check the content of the file to
+ *   + `validateFileContent` (boolean or function) default false. Also check the content of the file to
  *   recognize the mime type
  * @example
  * ```javascript
@@ -317,8 +317,15 @@ const saveFiles = async (entries, fields, options = {}) => {
     contentType: options.contentType,
     requestInstance: options.requestInstance,
     shouldReplaceFile: options.shouldReplaceFile,
-    validateFile: options.validateFile || DEFAULT_VALIDATE_FILE,
-    validateFileContent: options.validateFileContent
+    validateFile: options.validateFile || DEFAULT_VALIDATE_FILE
+  }
+
+  if (options.validateFileContent) {
+    if (options.validateFileContent === true) {
+      saveOptions.validateFileContent = DEFAULT_VALIDATE_FILECONTENT
+    } else if (typeof options.validateFileContent === 'function') {
+      saveOptions.validateFileContent = options.validateFileContent
+    }
   }
 
   const canBeSaved = entry =>
