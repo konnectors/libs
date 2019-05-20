@@ -49,12 +49,13 @@ function fromCozy(cozy) {
     const pathRepr = JSON.stringify(path)
 
     log('debug', `Checking wether directory ${pathRepr} exists...`)
+    let doc = null
     try {
-      const doc = await cozy.files.statByPath(path)
+      doc = await cozy.files.statByPath(path)
       log('debug', `Directory ${pathRepr} found.`)
       return doc
     } catch (err) {
-      if (err.status !== 404) throw err
+      if (![404, 409].includes(err.status)) throw err
       log('debug', `Directory ${pathRepr} not found.`)
 
       const name = basename(path)
@@ -62,12 +63,18 @@ function fromCozy(cozy) {
       const parentDoc = await mkdirp(parentPath)
 
       log('info', `Creating directory ${pathRepr}...`)
-      const doc = await cozy.files.createDirectory({
-        name,
-        dirID: parentDoc._id
-      })
-      log('info', `Directory ${pathRepr} created!`)
-      return doc
+      try {
+        doc = await cozy.files.createDirectory({
+          name,
+          dirID: parentDoc._id
+        })
+        log('info', `Directory ${pathRepr} created!`)
+        return doc
+      } catch (createErr) {
+        if (![404, 409].includes(err.status)) throw err
+        log('info', 'Directory already exists')
+        return doc
+      }
     }
   }
 }
