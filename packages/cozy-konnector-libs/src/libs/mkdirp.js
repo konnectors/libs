@@ -71,7 +71,7 @@ function fromCozy(cozy) {
         log('info', `Directory ${pathRepr} created!`)
         return doc
       } catch (createErr) {
-        if (![404, 409].includes(err.status)) throw err
+        if (![404, 409].includes(createErr.status)) throw createErr
         log('info', 'Directory already exists')
         return doc
       }
