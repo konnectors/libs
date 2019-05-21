@@ -161,7 +161,7 @@ const removeFile = async function(file) {
   await cozy.files.destroyById(file._id)
 }
 
-const saveEntry = function(entry, options) {
+const saveEntry = async function(entry, options) {
   if (options.timeout && Date.now() > options.timeout) {
     const remainingTime = Math.floor((options.timeout - Date.now()) / 1000)
     log('info', `${remainingTime}s timeout finished for ${options.folderPath}`)
@@ -169,77 +169,71 @@ const saveEntry = function(entry, options) {
   }
 
   const filepath = path.join(options.folderPath, getFileName(entry))
-  return cozy.files
-    .statByPath(filepath)
-    .then(async file => {
-      let shouldReplace = false
-      try {
-        shouldReplace = await shouldReplaceFile(file, entry, options, filepath)
-      } catch (err) {
-        log('info', `Error in shouldReplace : ${err.message}`)
-        shouldReplace = true
-      }
+  let file = null
+  try {
+    file = await cozy.files.statByPath(filepath)
+  } catch (err) {
+    log('info', err.message)
+  }
+  let shouldReplace = false
+  try {
+    shouldReplace = await shouldReplaceFile(file, entry, options, filepath)
+  } catch (err) {
+    log('info', `Error in shouldReplace : ${err.message}`)
+    shouldReplace = true
+  }
 
-      if (shouldReplace) {
-        log('info', `Replacing ${filepath}...`)
-        await removeFile(file)
-        throw new Error('REPLACE_FILE')
-      }
-      return file
-    })
-    .then(
-      file => {
-        return file
-      },
-      err => {
-        log('info', `error while removing`)
-        log('info', `${err.message}`)
-        log('debug', omit(entry, 'filestream'))
-        logFileStream(entry.filestream)
-        log('debug', `File ${filepath} does not exist yet or is not valid`)
-        entry._cozy_file_to_create = true
-        return retry(createFile, {
-          interval: 1000,
-          throw_original: true,
-          max_tries: options.retry,
-          args: [entry, options]
-        }).catch(err => {
-          if (err.message === 'BAD_DOWNLOADED_FILE') {
-            log(
-              'warn',
-              `Could not download file after ${
-                options.retry
-              } tries removing the file`
-            )
-          } else {
-            log('warn', 'unknown file download error: ' + err.message)
-          }
-        })
-      }
+  if (shouldReplace && file) {
+    log('info', `Replacing ${filepath}...`)
+    await removeFile(file)
+    file = null
+  }
+
+  try {
+    if (!file) {
+      log('debug', omit(entry, 'filestream'))
+      logFileStream(entry.filestream)
+      log('debug', `File ${filepath} does not exist yet or is not valid`)
+      entry._cozy_file_to_create = true
+      file = await retry(createFile, {
+        interval: 1000,
+        throw_original: true,
+        max_tries: options.retry,
+        args: [entry, options]
+      }).catch(err => {
+        if (err.message === 'BAD_DOWNLOADED_FILE') {
+          log(
+            'warn',
+            `Could not download file after ${
+              options.retry
+            } tries removing the file`
+          )
+        } else {
+          log('warn', 'unknown file download error: ' + err.message)
+        }
+      })
+    }
+    attachFileToEntry(entry, file)
+
+    sanitizeEntry(entry)
+    if (options.postProcess) {
+      await options.postProcess(entry)
+    }
+  } catch (err) {
+    if (getErrorStatus(err) === 413) {
+      // the cozy quota is full
+      throw new Error(errors.DISK_QUOTA_EXCEEDED)
+    }
+    log('warn', errors.SAVE_FILE_FAILED)
+    log(
+      'warn',
+      err.message,
+      `Error caught while trying to save the file ${
+        entry.fileurl ? entry.fileurl : entry.filename
+      }`
     )
-    .then(file => {
-      attachFileToEntry(entry, file)
-      return entry
-    })
-    .then(sanitizeEntry)
-    .then(entry => {
-      return options.postProcess ? options.postProcess(entry) : entry
-    })
-    .catch(err => {
-      if (getErrorStatus(err) === 413) {
-        // the cozy quota is full
-        throw new Error(errors.DISK_QUOTA_EXCEEDED)
-      }
-      log('warn', errors.SAVE_FILE_FAILED)
-      log(
-        'warn',
-        err.message,
-        `Error caught while trying to save the file ${
-          entry.fileurl ? entry.fileurl : entry.filename
-        }`
-      )
-      return entry
-    })
+  }
+  return entry
 }
 
 /**
