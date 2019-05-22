@@ -64,10 +64,16 @@ beforeEach(async function() {
   bills = getBillFixtures()
   cozyClient.data.defineIndex.mockReturnValue(() => asyncResolve(INDEX))
   cozyClient.files.create.mockReset()
+  cozyClient.files.updateById.mockReset()
   cozyClient.files.statByPath.mockReset()
   cozyClient.files.create.mockImplementation((rqPromise, options) => {
     return { _id: 'newFileId', attributes: { ...options } }
   })
+  cozyClient.files.updateById.mockImplementation(
+    (fileId, rqPromise, options) => {
+      return { _id: fileId, attributes: { ...options } }
+    }
+  )
 })
 
 describe('saveFiles', function() {
@@ -87,25 +93,34 @@ describe('saveFiles', function() {
       name: 'when file does not exist',
       existingFile: null,
       expectCreation: true,
+      expectUpdate: false,
       expectedBillFileId: 'newFileId'
     },
     {
       name: 'when file exists and mime is correct',
       existingFile: rightMimeFile,
       expectCreation: false,
+      expectUpdate: false,
       expectedBillFileId: 'existingFileId'
     },
     {
       name: 'when file exists and mime is not correct',
       existingFile: badMimeFile,
-      expectCreation: true,
-      expectedBillFileId: 'newFileId'
+      expectCreation: false,
+      expectUpdate: true,
+      expectedBillFileId: 'existingFileId'
     }
   ]
 
   // Creation of the tests
   for (let test of tests) {
-    const { name, expectCreation, expectedBillFileId, existingFile } = test
+    const {
+      name,
+      expectCreation,
+      expectUpdate,
+      expectedBillFileId,
+      existingFile
+    } = test
     describe(name, () => {
       beforeEach(async () => {
         cozyClient.files.statByPath.mockImplementation(path => {
@@ -127,6 +142,21 @@ describe('saveFiles', function() {
           expect(cozyClient.files.create).not.toHaveBeenCalled()
         }
       })
+
+      // Whether a file should be updated or not
+      if (expectUpdate) {
+        it(`should${
+          expectUpdate ? ' ' : ' not '
+        }update a file`, async function() {
+          if (expectUpdate) {
+            expect(cozyClient.files.updateById).toHaveBeenCalledTimes(
+              bills.length
+            )
+          } else {
+            expect(cozyClient.files.updateById).not.toHaveBeenCalled()
+          }
+        })
+      }
 
       // File should be included in doc (useful for bills to set the invoice)
       it('should store file in doc', () => {

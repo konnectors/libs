@@ -97,7 +97,7 @@ const downloadEntry = function(entry, options) {
   return filePromise
 }
 
-const createFile = async function(entry, options) {
+const createFile = async function(entry, options, method, fileId) {
   const folder = await cozy.files.statByPath(options.folderPath)
   let createFileOptions = {
     name: getFileName(entry),
@@ -116,11 +116,21 @@ const createFile = async function(entry, options) {
 
   const toCreate =
     entry.filestream || downloadEntry(entry, { ...options, simple: false })
-  let fileDocument = await cozy.files.create(toCreate, createFileOptions)
+  let fileDocument
+  if (method === 'create') {
+    fileDocument = await cozy.files.create(toCreate, createFileOptions)
+  } else if (method === 'updateById') {
+    log('info', `replacing file for ${entry.filename}`)
+    fileDocument = await cozy.files.updateById(
+      fileId,
+      toCreate,
+      createFileOptions
+    )
+  }
 
   if (options.validateFile) {
     if ((await options.validateFile(fileDocument)) === false) {
-      await removeFile(fileDocument)
+      if (method === 'create') await removeFile(fileDocument)
       throw new Error('BAD_DOWNLOADED_FILE')
     }
 
@@ -128,7 +138,7 @@ const createFile = async function(entry, options) {
       options.validateFileContent &&
       !(await options.validateFileContent(fileDocument))
     ) {
-      await removeFile(fileDocument)
+      if (method === 'create') await removeFile(fileDocument)
       throw new Error('BAD_DOWNLOADED_FILE')
     }
   }
@@ -176,21 +186,24 @@ const saveEntry = async function(entry, options) {
     log('info', err.message)
   }
   let shouldReplace = false
-  try {
-    shouldReplace = await shouldReplaceFile(file, entry, options, filepath)
-  } catch (err) {
-    log('info', `Error in shouldReplace : ${err.message}`)
-    shouldReplace = true
+  if (file) {
+    try {
+      shouldReplace = await shouldReplaceFile(file, entry, options, filepath)
+    } catch (err) {
+      log('info', `Error in shouldReplace : ${err.message}`)
+      shouldReplace = true
+    }
   }
+
+  let method = 'create'
 
   if (shouldReplace && file) {
-    log('info', `Replacing ${filepath}...`)
-    await removeFile(file)
-    file = null
+    method = 'updateById'
+    log('info', `Will replace ${filepath}...`)
   }
 
   try {
-    if (!file) {
+    if (!file || method === 'updateById') {
       log('debug', omit(entry, 'filestream'))
       logFileStream(entry.filestream)
       log('debug', `File ${filepath} does not exist yet or is not valid`)
@@ -199,7 +212,7 @@ const saveEntry = async function(entry, options) {
         interval: 1000,
         throw_original: true,
         max_tries: options.retry,
-        args: [entry, options]
+        args: [entry, options, method, file ? file._id : undefined]
       }).catch(err => {
         if (err.message === 'BAD_DOWNLOADED_FILE') {
           log(
