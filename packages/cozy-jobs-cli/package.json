@@ -35,7 +35,7 @@
     "lint": "standard --fix src/*"
   },
   "devDependencies": {
-    "lerna": "3.13.4"
+    "lerna": "3.14.1"
   },
   "prettier": {
     "semi": false,
