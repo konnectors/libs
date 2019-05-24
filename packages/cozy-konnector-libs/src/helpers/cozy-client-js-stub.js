@@ -144,41 +144,13 @@ module.exports = {
       // just return the / path for dev purpose
       return Promise.resolve({ attributes: { path: '/' } })
     },
-    create(file, options) {
-      return new Promise((resolve, reject) => {
-        log('debug', `Creating new file ${options.name}`)
-        const finalPath = path.join(rootPath, options.dirID, options.name)
-        log('debug', `Real path : ${finalPath}`)
-        if (file.pipe) {
-          let writeStream = fs.createWriteStream(finalPath)
-          file.pipe(writeStream)
+    async updateById(id, file, options) {
+      await removeFile(id)
+      return createFile(file, options)
+    },
 
-          file.on('end', () => {
-            log('info', `File ${finalPath} created`)
-            const extension = path.extname(options.name).substr(1)
-            resolve({
-              _id: options.name,
-              attributes: {
-                mime: mimetypes.lookup(extension),
-                name: options.name
-              }
-            })
-          })
-          writeStream.on('error', err => {
-            log('warn', `Error : ${err} while trying to write file`)
-            reject(new Error(err))
-          })
-        } else {
-          // file is a string
-          fs.writeFileSync(finalPath, file)
-          resolve({
-            _id: options.name,
-            attributes: {
-              name: options.name
-            }
-          })
-        }
-      })
+    create(file, options) {
+      return createFile(file, options)
     },
     createDirectory(options) {
       return new Promise(resolve => {
@@ -202,15 +174,18 @@ module.exports = {
       }
     },
     trashById(fileId) {
-      const realpath = path.join(rootPath, fileId)
-      fs.unlinkSync(realpath)
-      return Promise.resolve()
+      return removeFile(fileId)
     },
     destroyById() {
       // there is no trash with the stub
       return Promise.resolve()
     }
   }
+}
+
+async function removeFile(fileId) {
+  const realpath = path.join(rootPath, fileId)
+  fs.unlinkSync(realpath)
 }
 
 function setUpDb() {
@@ -237,4 +212,41 @@ function removeFirstSlash(pathToCheck) {
     return pathToCheck.substr(1)
   }
   return pathToCheck
+}
+
+function createFile(file, options) {
+  return new Promise((resolve, reject) => {
+    log('debug', `Creating new file ${options.name}`)
+    const finalPath = path.join(rootPath, options.dirID, options.name)
+    log('debug', `Real path : ${finalPath}`)
+    if (file.pipe) {
+      let writeStream = fs.createWriteStream(finalPath)
+      file.pipe(writeStream)
+
+      file.on('end', () => {
+        log('info', `File ${finalPath} created`)
+        const extension = path.extname(options.name).substr(1)
+        resolve({
+          _id: options.name,
+          attributes: {
+            mime: mimetypes.lookup(extension),
+            name: options.name
+          }
+        })
+      })
+      writeStream.on('error', err => {
+        log('warn', `Error : ${err} while trying to write file`)
+        reject(new Error(err))
+      })
+    } else {
+      // file is a string
+      fs.writeFileSync(finalPath, file)
+      resolve({
+        _id: options.name,
+        attributes: {
+          name: options.name
+        }
+      })
+    }
+  })
 }
