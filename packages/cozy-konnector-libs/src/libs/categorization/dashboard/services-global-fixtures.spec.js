@@ -16,7 +16,7 @@ jest.mock('../globalModel/parameters')
 
 const fixturePath = path.join(__dirname, 'fixtures')
 
-const BACKUP_DIR = process.env.BACKUP_DIR || '/tmp/'
+const BACKUP_DIR = process.env.BACKUP_DIR
 const IT_IS_A_TEST = process.env.IT_IS_A_TEST
 
 const globalModelJSON = softRequire('./bank_classifier_nb_and_voc.json')
@@ -34,12 +34,10 @@ if (IT_IS_A_TEST) {
   ]
 }
 
-const LOCAL_MODEL_THRESHOLD = 0.8
 const GLOBAL_MODEL_THRESHOLD = 0.25
 
 const METHOD_BI = 'BI'
 const METHOD_GLOBAL_COZY = 'globalModel'
-const METHOD_LOCAL_USER = 'localModel'
 
 const STATUS_OK = 'WELL_CATEGORIZED'
 const STATUS_OK_FALLBACK = 'ALMOST_WELL_CATEGORIZED'
@@ -53,7 +51,6 @@ const ICONE_KO = '❌'
 const ICONE_UNCATEGORIZED = '⚠️'
 const ICONE_BI = 'BI'
 const ICONE_GLOBAL_MODEL = '☁️'
-const ICONE_LOCAL_MODEL = '👤'
 
 // Prepare the historized tracking
 const today = new Date()
@@ -92,11 +89,7 @@ const checkCategorization = transactions => {
     let displayedCatId
     let method
     let proba
-    if (op.localCategoryProba >= LOCAL_MODEL_THRESHOLD) {
-      displayedCatId = op.localCategoryId
-      method = METHOD_LOCAL_USER
-      proba = op.localCategoryProba
-    } else if (op.cozyCategoryProba >= GLOBAL_MODEL_THRESHOLD) {
+    if (op.cozyCategoryProba >= GLOBAL_MODEL_THRESHOLD) {
       displayedCatId = op.cozyCategoryId
       method = METHOD_GLOBAL_COZY
       proba = op.cozyCategoryProba
@@ -136,27 +129,20 @@ const fmtAccuracy = accuracy => {
   const {
     nOperations,
     winGlobalModel,
-    winLocalUser,
     winBI,
     winFallbackGlobalModel,
-    winFallbackLocalUser,
     winFallbackBI,
     loseGlobalModel,
-    loseLocalUser,
     loseBI,
     nUncategorized
   } = accuracy
-  const nWin = winBI + winGlobalModel + winLocalUser
-  const nWinFallback =
-    winFallbackBI + winFallbackGlobalModel + winFallbackLocalUser
-  const nLose = loseBI + loseGlobalModel + loseLocalUser
+  const nWin = winBI + winGlobalModel
+  const nWinFallback = winFallbackBI + winFallbackGlobalModel
+  const nLose = loseBI + loseGlobalModel
   let summaryStr = `On ${nOperations} operations:
     \t- ${ICONE_OK} : ${((100 * nWin) / nOperations).toFixed(
     2
   )} % of good predictions
-    \t\t-${ICONE_LOCAL_MODEL} ${((winLocalUser / nWin) * 100).toFixed(
-    2
-  )} % thanks to local model
     \t\t-${ICONE_GLOBAL_MODEL} ${((winGlobalModel / nWin) * 100).toFixed(
     2
   )} % thanks to global model
@@ -164,10 +150,6 @@ const fmtAccuracy = accuracy => {
     \t- ${ICONE_OK_FALLBACK} : ${((100 * nWinFallback) / nOperations).toFixed(
     2
   )} % of almost good predictions
-    \t\t-${ICONE_LOCAL_MODEL} ${(
-    (winFallbackLocalUser / nWinFallback) *
-    100
-  ).toFixed(2)} % thanks to local model
     \t\t-${ICONE_GLOBAL_MODEL} ${(
     (winFallbackGlobalModel / nWinFallback) *
     100
@@ -178,9 +160,6 @@ const fmtAccuracy = accuracy => {
     \t- ${ICONE_KO} : ${((100 * nLose) / nOperations).toFixed(
     2
   )} % of wrong predictions
-    \t\t-${ICONE_LOCAL_MODEL} ${((loseLocalUser / nLose) * 100).toFixed(
-    2
-  )} % because of local model
     \t\t-${ICONE_GLOBAL_MODEL} ${((loseGlobalModel / nLose) * 100).toFixed(
     2
   )} % because of global model
@@ -206,8 +185,6 @@ const fmtResults = transactions => {
     const { status, method } = op
     if (method === METHOD_BI) {
       fmtedResult += ICONE_BI
-    } else if (method === METHOD_LOCAL_USER) {
-      fmtedResult += ICONE_LOCAL_MODEL
     } else if (method === METHOD_GLOBAL_COZY) {
       fmtedResult += ICONE_GLOBAL_MODEL
     }
@@ -246,13 +223,10 @@ const fmtResults = transactions => {
 const computeAccuracy = transactions => {
   const nOperations = transactions.length
   let winGlobalModel = 0
-  let winLocalUser = 0
   let winBI = 0
   let winFallbackGlobalModel = 0
-  let winFallbackLocalUser = 0
   let winFallbackBI = 0
   let loseGlobalModel = 0
-  let loseLocalUser = 0
   let loseBI = 0
   let nUncategorized = 0
   transactions.map(op => {
@@ -261,17 +235,14 @@ const computeAccuracy = transactions => {
       case STATUS_OK:
         if (method === METHOD_BI) winBI += 1
         if (method === METHOD_GLOBAL_COZY) winGlobalModel += 1
-        if (method === METHOD_LOCAL_USER) winLocalUser += 1
         break
       case STATUS_OK_FALLBACK:
         if (method === METHOD_BI) winFallbackBI += 1
         if (method === METHOD_GLOBAL_COZY) winFallbackGlobalModel += 1
-        if (method === METHOD_LOCAL_USER) winFallbackLocalUser += 1
         break
       case STATUS_KO:
         if (method === METHOD_BI) loseBI += 1
         if (method === METHOD_GLOBAL_COZY) loseGlobalModel += 1
-        if (method === METHOD_LOCAL_USER) loseLocalUser += 1
         break
       case STATUS_UNCATEGORIZED:
         nUncategorized += 1
@@ -283,13 +254,10 @@ const computeAccuracy = transactions => {
   const accuracyByFrequency = {
     nOperations,
     winGlobalModel,
-    winLocalUser,
     winBI,
     winFallbackGlobalModel,
-    winFallbackLocalUser,
     winFallbackBI,
     loseGlobalModel,
-    loseLocalUser,
     loseBI,
     nUncategorized
   }
@@ -317,13 +285,10 @@ xOrDescribe('Chain of predictions', () => {
   // Prepare global metrics
   let nOperationsEveryFixtures = 0
   let winGlobalModelEveryFixtures = 0
-  let winLocalUserEveryFixtures = 0
   let winBIEveryFixtures = 0
   let winFallbackGlobalModelEveryFixtures = 0
-  let winFallbackLocalUserEveryFixtures = 0
   let winFallbackBIEveryFixtures = 0
   let loseGlobalModelEveryFixtures = 0
-  let loseLocalUserEveryFixtures = 0
   let loseBIEveryFixtures = 0
   let nUncategorizedEveryFixtures = 0
   // prepare loop over fixtures
@@ -348,10 +313,6 @@ xOrDescribe('Chain of predictions', () => {
         )
 
         await categorize(transactions)
-        // launch local model
-        // await localModel({ tokenizer }, transactions)
-        // launch global model
-        // await globalModel({ tokenizer }, transactions)
         // parse results to check result
         const results = checkCategorization(transactions)
         // Format results
@@ -373,25 +334,19 @@ xOrDescribe('Chain of predictions', () => {
         const {
           nOperations,
           winGlobalModel,
-          winLocalUser,
           winBI,
           winFallbackGlobalModel,
-          winFallbackLocalUser,
           winFallbackBI,
           loseGlobalModel,
-          loseLocalUser,
           loseBI,
           nUncategorized
         } = currentAccuracy
         nOperationsEveryFixtures += nOperations
         winGlobalModelEveryFixtures += winGlobalModel
-        winLocalUserEveryFixtures += winLocalUser
         winBIEveryFixtures += winBI
         winFallbackGlobalModelEveryFixtures += winFallbackGlobalModel
-        winFallbackLocalUserEveryFixtures += winFallbackLocalUser
         winFallbackBIEveryFixtures += winFallbackBI
         loseGlobalModelEveryFixtures += loseGlobalModel
-        loseLocalUserEveryFixtures += loseLocalUser
         loseBIEveryFixtures += loseBI
         nUncategorizedEveryFixtures += nUncategorized
       }
@@ -402,13 +357,10 @@ xOrDescribe('Chain of predictions', () => {
     const globalAccuracy = {
       nOperations: nOperationsEveryFixtures,
       winGlobalModel: winGlobalModelEveryFixtures,
-      winLocalUser: winLocalUserEveryFixtures,
       winBI: winBIEveryFixtures,
       winFallbackGlobalModel: winFallbackGlobalModelEveryFixtures,
-      winFallbackLocalUser: winFallbackLocalUserEveryFixtures,
       winFallbackBI: winFallbackBIEveryFixtures,
       loseGlobalModel: loseGlobalModelEveryFixtures,
-      loseLocalUser: loseLocalUserEveryFixtures,
       loseBI: loseBIEveryFixtures,
       nUncategorized: nUncategorizedEveryFixtures
     }
@@ -423,7 +375,7 @@ xOrDescribe('Chain of predictions', () => {
         '__snapshots__',
         `${path.basename(__filename)}.snap`
       ),
-      path.join(BACKUP_DIR, `results-${yyyy}-${mm}-${dd}.txt`),
+      path.join(BACKUP_DIR, `results-global-${yyyy}-${mm}-${dd}.txt`),
       err => {
         if (err) {
           throw err
