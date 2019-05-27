@@ -3,6 +3,7 @@
 const cozy = require('./cozyclient')
 const log = require('cozy-logger').namespace('BaseKonnector')
 const { Secret } = require('cozy-logger')
+const manifest = require('./manifest')
 const errors = require('../helpers/errors')
 const {
   wrapIfSentrySetUp,
@@ -300,6 +301,18 @@ class BaseKonnector {
     ) {
       throw new Error('TOS_NOT_ACCEPTED')
     }
+  }
+
+  /**
+   * Get cozyMetaData from the context of the connector
+   *
+   * @param  {object} data - this data will be merged with cozyMetaData
+   */
+  getCozyMetadata(data) {
+    Object.assign(data, {
+      sourceAccount: this.accountId
+    })
+    return manifest.getCozyMetadata(data)
   }
 }
 

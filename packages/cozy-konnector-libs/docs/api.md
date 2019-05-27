@@ -828,6 +828,7 @@ fetch account information for your connector.
     * [.updateAccountAttributes()](#BaseKonnector+updateAccountAttributes)
     * [.waitForTwoFaCode()](#BaseKonnector+waitForTwoFaCode)
     * [.terminate(message)](#BaseKonnector+terminate)
+    * [.getCozyMetadata(data)](#BaseKonnector+getCozyMetadata)
 
 <a name="new_BaseKonnector_new"></a>
 
@@ -958,6 +959,17 @@ connector now
 | Param | Type | Description |
 | --- | --- | --- |
 | message | <code>string</code> | The error code to be saved as connector result see [docs/ERROR_CODES.md] |
+
+<a name="BaseKonnector+getCozyMetadata"></a>
+
+### baseKonnector.getCozyMetadata(data)
+Get cozyMetaData from the context of the connector
+
+**Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| data | <code>object</code> | this data will be merged with cozyMetaData |
 
 <a name="CookieKonnector"></a>
 
