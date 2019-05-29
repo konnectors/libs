@@ -19,12 +19,50 @@ let manifest =
 
 if (process.env.NODE_ENV !== 'none' && process.env.NODE_ENV !== 'production') {
   try {
-    manifest = JSON.parse(
-      fs.readFileSync(path.join(process.cwd(), 'manifest.konnector'))
-    )
+    manifest = getManifestFromFile()
   } catch (err) {
     manifest = {}
   }
 }
 
-module.exports = manifest
+function getManifestFromFile() {
+  return JSON.parse(
+    fs.readFileSync(path.join(process.cwd(), 'manifest.konnector'))
+  )
+}
+
+function setManifest(data) {
+  manifest = data
+}
+
+function getCozyMetadata(data = {}) {
+  const now = new Date(Date.now())
+  const defaultData = {
+    doctypeVersion: 1,
+    metadataVersion: 1,
+    createdAt: now,
+    createdByApp: manifest.slug,
+    createdByAppVersion: manifest.version,
+    updatedAt: now,
+    updatedByApps: [
+      { slug: manifest.slug, date: now, version: manifest.version }
+    ]
+  }
+
+  if (data.updatedByApps) {
+    const index = data.updatedByApps.findIndex(
+      app => app.slug === manifest.slug
+    )
+    if (index) {
+      data.updatedByApps[index] = defaultData.updatedByApps.pop()
+    }
+  }
+
+  return { ...defaultData, ...data }
+}
+
+module.exports = {
+  data: manifest,
+  getCozyMetadata,
+  setManifest
+}
