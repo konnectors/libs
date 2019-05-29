@@ -53,7 +53,7 @@ function getCozyMetadata(data = {}) {
     const index = data.updatedByApps.findIndex(
       app => app.slug === manifest.slug
     )
-    if (index) {
+    if (index !== -1) {
       data.updatedByApps[index] = defaultData.updatedByApps.pop()
     }
   }
