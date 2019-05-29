@@ -6,6 +6,7 @@
 const bluebird = require('bluebird')
 const omit = require('lodash/omit')
 const log = require('cozy-logger').namespace('addData')
+const { getCozyMetadata } = require('./manifest')
 
 /**
  * Saves the data into the cozy blindly without check.
@@ -39,12 +40,16 @@ module.exports = (entries, doctype) => {
   const cozy = require('./cozyclient')
   return bluebird.mapSeries(entries, async entry => {
     log('debug', entry, 'Adding this entry')
-    const dbEntry = await (entry._id
-      ? cozy.data.update(doctype, entry, omit(entry, '_rev'))
-      : cozy.data.create(doctype, entry))
+    const metaEntry = {
+      cozyMetadata: getCozyMetadata(entry.cozyMetadata),
+      ...entry
+    }
+    const dbEntry = await (metaEntry._id
+      ? cozy.data.update(doctype, metaEntry, omit(metaEntry, '_rev'))
+      : cozy.data.create(doctype, metaEntry))
     // Also update the original entry _id to allow saveBills'
     // linkBankOperation entries to have an id
-    entry._id = dbEntry._id
+    metaEntry._id = dbEntry._id
     return dbEntry
   })
 }

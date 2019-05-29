@@ -74,12 +74,14 @@ module.exports = async (entries, fields, options = {}) => {
 
   const originalEntries = entries
   const defaultShouldUpdate = (entry, dbEntry) =>
-    entry.invoice !== dbEntry.invoice
+    entry.invoice !== dbEntry.invoice || !dbEntry.cozyMetadata
+
   if (!options.shouldUpdate) {
     options.shouldUpdate = defaultShouldUpdate
   } else {
+    const fn = options.shouldUpdate
     options.shouldUpdate = (entry, dbEntry) => {
-      entry.invoice !== dbEntry.invoice || defaultShouldUpdate(entry, dbEntry)
+      return defaultShouldUpdate(entry, dbEntry) || fn(entry, dbEntry)
     }
   }
 
