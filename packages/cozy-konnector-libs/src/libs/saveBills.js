@@ -65,6 +65,14 @@ module.exports = async (entries, fields, options = {}) => {
     return Promise.resolve()
   }
 
+  if (!options.sourceAccount) {
+    log('warn', 'The is no sourceAccount given to saveBills')
+  }
+
+  if (!options.sourceAccountIdentifier) {
+    log('warn', 'The is no sourceAccountIdentifier given to saveBills')
+  }
+
   if (typeof fields === 'string') {
     fields = { folderPath: fields }
   }
