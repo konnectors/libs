@@ -267,6 +267,7 @@ class BaseKonnector {
     while (Date.now() < params.timeout && !account.twoFACode) {
       await sleep(params.heartBeat)
       account = await cozy.data.find('io.cozy.accounts', this.accountId)
+      log('info', `current accountState : ${account.state}`)
       log('info', `current twoFACode : ${account.twoFACode}`)
     }
 
