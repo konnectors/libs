@@ -18,6 +18,9 @@ const { getCozyMetadata } = require('./manifest')
  *
  * * `documents`: an array of objects corresponding to the data you want to save in the cozy
  * * `doctype` (string): the doctype where you want to save data (ex: 'io.cozy.bills')
+ * * `options` (object): option object
+ *   + `sourceAccount` (String): id of the source account
+ *   + `sourceAccountIdentifier` (String): identifier unique to the account targetted by the connector. It is the login most of the time
  *
  * ```javascript
  * const documents = [
@@ -36,12 +39,16 @@ const { getCozyMetadata } = require('./manifest')
  *
  * @alias module:addData
  */
-module.exports = (entries, doctype) => {
+module.exports = (entries, doctype, options) => {
   const cozy = require('./cozyclient')
   return bluebird.mapSeries(entries, async entry => {
     log('debug', entry, 'Adding this entry')
     const metaEntry = {
-      cozyMetadata: getCozyMetadata(entry.cozyMetadata),
+      cozyMetadata: getCozyMetadata({
+        ...entry.cozyMetadata,
+        sourceAccount: options.sourceAccount,
+        sourceAccountIdentifier: options.sourceAccountIdentifier
+      }),
       ...entry
     }
     const dbEntry = await (metaEntry._id

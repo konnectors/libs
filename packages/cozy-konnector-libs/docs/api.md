@@ -166,6 +166,9 @@ Parameters:
 
 * `documents`: an array of objects corresponding to the data you want to save in the cozy
 * `doctype` (string): the doctype where you want to save data (ex: 'io.cozy.bills')
+* `options` (object): option object
+  + `sourceAccount` (String): id of the source account
+  + `sourceAccountIdentifier` (String): identifier unique to the account targetted by the connector. It is the login most of the time
 
 ```javascript
 const documents = [
@@ -827,6 +830,7 @@ fetch account information for your connector.
     * [.getAccountData()](#BaseKonnector+getAccountData) ⇒ <code>object</code>
     * [.updateAccountAttributes()](#BaseKonnector+updateAccountAttributes)
     * [.waitForTwoFaCode()](#BaseKonnector+waitForTwoFaCode)
+    * [.saveBills()](#BaseKonnector+saveBills) ⇒ <code>Promise</code>
     * [.terminate(message)](#BaseKonnector+terminate)
     * [.getCozyMetadata(data)](#BaseKonnector+getCozyMetadata)
 
@@ -948,6 +952,13 @@ async function start() {
    // send the code to the targeted site
 }
 ```
+<a name="BaseKonnector+saveBills"></a>
+
+### baseKonnector.saveBills() ⇒ <code>Promise</code>
+This is saveBills function from cozy-konnector-libs which automatically adds sourceAccount in
+metadata of each entry
+
+**Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)  
 <a name="BaseKonnector+terminate"></a>
 
 ### baseKonnector.terminate(message)

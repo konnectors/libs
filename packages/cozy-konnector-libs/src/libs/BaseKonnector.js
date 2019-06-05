@@ -5,6 +5,7 @@ const log = require('cozy-logger').namespace('BaseKonnector')
 const { Secret } = require('cozy-logger')
 const manifest = require('./manifest')
 const errors = require('../helpers/errors')
+const saveBills = require('./saveBills')
 const {
   wrapIfSentrySetUp,
   captureExceptionAndDie
@@ -278,6 +279,20 @@ class BaseKonnector {
       return account.twoFACode
     }
     throw new Error('USER_ACTION_NEEDED.TWOFA_EXPIRED')
+  }
+
+  /**
+   * This is saveBills function from cozy-konnector-libs which automatically adds sourceAccount in
+   * metadata of each entry
+   *
+   * @return {Promise}
+   */
+  saveBills(entries, fields, options) {
+    return saveBills(entries, fields, {
+      sourceAccount: this.accountId,
+      sourceAccountIdentifier: fields.login,
+      ...options
+    })
   }
 
   /**

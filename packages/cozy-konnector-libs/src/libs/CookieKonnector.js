@@ -5,7 +5,6 @@ const BaseKonnector = require('./BaseKonnector')
 const requestFactory = require('./request')
 const signin = require('./signin')
 const saveFiles = require('./saveFiles')
-const saveBills = require('./saveBills')
 
 const { CookieJar } = require('tough-cookie')
 const JAR_ACCOUNT_KEY = 'session'
@@ -198,7 +197,7 @@ class CookieKonnector extends BaseKonnector {
    * @return {Promise}
    */
   saveBills(entries, fields, options) {
-    return saveBills(entries, fields, {
+    return super.saveBills(entries, fields, {
       ...options,
       requestInstance: this.request
     })

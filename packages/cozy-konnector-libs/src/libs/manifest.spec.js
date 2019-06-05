@@ -47,4 +47,29 @@ describe('manifest.getCozyMetadata', () => {
       ]
     })
   })
+
+  it('should add sourceAccount', () => {
+    expect(
+      manifest.getCozyMetadata({
+        doctypeVersion: 2,
+        sourceAccount: 'toto',
+        updatedByApps: [
+          { slug: 'otherapp' },
+          { slug: 'testapp', date: new Date(), version: '1.1.1' }
+        ]
+      })
+    ).toEqual({
+      createdAt: new Date(now),
+      doctypeVersion: 2,
+      metadataVersion: 1,
+      createdByApp: 'testapp',
+      createdByAppVersion: '0.0.1',
+      updatedAt: new Date(now),
+      sourceAccount: 'toto',
+      updatedByApps: [
+        { slug: 'otherapp' },
+        { slug: 'testapp', date: new Date(now), version: '0.0.1' }
+      ]
+    })
+  })
 })
