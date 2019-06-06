@@ -130,6 +130,8 @@ const hydrateAndFilter = (documents = [], doctype, options = {}) => {
       if (store[key]) {
         document._id = store[key]._id
         document._rev = store[key]._rev
+        if (!document.cozyMetadata && store[key].cozyMetadata)
+          document.cozyMetadata = store[key].cozyMetadata
       }
     })
     return documents
