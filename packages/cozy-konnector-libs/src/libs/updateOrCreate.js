@@ -7,6 +7,7 @@
 const bluebird = require('bluebird')
 const log = require('cozy-logger').namespace('updateOrCreate')
 const cozy = require('./cozyclient')
+const get = require('lodash/get')
 
 /**
  * Creates or updates the given entries according to if they already
@@ -30,7 +31,7 @@ module.exports = (entries = [], doctype, matchingAttributes = []) => {
       const toUpdate = existings.find(doc =>
         matchingAttributes.reduce(
           (isMatching, matchingAttribute) =>
-            isMatching && doc[matchingAttribute] === entry[matchingAttribute],
+            isMatching && get(doc, matchingAttribute) === get(entry, matchingAttribute),
           true
         )
       )
