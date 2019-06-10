@@ -12,10 +12,10 @@
 const fs = require('fs')
 const path = require('path')
 
-let manifest = __WEBPACK_PROVIDED_MANIFEST__
-if (typeof manifest === 'undefined') {
-  manifest = {}
-}
+let manifest =
+  typeof __WEBPACK_PROVIDED_MANIFEST__ === 'undefined'
+    ? {}
+    : __WEBPACK_PROVIDED_MANIFEST__
 
 if (process.env.NODE_ENV !== 'none' && process.env.NODE_ENV !== 'production') {
   try {
