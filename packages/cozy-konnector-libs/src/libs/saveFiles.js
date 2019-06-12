@@ -28,14 +28,17 @@ const DEFAULT_VALIDATE_FILECONTENT = async fileDocument => {
     return false
   }
 
-  if (!DEFAULT_VALIDATE_FILE(fileDocument)) {
-    fileDocument.attributes.mime = fileTypeFromContent.mime
+  if (
+    !DEFAULT_VALIDATE_FILE(fileDocument) ||
+    fileDocument.attributes.mime !== fileTypeFromContent.mime
+  ) {
     log(
       'warn',
       `Wrong file type from content ${JSON.stringify(fileTypeFromContent)}`
     )
     return false
   }
+  return true
 }
 
 const sanitizeEntry = function(entry) {
