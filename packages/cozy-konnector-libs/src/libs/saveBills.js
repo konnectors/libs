@@ -66,11 +66,11 @@ module.exports = async (entries, fields, options = {}) => {
   }
 
   if (!options.sourceAccount) {
-    log('warn', 'The is no sourceAccount given to saveBills')
+    log('warn', 'There is no sourceAccount given to saveBills')
   }
 
   if (!options.sourceAccountIdentifier) {
-    log('warn', 'The is no sourceAccountIdentifier given to saveBills')
+    log('warn', 'There is no sourceAccountIdentifier given to saveBills')
   }
 
   if (typeof fields === 'string') {
