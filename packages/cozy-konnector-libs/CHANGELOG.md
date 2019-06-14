@@ -1,3 +1,20 @@
+# Change Log
+
+All notable changes to this project will be documented in this file.
+See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
+# [4.16.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.15.17...cozy-konnector-libs@4.16.0) (2019-06-14)
+
+
+### Features
+
+* Add saveIdentity in cozy-konnector-libs ([d1078cb](https://github.com/cozy/cozy-konnector-libs/commit/d1078cb))
+* Add saveIdentity in cozy-konnector-libs ([#497](https://github.com/cozy/cozy-konnector-libs/issues/497)) ([6cf6f35](https://github.com/cozy/cozy-konnector-libs/commit/6cf6f35))
+
+
+
+
+
 # Changelog
 
 ## [Unreleased]
