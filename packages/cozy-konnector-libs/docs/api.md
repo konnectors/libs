@@ -30,6 +30,9 @@ to an existing bank operation</p>
 <dt><a href="#module_saveFiles">saveFiles</a></dt>
 <dd><p>Saves the given files in the given folder via the Cozy API.</p>
 </dd>
+<dt><a href="#module_saveIdentity">saveIdentity</a></dt>
+<dd><p>Helper to set or merge identities</p>
+</dd>
 <dt><a href="#module_signin">signin</a></dt>
 <dd><p>Provides an handy method to log the user in,
 on HTML form pages. On success, it resolves to a promise with a parsed body.</p>
@@ -451,6 +454,36 @@ You need the full permission on `io.cozy.files` in your manifest to use this fun
 ```javascript
 await saveFiles([{fileurl: 'https://...', filename: 'bill1.pdf'}], fields)
 ```
+<a name="module_saveIdentity"></a>
+
+## saveIdentity
+Helper to set or merge identities
+
+<a name="exp_module_saveIdentity--module.exports"></a>
+
+### module.exports() ⏏
+Set or merge a io.cozy.identities
+
+You need full permission for the doctype io.cozy.identities in your
+manifest, to be able to use this function.
+
+Parameters:
+
+* `contact` (object): the identity to create/update as an object io.cozy.contacts
+* `accountIdentifier` (string): a string that represent the account use, if available fields.login
+
+```javascript
+const { saveIdentity } = require('cozy-konnector-libs')
+const identity =
+  {
+    name: 'toto',
+    email: { 'address': 'toto@example.com' }
+  }
+
+return saveIdentity(identity, fields.login)
+```
+
+**Kind**: Exported function  
 <a name="module_signin"></a>
 
 ## signin
