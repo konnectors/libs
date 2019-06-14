@@ -6,6 +6,9 @@ const { Secret } = require('cozy-logger')
 const manifest = require('./manifest')
 const errors = require('../helpers/errors')
 const saveBills = require('./saveBills')
+const get = require('lodash/get')
+const updateOrCreate = require('./updateOrCreate')
+const saveIdentity = require('./saveIdentity')
 const {
   wrapIfSentrySetUp,
   captureExceptionAndDie
@@ -292,6 +295,34 @@ class BaseKonnector {
     return saveBills(entries, fields, {
       sourceAccount: this.accountId,
       sourceAccountIdentifier: fields.login,
+      ...options
+    })
+  }
+
+  /**
+   * This is updateOrCreate function from cozy-konnector-libs which automatically adds sourceAccount in
+   * metadata of each entry
+   *
+   * @return {Promise}
+   */
+  updateOrCreate(entries, doctype, matchingAttributes, options) {
+    return updateOrCreate(entries, doctype, matchingAttributes, {
+      sourceAccount: this.accountId,
+      sourceAccountIdentifier: get(options, 'fields.login'),
+      ...options
+    })
+  }
+
+  /**
+   * This is saveIdentity function from cozy-konnector-libs which automatically adds sourceAccount in
+   * metadata of each entry
+   *
+   * @return {Promise}
+   */
+  saveIdentity(contact, accountIdentifier, options = {}) {
+    return saveIdentity(contact, accountIdentifier, {
+      sourceAccount: this.accountId,
+      sourceAccountIdentifier: accountIdentifier,
       ...options
     })
   }
