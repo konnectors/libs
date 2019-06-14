@@ -128,11 +128,11 @@ describe('requestFactory', () => {
         new Error('Error: unable to verify the first certificate')
       )
     })
-    // test('Self-signed cert should be refused', async () => {
-    //   return expect(rq('https://self-signed.badssl.com')).rejects.toEqual(
-    //     new Error('Error: self signed certificate')
-    //   )
-    // })
+    test('Self-signed cert should be refused', async () => {
+      return expect(rq('https://self-signed.badssl.com')).rejects.toEqual(
+        new Error('Error: self signed certificate')
+      )
+    })
   })
 
   describe.skip('when loading a `latin1` encoded page', () => {
