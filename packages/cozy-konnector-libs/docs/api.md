@@ -31,7 +31,8 @@ to an existing bank operation</p>
 <dd><p>Saves the given files in the given folder via the Cozy API.</p>
 </dd>
 <dt><a href="#module_saveIdentity">saveIdentity</a></dt>
-<dd><p>Helper to set or merge identities</p>
+<dd><p>Helper to set or merge io.cozy.identities
+See <a href="https://github.com/cozy/cozy-doctypes/blob/master/docs/io.cozy.identities.md">https://github.com/cozy/cozy-doctypes/blob/master/docs/io.cozy.identities.md</a></p>
 </dd>
 <dt><a href="#module_signin">signin</a></dt>
 <dd><p>Provides an handy method to log the user in,
@@ -457,7 +458,8 @@ await saveFiles([{fileurl: 'https://...', filename: 'bill1.pdf'}], fields)
 <a name="module_saveIdentity"></a>
 
 ## saveIdentity
-Helper to set or merge identities
+Helper to set or merge io.cozy.identities
+See https://github.com/cozy/cozy-doctypes/blob/master/docs/io.cozy.identities.md
 
 <a name="exp_module_saveIdentity--module.exports"></a>
 
@@ -471,6 +473,10 @@ Parameters:
 
 * `contact` (object): the identity to create/update as an object io.cozy.contacts
 * `accountIdentifier` (string): a string that represent the account use, if available fields.login
+* `options` (object): options which will be given to updateOrCreate directly :
+  + `sourceAccount` (String): id of the source account
+  + `sourceAccountIdentifier` (String): identifier unique to the account targetted by the connector. It is the login most of the time
+
 
 ```javascript
 const { saveIdentity } = require('cozy-konnector-libs')
@@ -607,21 +613,21 @@ exist in the cozy or not
 
 <a name="exp_module_updateOrCreate--module.exports"></a>
 
-### module.exports(entries, doctype, matchingAttributes) ⇒ <code>Promise</code> ⏏
+### module.exports() ⏏
 Creates or updates the given entries according to if they already
 exist in the cozy or not
 
 You need the full permission for the given doctype in your manifest, to be able to
 use this function.
 
+* `entries` (object array): Documents to save
+* `doctype` (string): Doctype of the documents
+* `matchingAttributes` (string array): attributes in each entry used to check if an entry already exists in the Cozy
+* `options` (object): general option affecting metadata :
+  + `sourceAccount` (String): id of the source account
+  + `sourceAccountIdentifier` (String): identifier unique to the account targetted by the connector. It is the login most of the time
+
 **Kind**: Exported function  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| entries | <code>Array.&lt;Object&gt;</code> | Documents to save |
-| doctype | <code>String</code> | Doctype of the documents |
-| matchingAttributes | <code>Array.&lt;String&gt;</code> | attributes in each entry used to check if an entry already exists in the Cozy |
-
 <a name="module_utils"></a>
 
 ## utils
@@ -864,6 +870,8 @@ fetch account information for your connector.
     * [.updateAccountAttributes()](#BaseKonnector+updateAccountAttributes)
     * [.waitForTwoFaCode()](#BaseKonnector+waitForTwoFaCode)
     * [.saveBills()](#BaseKonnector+saveBills) ⇒ <code>Promise</code>
+    * [.updateOrCreate()](#BaseKonnector+updateOrCreate) ⇒ <code>Promise</code>
+    * [.saveIdentity()](#BaseKonnector+saveIdentity) ⇒ <code>Promise</code>
     * [.terminate(message)](#BaseKonnector+terminate)
     * [.getCozyMetadata(data)](#BaseKonnector+getCozyMetadata)
 
@@ -989,6 +997,20 @@ async function start() {
 
 ### baseKonnector.saveBills() ⇒ <code>Promise</code>
 This is saveBills function from cozy-konnector-libs which automatically adds sourceAccount in
+metadata of each entry
+
+**Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)  
+<a name="BaseKonnector+updateOrCreate"></a>
+
+### baseKonnector.updateOrCreate() ⇒ <code>Promise</code>
+This is updateOrCreate function from cozy-konnector-libs which automatically adds sourceAccount in
+metadata of each entry
+
+**Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)  
+<a name="BaseKonnector+saveIdentity"></a>
+
+### baseKonnector.saveIdentity() ⇒ <code>Promise</code>
+This is saveIdentity function from cozy-konnector-libs which automatically adds sourceAccount in
 metadata of each entry
 
 **Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)  
