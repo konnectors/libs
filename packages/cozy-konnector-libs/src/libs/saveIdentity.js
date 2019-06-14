@@ -7,7 +7,6 @@
 
 const log = require('cozy-logger').namespace('saveIdentity')
 const updateOrCreate = require('./updateOrCreate')
-const { getCozyMetadata } = require('./manifest')
 
 /**
  * Set or merge a io.cozy.identities
@@ -19,6 +18,10 @@ const { getCozyMetadata } = require('./manifest')
  *
  * * `contact` (object): the identity to create/update as an object io.cozy.contacts
  * * `accountIdentifier` (string): a string that represent the account use, if available fields.login
+ * * `options` (object): options which will be given to updateOrCreate directly :
+ *   + `sourceAccount` (String): id of the source account
+ *   + `sourceAccountIdentifier` (String): identifier unique to the account targetted by the connector. It is the login most of the time
+ *
  *
  * ```javascript
  * const { saveIdentity } = require('cozy-konnector-libs')
@@ -34,7 +37,7 @@ const { getCozyMetadata } = require('./manifest')
  * @alias module:saveIdentity
  */
 
-module.exports = async (contact, accountIdentifier) => {
+module.exports = async (contact, accountIdentifier, options = {}) => {
   if (accountIdentifier == null) {
     log('warn', "Can't set identity as no accountIdentifier was provided")
     return
@@ -55,14 +58,15 @@ module.exports = async (contact, accountIdentifier) => {
 
   const identity = {
     identifier: accountIdentifier,
-    contact: contact,
-    cozyMetadata: getCozyMetadata()
+    contact
   }
 
-  await updateOrCreate([identity], 'io.cozy.identities', [
-    'identifier',
-    'cozyMetadata.createdByApp'
-  ])
+  await updateOrCreate(
+    [identity],
+    'io.cozy.identities',
+    ['identifier', 'cozyMetadata.createdByApp'],
+    options
+  )
   return
 }
 
