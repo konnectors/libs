@@ -1,4 +1,4 @@
- /**
+/**
  * Helper to set or merge io.cozy.identities
  * See https://github.com/cozy/cozy-doctypes/blob/master/docs/io.cozy.identities.md
  *
@@ -35,11 +35,11 @@ const { getCozyMetadata } = require('./manifest')
  */
 
 module.exports = async (contact, accountIdentifier) => {
-  if(accountIdentifier == null) {
+  if (accountIdentifier == null) {
     log('warn', "Can't set identity as no accountIdentifier was provided")
     return
   }
-  if(contact == null) {
+  if (contact == null) {
     log('warn', "Can't set identity as no contact was provided")
     return
   }
@@ -48,35 +48,34 @@ module.exports = async (contact, accountIdentifier) => {
     contact.phone.number = formatPhone(contact.phone.number)
   }
   if (contact.address && contact.address.formattedAddress) {
-    contact.address.formattedAddress = formatAddress(contact.address.formattedAdress)
+    contact.address.formattedAddress = formatAddress(
+      contact.address.formattedAdress
+    )
   }
 
   const identity = {
-    'identifier': accountIdentifier,
-    'contact': contact,
-    'cozyMetadata': getCozyMetadata()
+    identifier: accountIdentifier,
+    contact: contact,
+    cozyMetadata: getCozyMetadata()
   }
 
-  await updateOrCreate(
-    [identity],
-    'io.cozy.identities',
-    ['identifier', 'cozyMetadata.createdByApp']
-  )
+  await updateOrCreate([identity], 'io.cozy.identities', [
+    'identifier',
+    'cozyMetadata.createdByApp'
+  ])
   return
 }
 
-
 /* Remove html and cariage return in address
-*/
+ */
 function formatAddress(address) {
   return address
-    .replace(/<[^>]*>/g, '')  // Remove all html Tag
-    .replace(/\r\n|[\n\r]/g, ' ')  // Remove all kind of return character
+    .replace(/<[^>]*>/g, '') // Remove all html Tag
+    .replace(/\r\n|[\n\r]/g, ' ') // Remove all kind of return character
 }
 
-
 /* Replace all characters in a phone number except '+' or digits
-*/
+ */
 function formatPhone(phone) {
   return phone.replace(/[^\d.+]/g, '')
 }

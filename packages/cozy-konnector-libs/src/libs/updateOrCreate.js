@@ -31,7 +31,8 @@ module.exports = (entries = [], doctype, matchingAttributes = []) => {
       const toUpdate = existings.find(doc =>
         matchingAttributes.reduce(
           (isMatching, matchingAttribute) =>
-            isMatching && get(doc, matchingAttribute) === get(entry, matchingAttribute),
+            isMatching &&
+            get(doc, matchingAttribute) === get(entry, matchingAttribute),
           true
         )
       )
