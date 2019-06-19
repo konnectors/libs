@@ -2920,10 +2920,10 @@ cosmiconfig@^5.1.0:
     js-yaml "^3.13.1"
     parse-json "^4.0.0"
 
-cozy-client-js@0.16.1:
-  version "0.16.1"
-  resolved "https://registry.yarnpkg.com/cozy-client-js/-/cozy-client-js-0.16.1.tgz#cd09d2afb3fe71de46a062b914b9f2e063ea795a"
-  integrity sha512-jYnNmd4q7pdXbazVINlz1b9kap819Z7ZCgocoAA3JT7N1uMl47IEUwCZZzLIbewx73yi857YX4GA4knwYwRwQA==
+cozy-client-js@0.16.2:
+  version "0.16.2"
+  resolved "https://registry.yarnpkg.com/cozy-client-js/-/cozy-client-js-0.16.2.tgz#c8317dfaf79b9636160acde8e345952b4a4dc41c"
+  integrity sha512-hg78ZOCIB27eKF54Y3wF3+FOZsji/fmTJT5TOgdzhscqy4kHdsWlLaEkiMrC2q64mSa65QKeWkSa76mlTsCXow==
   dependencies:
     core-js "^2.5.3"
     isomorphic-fetch "^2.2.1"
