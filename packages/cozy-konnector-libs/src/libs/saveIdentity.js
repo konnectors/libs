@@ -47,13 +47,11 @@ module.exports = async (contact, accountIdentifier, options = {}) => {
     return
   }
   // Format contact if needed
-  if (contact.phone && contact.phone.number) {
-    contact.phone.number = formatPhone(contact.phone.number)
+  if (contact.phone) {
+    contact.phone = formatPhone(contact.phone)
   }
-  if (contact.address && contact.address.formattedAddress) {
-    contact.address.formattedAddress = formatAddress(
-      contact.address.formattedAdress
-    )
+  if (contact.address) {
+    contact.address = formatAddress(contact.address)
   }
 
   const identity = {
@@ -70,16 +68,29 @@ module.exports = async (contact, accountIdentifier, options = {}) => {
   return
 }
 
+
 /* Remove html and cariage return in address
  */
 function formatAddress(address) {
+  for (const element of address) {
+    if (element.formattedAddress) {
+      element.formattedAddress = element.formattedAddress
+        .replace(/<[^>]*>/g, '')  // Remove all html Tag
+        .replace(/\r\n|[\n\r]/g, ' ')  // Remove all kind of return character
+      address[address.indexOf(element)] = element
+    }
+  }
   return address
-    .replace(/<[^>]*>/g, '') // Remove all html Tag
-    .replace(/\r\n|[\n\r]/g, ' ') // Remove all kind of return character
 }
 
 /* Replace all characters in a phone number except '+' or digits
  */
 function formatPhone(phone) {
-  return phone.replace(/[^\d.+]/g, '')
+  for (const element of phone) {
+    if (element.number) {
+      element.number = element.number.replace(/[^\d.+]/g, '')
+      phone[phone.indexOf(element)] = element
+    }
+  }
+  return phone
 }
