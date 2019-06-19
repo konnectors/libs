@@ -6,6 +6,7 @@ const { Secret } = require('cozy-logger')
 const manifest = require('./manifest')
 const errors = require('../helpers/errors')
 const saveBills = require('./saveBills')
+const saveFiles = require('./saveFiles')
 const get = require('lodash/get')
 const updateOrCreate = require('./updateOrCreate')
 const saveIdentity = require('./saveIdentity')
@@ -293,6 +294,20 @@ class BaseKonnector {
    */
   saveBills(entries, fields, options) {
     return saveBills(entries, fields, {
+      sourceAccount: this.accountId,
+      sourceAccountIdentifier: fields.login,
+      ...options
+    })
+  }
+
+  /**
+   * This is saveFiles function from cozy-konnector-libs which automatically adds sourceAccount and
+   * sourceAccountIdentifier cozyMetadatas to files
+   *
+   * @return {Promise}
+   */
+  saveFiles(entries, fields, options) {
+    return saveFiles(entries, fields, {
       sourceAccount: this.accountId,
       sourceAccountIdentifier: fields.login,
       ...options

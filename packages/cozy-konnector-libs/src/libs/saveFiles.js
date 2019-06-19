@@ -114,7 +114,11 @@ const createFile = async function(entry, options, method, fileId) {
     }
   }
   if (entry.fileAttributes) {
-    createFileOptions = { ...createFileOptions, ...entry.fileAttributes }
+    createFileOptions = {
+      ...createFileOptions,
+      ...entry.fileAttributes,
+      ...options.sourceAccountOptions
+    }
   }
 
   const toCreate =
@@ -308,6 +312,13 @@ const saveFiles = async (entries, fields, options = {}) => {
   if (!entries || entries.length === 0) {
     log('warn', 'No file to download')
   }
+  if (!options.sourceAccount) {
+    log('warn', 'There is no sourceAccount given to saveFiles')
+  }
+
+  if (!options.sourceAccountIdentifier) {
+    log('warn', 'There is no sourceAccountIdentifier given to saveFIles')
+  }
   if (typeof fields !== 'object') {
     log(
       'debug',
@@ -327,7 +338,11 @@ const saveFiles = async (entries, fields, options = {}) => {
     contentType: options.contentType,
     requestInstance: options.requestInstance,
     shouldReplaceFile: options.shouldReplaceFile,
-    validateFile: options.validateFile || DEFAULT_VALIDATE_FILE
+    validateFile: options.validateFile || DEFAULT_VALIDATE_FILE,
+    sourceAccountOptions: {
+      sourceAccount: options.sourceAccount,
+      sourceAccountIdentifier: options.sourceAccountIdentifier
+    }
   }
 
   if (options.validateFileContent) {
