@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.17.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.16.0...cozy-konnector-libs@4.17.0) (2019-06-20)
+
+
+### Bug Fixes
+
+* Fix formating in saveIdentity for phone and address ([5269665](https://github.com/cozy/cozy-konnector-libs/commit/5269665))
+* Fix formating in saveIdentity for phone and address ([#501](https://github.com/cozy/cozy-konnector-libs/issues/501)) ([2edb984](https://github.com/cozy/cozy-konnector-libs/commit/2edb984))
+
+
+### Features
+
+* add cozyMetadata feature to saveFiles ([dfa70ee](https://github.com/cozy/cozy-konnector-libs/commit/dfa70ee))
+* add saveIdentity and updateOrCreate as BaseKonnector methods ([3acef7e](https://github.com/cozy/cozy-konnector-libs/commit/3acef7e))
+* saveIdentity: move metadata handling to updateOrCreate ([d237474](https://github.com/cozy/cozy-konnector-libs/commit/d237474))
+
+
+
+
+
 # [4.16.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.15.17...cozy-konnector-libs@4.16.0) (2019-06-14)
 
 
