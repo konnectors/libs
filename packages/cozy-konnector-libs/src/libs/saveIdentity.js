@@ -68,15 +68,14 @@ module.exports = async (contact, accountIdentifier, options = {}) => {
   return
 }
 
-
 /* Remove html and cariage return in address
  */
 function formatAddress(address) {
   for (const element of address) {
     if (element.formattedAddress) {
       element.formattedAddress = element.formattedAddress
-        .replace(/<[^>]*>/g, '')  // Remove all html Tag
-        .replace(/\r\n|[\n\r]/g, ' ')  // Remove all kind of return character
+        .replace(/<[^>]*>/g, '') // Remove all html Tag
+        .replace(/\r\n|[\n\r]/g, ' ') // Remove all kind of return character
       address[address.indexOf(element)] = element
     }
   }
