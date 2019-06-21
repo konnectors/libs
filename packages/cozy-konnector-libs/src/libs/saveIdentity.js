@@ -38,6 +38,7 @@ const updateOrCreate = require('./updateOrCreate')
  */
 
 module.exports = async (contact, accountIdentifier, options = {}) => {
+  log('info', 'saving user identity')
   if (accountIdentifier == null) {
     log('warn', "Can't set identity as no accountIdentifier was provided")
     return
@@ -63,7 +64,7 @@ module.exports = async (contact, accountIdentifier, options = {}) => {
     [identity],
     'io.cozy.identities',
     ['identifier', 'cozyMetadata.createdByApp'],
-    options
+    { ...options, sourceAccountIdentifier: accountIdentifier }
   )
   return
 }
