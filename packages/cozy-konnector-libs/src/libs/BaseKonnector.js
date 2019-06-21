@@ -4,7 +4,6 @@ const cozy = require('./cozyclient')
 const log = require('cozy-logger').namespace('BaseKonnector')
 const { Secret } = require('cozy-logger')
 const manifest = require('./manifest')
-const errors = require('../helpers/errors')
 const saveBills = require('./saveBills')
 const saveFiles = require('./saveFiles')
 const get = require('lodash/get')
@@ -15,6 +14,7 @@ const {
   captureExceptionAndDie
 } = require('../helpers/sentry')
 const sleep = require('util').promisify(global.setTimeout)
+const LOG_ERROR_MSG_LIMIT = 32 * 1024 - 1 // to avoid to cut the json long and make it unreadable by the stack
 
 /**
  * @class
@@ -99,9 +99,6 @@ class BaseKonnector {
     log('info', 'Error caught by BaseKonnector')
 
     const error = err.message || err
-
-    // if we have an unexpected error, display the stack trace
-    if (!errors[error]) log('warn', JSON.stringify(err.stack))
 
     this.terminate(error)
   }
@@ -349,7 +346,7 @@ class BaseKonnector {
    * @param  {string} message - The error code to be saved as connector result see [docs/ERROR_CODES.md]
    */
   terminate(err) {
-    log('critical', err)
+    log('critical', String(err).substr(0, LOG_ERROR_MSG_LIMIT))
     captureExceptionAndDie(err)
   }
 
