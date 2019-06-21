@@ -34,7 +34,6 @@ module.exports = (
 ) => {
   return cozy.data.findAll(doctype).then(existings =>
     bluebird.mapSeries(entries, entry => {
-      log('debug', entry)
       const metaEntry = {
         cozyMetadata: getCozyMetadata({
           ...entry.cozyMetadata,
