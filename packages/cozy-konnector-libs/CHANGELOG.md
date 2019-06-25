@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.17.1](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.17.0...cozy-konnector-libs@4.17.1) (2019-06-25)
+
+
+### Bug Fixes
+
+* remove identity log ([916a436](https://github.com/cozy/cozy-konnector-libs/commit/916a436))
+* updateOrCreate:  do not change createAt metadata on update ([f420afb](https://github.com/cozy/cozy-konnector-libs/commit/f420afb))
+
+
+
+
+
 # [4.17.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.16.0...cozy-konnector-libs@4.17.0) (2019-06-20)
 
 
