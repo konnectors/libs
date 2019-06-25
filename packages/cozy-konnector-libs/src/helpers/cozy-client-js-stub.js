@@ -15,8 +15,10 @@ const rootPath = JSON.parse(
 let db = setUpDb()
 
 function setDefaults(doctype) {
-  const defaults = {}
-  defaults[doctype] = []
+  const defaults = {
+    'io.cozy.files': []
+  }
+  if (doctype) defaults[doctype] = []
   db.defaults(defaults).write()
 }
 
@@ -117,6 +119,7 @@ module.exports = {
   },
   files: {
     statByPath(pathToCheck) {
+      setDefaults()
       // check this path in .
       return new Promise((resolve, reject) => {
         log('debug', `Checking if ${pathToCheck} exists`)
@@ -141,18 +144,22 @@ module.exports = {
       })
     },
     statById() {
+      setDefaults()
       // just return the / path for dev purpose
       return Promise.resolve({ attributes: { path: '/' } })
     },
     async updateById(id, file, options) {
+      setDefaults()
       await removeFile(id)
       return createFile(file, options)
     },
 
     create(file, options) {
+      setDefaults()
       return createFile(file, options)
     },
     createDirectory(options) {
+      setDefaults()
       return new Promise(resolve => {
         log('info', `Creating new directory ${options.name}`)
         const finalPath = path.join(rootPath, options.dirID, options.name)
@@ -163,9 +170,11 @@ module.exports = {
       })
     },
     downloadByPath(filePath) {
+      setDefaults()
       return this.downloadById(filePath)
     },
     downloadById(fileId) {
+      setDefaults()
       const realpath = path.join(rootPath, fileId)
       const stream = fs.createReadStream(realpath)
       return {
@@ -174,9 +183,11 @@ module.exports = {
       }
     },
     trashById(fileId) {
+      setDefaults()
       return removeFile(fileId)
     },
     destroyById() {
+      setDefaults()
       // there is no trash with the stub
       return Promise.resolve()
     }
@@ -184,6 +195,9 @@ module.exports = {
 }
 
 async function removeFile(fileId) {
+  db.get('io.cozy.files')
+    .removeById(fileId)
+    .write()
   const realpath = path.join(rootPath, fileId)
   fs.unlinkSync(realpath)
 }
@@ -214,25 +228,38 @@ function removeFirstSlash(pathToCheck) {
   return pathToCheck
 }
 
-function createFile(file, options) {
+function createFile(file, options = {}) {
   return new Promise((resolve, reject) => {
     log('debug', `Creating new file ${options.name}`)
     const finalPath = path.join(rootPath, options.dirID, options.name)
     log('debug', `Real path : ${finalPath}`)
+    const extension = path.extname(options.name).substr(1)
+    const mime = mimetypes.lookup(extension)
+
+    const fileDoc = {
+      _id: options.name,
+      attributes: {
+        mime,
+        name: options.name,
+        metadata: options.metadata
+      },
+      cozyMetadatas: {
+        sourceAccount: options.sourceAccount,
+        sourceAccountIdentifier: options.sourceAccountIdentifier
+      }
+    }
+
+    db.get('io.cozy.files')
+      .insert(fileDoc)
+      .write()
+
     if (file.pipe) {
       let writeStream = fs.createWriteStream(finalPath)
       file.pipe(writeStream)
 
       file.on('end', () => {
         log('info', `File ${finalPath} created`)
-        const extension = path.extname(options.name).substr(1)
-        resolve({
-          _id: options.name,
-          attributes: {
-            mime: mimetypes.lookup(extension),
-            name: options.name
-          }
-        })
+        resolve(fileDoc)
       })
       writeStream.on('error', err => {
         log('warn', `Error : ${err} while trying to write file`)
@@ -241,12 +268,7 @@ function createFile(file, options) {
     } else {
       // file is a string
       fs.writeFileSync(finalPath, file)
-      resolve({
-        _id: options.name,
-        attributes: {
-          name: options.name
-        }
-      })
+      resolve(fileDoc)
     }
   })
 }
