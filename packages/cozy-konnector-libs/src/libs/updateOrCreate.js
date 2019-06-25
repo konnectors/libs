@@ -54,6 +54,8 @@ module.exports = (
 
       if (toUpdate) {
         log('debug', 'updating')
+        if (toUpdate.cozyMetadata)
+          metaEntry.cozyMetadata.createdAt = toUpdate.cozyMetadata.createdAt
         return cozy.data.updateAttributes(doctype, toUpdate._id, metaEntry)
       } else {
         log('debug', 'creating')
