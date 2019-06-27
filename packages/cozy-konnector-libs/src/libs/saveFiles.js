@@ -164,7 +164,14 @@ const shouldReplaceFile = async function(file, entry, options, filepath) {
     log('warn', `${filepath} is invalid. Downloading it one more time`)
     throw new Error('BAD_DOWNLOADED_FILE')
   }
-  const defaultShouldReplaceFile = () => false
+  const defaultShouldReplaceFile = (file, entry) => {
+    // replace all files with meta if there is file metadata to add
+    return (
+      (!file.attributes || !file.attributes.metadata) &&
+      entry.fileAttributes &&
+      entry.fileAttributes.metadata
+    )
+  }
   const shouldReplaceFileFn =
     entry.shouldReplaceFile ||
     options.shouldReplaceFile ||
