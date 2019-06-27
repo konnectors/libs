@@ -123,6 +123,7 @@ module.exports = async (entries, fields, options = {}) => {
       entry.currency = convertCurrency(entry.currency)
       entry.invoice = `io.cozy.files:${entry.fileDocument._id}`
       delete entry.fileDocument
+      delete entry.fileAttributes
       return entry
     })
 
