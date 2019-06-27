@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.18.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.17.1...cozy-konnector-libs@4.18.0) (2019-06-27)
+
+
+### Bug Fixes
+
+* cut critical error messages to 32Ko to make their JSON version readable by the stack ([6595639](https://github.com/cozy/cozy-konnector-libs/commit/6595639))
+* **deps:** update dependency raw-body to v2.4.1 ([39320b9](https://github.com/cozy/cozy-konnector-libs/commit/39320b9))
+
+
+### Features
+
+* replace files if we have metadata to add ([c1b0317](https://github.com/cozy/cozy-konnector-libs/commit/c1b0317))
+* **saveFiles:** add io.cozy.files data in importedData.json fil… ([#511](https://github.com/cozy/cozy-konnector-libs/issues/511)) ([c2c1fb4](https://github.com/cozy/cozy-konnector-libs/commit/c2c1fb4))
+* **saveFiles:** add io.cozy.files data in importedData.json file when in standalone mode ([dcbf23d](https://github.com/cozy/cozy-konnector-libs/commit/dcbf23d))
+* replace files if we have metadata to add ([#513](https://github.com/cozy/cozy-konnector-libs/issues/513)) ([35eb9d9](https://github.com/cozy/cozy-konnector-libs/commit/35eb9d9))
+
+
+
+
+
 ## [4.17.1](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.17.0...cozy-konnector-libs@4.17.1) (2019-06-25)
 
 
