@@ -174,9 +174,12 @@ class BaseKonnector {
    * The data is saved under the `.data` attribute of the cozy
    * account.
    *
+   * Don't forget to modify the manifest.konnector file to give the right to write on the
+   * `io.cozy.accounts` doctype. The syntax can be : `"permissions": {"accounts": {"type": "io.cozy.accounts"}}` (here we juste removed the verb `GET`)
+   *
    * @param  {object} data    - Attributes to be merged
    * @param  {object} options - { merge: true|false }
-   * @return {Promise}
+   * @return {Promise}: resolved with the modified account
    */
   saveAccountData(data, options) {
     options = options || {}

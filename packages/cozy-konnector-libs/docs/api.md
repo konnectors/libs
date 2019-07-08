@@ -870,6 +870,7 @@ fetch account information for your connector.
     * [.updateAccountAttributes()](#BaseKonnector+updateAccountAttributes)
     * [.waitForTwoFaCode()](#BaseKonnector+waitForTwoFaCode)
     * [.saveBills()](#BaseKonnector+saveBills) ⇒ <code>Promise</code>
+    * [.saveFiles()](#BaseKonnector+saveFiles) ⇒ <code>Promise</code>
     * [.updateOrCreate()](#BaseKonnector+updateOrCreate) ⇒ <code>Promise</code>
     * [.saveIdentity()](#BaseKonnector+saveIdentity) ⇒ <code>Promise</code>
     * [.terminate(message)](#BaseKonnector+terminate)
@@ -940,7 +941,11 @@ By default, the data is merged to the remote data, use
 The data is saved under the `.data` attribute of the cozy
 account.
 
+Don't forget to modify the manifest.konnector file to give the right to write on the
+`io.cozy.accounts` doctype. The syntax can be : `"permissions": {"accounts": {"type": "io.cozy.accounts"}}` (here we juste removed the verb `GET`)
+
 **Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)  
+**Returns**: <code>Promise</code> - : resolved with the modified account  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -998,6 +1003,13 @@ async function start() {
 ### baseKonnector.saveBills() ⇒ <code>Promise</code>
 This is saveBills function from cozy-konnector-libs which automatically adds sourceAccount in
 metadata of each entry
+
+**Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)  
+<a name="BaseKonnector+saveFiles"></a>
+
+### baseKonnector.saveFiles() ⇒ <code>Promise</code>
+This is saveFiles function from cozy-konnector-libs which automatically adds sourceAccount and
+sourceAccountIdentifier cozyMetadatas to files
 
 **Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)  
 <a name="BaseKonnector+updateOrCreate"></a>
