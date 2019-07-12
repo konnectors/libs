@@ -1,4 +1,5 @@
-const { prodFormat, devFormat } = require('./log-formats')
+const prodFormat = require('./prod-format')
+const devFormat = require('./dev-format')
 const { setNoRetry } = require('./')
 const chalk = require('chalk')
 
