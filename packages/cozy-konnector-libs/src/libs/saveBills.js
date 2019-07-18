@@ -13,6 +13,7 @@ const log = require('cozy-logger').namespace('saveBills')
 const linkBankOperations = require('./linkBankOperations')
 const DOCTYPE = 'io.cozy.bills'
 const _ = require('lodash')
+const manifest = require('./manifest')
 
 const requiredAttributes = {
   date: 'isDate',
@@ -35,6 +36,9 @@ const requiredAttributes = {
  *   + `vendor` (String): the name of the vendor associated to the bill. Ex: 'trainline'
  *   + `currency` (String) default: EUR:  The ISO currency value (not mandatory since there is a
  *   default value.
+ *   + `matchingCriterias` (Object): criterias that can be used by an external service to match bills
+ *   with bank operations. If not specified but the 'banksTransactionRegExp' attribute is specified in the
+ *   manifest of the connector, this value is automatically added to the bill
  *
  *   You can also pass attributes expected by `saveFiles` : fileurl, filename, requestOptions
  *   and more
@@ -82,7 +86,9 @@ module.exports = async (entries, fields, options = {}) => {
 
   const originalEntries = entries
   const defaultShouldUpdate = (entry, dbEntry) =>
-    entry.invoice !== dbEntry.invoice || !dbEntry.cozyMetadata
+    entry.invoice !== dbEntry.invoice ||
+    !dbEntry.cozyMetadata ||
+    !dbEntry.matchingCriterias
 
   if (!options.shouldUpdate) {
     options.shouldUpdate = defaultShouldUpdate
@@ -116,12 +122,26 @@ module.exports = async (entries, fields, options = {}) => {
     }
   }
 
+  // try to get transaction regexp from the manifest
+  let defaultTransactionRegexp = null
+  if (
+    Object.keys(manifest.data).length &&
+    manifest.data.banksTransactionRegExp
+  ) {
+    defaultTransactionRegexp = manifest.data.banksTransactionRegExp
+  }
+
   tempEntries = tempEntries
     // we do not save bills without associated file anymore
     .filter(entry => entry.fileDocument)
     .map(entry => {
       entry.currency = convertCurrency(entry.currency)
       entry.invoice = `io.cozy.files:${entry.fileDocument._id}`
+      const matchingCriterias = entry.matchingCriterias || {}
+      if (defaultTransactionRegexp && !matchingCriterias.labelRegex) {
+        matchingCriterias.labelRegex = defaultTransactionRegexp
+        entry.matchingCriterias = matchingCriterias
+      }
       delete entry.fileDocument
       delete entry.fileAttributes
       return entry

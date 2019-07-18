@@ -376,6 +376,9 @@ Parameters:
   + `vendor` (String): the name of the vendor associated to the bill. Ex: 'trainline'
   + `currency` (String) default: EUR:  The ISO currency value (not mandatory since there is a
   default value.
+  + `matchingCriterias` (Object): criterias that can be used by an external service to match bills
+  with bank operations. If not specified but the 'banksTransactionRegExp' attribute is specified in the
+  manifest of the connector, this value is automatically added to the bill
 
   You can also pass attributes expected by `saveFiles` : fileurl, filename, requestOptions
   and more
