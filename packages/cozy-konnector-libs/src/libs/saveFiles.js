@@ -97,7 +97,9 @@ const downloadEntry = function(entry, options) {
     )
     return filePromise.then(data => options.postProcessFile(data))
   }
-  return filePromise
+  return filePromise.catch(err => {
+    log('warn', `File download error ${err.message}`)
+  })
 }
 
 const createFile = async function(entry, options, method, fileId) {
@@ -236,10 +238,12 @@ const saveEntry = async function(entry, options) {
             } tries removing the file`
           )
         } else {
+          console.log(err)
           log('warn', 'unknown file download error: ' + err.message)
         }
       })
     }
+
     attachFileToEntry(entry, file)
 
     sanitizeEntry(entry)
@@ -422,6 +426,7 @@ const saveFiles = async (entries, fields, options = {}) => {
     }
   }
 
+  console.log('hello after')
   log(
     'info',
     `saveFiles created ${savedFiles} files for ${
