@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.18.2](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.18.1...cozy-konnector-libs@4.18.2) (2019-07-19)
+
+
+### Bug Fixes
+
+* do not try do download a file there is an error in shouldreplace ([5062adf](https://github.com/cozy/cozy-konnector-libs/commit/5062adf))
+* Fix Tls test on chained self signed cert ([f5a47e5](https://github.com/cozy/cozy-konnector-libs/commit/f5a47e5))
+* last cozy-doctypes make the tests fail ([e1fa77d](https://github.com/cozy/cozy-konnector-libs/commit/e1fa77d))
+* remove console.log ([120fc77](https://github.com/cozy/cozy-konnector-libs/commit/120fc77))
+
+
+
+
+
 ## [4.18.1](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.18.0...cozy-konnector-libs@4.18.1) (2019-07-08)
 
 **Note:** Version bump only for package cozy-konnector-libs
