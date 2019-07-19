@@ -1,9 +1,9 @@
 [![Travis build status shield](https://img.shields.io/travis/konnectors/libs/master.svg)](https://travis-ci.org/konnectors/libs)
 [![NPM Licence shield](https://img.shields.io/npm/l/cozy-konnector-libs.svg)](https://github.com/konnectors/libs/blob/master/LICENSE)
 
-| cozy-konnector-libs | cozy-jobs-cli | cozy-logger | renovate-config-cozy-konnector |
+| cozy-konnector-libs | cozy-jobs-cli | renovate-config-cozy-konnector |
 |---|---|---|---|
-| [![NPM release cozy-konnector-libs](https://img.shields.io/npm/v/cozy-konnector-libs.svg)](https://www.npmjs.com/package/cozy-konnector-libs) | [![NPM release cozy-jobs-cli](https://img.shields.io/npm/v/cozy-jobs-cli.svg)](https://www.npmjs.com/package/cozy-jobs-cli) | [![NPM release cozy-logger](https://img.shields.io/npm/v/cozy-logger.svg)](https://www.npmjs.com/package/cozy-logger) | [![NPM release renovate-config-cozy-konnector](https://img.shields.io/npm/v/renovate-config-cozy-konnector.svg)](https://www.npmjs.com/package/renovate-config-cozy-konnector) |
+| [![NPM release cozy-konnector-libs](https://img.shields.io/npm/v/cozy-konnector-libs.svg)](https://www.npmjs.com/package/cozy-konnector-libs) | [![NPM release cozy-jobs-cli](https://img.shields.io/npm/v/cozy-jobs-cli.svg)](https://www.npmjs.com/package/cozy-jobs-cli) | [![NPM release renovate-config-cozy-konnector](https://img.shields.io/npm/v/renovate-config-cozy-konnector.svg)](https://www.npmjs.com/package/renovate-config-cozy-konnector) |
 
 
 [Cozy] Konnector monorepo
@@ -33,7 +33,6 @@ focused packages that rely on each other.
 
 * `cozy-konnector-libs` has tools to scrape and save data to your cozy
 * `cozy-jobs-cli` lets your run a konnector/service while being authenticated to a cozy
-* `cozy-logger` logs message in a human friendly way while developing and logs in JSON when in production. It can be used by konnector and services alike.
 * `renovate-config-cozy-konnector` is the [Renovate preset] for cozy konnectors.
 
 To start developing :
