@@ -81,7 +81,7 @@
     "express": "4.17.1",
     "jest": "24.8.0",
     "jsdoc-to-markdown": "4.0.1",
-    "lerna": "3.15.0"
+    "lerna": "3.16.1"
   },
   "prettier": {
     "semi": false,
