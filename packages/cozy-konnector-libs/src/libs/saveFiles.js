@@ -97,9 +97,10 @@ const downloadEntry = function(entry, options) {
     )
     return filePromise.then(data => options.postProcessFile(data))
   }
-  return filePromise.catch(err => {
+  filePromise.catch(err => {
     log('warn', `File download error ${err.message}`)
   })
+  return filePromise
 }
 
 const createFile = async function(entry, options, method, fileId) {
@@ -139,7 +140,7 @@ const createFile = async function(entry, options, method, fileId) {
 
   if (options.validateFile) {
     if ((await options.validateFile(fileDocument)) === false) {
-      if (method === 'create') await removeFile(fileDocument)
+      await removeFile(fileDocument)
       throw new Error('BAD_DOWNLOADED_FILE')
     }
 
@@ -147,7 +148,7 @@ const createFile = async function(entry, options, method, fileId) {
       options.validateFileContent &&
       !(await options.validateFileContent(fileDocument))
     ) {
-      if (method === 'create') await removeFile(fileDocument)
+      await removeFile(fileDocument)
       throw new Error('BAD_DOWNLOADED_FILE')
     }
   }
@@ -457,7 +458,7 @@ function sanitizeFileName(filename) {
 }
 
 function checkFileSize(fileobject) {
-  if (fileobject.attributes.size === 0) {
+  if (fileobject.attributes.size === 0 || fileobject.attributes.size === '0') {
     log('warn', `${fileobject.attributes.name} is empty`)
     log('warn', 'BAD_FILE_SIZE')
     return false
