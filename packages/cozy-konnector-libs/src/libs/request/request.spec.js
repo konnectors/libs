@@ -124,9 +124,14 @@ describe('requestFactory', () => {
       )
     })
     test('Untrust Root cert should be refused', async () => {
-      return expect(rq('https://untrusted-root.badssl.com')).rejects.toEqual(
-        new Error('Error: unable to verify the first certificate')
-      )
+      expect.assertions(1)
+      try {
+        await rq('https://untrusted-root.badssl.com')
+      } catch (err) {
+        expect(err.message).toEqual(
+          'Error: self signed certificate in certificate chain'
+        )
+      }
     })
     test('Self-signed cert should be refused', async () => {
       return expect(rq('https://self-signed.badssl.com')).rejects.toEqual(
