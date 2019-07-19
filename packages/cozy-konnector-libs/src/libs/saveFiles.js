@@ -238,7 +238,6 @@ const saveEntry = async function(entry, options) {
             } tries removing the file`
           )
         } else {
-          console.log(err)
           log('warn', 'unknown file download error: ' + err.message)
         }
       })
@@ -426,7 +425,6 @@ const saveFiles = async (entries, fields, options = {}) => {
     }
   }
 
-  console.log('hello after')
   log(
     'info',
     `saveFiles created ${savedFiles} files for ${
