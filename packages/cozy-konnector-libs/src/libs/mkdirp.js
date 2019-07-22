@@ -7,10 +7,6 @@ const cozyClient = require('./cozyclient')
 
 const log = () => {}
 
-// The default exported `mkdirp` function is configured with the `cozyClient`
-// from `cozy-konnector-libs`.
-const mkdirp = fromCozy(cozyClient)
-
 /**
  * Creates a directory and its missing ancestors as needed.
  *
@@ -37,6 +33,8 @@ const mkdirp = fromCozy(cozyClient)
  *
  * @alias module:mkdirp
  */
+const mkdirp = fromCozy(cozyClient)
+
 module.exports = mkdirp
 
 // `fromCozy()` builds an mkdirp() function for the given Cozy client.

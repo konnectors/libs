@@ -397,7 +397,7 @@ const jsonTee = filename => res => {
  *
  * @alias module:linkBankOperations
  */
-module.exports = (bills, doctype, fields, options = {}) => {
+const linkBankOperations = (bills, doctype, fields, options = {}) => {
   // Use the custom bank identifier from user if any
   if (fields.bank_identifier && fields.bank_identifier.length) {
     options.identifiers = [fields.bank_identifier]
@@ -417,3 +417,5 @@ module.exports = (bills, doctype, fields, options = {}) => {
 Object.assign(module.exports, {
   Linker
 })
+
+module.exports = linkBankOperations

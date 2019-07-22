@@ -37,7 +37,7 @@ const updateOrCreate = require('./updateOrCreate')
  * @alias module:saveIdentity
  */
 
-module.exports = async (contact, accountIdentifier, options = {}) => {
+const saveIdentity = async (contact, accountIdentifier, options = {}) => {
   log('info', 'saving user identity')
   if (accountIdentifier == null) {
     log('warn', "Can't set identity as no accountIdentifier was provided")
@@ -94,3 +94,5 @@ function formatPhone(phone) {
   }
   return phone
 }
+
+module.exports = saveIdentity

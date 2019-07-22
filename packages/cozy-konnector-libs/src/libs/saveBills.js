@@ -59,7 +59,7 @@ const requiredAttributes = {
  *
  * @alias module:saveBills
  */
-module.exports = async (entries, fields, options = {}) => {
+const saveBills = async (entries, fields, options = {}) => {
   if (!_.isArray(entries) || entries.length === 0) {
     log('warn', 'saveBills: no bills to save')
     return Promise.resolve()
@@ -177,3 +177,4 @@ function checkRequiredAttributes(entries) {
     }
   }
 }
+module.exports = saveBills

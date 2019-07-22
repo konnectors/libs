@@ -26,7 +26,7 @@ const { getCozyMetadata } = require('./manifest')
  *
  * @alias module:updateOrCreate
  */
-module.exports = (
+const updateOrCreate = (
   entries = [],
   doctype,
   matchingAttributes = [],
@@ -64,3 +64,4 @@ module.exports = (
     })
   )
 }
+module.exports = updateOrCreate

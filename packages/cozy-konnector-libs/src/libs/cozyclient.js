@@ -83,8 +83,10 @@ const getCozyClient = function(environment = 'production') {
  *
  * @alias module:cozyClient
  */
-module.exports = getCozyClient(
+const cozyClient = getCozyClient(
   // webpack 4 now changes the NODE_ENV environment variable when you change its 'mode' option
   // since we do not want to minimize the built file, we recognize the 'none' mode as production mode
   process.env.NODE_ENV === 'none' ? 'production' : process.env.NODE_ENV
 )
+
+module.exports = cozyClient

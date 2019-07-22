@@ -43,7 +43,7 @@ const DEFAULT_TIMEOUT = connectorStartTime + 3 * 60 * 1000 // 3 minutes by defau
  *
  * @alias module:solveCaptcha
  */
-module.exports = async (params = {}) => {
+const solveCaptcha = async (params = {}) => {
   const defaultParams = {
     type: 'recaptcha',
     timeout: DEFAULT_TIMEOUT
@@ -139,3 +139,5 @@ async function solveWithAntiCaptcha(
 
   throw new Error(errors.CAPTCHA_RESOLUTION_FAILED)
 }
+
+module.exports = solveCaptcha

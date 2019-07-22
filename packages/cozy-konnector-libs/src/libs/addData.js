@@ -39,7 +39,7 @@ const { getCozyMetadata } = require('./manifest')
  *
  * @alias module:addData
  */
-module.exports = (entries, doctype, options = {}) => {
+const addData = (entries, doctype, options = {}) => {
   const cozy = require('./cozyclient')
   return bluebird.mapSeries(entries, async entry => {
     log('debug', entry, 'Adding this entry')
@@ -60,3 +60,5 @@ module.exports = (entries, doctype, options = {}) => {
     return dbEntry
   })
 }
+
+module.exports = addData

@@ -84,7 +84,7 @@ const cheerio = require('cheerio')
  *
  * @alias module:signin
  */
-module.exports = function signin({
+function signin({
   url,
   formSelector,
   formData = {},
@@ -207,3 +207,5 @@ function handleRequestErrors(err) {
     return Promise.reject(err)
   }
 }
+
+module.exports = signin

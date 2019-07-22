@@ -158,9 +158,9 @@ instead of imperatively building them.</p>
 ## addData
 Saves the data into the cozy blindly without check.
 
-<a name="exp_module_addData--module.exports"></a>
+<a name="exp_module_addData--addData"></a>
 
-### module.exports() ⏏
+### addData() ⏏
 Saves the data into the cozy blindly without check.
 
 You need at least the `POST` permission for the given doctype in your manifest, to be able to
@@ -196,9 +196,9 @@ return addData(documents, 'io.cozy.height')
 [cozy-client-js](https://cozy.github.io/cozy-client-js/) instance already
 initialized and ready to use.
 
-<a name="exp_module_cozyClient--module.exports"></a>
+<a name="exp_module_cozyClient--cozyClient"></a>
 
-### module.exports ⏏
+### cozyClient ⏏
 [cozy-client-js](https://cozy.github.io/cozy-client-js/) instance already initialized and ready to use.
 
 If you want to access cozy-client-js directly, this method gives you directly an instance of it,
@@ -213,7 +213,7 @@ const {cozyClient} = require('cozy-konnector-libs')
 cozyClient.data.defineIndex('my.doctype', ['_id'])
 ```
 
-**Kind**: Exported member  
+**Kind**: Exported constant  
 <a name="module_hydrateAndFilter"></a>
 
 ## hydrateAndFilter
@@ -280,9 +280,9 @@ as `arguments`.
 ## linkBankOperations
 Finds links between bills and bank operations.
 
-<a name="exp_module_linkBankOperations--module.exports"></a>
+<a name="exp_module_linkBankOperations--linkBankOperations"></a>
 
-### module.exports() ⏏
+### linkBankOperations() ⏏
 Will soon move to a dedicated service. You should not use it.
 
 Finds links between bills and bank operations.
@@ -291,9 +291,9 @@ Finds links between bills and bank operations.
 <a name="module_mkdirp"></a>
 
 ## mkdirp
-<a name="exp_module_mkdirp--module.exports"></a>
+<a name="exp_module_mkdirp--mkdirp"></a>
 
-### module.exports ⏏
+### mkdirp ⏏
 Creates a directory and its missing ancestors as needed.
 
 Options :
@@ -317,7 +317,7 @@ The function will automatically add a leading slash when missing:
 await mkdirp('foo', 'bar') // Creates /foo, then /foo/bar
 ```
 
-**Kind**: Exported member  
+**Kind**: Exported constant  
 <a name="module_normalizeFilename"></a>
 
 ## normalizeFilename
@@ -359,9 +359,9 @@ const filename = normalizeFilename('*foo/bar: <baz> \\"qux"\t???', '.txt')
 Encapsulates the saving of Bills : saves the files, saves the new data, and associate the files
 to an existing bank operation
 
-<a name="exp_module_saveBills--module.exports"></a>
+<a name="exp_module_saveBills--saveBills"></a>
 
-### module.exports() ⏏
+### saveBills() ⏏
 Combines the features of `saveFiles`, `hydrateAndFilter`, `addData` and `linkBankOperations` for a
 common case: bills.
 Will create `io.cozy.bills` objects. The default deduplication keys are `['date', 'amount', 'vendor']`.
@@ -461,9 +461,9 @@ await saveFiles([{fileurl: 'https://...', filename: 'bill1.pdf'}], fields)
 Helper to set or merge io.cozy.identities
 See https://github.com/cozy/cozy-doctypes/blob/master/docs/io.cozy.identities.md
 
-<a name="exp_module_saveIdentity--module.exports"></a>
+<a name="exp_module_saveIdentity--saveIdentity"></a>
 
-### module.exports() ⏏
+### saveIdentity() ⏏
 Set or merge a io.cozy.identities
 
 You need full permission for the doctype io.cozy.identities in your
@@ -496,9 +496,9 @@ return saveIdentity(identity, fields.login)
 Provides an handy method to log the user in,
 on HTML form pages. On success, it resolves to a promise with a parsed body.
 
-<a name="exp_module_signin--module.exports"></a>
+<a name="exp_module_signin--signin"></a>
 
-### module.exports() ⏏
+### signin() ⏏
 Provides an handy method to log the user in,
 on HTML form pages. On success, it resolves to a promise with a parsed body.
 
@@ -575,9 +575,9 @@ simple.
 Use every possible means to solve a captcha. At the moment, Anticaptcha web service is used if
 any related secret key is found in COZY_PARAMETERS environment variable.
 
-<a name="exp_module_solveCaptcha--module.exports"></a>
+<a name="exp_module_solveCaptcha--solveCaptcha"></a>
 
-### module.exports() ⏏
+### solveCaptcha() ⏏
 Use every possible means to solve a captcha. At the moment, Anticaptcha web service is used if
 any related secret key is found in COZY_PARAMETERS environment variable.
 If you do not want to solve the captcha each time the connector is run, please also use
@@ -611,9 +611,9 @@ const solvedKey = await solveCaptcha({
 Creates or updates the given entries according to if they already
 exist in the cozy or not
 
-<a name="exp_module_updateOrCreate--module.exports"></a>
+<a name="exp_module_updateOrCreate--updateOrCreate"></a>
 
-### module.exports() ⏏
+### updateOrCreate() ⏏
 Creates or updates the given entries according to if they already
 exist in the cozy or not
 
