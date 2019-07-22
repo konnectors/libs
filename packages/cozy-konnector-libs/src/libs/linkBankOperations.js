@@ -414,8 +414,8 @@ const linkBankOperations = (bills, doctype, fields, options = {}) => {
   return prom
 }
 
+module.exports = linkBankOperations
+
 Object.assign(module.exports, {
   Linker
 })
-
-module.exports = linkBankOperations
