@@ -6738,11 +6738,12 @@ onetime@^2.0.0:
   dependencies:
     mimic-fn "^1.0.0"
 
-opentype.js@^0.8.0:
-  version "0.8.0"
-  resolved "https://registry.yarnpkg.com/opentype.js/-/opentype.js-0.8.0.tgz#acabcfa1642fbe894a3e4d759e43ba694e02bd35"
-  integrity sha1-rKvPoWQvvolKPk11nkO6aU4CvTU=
+opentype.js@^0.11.0:
+  version "0.11.0"
+  resolved "https://registry.yarnpkg.com/opentype.js/-/opentype.js-0.11.0.tgz#310f3fb85f09ca6cf22ac8cf540df67b418c3351"
+  integrity sha512-Z9NkAyQi/iEKQYzCSa7/VJSqVIs33wknw8Z8po+DzuRUAqivJ+hJZ94mveg3xIeKwLreJdWTMyEO7x1K13l41Q==
   dependencies:
+    string.prototype.codepointat "^0.2.1"
     tiny-inflate "^1.0.2"
 
 opn@6.0.0:
@@ -6931,7 +6932,7 @@ pako@^0.2.5:
   resolved "https://registry.yarnpkg.com/pako/-/pako-0.2.9.tgz#f3f7522f4ef782348da8161bad9ecfd51bf83a75"
   integrity sha1-8/dSL073gjSNqBYbrZ7P1Rv4OnU=
 
-pako@^1.0.6:
+pako@^1.0.10:
   version "1.0.10"
   resolved "https://registry.yarnpkg.com/pako/-/pako-1.0.10.tgz#4328badb5086a426aa90f541977d4955da5c9732"
   integrity sha512-0DTvPVU3ed8+HNXOu5Bs+o//Mbdj9VNQMUOe9oKCwh8l0GNwpTDMKCWbRjgtD291AWnkAgkqA/LOnQS8AmS1tw==
@@ -7088,17 +7089,17 @@ pdfjs-dist@2.1.266:
     node-ensure "^0.0.0"
     worker-loader "^2.0.0"
 
-pdfjs@2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/pdfjs/-/pdfjs-2.1.0.tgz#6d5fca67401a9f1046b4554f2d4f89f5a998f735"
-  integrity sha512-tP4XzgdryoKzzlDX2QtQq7dhVfhoqIu6PmUIcIkOV1TuF1WubvjjsX1w9z/UXJvRV9/Llilo/L0BxUHX3Rypmg==
+pdfjs@2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/pdfjs/-/pdfjs-2.3.0.tgz#eeb9781ade7f6efce6722147258eb64e1225b22f"
+  integrity sha512-FTsEw+FageDqbSwooJyNNX8jvbsAJlEVguonRtF6A5XNpVibhG5UhNgrZwUMFadQa5xXiq82wnaUA/3Fhr3uTA==
   dependencies:
     "@rkusa/linebreak" "^1.0.0"
-    opentype.js "^0.8.0"
-    pako "^1.0.6"
-    readable-stream "^2.3.6"
-    unorm "^1.4.1"
-    uuid "^3.0.1"
+    opentype.js "^0.11.0"
+    pako "^1.0.10"
+    readable-stream "^3.3.0"
+    unorm "^1.5.0"
+    uuid "^3.3.2"
 
 performance-now@^2.1.0:
   version "2.1.0"
@@ -7600,7 +7601,7 @@ read@1, read@~1.0.1:
     string_decoder "~1.1.1"
     util-deprecate "~1.0.1"
 
-"readable-stream@2 || 3", readable-stream@^3.0.2, readable-stream@^3.1.1:
+"readable-stream@2 || 3", readable-stream@^3.0.2, readable-stream@^3.1.1, readable-stream@^3.3.0:
   version "3.4.0"
   resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-3.4.0.tgz#a51c26754658e0a3c21dbf59163bd45ba6f447fc"
   integrity sha512-jItXPLmrSR8jmTRmRWJXCnGJsfy85mB3Wd/uINMXA65yrnFo0cPClFIUWzo2najVNSl+mx7/4W8ttlLWJe99pQ==
@@ -8398,6 +8399,11 @@ string-width@^3.0.0, string-width@^3.1.0:
     is-fullwidth-code-point "^2.0.0"
     strip-ansi "^5.1.0"
 
+string.prototype.codepointat@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/string.prototype.codepointat/-/string.prototype.codepointat-0.2.1.tgz#004ad44c8afc727527b108cd462b4d971cd469bc"
+  integrity sha512-2cBVCj6I4IOvEnjgO/hWqXjqBGsY+zwPmHl12Srk9IXSZ56Jwwmy+66XO5Iut/oQVR7t5ihYdLB0GMa4alEUcg==
+
 string.prototype.padend@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/string.prototype.padend/-/string.prototype.padend-3.0.0.tgz#f3aaef7c1719f170c5eab1c32bf780d96e21f2f0"
@@ -8894,7 +8900,7 @@ universalify@^0.1.0:
   resolved "https://registry.yarnpkg.com/universalify/-/universalify-0.1.2.tgz#b646f69be3942dabcecc9d6639c80dc105efaa66"
   integrity sha512-rBJeI5CXAlmy1pV+617WB9J63U6XcazHHF2f2dbJix4XzpUF0RS3Zbj0FGIOCAva5P/d/GBOYaACQ1w+0azUkg==
 
-unorm@^1.4.1:
+unorm@^1.5.0:
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/unorm/-/unorm-1.6.0.tgz#029b289661fba714f1a9af439eb51d9b16c205af"
   integrity sha512-b2/KCUlYZUeA7JFUuRJZPUtr4gZvBh7tavtv4fvk4+KV9pfGiR6CQAQAWl49ZpR3ts2dk4FYkP7EIgDJoiOLDA==
