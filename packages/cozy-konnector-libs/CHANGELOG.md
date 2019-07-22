@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.18.3](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.18.2...cozy-konnector-libs@4.18.3) (2019-07-22)
+
+
+### Bug Fixes
+
+* **deps:** update dependency file-type to v12 ([591d122](https://github.com/cozy/cozy-konnector-libs/commit/591d122))
+* **deps:** update dependency file-type to v12 ([#496](https://github.com/cozy/cozy-konnector-libs/issues/496)) ([80886bc](https://github.com/cozy/cozy-konnector-libs/commit/80886bc))
+* **deps:** update dependency pdfjs-dist to v2.1.266 ([6ff6f34](https://github.com/cozy/cozy-konnector-libs/commit/6ff6f34))
+* **deps:** update dependency pdfjs-dist to v2.1.266 ([#514](https://github.com/cozy/cozy-konnector-libs/issues/514)) ([a1b4e2e](https://github.com/cozy/cozy-konnector-libs/commit/a1b4e2e))
+
+
+
+
+
 ## [4.18.2](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.18.1...cozy-konnector-libs@4.18.2) (2019-07-19)
 
 
