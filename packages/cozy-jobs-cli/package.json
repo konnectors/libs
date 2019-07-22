@@ -23,13 +23,13 @@
     "commander": "2.20.0",
     "core-js": "3.1.4",
     "cozy-client-js": "0.16.4",
-    "cozy-konnector-libs": "^4.18.3",
-    "cozy-logger": "^1.3.1",
+    "cozy-konnector-libs": "4.18.3",
+    "cozy-logger": "1.3.1",
     "opn": "6.0.0",
     "pretty": "2.0.0",
     "regenerator-runtime": "0.13.3",
     "replay": "2.4.0",
-    "strip-json-comments": "^3.0.1"
+    "strip-json-comments": "3.0.1"
   },
   "scripts": {
     "lint": "standard --fix src/*"
