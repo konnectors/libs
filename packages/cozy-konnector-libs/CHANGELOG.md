@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.18.4](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.18.3...cozy-konnector-libs@4.18.4) (2019-07-29)
+
+
+### Bug Fixes
+
+* bad module.exports change caused unit tests to fail ([2d2347b](https://github.com/cozy/cozy-konnector-libs/commit/2d2347b))
+* update cozy-doctypes with cozy-client as peerDependency ([a17d1e6](https://github.com/cozy/cozy-konnector-libs/commit/a17d1e6))
+* update cozy-doctypes with cozy-client as peerDependency ([#528](https://github.com/cozy/cozy-konnector-libs/issues/528)) ([79e5e87](https://github.com/cozy/cozy-konnector-libs/commit/79e5e87))
+* **deps:** update dependency cozy-doctypes to v1.57.1 ([db7b333](https://github.com/cozy/cozy-konnector-libs/commit/db7b333))
+* **deps:** update dependency file-type to v12.1.0 ([6af6cb8](https://github.com/cozy/cozy-konnector-libs/commit/6af6cb8))
+* **deps:** update dependency file-type to v12.1.0 ([#527](https://github.com/cozy/cozy-konnector-libs/issues/527)) ([756d85a](https://github.com/cozy/cozy-konnector-libs/commit/756d85a))
+
+
+
+
+
 ## [4.18.3](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.18.2...cozy-konnector-libs@4.18.3) (2019-07-22)
 
 
