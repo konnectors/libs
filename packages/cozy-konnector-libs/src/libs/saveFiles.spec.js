@@ -1,13 +1,22 @@
 jest.mock('./cozyclient')
 const cozyClient = require('./cozyclient')
-//jest.mock('./utils')
-//const { queryAll } = require('./utils')
+const manifest = require('./manifest')
+jest.mock('./utils')
+const { queryAll } = require('./utils')
 const logger = require('cozy-logger')
 const saveFiles = require('./saveFiles')
+const getFileIfExists = saveFiles.getFileIfExists
 const asyncResolve = val => {
   return new Promise(resolve => {
     setTimeout(() => {
       resolve(val)
+    }, 1)
+  })
+}
+const asyncReject = val => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      reject(val)
     }, 1)
   })
 }
@@ -176,18 +185,18 @@ describe('saveFiles', function() {
     })
   }
 
-  // // Renaming Test, not working due to not sucessfully mock updateAttributesById
+  // Renaming Test, not working due to not sucessfully mock updateAttributesById
   // describe('when entry have shouldReplaceName', () => {
   //   beforeEach(async () => {
-  //     cozyClient.files.statByPath.mockImplementation(path => {
+  //     cozyClient.files.statByPath.mockImplementation(() => {
   //       return asyncResolve({ _id: 'folderId' })
   //     })
-  //     queryAll.mockImplementation( () => {
+  //     queryAll.mockImplementation(() => {
   //       // Watch out, not the same format as cozyClient.files
-  //       return [ { name: '201712_freemobile.pdf', _id: 'idToRename' } ]
+  //       return [{ name: '201712_freemobile.pdf', _id: 'idToRename' }]
   //     })
   //     cozyClient.files.updateAttributesById.mockReset()
-  //     cozyClient.files.updateAttributesById.mockImplementation((id, obj) => {
+  //     cozyClient.files.updateAttributesById.mockImplementation(() => {
   //       return
   //     })
   //   })
@@ -197,7 +206,8 @@ describe('saveFiles', function() {
   //       date: '2017-12-12T23:00:00.000Z',
   //       vendor: 'Free Mobile',
   //       type: 'phone',
-  //       fileurl: 'https://mobile.free.fr/moncompte/index.php?page=suiviconso&action=getFacture&format=dl&l=14730097&id=7c7dfbfc8707b75fb478f68a50b42fc6&date=20171213&multi=0',
+  //       fileurl:
+  //         'https://mobile.free.fr/moncompte/index.php?page=suiviconso&action=getFacture&format=dl&l=14730097&id=7c7dfbfc8707b75fb478f68a50b42fc6&date=20171213&multi=0',
   //       filename: '201712_freemobile_nicename.pdf',
   //       shouldReplaceName: '201712_freemobile.pdf'
   //     }
@@ -220,13 +230,9 @@ describe('saveFiles', function() {
     }
   ]
   describe('when filestream is used without filename', () => {
-    it('should throw an error', async () => {
-      expect.assertions(2)
-      try {
-        await saveFiles(billWithoutFilename, options)
-      } catch (error) {
-        expect(error).toEqual(new Error('Missing filename property'))
-      }
+    it('should ignore the entry', async () => {
+      const result = await saveFiles(billWithoutFilename, options)
+      expect(result.length).toEqual(0)
       expect(cozyClient.files.create).not.toHaveBeenCalled()
     })
   })
@@ -264,6 +270,63 @@ describe('saveFiles', function() {
         { timeout: 1 }
       )
       expect(cozyClient.files.create).not.toHaveBeenCalled()
+    })
+  })
+})
+
+describe('getFileIfExists', function() {
+  describe('when in filepath mode', () => {
+    beforeEach(function() {
+      manifest.data.slug = false
+      cozyClient.files.statByPath.mockReset()
+    })
+    it('when the file does not exist, should not return any file', async () => {
+      cozyClient.files.statByPath.mockReturnValue(asyncReject(false))
+      const result = await getFileIfExists(
+        { filename: 'testfile.txt' },
+        { folderPath: '/test/path' }
+      )
+      expect(result).toBe(false)
+    })
+    it('when the file exists and without metadata, should return the file', async () => {
+      cozyClient.files.statByPath.mockReturnValue(
+        asyncResolve({ name: 'testfile.txt' })
+      )
+      const result = await getFileIfExists(
+        { filename: 'testfile.txt' },
+        { folderPath: '/test/path' }
+      )
+      expect(result).toEqual({ name: 'testfile.txt' })
+    })
+  })
+  describe('when in metadata mode', () => {
+    const options = {
+      fileKeys: ['vendorRef'],
+      sourceAccountOptions: {
+        sourceAccountIdentifier: 'accountidentifier'
+      },
+      folderPath: '/test/path'
+    }
+    beforeEach(function() {
+      manifest.data.slug = 'testconnector'
+      cozyClient.data.defineIndex.mockReturnValue(asyncResolve('index'))
+      queryAll.mockReset()
+    })
+    it('when the file does not exist, should not return any file', async () => {
+      queryAll.mockReturnValue(asyncResolve([]))
+      const result = await getFileIfExists(
+        { filename: 'testfile.txt' },
+        options
+      )
+      expect(result).toBe(false)
+    })
+    it('when the file exists, should return the file', async () => {
+      queryAll.mockReturnValue(asyncResolve([{ filename: 'coucou.txt' }]))
+      const result = await getFileIfExists(
+        { filename: 'testfile.txt' },
+        options
+      )
+      expect(result).toEqual({ filename: 'coucou.txt' })
     })
   })
 })
