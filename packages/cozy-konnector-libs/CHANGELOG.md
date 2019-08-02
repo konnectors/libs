@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.18.6](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.18.5...cozy-konnector-libs@4.18.6) (2019-08-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency cozy-doctypes to v1.58.0 ([240219d](https://github.com/cozy/cozy-konnector-libs/commit/240219d))
+
+
+
+
+
 ## [4.18.5](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.18.4...cozy-konnector-libs@4.18.5) (2019-07-30)
 
 **Note:** Version bump only for package cozy-konnector-libs
