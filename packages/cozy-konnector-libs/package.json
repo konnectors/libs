@@ -36,7 +36,6 @@
     "pdfjs-dist": "2.1.266",
     "raven": "2.6.4",
     "raw-body": "2.4.1",
-    "react": "16.8.6",
     "request": "2.88.0",
     "request-debug": "0.2.0",
     "request-promise": "4.2.4",

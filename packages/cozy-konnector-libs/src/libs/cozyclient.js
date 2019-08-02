@@ -8,6 +8,7 @@
 /* eslint no-console: off */
 
 const { Client, MemoryStorage } = require('cozy-client-js')
+const NewCozyClient = require('cozy-client/dist/CozyClient').default
 
 const getCredentials = function(environment) {
   try {
@@ -62,6 +63,11 @@ const getCozyClient = function(environment = 'production') {
   if (environment === 'development') {
     cozyClient.saveCredentials(credentials.client, credentials.token)
   }
+
+  cozyClient.new = new NewCozyClient({
+    uri: cozyClient._uri,
+    token: cozyClient._token
+  })
 
   return cozyClient
 }
