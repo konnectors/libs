@@ -2969,17 +2969,16 @@ cozy-client-js@0.16.4:
     pouchdb-browser "7.0.0"
     pouchdb-find "7.0.0"
 
-cozy-client@6.55.0:
-  version "6.55.0"
-  resolved "https://registry.yarnpkg.com/cozy-client/-/cozy-client-6.55.0.tgz#ffc4277103e0a0a304cc68d0bed7347c00dabb64"
-  integrity sha512-N/loJqXGw0V0YvV++tPrJCw2Q4u+2Zga1dMp25+g/Oh85gOWa6v2WFo1izPH3FGf2rfetoWziv8gWz/jzjeUeA==
+cozy-client@6.55.1:
+  version "6.55.1"
+  resolved "https://registry.yarnpkg.com/cozy-client/-/cozy-client-6.55.1.tgz#4f07d1bc71de086e7c6761c27be31bf093dbc939"
+  integrity sha512-wjJQGQ+ZMDrXeY366+EH5UY2VbW/24DODEYovg6MjSlwXJQduZOfWNjvITH+29g7IQiN6CXhZ/q61Vuph60WEg==
   dependencies:
     cozy-device-helper "1.7.3"
     cozy-stack-client "^6.55.0"
     lodash "4.17.14"
     microee "0.0.6"
     prop-types "15.6.2"
-    react "16.7.0"
     react-redux "5.0.7"
     redux "3.7.2"
     redux-thunk "2.3.0"
@@ -7645,16 +7644,6 @@ react-redux@5.0.7:
     loose-envify "^1.1.0"
     prop-types "^15.6.0"
 
-react@16.7.0:
-  version "16.7.0"
-  resolved "https://registry.yarnpkg.com/react/-/react-16.7.0.tgz#b674ec396b0a5715873b350446f7ea0802ab6381"
-  integrity sha512-StCz3QY8lxTb5cl2HJxjwLFOXPIFQp+p+hxQfc8WE0QiLfCtIlKj8/+5tjjKm8uSTlAW+fCPaavGFS06V9Ar3A==
-  dependencies:
-    loose-envify "^1.1.0"
-    object-assign "^4.1.1"
-    prop-types "^15.6.2"
-    scheduler "^0.12.0"
-
 read-cmd-shim@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/read-cmd-shim/-/read-cmd-shim-1.0.1.tgz#2d5d157786a37c055d22077c32c53f8329e91c7b"
@@ -8148,14 +8137,6 @@ sax@^1.2.4:
   version "1.2.4"
   resolved "https://registry.yarnpkg.com/sax/-/sax-1.2.4.tgz#2816234e2378bddc4e5354fab5caa895df7100d9"
   integrity sha512-NqVDv9TpANUjFm0N8uM5GxL36UgKi9/atZw+x7YFnQ8ckwFGKrl4xX4yWtrey3UJm5nP1kUbnYgLopqWNSRhWw==
-
-scheduler@^0.12.0:
-  version "0.12.0"
-  resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.12.0.tgz#8ab17699939c0aedc5a196a657743c496538647b"
-  integrity sha512-t7MBR28Akcp4Jm+QoR63XgAi9YgCUmgvDHqf5otgAj4QvdoBE4ImCX0ffehefePPG+aitiYHp0g/mW6s4Tp+dw==
-  dependencies:
-    loose-envify "^1.1.0"
-    object-assign "^4.1.1"
 
 schema-utils@^0.4.0:
   version "0.4.7"
