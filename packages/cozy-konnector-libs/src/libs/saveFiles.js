@@ -9,9 +9,7 @@ const mimetypes = require('mime-types')
 const path = require('path')
 const requestFactory = require('./request')
 const omit = require('lodash/omit')
-const get = require('lodash/get')
 const log = require('cozy-logger').namespace('saveFiles')
-const manifest = require('./manifest')
 const cozy = require('./cozyclient')
 const { queryAll } = require('./utils')
 const errors = require('../helpers/errors')
@@ -118,20 +116,11 @@ const createFile = async function(entry, options, method, fileId) {
       createFileOptions.contentType = options.contentType
     }
   }
-  createFileOptions = {
-    ...createFileOptions,
-    ...entry.fileAttributes,
-    ...options.sourceAccountOptions
-  }
-
-  if (options.fileKeys) {
+  if (entry.fileAttributes) {
     createFileOptions = {
       ...createFileOptions,
-      ...{
-        metadata: {
-          fileKeys: calculateFileKey(entry, options.fileKeys)
-        }
-      }
+      ...entry.fileAttributes,
+      ...options.sourceAccountOptions
     }
   }
 
@@ -172,25 +161,10 @@ const attachFileToEntry = function(entry, fileDocument) {
   return entry
 }
 
-function getFilePath({ file, entry, options }) {
-  const folderPath = options.folderPath
-  if (file) {
-    return path.join(folderPath, file.attributes.name)
-  } else if (entry) {
-    return path.join(folderPath, getFileName(entry))
-  }
-}
-
-const shouldReplaceFile = async function(file, entry, options) {
+const shouldReplaceFile = async function(file, entry, options, filepath) {
   const isValid = !options.validateFile || (await options.validateFile(file))
   if (!isValid) {
-    log(
-      'warn',
-      `${getFileName({
-        file,
-        options
-      })} is invalid. Downloading it one more time`
-    )
+    log('warn', `${filepath} is invalid. Downloading it one more time`)
     throw new Error('BAD_DOWNLOADED_FILE')
   }
   const defaultShouldReplaceFile = (file, entry) => {
@@ -214,82 +188,6 @@ const removeFile = async function(file) {
   await cozy.files.destroyById(file._id)
 }
 
-async function getFileIfExists(entry, options) {
-  const fileKeys = options.fileKeys
-  if (!fileKeys) {
-    log(
-      'warn',
-      `saveFiles: no deduplication key is defined, file deduplication will be based on file path`
-    )
-  }
-
-  const slug = manifest.data.slug
-  if (!slug) {
-    log(
-      'warn',
-      `saveFiles: no slug is defined for the current connector, file deduplication will be based on file path`
-    )
-  }
-
-  const sourceAccountIdentifier = get(
-    options,
-    'sourceAccountOptions.sourceAccountIdentifier'
-  )
-  if (!sourceAccountIdentifier) {
-    log(
-      'warn',
-      `saveFiles: no sourceAccountIdentifier is defined in options, file deduplication will be based on file path`
-    )
-  }
-
-  if (!fileKeys || !slug || !sourceAccountIdentifier) {
-    try {
-      const result = await cozy.files.statByPath(
-        getFilePath({ entry, options })
-      )
-      return result
-    } catch (err) {
-      log('debug', err.message)
-      return false
-    }
-  } else {
-    const index = await cozy.data.defineIndex('io.cozy.files', [
-      'metadata.fileKeys',
-      'trashed',
-      'cozyMetadata.sourceAccountIdentifier'
-      // 'cozyMetadata.createdByApp'
-    ])
-    const files = await queryAll(
-      'io.cozy.files',
-      {
-        metadata: {
-          fileKeys: calculateFileKey(entry, fileKeys)
-        },
-        trashed: false,
-        cozyMetadata: {
-          sourceAccountIdentifier: sourceAccountIdentifier
-          // createdByApp: slug
-        }
-      },
-      index
-    )
-    if (files && files[0]) {
-      if (files.length > 1) {
-        log(
-          'warn',
-          `Found ${files.length} files corresponding to ${calculateFileKey(
-            entry,
-            fileKeys
-          )}`
-        )
-      }
-      return files[0]
-    } else {
-      return false
-    }
-  }
-}
-
 const saveEntry = async function(entry, options) {
   if (options.timeout && Date.now() > options.timeout) {
     const remainingTime = Math.floor((options.timeout - Date.now()) / 1000)
@@ -297,11 +195,17 @@ const saveEntry = async function(entry, options) {
     throw new Error('TIMEOUT')
   }
 
-  let file = await getFileIfExists(entry, options)
+  const filepath = path.join(options.folderPath, getFileName(entry))
+  let file = null
+  try {
+    file = await cozy.files.statByPath(filepath)
+  } catch (err) {
+    log('info', err.message)
+  }
   let shouldReplace = false
   if (file) {
     try {
-      shouldReplace = await shouldReplaceFile(file, entry, options)
+      shouldReplace = await shouldReplaceFile(file, entry, options, filepath)
     } catch (err) {
       log('info', `Error in shouldReplace : ${err.message}`)
       shouldReplace = true
@@ -312,20 +216,14 @@ const saveEntry = async function(entry, options) {
 
   if (shouldReplace && file) {
     method = 'updateById'
-    log('info', `Will replace ${getFilePath({ options, file })}...`)
+    log('info', `Will replace ${filepath}...`)
   }
 
   try {
     if (!file || method === 'updateById') {
       log('debug', omit(entry, 'filestream'))
       logFileStream(entry.filestream)
-      log(
-        'debug',
-        `File ${getFilePath({
-          options,
-          entry
-        })} does not exist yet or is not valid`
-      )
+      log('debug', `File ${filepath} does not exist yet or is not valid`)
       entry._cozy_file_to_create = true
       file = await retry(createFile, {
         interval: 1000,
@@ -443,7 +341,6 @@ const saveFiles = async (entries, fields, options = {}) => {
   }
   const saveOptions = {
     folderPath: fields.folderPath,
-    fileKeys: options.fileKeys,
     timeout: options.timeout || DEFAULT_TIMEOUT,
     concurrency: options.concurrency || DEFAULT_CONCURRENCY,
     retry: options.retry || DEFAULT_RETRY,
@@ -487,13 +384,6 @@ const saveFiles = async (entries, fields, options = {}) => {
           if (entry[key])
             entry[key] = getValOrFnResult(entry[key], entry, options)
         })
-        if (entry.filestream && !entry.filename) {
-          log(
-            'warn',
-            'Missing filename property for for filestream entry, entry is ignored'
-          )
-          return
-        }
         if (entry.shouldReplaceName) {
           // At first encounter of a rename, we set the filenamesList
           if (filesArray === undefined) {
@@ -546,19 +436,19 @@ const saveFiles = async (entries, fields, options = {}) => {
 }
 
 module.exports = saveFiles
-module.exports.getFileIfExists = getFileIfExists
 
 function getFileName(entry) {
   let filename
   if (entry.filename) {
     filename = entry.filename
-  } else if (entry.fileurl) {
+  } else if (entry.filestream) {
+    log('debug', omit(entry, 'filestream'))
+    logFileStream(entry.filestream)
+    throw new Error('Missing filename property')
+  } else {
     // try to get the file name from the url
     const parsed = require('url').parse(entry.fileurl)
     filename = path.basename(parsed.pathname)
-  } else {
-    log('error', 'Could not get a file name for the entry')
-    return false
   }
   return sanitizeFileName(filename)
 }
@@ -568,9 +458,7 @@ function sanitizeFileName(filename) {
 }
 
 function checkFileSize(fileobject) {
-  const size =
-    fileobject.size || (fileobject.attributes && fileobject.attributes.size)
-  if (size === 0 || size === '0') {
+  if (fileobject.attributes.size === 0 || fileobject.attributes.size === '0') {
     log('warn', `${fileobject.attributes.name} is empty`)
     log('warn', 'BAD_FILE_SIZE')
     return false
@@ -579,12 +467,7 @@ function checkFileSize(fileobject) {
 }
 
 function checkMimeWithPath(fileDocument) {
-  const mime = fileDocument.attributes
-    ? fileDocument.attributes.mime
-    : fileDocument.mime
-  const name = fileDocument.attributes
-    ? fileDocument.attributes.name
-    : fileDocument.name
+  const { mime, name } = fileDocument.attributes
   const extension = path.extname(name).substr(1)
   if (extension && mime && mimetypes.lookup(extension) !== mime) {
     log('warn', `${name} and ${mime} do not correspond`)
@@ -635,8 +518,4 @@ function getValOrFnResult(val, ...args) {
   if (typeof val === 'function') {
     return val.apply(val, args)
   } else return val
-}
-
-function calculateFileKey(entry, fileKeys) {
-  return fileKeys.map(key => get(entry, key)).join('####')
 }
