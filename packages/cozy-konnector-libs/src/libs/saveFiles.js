@@ -9,7 +9,9 @@ const mimetypes = require('mime-types')
 const path = require('path')
 const requestFactory = require('./request')
 const omit = require('lodash/omit')
+const get = require('lodash/get')
 const log = require('cozy-logger').namespace('saveFiles')
+const manifest = require('./manifest')
 const cozy = require('./cozyclient')
 const { queryAll } = require('./utils')
 const errors = require('../helpers/errors')
@@ -22,6 +24,7 @@ const DEFAULT_VALIDATE_FILE = fileDocument =>
   checkFileSize(fileDocument) && checkMimeWithPath(fileDocument)
 const DEFAULT_VALIDATE_FILECONTENT = async fileDocument => {
   const response = await cozy.files.downloadById(fileDocument._id)
+  const mime = get(fileDocument, 'attributes.mime', fileDocument.mime)
   const fileTypeFromContent = fileType(await response.buffer())
   if (!fileTypeFromContent) {
     log('warn', `Could not find mime type from file content`)
@@ -30,7 +33,7 @@ const DEFAULT_VALIDATE_FILECONTENT = async fileDocument => {
 
   if (
     !DEFAULT_VALIDATE_FILE(fileDocument) ||
-    fileDocument.attributes.mime !== fileTypeFromContent.mime
+    mime !== fileTypeFromContent.mime
   ) {
     log(
       'warn',
@@ -116,11 +119,20 @@ const createFile = async function(entry, options, method, fileId) {
       createFileOptions.contentType = options.contentType
     }
   }
-  if (entry.fileAttributes) {
+  createFileOptions = {
+    ...createFileOptions,
+    ...entry.fileAttributes,
+    ...options.sourceAccountOptions
+  }
+
+  if (options.filePrimaryKeys) {
     createFileOptions = {
       ...createFileOptions,
-      ...entry.fileAttributes,
-      ...options.sourceAccountOptions
+      ...{
+        metadata: {
+          filePrimaryKeys: calculateFileKey(entry, options.filePrimaryKeys)
+        }
+      }
     }
   }
 
@@ -161,19 +173,32 @@ const attachFileToEntry = function(entry, fileDocument) {
   return entry
 }
 
-const shouldReplaceFile = async function(file, entry, options, filepath) {
+function getFilePath({ file, entry, options }) {
+  const folderPath = options.folderPath
+  if (file) {
+    return path.join(folderPath, get(file, 'attributes.name', file.name))
+  } else if (entry) {
+    return path.join(folderPath, getFileName(entry))
+  }
+}
+
+const shouldReplaceFile = async function(file, entry, options) {
   const isValid = !options.validateFile || (await options.validateFile(file))
   if (!isValid) {
-    log('warn', `${filepath} is invalid. Downloading it one more time`)
+    log(
+      'warn',
+      `${getFileName({
+        file,
+        options
+      })} is invalid. Downloading it one more time`
+    )
     throw new Error('BAD_DOWNLOADED_FILE')
   }
   const defaultShouldReplaceFile = (file, entry) => {
     // replace all files with meta if there is file metadata to add
-    return (
-      (!file.attributes || !file.attributes.metadata) &&
-      entry.fileAttributes &&
-      entry.fileAttributes.metadata
-    )
+    const fileHasNoMetadata = !get(file, 'attributes.metadata', file.metadata)
+    const entryHasMetadata = !!get(entry, 'fileAttributes.metadata')
+    return fileHasNoMetadata && (entryHasMetadata || options.filePrimaryKeys)
   }
   const shouldReplaceFileFn =
     entry.shouldReplaceFile ||
@@ -188,6 +213,90 @@ const removeFile = async function(file) {
   await cozy.files.destroyById(file._id)
 }
 
+async function getFileIfExists(entry, options) {
+  const filePrimaryKeys = options.filePrimaryKeys
+  if (!filePrimaryKeys) {
+    log(
+      'warn',
+      `saveFiles: no deduplication key is defined, file deduplication will be based on file path`
+    )
+  }
+
+  const slug = manifest.data.slug
+  if (!slug) {
+    log(
+      'warn',
+      `saveFiles: no slug is defined for the current connector, file deduplication will be based on file path`
+    )
+  }
+
+  const sourceAccountIdentifier = get(
+    options,
+    'sourceAccountOptions.sourceAccountIdentifier'
+  )
+  if (!sourceAccountIdentifier) {
+    log(
+      'warn',
+      `saveFiles: no sourceAccountIdentifier is defined in options, file deduplication will be based on file path`
+    )
+  }
+
+  if (!filePrimaryKeys || !slug || !sourceAccountIdentifier) {
+    try {
+      const result = await cozy.files.statByPath(
+        getFilePath({ entry, options })
+      )
+      return result
+    } catch (err) {
+      log('debug', err.message)
+      return false
+    }
+  } else {
+    const index = await cozy.data.defineIndex('io.cozy.files', [
+      'metadata.filePrimaryKeys',
+      'trashed',
+      'cozyMetadata.sourceAccountIdentifier',
+      'cozyMetadata.createdByApp'
+    ])
+    const files = await queryAll(
+      'io.cozy.files',
+      {
+        metadata: {
+          filePrimaryKeys: calculateFileKey(entry, filePrimaryKeys)
+        },
+        trashed: false,
+        cozyMetadata: {
+          sourceAccountIdentifier: sourceAccountIdentifier,
+          createdByApp: slug
+        }
+      },
+      index
+    )
+    if (files && files[0]) {
+      if (files.length > 1) {
+        log(
+          'warn',
+          `Found ${files.length} files corresponding to ${calculateFileKey(
+            entry,
+            filePrimaryKeys
+          )}`
+        )
+      }
+      return files[0]
+    } else {
+      try {
+        const result = await cozy.files.statByPath(
+          getFilePath({ entry, options })
+        )
+        return result
+      } catch (err) {
+        log('debug', err.message)
+        return false
+      }
+    }
+  }
+}
+
 const saveEntry = async function(entry, options) {
   if (options.timeout && Date.now() > options.timeout) {
     const remainingTime = Math.floor((options.timeout - Date.now()) / 1000)
@@ -195,17 +304,11 @@ const saveEntry = async function(entry, options) {
     throw new Error('TIMEOUT')
   }
 
-  const filepath = path.join(options.folderPath, getFileName(entry))
-  let file = null
-  try {
-    file = await cozy.files.statByPath(filepath)
-  } catch (err) {
-    log('info', err.message)
-  }
+  let file = await getFileIfExists(entry, options)
   let shouldReplace = false
   if (file) {
     try {
-      shouldReplace = await shouldReplaceFile(file, entry, options, filepath)
+      shouldReplace = await shouldReplaceFile(file, entry, options)
     } catch (err) {
       log('info', `Error in shouldReplace : ${err.message}`)
       shouldReplace = true
@@ -216,14 +319,20 @@ const saveEntry = async function(entry, options) {
 
   if (shouldReplace && file) {
     method = 'updateById'
-    log('info', `Will replace ${filepath}...`)
+    log('info', `Will replace ${getFilePath({ options, file })}...`)
   }
 
   try {
     if (!file || method === 'updateById') {
       log('debug', omit(entry, 'filestream'))
       logFileStream(entry.filestream)
-      log('debug', `File ${filepath} does not exist yet or is not valid`)
+      log(
+        'debug',
+        `File ${getFilePath({
+          options,
+          entry
+        })} does not exist yet or is not valid`
+      )
       entry._cozy_file_to_create = true
       file = await retry(createFile, {
         interval: 1000,
@@ -272,7 +381,7 @@ const saveEntry = async function(entry, options) {
  *
  * You need the full permission on `io.cozy.files` in your manifest to use this function.
  *
- * - `files` is an array of object with the following possible attributes :
+ * - `files` is an array of objects with the following possible attributes :
  *
  *   + fileurl: The url of the file (can be a function returning the value). Ignored if `filestream`
  *   is given
@@ -312,9 +421,14 @@ const saveEntry = async function(entry, options) {
  *   + `validateFile` (function) default: do not validate if file is empty or has bad mime type
  *   + `validateFileContent` (boolean or function) default false. Also check the content of the file to
  *   recognize the mime type
+ *   + `filePrimaryKeys` (array). Describe which attributes of files will be taken as primary key for
+ *   files to check if they already exist, even if they are moved. If not given, the file path will
+ *   used for deduplication as before.
  * @example
  * ```javascript
- * await saveFiles([{fileurl: 'https://...', filename: 'bill1.pdf'}], fields)
+ * await saveFiles([{fileurl: 'https://...', filename: 'bill1.pdf'}], fields, {
+ *    filePrimaryKeys: ['fileurl']
+ * })
  * ```
  *
  * @alias module:saveFiles
@@ -341,6 +455,7 @@ const saveFiles = async (entries, fields, options = {}) => {
   }
   const saveOptions = {
     folderPath: fields.folderPath,
+    filePrimaryKeys: options.filePrimaryKeys,
     timeout: options.timeout || DEFAULT_TIMEOUT,
     concurrency: options.concurrency || DEFAULT_CONCURRENCY,
     retry: options.retry || DEFAULT_RETRY,
@@ -384,6 +499,13 @@ const saveFiles = async (entries, fields, options = {}) => {
           if (entry[key])
             entry[key] = getValOrFnResult(entry[key], entry, options)
         })
+        if (entry.filestream && !entry.filename) {
+          log(
+            'warn',
+            'Missing filename property for for filestream entry, entry is ignored'
+          )
+          return
+        }
         if (entry.shouldReplaceName) {
           // At first encounter of a rename, we set the filenamesList
           if (filesArray === undefined) {
@@ -436,19 +558,19 @@ const saveFiles = async (entries, fields, options = {}) => {
 }
 
 module.exports = saveFiles
+module.exports.getFileIfExists = getFileIfExists
 
 function getFileName(entry) {
   let filename
   if (entry.filename) {
     filename = entry.filename
-  } else if (entry.filestream) {
-    log('debug', omit(entry, 'filestream'))
-    logFileStream(entry.filestream)
-    throw new Error('Missing filename property')
-  } else {
+  } else if (entry.fileurl) {
     // try to get the file name from the url
     const parsed = require('url').parse(entry.fileurl)
     filename = path.basename(parsed.pathname)
+  } else {
+    log('error', 'Could not get a file name for the entry')
+    return false
   }
   return sanitizeFileName(filename)
 }
@@ -458,8 +580,10 @@ function sanitizeFileName(filename) {
 }
 
 function checkFileSize(fileobject) {
-  if (fileobject.attributes.size === 0 || fileobject.attributes.size === '0') {
-    log('warn', `${fileobject.attributes.name} is empty`)
+  const size = get(fileobject, 'attributes.size', fileobject.size)
+  const name = get(fileobject, 'attributes.name', fileobject.name)
+  if (size === 0 || size === '0') {
+    log('warn', `${name} is empty`)
     log('warn', 'BAD_FILE_SIZE')
     return false
   }
@@ -467,7 +591,8 @@ function checkFileSize(fileobject) {
 }
 
 function checkMimeWithPath(fileDocument) {
-  const { mime, name } = fileDocument.attributes
+  const mime = get(fileDocument, 'attributes.mime', fileDocument.mime)
+  const name = get(fileDocument, 'attributes.name', fileDocument.name)
   const extension = path.extname(name).substr(1)
   if (extension && mime && mimetypes.lookup(extension) !== mime) {
     log('warn', `${name} and ${mime} do not correspond`)
@@ -518,4 +643,8 @@ function getValOrFnResult(val, ...args) {
   if (typeof val === 'function') {
     return val.apply(val, args)
   } else return val
+}
+
+function calculateFileKey(entry, filePrimaryKeys) {
+  return filePrimaryKeys.map(key => get(entry, key)).join('####')
 }
