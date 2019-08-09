@@ -9,6 +9,7 @@
 
 const { Client, MemoryStorage } = require('cozy-client-js')
 const NewCozyClient = require('cozy-client/dist/CozyClient').default
+const manifest = require('./manifest')
 
 const getCredentials = function(environment) {
   try {
@@ -64,9 +65,15 @@ const getCozyClient = function(environment = 'production') {
     cozyClient.saveCredentials(credentials.client, credentials.token)
   }
 
+  const cozyFields = JSON.parse(process.env.COZY_FIELDS || '{}')
   cozyClient.new = new NewCozyClient({
     uri: cozyClient._uri,
-    token: cozyClient._token
+    token: cozyClient._token,
+    appMetadata: {
+      slug: manifest.data.slug,
+      sourceAccount: cozyFields.account,
+      version: manifest.data.version
+    }
   })
 
   return cozyClient
