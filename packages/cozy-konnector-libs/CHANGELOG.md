@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.18.7](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.18.6...cozy-konnector-libs@4.18.7) (2019-08-09)
+
+
+### Bug Fixes
+
+* new cozy-logger breaks libs ([b0d7fec](https://github.com/cozy/cozy-konnector-libs/commit/b0d7fec))
+
+
+
+
+
 ## [4.18.6](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.18.5...cozy-konnector-libs@4.18.6) (2019-08-02)
 
 
