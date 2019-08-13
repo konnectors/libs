@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.19.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.18.7...cozy-konnector-libs@4.19.0) (2019-08-13)
+
+
+### Bug Fixes
+
+* add react to fix unit tests ([ea6a4b2](https://github.com/cozy/cozy-konnector-libs/commit/ea6a4b2))
+
+
+### Features
+
+* add cozy metadata in cozy-client init ([798cd55](https://github.com/cozy/cozy-konnector-libs/commit/798cd55))
+* init a new cozy-client instance and make it available in cozy-konnector-libs ([a384229](https://github.com/cozy/cozy-konnector-libs/commit/a384229))
+
+
+
+
+
 ## [4.18.7](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.18.6...cozy-konnector-libs@4.18.7) (2019-08-09)
 
 
