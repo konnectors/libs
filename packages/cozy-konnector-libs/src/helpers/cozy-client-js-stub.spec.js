@@ -53,13 +53,10 @@ describe('cozy-client-js-stub', () => {
     const index = await stub.data.defineIndex('io.cozy.bills')
     const result = await stub.data.query(index, {
       selector: {
-        mandatory: { $gt: null }
+        mandatory: 'toto'
       }
     })
-    expect(result.map(doc => omit(doc, '_id'))).toEqual([
-      { mandatory: 'toto' },
-      { mandatory: 'titi' }
-    ])
+    expect(result.map(doc => omit(doc, '_id'))).toEqual([{ mandatory: 'toto' }])
   })
   it('should get all element of a doctype', async () => {
     db.defaults({ 'io.cozy.bills': [] }).write()
