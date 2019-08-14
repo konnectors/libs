@@ -20,7 +20,7 @@
     "btoa": "1.2.1",
     "cheerio": "1.0.0-rc.3",
     "cli-highlight": "2.1.1",
-    "commander": "2.20.0",
+    "commander": "3.0.0",
     "core-js": "3.2.1",
     "cozy-client-js": "0.16.4",
     "cozy-konnector-libs": "^4.19.3",
