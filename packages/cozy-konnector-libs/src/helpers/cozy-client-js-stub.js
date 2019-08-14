@@ -69,7 +69,9 @@ module.exports = {
       const keys = Object.keys(selector)
       let result = db
         .get(doctype)
-        .filter(doc => keys.every(key => doc[key]))
+        .filter(doc =>
+          keys.every(key => doc[key] && doc[key] === selector[key])
+        )
         .value()
 
       if (options.wholeResponse) {
