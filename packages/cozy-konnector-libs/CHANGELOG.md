@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.19.3](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.19.2...cozy-konnector-libs@4.19.3) (2019-08-14)
+
+
+### Bug Fixes
+
+* better cozy-client-js-stub for complex queries ([648aed5](https://github.com/cozy/cozy-konnector-libs/commit/648aed5))
+* initalization of new cozy-client instance ([c8833f0](https://github.com/cozy/cozy-konnector-libs/commit/c8833f0))
+* initalization of new cozy-client instance ([#543](https://github.com/cozy/cozy-konnector-libs/issues/543)) ([9d127bf](https://github.com/cozy/cozy-konnector-libs/commit/9d127bf))
+
+
+
+
+
 ## [4.19.2](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.19.1...cozy-konnector-libs@4.19.2) (2019-08-13)
 
 
