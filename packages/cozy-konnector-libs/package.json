@@ -80,7 +80,7 @@
     "eslint-config-cozy-app": "1.2.0",
     "eslint-plugin-prettier": "3.1.0",
     "express": "4.17.1",
-    "jest": "24.8.0",
+    "jest": "24.9.0",
     "jsdoc-to-markdown": "4.0.1",
     "lerna": "3.16.4",
     "react": "16.9.0"
