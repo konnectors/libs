@@ -62,6 +62,26 @@ const solveCaptcha = async (params = {}) => {
       secrets,
       'gRecaptchaResponse'
     )
+  } else if (params.type === 'recaptchav3') {
+    checkMandatoryParams(params, [
+      'websiteKey',
+      'websiteURL',
+      'pageAction',
+      'minScore'
+    ])
+    const { websiteKey, websiteURL, pageAction, minScore } = params
+    return solveWithAntiCaptcha(
+      {
+        websiteKey,
+        websiteURL,
+        pageAction,
+        minScore,
+        type: 'RecaptchaV3TaskProxyless'
+      },
+      params.timeout,
+      secrets,
+      'gRecaptchaResponse'
+    )
   } else if (params.type === 'image') {
     checkMandatoryParams(params, ['body'])
     return solveWithAntiCaptcha(
