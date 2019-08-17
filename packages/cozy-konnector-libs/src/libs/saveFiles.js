@@ -573,7 +573,10 @@ function getValOrFnResult(val, ...args) {
 }
 
 function calculateFileKey(entry, filePrimaryKeys) {
-  return filePrimaryKeys.map(key => get(entry, key)).join('####')
+  return filePrimaryKeys
+    .sort()
+    .map(key => get(entry, key))
+    .join('####')
 }
 
 function defaultValidateFile(fileDocument) {
