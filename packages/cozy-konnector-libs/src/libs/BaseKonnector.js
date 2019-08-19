@@ -67,22 +67,28 @@ class BaseKonnector {
     }
   }
 
-  run() {
-    return this.init()
-      .then(requiredFields => {
-        const cozyParameters = JSON.parse(process.env.COZY_PARAMETERS || '{}')
-        const prom = this.fetch(requiredFields, cozyParameters)
-        if (!prom || !prom.then) {
-          log(
-            'warn',
-            `A promise should be returned from the \`fetch\` function. Here ${prom} was returned`
-          )
-          throw new Error('`fetch` should return a Promise')
-        }
-        return prom
-      })
-      .then(this.end.bind(this))
-      .catch(this.fail.bind(this))
+  async run() {
+    try {
+      const cozyFields = JSON.parse(process.env.COZY_FIELDS || '{}')
+      const account = await this.getAccount(cozyFields.account)
+      this.accountId = account._id
+      this._account = account
+      this.fields = await this.init(cozyFields, account)
+
+      const cozyParameters = JSON.parse(process.env.COZY_PARAMETERS || '{}')
+      const prom = this.fetch(this.fields, cozyParameters)
+      if (!prom || !prom.then) {
+        log(
+          'warn',
+          `A promise should be returned from the \`fetch\` function. Here ${prom} was returned`
+        )
+        throw new Error('`fetch` should return a Promise')
+      }
+
+      await this.end.bind(this)
+    } catch (err) {
+      await this.fail.bind(this)
+    }
   }
 
   /**
@@ -103,52 +109,48 @@ class BaseKonnector {
     this.terminate(error)
   }
 
+  async getAccount(accountId) {
+    try {
+      return await cozy.data.find('io.cozy.accounts', accountId)
+    } catch (err) {
+      this.checkTOS(err)
+      log('error', err.message)
+      log('error', `Account ${accountId} does not exist`)
+      throw new Error('CANNOT_FIND_ACCOUNT')
+    }
+  }
+
   /**
    * Initializes the current connector with data coming from the associated account
    *
    * @return {Promise} with the fields as an object
    */
-  init() {
-    const cozyFields = JSON.parse(process.env.COZY_FIELDS || '{}')
-
-    // First get the account related to the specified account id
-    return cozy.data
-      .find('io.cozy.accounts', cozyFields.account)
+  init(cozyFields, account) {
+    // folder ID will be stored in cozyFields.folder_to_save when first connection
+    if (!cozyFields.folder_to_save) {
+      log('warn', `No folder_to_save available in the trigger`)
+    }
+    const folderId = cozyFields.folder_to_save || account.folderId
+    if (!folderId) {
+      // if no folder needed
+      log('debug', 'No folder needed')
+      return Promise.resolve(account)
+    }
+    return cozy.files
+      .statById(folderId, false)
+      .then(folder => {
+        cozyFields.folder_to_save = folder.attributes.path
+        log('debug', folder, 'folder details')
+        return account
+      })
       .catch(err => {
-        this.checkTOS(err)
-        log('error', `Account ${cozyFields.account} does not exist`)
-        throw new Error('CANNOT_FIND_ACCOUNT')
+        log('error', err.message)
+        log('error', JSON.stringify(err.stack))
+        log('error', `error while getting the folder path of ${folderId}`)
+        throw new Error('NOT_EXISTING_DIRECTORY')
       })
       .then(account => {
-        this.accountId = cozyFields.account
-        this._account = account
-
-        // folder ID will be stored in cozyFields.folder_to_save when first connection
-        if (!cozyFields.folder_to_save) {
-          log('warn', `No folder_to_save available in the trigger`)
-        }
-        const folderId = cozyFields.folder_to_save || account.folderId
-        if (!folderId) {
-          // if no folder needed
-          log('debug', 'No folder needed')
-          return Promise.resolve(account)
-        }
-        return cozy.files
-          .statById(folderId, false)
-          .then(folder => {
-            cozyFields.folder_to_save = folder.attributes.path
-            log('debug', folder, 'folder details')
-            return account
-          })
-          .catch(err => {
-            log('error', err.message)
-            log('error', JSON.stringify(err.stack))
-            log('error', `error while getting the folder path of ${folderId}`)
-            throw new Error('NOT_EXISTING_DIRECTORY')
-          })
-      })
-      .then(account => {
-        this.fields = Object.assign(
+        return Object.assign(
           {},
           account.auth,
           account.oauth,
@@ -158,8 +160,6 @@ class BaseKonnector {
               }
             : {}
         )
-
-        return this.fields
       })
   }
 
