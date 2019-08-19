@@ -61,14 +61,16 @@ const getCozyClient = function(environment = 'production') {
 
   const cozyClient = new Client(options)
 
+  let token = credentials
   if (environment === 'development') {
     cozyClient.saveCredentials(credentials.client, credentials.token)
+    token = credentials.token.accessToken
   }
 
   const cozyFields = JSON.parse(process.env.COZY_FIELDS || '{}')
   cozyClient.new = new NewCozyClient({
     uri: cozyURL,
-    token: credentials.token.accessToken,
+    token,
     appMetadata: {
       slug: manifest.data.slug,
       sourceAccount: cozyFields.account,
