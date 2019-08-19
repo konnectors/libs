@@ -7,6 +7,11 @@ const config = require('./init-konnector-config')()
 
 if (!process.env.DEBUG) process.env.DEBUG = '*'
 process.env.COZY_URL = config.COZY_URL
+const DEFAULT_ROOT_PATH = '/cozy-konnector-dev-root'
+process.env.COZY_FIELDS = JSON.stringify({
+  ...config.fields,
+  folderPath: DEFAULT_ROOT_PATH
+})
 if (config.COZY_PARAMETERS) {
   process.env.COZY_PARAMETERS = JSON.stringify(config.COZY_PARAMETERS)
 }
@@ -64,8 +69,11 @@ authenticate({ tokenPath: token, manifestPath: manifest })
   })
   .then(() => {
     const { BaseKonnector, mkdirp } = require('cozy-konnector-libs')
+    BaseKonnector.prototype.getAccount = async () => {
+      return { _id: 'dev-konnector-account-id' }
+    }
     BaseKonnector.prototype.init = async () => {
-      let rootPath = '/cozy-konnector-dev-root'
+      let rootPath = DEFAULT_ROOT_PATH
       try {
         await mkdirp(rootPath)
       } catch (e) {
@@ -74,10 +82,12 @@ authenticate({ tokenPath: token, manifestPath: manifest })
         )
         rootPath = '/'
       }
-      return {
+
+      const fields = {
         ...config.fields,
         folderPath: rootPath
       }
+      return fields
     }
 
     // sentry is not needed in dev mode
