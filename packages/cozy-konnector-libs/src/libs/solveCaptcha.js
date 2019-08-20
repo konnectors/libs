@@ -152,6 +152,7 @@ async function solveWithAntiCaptcha(
       }
     } else {
       log('warn', 'Could not create anticaptcha task')
+      log('warn', JSON.stringify(task))
     }
   } else {
     log('warn', 'Could not find any anticaptcha secret key')
