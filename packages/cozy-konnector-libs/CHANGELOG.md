@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.21.1](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.21.0...cozy-konnector-libs@4.21.1) (2019-08-20)
+
+
+### Bug Fixes
+
+* **deps:** update dependency file-type to v12.2.0 ([7c509c5](https://github.com/cozy/cozy-konnector-libs/commit/7c509c5))
+* Cookie connector init function signature ([c37b8bc](https://github.com/cozy/cozy-konnector-libs/commit/c37b8bc))
+* Cookie connector init function signature ([#553](https://github.com/cozy/cozy-konnector-libs/issues/553)) ([b43da29](https://github.com/cozy/cozy-konnector-libs/commit/b43da29))
+
+
+
+
+
 # [4.21.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.19.3...cozy-konnector-libs@4.21.0) (2019-08-20)
 
 
