@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.9.8](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@1.9.7...cozy-jobs-cli@1.9.8) (2019-08-20)
+
+
+### Bug Fixes
+
+* **deps:** update dependency open to v6.4.0 ([d872409](https://github.com/cozy/cozy-konnector-libs/commit/d872409))
+* get account id in dev mode ([adac9f9](https://github.com/cozy/cozy-konnector-libs/commit/adac9f9))
+
+
+
+
+
 ## [1.9.7](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@1.9.6...cozy-jobs-cli@1.9.7) (2019-08-14)
 
 **Note:** Version bump only for package cozy-jobs-cli
