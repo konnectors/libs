@@ -3,6 +3,29 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.21.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.19.3...cozy-konnector-libs@4.21.0) (2019-08-20)
+
+
+### Bug Fixes
+
+* get account id in dev mode ([adac9f9](https://github.com/cozy/cozy-konnector-libs/commit/adac9f9))
+* get account id in dev mode ([#549](https://github.com/cozy/cozy-konnector-libs/issues/549)) ([1c72876](https://github.com/cozy/cozy-konnector-libs/commit/1c72876))
+* **cozyclient:** adapt the token to work in dev and production modes ([a723cc4](https://github.com/cozy/cozy-konnector-libs/commit/a723cc4))
+* **deps:** update dependency cozy-client to v6.58.0 ([5d741af](https://github.com/cozy/cozy-konnector-libs/commit/5d741af))
+* **deps:** update dependency cozy-client to v6.58.0 ([#550](https://github.com/cozy/cozy-konnector-libs/issues/550)) ([3c603aa](https://github.com/cozy/cozy-konnector-libs/commit/3c603aa))
+* **deps:** update dependency cozy-doctypes to v1.62.0 ([0de49fe](https://github.com/cozy/cozy-konnector-libs/commit/0de49fe))
+* **deps:** update dependency cozy-doctypes to v1.62.0 ([#548](https://github.com/cozy/cozy-konnector-libs/issues/548)) ([fca31ba](https://github.com/cozy/cozy-konnector-libs/commit/fca31ba))
+
+
+### Features
+
+* **solveCaptcha:** handle recaptcha v3 ([6c01f35](https://github.com/cozy/cozy-konnector-libs/commit/6c01f35))
+* **solveCaptcha:** handle recaptcha v3 ([#546](https://github.com/cozy/cozy-konnector-libs/issues/546)) ([c41c0f9](https://github.com/cozy/cozy-konnector-libs/commit/c41c0f9))
+
+
+
+
+
 # [4.20.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.19.3...cozy-konnector-libs@4.20.0) (2019-08-20)
 
 
