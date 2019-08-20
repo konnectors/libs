@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.22.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.21.1...cozy-konnector-libs@4.22.0) (2019-08-20)
+
+
+### Features
+
+* use cozy-libs renovate rule ([a316259](https://github.com/cozy/cozy-konnector-libs/commit/a316259))
+* **solveCaptcha:** add warning message detail about captcha creation task failure ([cc6e8fa](https://github.com/cozy/cozy-konnector-libs/commit/cc6e8fa))
+* use cozy-libs renovate rule ([#554](https://github.com/cozy/cozy-konnector-libs/issues/554)) ([4082fff](https://github.com/cozy/cozy-konnector-libs/commit/4082fff))
+
+
+
+
+
 ## [4.21.1](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.21.0...cozy-konnector-libs@4.21.1) (2019-08-20)
 
 
