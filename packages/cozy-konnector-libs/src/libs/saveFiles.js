@@ -309,59 +309,73 @@ async function getFileIfExists(entry, options) {
     )
   }
 
-  if (!filePrimaryKeys || !slug || !sourceAccountIdentifier) {
-    try {
-      const result = await cozy.files.statByPath(
-        getFilePath({ entry, options })
-      )
-      return result
-    } catch (err) {
-      log('debug', err.message)
-      return false
-    }
-  } else {
-    const index = await cozy.data.defineIndex('io.cozy.files', [
-      'metadata.filePrimaryKeys',
-      'trashed',
-      'cozyMetadata.sourceAccountIdentifier',
-      'cozyMetadata.createdByApp'
-    ])
-    const files = await queryAll(
-      'io.cozy.files',
-      {
-        metadata: {
-          filePrimaryKeys: calculateFileKey(entry, filePrimaryKeys)
-        },
-        trashed: false,
-        cozyMetadata: {
-          sourceAccountIdentifier: sourceAccountIdentifier,
-          createdByApp: slug
-        }
-      },
-      index
+  const isReadyForFileMetadata =
+    filePrimaryKeys && slug && sourceAccountIdentifier
+  if (isReadyForFileMetadata) {
+    const file = await getFileFromMetaData(
+      entry,
+      filePrimaryKeys,
+      sourceAccountIdentifier,
+      slug
     )
-    if (files && files[0]) {
-      if (files.length > 1) {
-        log(
-          'warn',
-          `Found ${files.length} files corresponding to ${calculateFileKey(
-            entry,
-            filePrimaryKeys
-          )}`
-        )
+    if (!file) {
+      // no file with correct metadata, maybe the corresponding file already exist in the default
+      // path from a previous version of the connector
+      return await getFileFromPath(entry, options)
+    } else return file
+  } else {
+    return await getFileFromPath(entry, options)
+  }
+}
+
+async function getFileFromMetaData(
+  entry,
+  filePrimaryKeys,
+  sourceAccountIdentifier,
+  slug
+) {
+  const index = await cozy.data.defineIndex('io.cozy.files', [
+    'metadata.filePrimaryKeys',
+    'trashed',
+    'cozyMetadata.sourceAccountIdentifier',
+    'cozyMetadata.createdByApp'
+  ])
+  const files = await queryAll(
+    'io.cozy.files',
+    {
+      metadata: {
+        filePrimaryKeys: calculateFileKey(entry, filePrimaryKeys)
+      },
+      trashed: false,
+      cozyMetadata: {
+        sourceAccountIdentifier,
+        createdByApp: slug
       }
-      return files[0]
-    } else {
-      try {
-        const result = await cozy.files.statByPath(
-          getFilePath({ entry, options })
-        )
-        return result
-      } catch (err) {
-        log('debug', err.message)
-        return false
-      }
+    },
+    index
+  )
+
+  if (files && files[0]) {
+    if (files.length > 1) {
+      log(
+        'warn',
+        `Found ${files.length} files corresponding to ${calculateFileKey(
+          entry,
+          filePrimaryKeys
+        )}`
+      )
     }
+    return files[0]
+  } else return false
+}
+
+async function getFileFromPath(entry, options) {
+  try {
+    const result = await cozy.files.statByPath(getFilePath({ entry, options }))
+    return result
+  } catch (err) {
+    log('debug', err.message)
+    return false
   }
 }
 
