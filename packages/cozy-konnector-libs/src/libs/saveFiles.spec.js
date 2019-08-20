@@ -317,18 +317,85 @@ describe('getFileIfExists', function() {
       queryAll.mockReturnValue(asyncResolve([]))
       cozyClient.files.statByPath.mockReturnValue(asyncReject(false))
       const result = await getFileIfExists(
-        { filename: 'testfile.txt' },
+        { filename: 'testfile.txt', vendorRef: 'uniquevendorref' },
         options
+      )
+      expect(queryAll).lastCalledWith(
+        'io.cozy.files',
+        {
+          metadata: {
+            filePrimaryKeys: 'uniquevendorref'
+          },
+          trashed: false,
+          cozyMetadata: {
+            sourceAccountIdentifier: 'accountidentifier',
+            createdByApp: 'testconnector'
+          }
+        },
+        'index'
+      )
+      expect(cozyClient.files.statByPath).lastCalledWith(
+        '/test/path/testfile.txt'
       )
       expect(result).toBe(false)
     })
     it('when the file exists, should return the file', async () => {
       queryAll.mockReturnValue(asyncResolve([{ filename: 'coucou.txt' }]))
       const result = await getFileIfExists(
-        { filename: 'testfile.txt' },
+        { filename: 'testfile.txt', vendorRef: 'uniquevendorref' },
         options
       )
+      expect(queryAll).lastCalledWith(
+        'io.cozy.files',
+        {
+          metadata: {
+            filePrimaryKeys: 'uniquevendorref'
+          },
+          trashed: false,
+          cozyMetadata: {
+            sourceAccountIdentifier: 'accountidentifier',
+            createdByApp: 'testconnector'
+          }
+        },
+        'index'
+      )
       expect(result).toEqual({ filename: 'coucou.txt' })
+    })
+
+    describe('when multiple filePrimaryKeys are given', () => {
+      const options = {
+        filePrimaryKeys: ['vendorRef', 'amount'],
+        sourceAccountOptions: {
+          sourceAccountIdentifier: 'accountidentifier'
+        },
+        folderPath: '/test/path'
+      }
+      it('when the file exists, should return the file', async () => {
+        queryAll.mockReturnValue(asyncResolve([{ filename: 'coucou.txt' }]))
+        const result = await getFileIfExists(
+          {
+            filename: 'testfile.txt',
+            vendorRef: 'uniquevendorref',
+            amount: 42
+          },
+          options
+        )
+        expect(queryAll).lastCalledWith(
+          'io.cozy.files',
+          {
+            metadata: {
+              filePrimaryKeys: '42####uniquevendorref'
+            },
+            trashed: false,
+            cozyMetadata: {
+              sourceAccountIdentifier: 'accountidentifier',
+              createdByApp: 'testconnector'
+            }
+          },
+          'index'
+        )
+        expect(result).toEqual({ filename: 'coucou.txt' })
+      })
     })
   })
 })
