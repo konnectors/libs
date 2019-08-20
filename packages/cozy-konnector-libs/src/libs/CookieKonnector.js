@@ -73,8 +73,8 @@ class CookieKonnector extends BaseKonnector {
    *
    * @return {Promise} with the fields as an object
    */
-  async init() {
-    const fields = await super.init()
+  async init(cozyFields, account) {
+    const fields = await super.init(cozyFields, account)
     await this.initSession()
     return fields
   }
