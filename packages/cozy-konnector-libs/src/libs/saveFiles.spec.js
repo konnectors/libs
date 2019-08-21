@@ -301,7 +301,7 @@ describe('getFileIfExists', function() {
   })
   describe('when in metadata mode', () => {
     const options = {
-      filePrimaryKeys: ['vendorRef'],
+      fileIdAttributes: ['vendorRef'],
       sourceAccountOptions: {
         sourceAccountIdentifier: 'accountidentifier'
       },
@@ -324,7 +324,7 @@ describe('getFileIfExists', function() {
         'io.cozy.files',
         {
           metadata: {
-            filePrimaryKeys: 'uniquevendorref'
+            fileIdAttributes: 'uniquevendorref'
           },
           trashed: false,
           cozyMetadata: {
@@ -349,7 +349,7 @@ describe('getFileIfExists', function() {
         'io.cozy.files',
         {
           metadata: {
-            filePrimaryKeys: 'uniquevendorref'
+            fileIdAttributes: 'uniquevendorref'
           },
           trashed: false,
           cozyMetadata: {
@@ -362,9 +362,9 @@ describe('getFileIfExists', function() {
       expect(result).toEqual({ filename: 'coucou.txt' })
     })
 
-    describe('when multiple filePrimaryKeys are given', () => {
+    describe('when multiple fileIdAttributes are given', () => {
       const options = {
-        filePrimaryKeys: ['vendorRef', 'amount'],
+        fileIdAttributes: ['vendorRef', 'amount'],
         sourceAccountOptions: {
           sourceAccountIdentifier: 'accountidentifier'
         },
@@ -384,7 +384,7 @@ describe('getFileIfExists', function() {
           'io.cozy.files',
           {
             metadata: {
-              filePrimaryKeys: '42####uniquevendorref'
+              fileIdAttributes: '42####uniquevendorref'
             },
             trashed: false,
             cozyMetadata: {

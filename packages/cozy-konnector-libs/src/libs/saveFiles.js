@@ -66,13 +66,13 @@ const DEFAULT_RETRY = 1 // do not retry by default
  *   + `validateFile` (function) default: do not validate if file is empty or has bad mime type
  *   + `validateFileContent` (boolean or function) default false. Also check the content of the file to
  *   recognize the mime type
- *   + `filePrimaryKeys` (array of strings). Describe which attributes of files will be taken as primary key for
+ *   + `fileIdAttributes` (array of strings). Describes which attributes of files will be taken as primary key for
  *   files to check if they already exist, even if they are moved. If not given, the file path will
  *   used for deduplication as before.
  * @example
  * ```javascript
  * await saveFiles([{fileurl: 'https://...', filename: 'bill1.pdf'}], fields, {
- *    filePrimaryKeys: ['fileurl']
+ *    fileIdAttributes: ['fileurl']
  * })
  * ```
  *
@@ -100,7 +100,7 @@ const saveFiles = async (entries, fields, options = {}) => {
   }
   const saveOptions = {
     folderPath: fields.folderPath,
-    filePrimaryKeys: options.filePrimaryKeys,
+    fileIdAttributes: options.fileIdAttributes,
     timeout: options.timeout || DEFAULT_TIMEOUT,
     concurrency: options.concurrency || DEFAULT_CONCURRENCY,
     retry: options.retry || DEFAULT_RETRY,
@@ -282,8 +282,8 @@ const saveEntry = async function(entry, options) {
 }
 
 async function getFileIfExists(entry, options) {
-  const filePrimaryKeys = options.filePrimaryKeys
-  if (!filePrimaryKeys) {
+  const fileIdAttributes = options.fileIdAttributes
+  if (!fileIdAttributes) {
     log(
       'warn',
       `saveFiles: no deduplication key is defined, file deduplication will be based on file path`
@@ -310,11 +310,11 @@ async function getFileIfExists(entry, options) {
   }
 
   const isReadyForFileMetadata =
-    filePrimaryKeys && slug && sourceAccountIdentifier
+    fileIdAttributes && slug && sourceAccountIdentifier
   if (isReadyForFileMetadata) {
     const file = await getFileFromMetaData(
       entry,
-      filePrimaryKeys,
+      fileIdAttributes,
       sourceAccountIdentifier,
       slug
     )
@@ -330,12 +330,12 @@ async function getFileIfExists(entry, options) {
 
 async function getFileFromMetaData(
   entry,
-  filePrimaryKeys,
+  fileIdAttributes,
   sourceAccountIdentifier,
   slug
 ) {
   const index = await cozy.data.defineIndex('io.cozy.files', [
-    'metadata.filePrimaryKeys',
+    'metadata.fileIdAttributes',
     'trashed',
     'cozyMetadata.sourceAccountIdentifier',
     'cozyMetadata.createdByApp'
@@ -344,7 +344,7 @@ async function getFileFromMetaData(
     'io.cozy.files',
     {
       metadata: {
-        filePrimaryKeys: calculateFileKey(entry, filePrimaryKeys)
+        fileIdAttributes: calculateFileKey(entry, fileIdAttributes)
       },
       trashed: false,
       cozyMetadata: {
@@ -361,7 +361,7 @@ async function getFileFromMetaData(
         'warn',
         `Found ${files.length} files corresponding to ${calculateFileKey(
           entry,
-          filePrimaryKeys
+          fileIdAttributes
         )}`
       )
     }
@@ -398,12 +398,12 @@ async function createFile(entry, options, method, fileId) {
     ...options.sourceAccountOptions
   }
 
-  if (options.filePrimaryKeys) {
+  if (options.fileIdAttributes) {
     createFileOptions = {
       ...createFileOptions,
       ...{
         metadata: {
-          filePrimaryKeys: calculateFileKey(entry, options.filePrimaryKeys)
+          fileIdAttributes: calculateFileKey(entry, options.fileIdAttributes)
         }
       }
     }
@@ -483,7 +483,7 @@ const shouldReplaceFile = async function(file, entry, options) {
     // replace all files with meta if there is file metadata to add
     const fileHasNoMetadata = !getAttribute(file, 'metadata')
     const entryHasMetadata = !!get(entry, 'fileAttributes.metadata')
-    return fileHasNoMetadata && (entryHasMetadata || options.filePrimaryKeys)
+    return fileHasNoMetadata && (entryHasMetadata || options.fileIdAttributes)
   }
   const shouldReplaceFileFn =
     entry.shouldReplaceFile ||
@@ -586,8 +586,8 @@ function getValOrFnResult(val, ...args) {
   } else return val
 }
 
-function calculateFileKey(entry, filePrimaryKeys) {
-  return filePrimaryKeys
+function calculateFileKey(entry, fileIdAttributes) {
+  return fileIdAttributes
     .sort()
     .map(key => get(entry, key))
     .join('####')

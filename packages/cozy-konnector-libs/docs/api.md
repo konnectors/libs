@@ -452,7 +452,7 @@ You need the full permission on `io.cozy.files` in your manifest to use this fun
   + `validateFile` (function) default: do not validate if file is empty or has bad mime type
   + `validateFileContent` (boolean or function) default false. Also check the content of the file to
   recognize the mime type
-  + `filePrimaryKeys` (array of strings). Describe which attributes of files will be taken as primary key for
+  + `fileIdAttributes` (array of strings). Describes which attributes of files will be taken as primary key for
   files to check if they already exist, even if they are moved. If not given, the file path will
   used for deduplication as before.
 
@@ -460,7 +460,7 @@ You need the full permission on `io.cozy.files` in your manifest to use this fun
 **Example**  
 ```javascript
 await saveFiles([{fileurl: 'https://...', filename: 'bill1.pdf'}], fields, {
-   filePrimaryKeys: ['fileurl']
+   fileIdAttributes: ['fileurl']
 })
 ```
 <a name="module_saveIdentity"></a>
