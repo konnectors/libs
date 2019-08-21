@@ -6,7 +6,7 @@
   "renovate-config": {
     "default": {
       "extends": [
-        "cozy-libs"
+        "cozy"
       ],
       "minor": {
         "automerge": true
