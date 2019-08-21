@@ -28,7 +28,7 @@ function onRegistered(client, url) {
       }
     })
     server.listen(3333, () => {
-      require('opn')(url, { wait: false })
+      require('open')(url, { wait: false })
       console.log(
         'A new tab just opened in your browser to require the right authorizations for this connector in your cozy. Waiting for it...'
       )
