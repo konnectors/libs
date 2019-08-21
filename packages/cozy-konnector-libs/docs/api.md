@@ -412,7 +412,7 @@ Saves the files given in the fileurl attribute of each entries
 
 You need the full permission on `io.cozy.files` in your manifest to use this function.
 
-- `files` is an array of object with the following possible attributes :
+- `files` is an array of objects with the following possible attributes :
 
   + fileurl: The url of the file (can be a function returning the value). Ignored if `filestream`
   is given
@@ -452,11 +452,16 @@ You need the full permission on `io.cozy.files` in your manifest to use this fun
   + `validateFile` (function) default: do not validate if file is empty or has bad mime type
   + `validateFileContent` (boolean or function) default false. Also check the content of the file to
   recognize the mime type
+  + `fileIdAttributes` (array of strings). Describes which attributes of files will be taken as primary key for
+  files to check if they already exist, even if they are moved. If not given, the file path will
+  used for deduplication as before.
 
 **Kind**: Exported function  
 **Example**  
 ```javascript
-await saveFiles([{fileurl: 'https://...', filename: 'bill1.pdf'}], fields)
+await saveFiles([{fileurl: 'https://...', filename: 'bill1.pdf'}], fields, {
+   fileIdAttributes: ['fileurl']
+})
 ```
 <a name="module_saveIdentity"></a>
 
