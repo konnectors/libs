@@ -1,21 +1,31 @@
 ### CLI
 
-There is a specific npm package which provides cli tools to allow to run your connector in
-standalone or development mode or in dedicated REPL : cozy-jobs-cli. You can install it in your connector as a dev
-dependency.
+`cozy-jobs-cli` is a npm package providing CLI tools allowing to run your connector in different modes.
+
+- standalone
+- development
+- or in dedicated REPL
+
+You can install it in your connector as a dev dependency.
 
 #### cozy-run-standalone
 
-If you just want to test your connector without any cozy available, add the following code in
-the `scripts` section of your package.json file
+It can be handy to run a konnector without inserting the data in a cozy. This mode is called "standalone".
+You can run your connector in standalone mode with :
 
-```javascript
-  scripts: {
-    standalone: "cozy-run-standalone"
+```sh
+$ cozy-run-standalone
+```
+
+If you want, you can add the following code in the `scripts` section of your package.json file:
+
+```json
+  "scripts": {
+    "standalone": "cozy-run-standalone"
   }
 ```
 
-and run:
+It will then possible to do:
 
 ```sh
 yarn standalone
@@ -52,13 +62,13 @@ Options:
 
 #### cozy-run-dev
 
-If you want to run your connector linked to a cozy-stack, even remotely. Just add the follwing code
-in the `scripts` section of your package.json file:
+If you want to run your connector linked to a cozy-stack, even remotely, the "dev" mode is for you.
+Add the following code in the `scripts` section of your package.json file:
 
-```javascript
-  scripts: {
-    dev: "cozy-run-dev"
-  }
+```patch
+   "scripts": {
++    "dev": "cozy-run-dev"
+   }
 ```
 
 and run:
@@ -68,11 +78,17 @@ yarn dev
 ```
 
 This command will register your konnector as an OAuth application to the cozy-stack and then set the `COZY_CREDENTIALS` and `COZY_FIELDS` environment variable. By default,
-the cozy-stack is supposed to be located in http://cozy.tools:8080. If this is not your case, just
-update the COZY_URL field in [./konnector-dev-config.json].
+the cozy-stack is expected to run at http://cozy.tools:8080. If this is not your case, update the COZY_URL field in [./konnector-dev-config.json].
 
-After that, your connector is running but should not work since you did not specify any credentials to
-the target service. You can do this also in [./konnector-dev-config.json] in the "fields" section.
+After that, your connector is running but will not work since credentials to
+the target service are not configured. You can do this also in [./konnector-dev-config.json] in the "fields" section.
+
+```patch
+ "fields": {
++  "login": "homer.simpson@gmail.com",
++  "password": "maggieisthebest"
+ }
+```
 
 Please note that the [./konnector-dev-config.json] file accepts javascript comments. They will be
 stripped out when read by cozy-run commands.
@@ -99,7 +115,7 @@ $ cozy-run-dev <file> [-t token.json] [-m manifest.webapp]
 #### cozy-run-shell
 
 When you are developping a connector, it is possible to get a REPL with all the cozy-konnector-libs
-tools available and some enhancement.
+tools available and some enhancements.
 
 ```javascript
   scripts: {
@@ -120,7 +136,7 @@ request instance initialized with cheerio and cookie handling is available. For 
 request('http://quotes.toscrape.com/')
 ```
 
-After running a request, a global $ object with a cheerio instance is available. Run :
+After running a request, a global $ object with a cheerio instance is available. Enter :
 
 ```js
 $
