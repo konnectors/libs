@@ -803,7 +803,7 @@ Bank transactions categorization
 
 * [categorization](#module_categorization)
     * [~createCategorizer()](#module_categorization..createCategorizer) ⇒ <code>Object</code>
-    * [~categorize()](#module_categorization..categorize) ⇒ <code>Array.&lt;Object&gt;</code>
+    * [~categorize()](#module_categorization..categorize) ⇒ <code>[ &#x27;Array&#x27; ].&lt;Object&gt;</code>
 
 <a name="module_categorization..createCategorizer"></a>
 
@@ -839,11 +839,11 @@ class BankingKonnector extends BaseKonnector {
 ```
 <a name="module_categorization..categorize"></a>
 
-### categorization~categorize() ⇒ <code>Array.&lt;Object&gt;</code>
+### categorization~categorize() ⇒ <code>[ &#x27;Array&#x27; ].&lt;Object&gt;</code>
 Initialize global and local models and categorize the given array of transactions
 
 **Kind**: inner method of [<code>categorization</code>](#module_categorization)  
-**Returns**: <code>Array.&lt;Object&gt;</code> - the categorized transactions  
+**Returns**: <code>[ &#x27;Array&#x27; ].&lt;Object&gt;</code> - the categorized transactions  
 **See**: [createCategorizer](createCategorizer) for more informations about models initialization  
 **Example**  
 ```js
@@ -876,7 +876,7 @@ fetch account information for your connector.
     * [.saveAccountData(data, options)](#BaseKonnector+saveAccountData) ⇒ <code>Promise</code>
     * [.getAccountData()](#BaseKonnector+getAccountData) ⇒ <code>object</code>
     * [.updateAccountAttributes()](#BaseKonnector+updateAccountAttributes)
-    * [.waitForTwoFaCode()](#BaseKonnector+waitForTwoFaCode)
+    * [.waitForTwoFaCode()](#BaseKonnector+waitForTwoFaCode) ⇒ <code>Promise</code>
     * [.saveBills()](#BaseKonnector+saveBills) ⇒ <code>Promise</code>
     * [.saveFiles()](#BaseKonnector+saveFiles) ⇒ <code>Promise</code>
     * [.updateOrCreate()](#BaseKonnector+updateOrCreate) ⇒ <code>Promise</code>
@@ -974,23 +974,20 @@ Update account attributes and cache the account
 **Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)  
 <a name="BaseKonnector+waitForTwoFaCode"></a>
 
-### baseKonnector.waitForTwoFaCode()
+### baseKonnector.waitForTwoFaCode() ⇒ <code>Promise</code>
 Notices that 2FA code is needed and wait for the user to submit it.
 It uses the account to do the communication with the user
 
-Parameters:
-
-- `params` object with some mandatory attributes :
-  + `type` (String): (default email) this is the type of expected 2FA code. The message displayed
-  to the user will follow it. Possible values: email, sms
-  + `timeout` (Number): (default 3 minutes after now) time when the function will stop waiting
-  for a code and fail
-  + `heartBeat` (Number): (default 5s) how much time is waited between each code check
-  + `retry` (boolen): (default false) is it a retry. If true, an error message will be
-  displayed to the user
-Returns: Promise with sucessfull code if any
-
 **Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)  
+**Returns**: <code>Promise</code> - Contains twoFa code entered by user  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| params.type: | <code>String</code> | (default: "email") - Type of the expected 2FA code. The message displayed   to the user will depend on it. Possible values: email, sms |
+| params.timeout | <code>Number</code> | (default 3 minutes after now) - After this date, the stop will stop waiting and and an error will be shown to the user |
+| params.heartBeat | <code>Number</code> | (default: 5000) - How many milliseconds between each code check |
+| params.retry | <code>Boolean</code> | (default: false) - Is it a retry. If true, an error message will be   displayed to the user |
+
 **Example**  
 ```javascript
 const { BaseKonnector } = require('cozy-konnector-libs')
