@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.23.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.22.1...cozy-konnector-libs@4.23.0) (2019-08-23)
+
+
+### Bug Fixes
+
+* **deps:** update dependency cozy-logger to v1.5.1 ([a927747](https://github.com/cozy/cozy-konnector-libs/commit/a927747))
+* **deps:** update dependency cozy-logger to v1.5.1 ([#561](https://github.com/cozy/cozy-konnector-libs/issues/561)) ([2216d07](https://github.com/cozy/cozy-konnector-libs/commit/2216d07))
+
+
+### Features
+
+* add metadata deduplication ([1f6d8b5](https://github.com/cozy/cozy-konnector-libs/commit/1f6d8b5))
+* Add README to toc ([6722ff4](https://github.com/cozy/cozy-konnector-libs/commit/6722ff4))
+* rename filePrimaryKeys to fileIdAttributes ([2a80db8](https://github.com/cozy/cozy-konnector-libs/commit/2a80db8))
+* sort filePrimaryKeys ([e8109a0](https://github.com/cozy/cozy-konnector-libs/commit/e8109a0))
+
+
+
+
+
 ## [4.22.1](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.22.0...cozy-konnector-libs@4.22.1) (2019-08-21)
 
 
