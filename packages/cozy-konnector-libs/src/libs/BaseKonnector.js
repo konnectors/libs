@@ -216,12 +216,12 @@ class BaseKonnector {
    * Notices that 2FA code is needed and wait for the user to submit it.
    * It uses the account to do the communication with the user
    *
-   * @param {String} params.type (default: "email") - Type of the expected 2FA code. The message displayed
+   * @param {String} options.type (default: "email") - Type of the expected 2FA code. The message displayed
    *   to the user will depend on it. Possible values: email, sms
-   * @param {Number} params.timeout (default 3 minutes after now) - After this date, the stop will stop waiting and
+   * @param {Number} options.timeout (default 3 minutes after now) - After this date, the stop will stop waiting and
    * and an error will be shown to the user
-   * @param {Number} params.heartBeat (default: 5000) - How many milliseconds between each code check
-   * @param {Boolean} params.retry (default: false) - Is it a retry. If true, an error message will be
+   * @param {Number} options.heartBeat (default: 5000) - How many milliseconds between each code check
+   * @param {Boolean} options.retry (default: false) - Is it a retry. If true, an error message will be
    *   displayed to the user
    *
    * @returns {Promise} Contains twoFa code entered by user
@@ -243,7 +243,7 @@ class BaseKonnector {
    * }
    * ```
    */
-  async waitForTwoFaCode(params = {}) {
+  async waitForTwoFaCode(options = {}) {
     if (process.env.COZY_JOB_MANUAL_EXECUTION !== 'true') {
       log(
         'warn',
@@ -259,16 +259,16 @@ class BaseKonnector {
       heartBeat: 5000,
       retry: false
     }
-    params = { ...defaultParams, ...params }
+    options = { ...defaultParams, ...options }
     let account = {}
-    let state = params.retry ? 'TWOFA_NEEDED_RETRY' : 'TWOFA_NEEDED'
-    if (params.type === 'email') state += '.EMAIL'
-    if (params.type === 'sms') state += '.SMS'
+    let state = options.retry ? 'TWOFA_NEEDED_RETRY' : 'TWOFA_NEEDED'
+    if (options.type === 'email') state += '.EMAIL'
+    if (options.type === 'sms') state += '.SMS'
     log('info', `Setting ${state} state into the current account`)
     await this.updateAccountAttributes({ state, twoFACode: null })
 
-    while (Date.now() < params.timeout && !account.twoFACode) {
-      await sleep(params.heartBeat)
+    while (Date.now() < options.timeout && !account.twoFACode) {
+      await sleep(options.heartBeat)
       account = await cozy.data.find('io.cozy.accounts', this.accountId)
       log('info', `current accountState : ${account.state}`)
       log('info', `current twoFACode : ${account.twoFACode}`)

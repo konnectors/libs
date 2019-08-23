@@ -983,10 +983,10 @@ It uses the account to do the communication with the user
 
 | Param | Type | Description |
 | --- | --- | --- |
-| params.type: | <code>String</code> | (default: "email") - Type of the expected 2FA code. The message displayed   to the user will depend on it. Possible values: email, sms |
-| params.timeout | <code>Number</code> | (default 3 minutes after now) - After this date, the stop will stop waiting and and an error will be shown to the user |
-| params.heartBeat | <code>Number</code> | (default: 5000) - How many milliseconds between each code check |
-| params.retry | <code>Boolean</code> | (default: false) - Is it a retry. If true, an error message will be   displayed to the user |
+| options.type | <code>String</code> | (default: "email") - Type of the expected 2FA code. The message displayed   to the user will depend on it. Possible values: email, sms |
+| options.timeout | <code>Number</code> | (default 3 minutes after now) - After this date, the stop will stop waiting and and an error will be shown to the user |
+| options.heartBeat | <code>Number</code> | (default: 5000) - How many milliseconds between each code check |
+| options.retry | <code>Boolean</code> | (default: false) - Is it a retry. If true, an error message will be   displayed to the user |
 
 **Example**  
 ```javascript
