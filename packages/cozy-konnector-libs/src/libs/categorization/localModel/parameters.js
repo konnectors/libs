@@ -1,5 +1,5 @@
 const cozyClient = require('../../cozyclient')
-const { BankTransaction } = require('cozy-doctypes/dist')
+const { BankTransaction } = require('cozy-doctypes')
 
 if (!BankTransaction.cozyClient) {
   BankTransaction.registerClient(cozyClient)

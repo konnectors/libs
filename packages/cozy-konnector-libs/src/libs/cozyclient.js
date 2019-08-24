@@ -8,7 +8,7 @@
 /* eslint no-console: off */
 
 const { Client, MemoryStorage } = require('cozy-client-js')
-const NewCozyClient = require('cozy-client/dist/CozyClient').default
+const NewCozyClient = require('cozy-client').default
 const manifest = require('./manifest')
 
 const getCredentials = function(environment) {
