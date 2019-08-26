@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.24.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.23.0...cozy-konnector-libs@4.24.0) (2019-08-26)
+
+
+### Bug Fixes
+
+* update old files with new metadata ([c8df05f](https://github.com/cozy/cozy-konnector-libs/commit/c8df05f))
+
+
+### Features
+
+* do not use compiled version of cozy-client anymore ([bdf0ec8](https://github.com/cozy/cozy-konnector-libs/commit/bdf0ec8))
+* Use JSDoc to document params ([28db3f9](https://github.com/cozy/cozy-konnector-libs/commit/28db3f9))
+
+
+
+
+
 # [4.23.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.22.1...cozy-konnector-libs@4.23.0) (2019-08-23)
 
 
