@@ -484,10 +484,10 @@ const shouldReplaceFile = async function(file, entry, options) {
     const fileHasNoMetadata = !getAttribute(file, 'metadata')
     const fileHasNoId = !getAttribute(file, 'metadata.fileIdAttributes')
     const entryHasMetadata = !!get(entry, 'fileAttributes.metadata')
-    return (
+    const result =
       (fileHasNoMetadata && entryHasMetadata) ||
-      (fileHasNoId && options.fileIdAttributes)
-    )
+      (fileHasNoId && !!options.fileIdAttributes)
+    return result
   }
   const shouldReplaceFileFn =
     entry.shouldReplaceFile ||
@@ -671,5 +671,5 @@ function getFilePath({ file, entry, options }) {
 }
 
 function getAttribute(obj, attribute) {
-  return get(obj, `attributes.${attribute}`, obj[attribute])
+  return get(obj, `attributes.${attribute}`, get(obj, attribute))
 }
