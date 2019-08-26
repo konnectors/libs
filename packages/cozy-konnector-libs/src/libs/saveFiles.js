@@ -482,8 +482,12 @@ const shouldReplaceFile = async function(file, entry, options) {
   const defaultShouldReplaceFile = (file, entry) => {
     // replace all files with meta if there is file metadata to add
     const fileHasNoMetadata = !getAttribute(file, 'metadata')
+    const fileHasNoId = !getAttribute(file, 'metadata.fileIdAttributes')
     const entryHasMetadata = !!get(entry, 'fileAttributes.metadata')
-    return fileHasNoMetadata && (entryHasMetadata || options.fileIdAttributes)
+    return (
+      (fileHasNoMetadata && entryHasMetadata) ||
+      (fileHasNoId && options.fileIdAttributes)
+    )
   }
   const shouldReplaceFileFn =
     entry.shouldReplaceFile ||
