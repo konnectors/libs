@@ -484,9 +484,18 @@ const shouldReplaceFile = async function(file, entry, options) {
     const fileHasNoMetadata = !getAttribute(file, 'metadata')
     const fileHasNoId = !getAttribute(file, 'metadata.fileIdAttributes')
     const entryHasMetadata = !!get(entry, 'fileAttributes.metadata')
+    const hasSourceAccountIdentifierOption = !!get(
+      options,
+      'sourceAccountOptions.sourceAccountIdentifier'
+    )
+    const fileHasSourceAccountIdentifier = !!getAttribute(
+      file,
+      'cozyMetadata.sourceAccountIdentifier'
+    )
     const result =
       (fileHasNoMetadata && entryHasMetadata) ||
-      (fileHasNoId && !!options.fileIdAttributes)
+      (fileHasNoId && !!options.fileIdAttributes) ||
+      (hasSourceAccountIdentifierOption && !fileHasSourceAccountIdentifier)
     return result
   }
   const shouldReplaceFileFn =
