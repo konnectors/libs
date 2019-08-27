@@ -125,42 +125,37 @@ class BaseKonnector {
    *
    * @return {Promise} with the fields as an object
    */
-  init(cozyFields, account) {
+  async init(cozyFields, account) {
     // folder ID will be stored in cozyFields.folder_to_save when first connection
     if (!cozyFields.folder_to_save) {
       log('warn', `No folder_to_save available in the trigger`)
     }
     const folderId = cozyFields.folder_to_save || account.folderId
-    if (!folderId) {
-      // if no folder needed
-      log('debug', 'No folder needed')
-      return Promise.resolve(account)
-    }
-    return cozy.files
-      .statById(folderId, false)
-      .then(folder => {
-        cozyFields.folder_to_save = folder.attributes.path
+    if (folderId) {
+      try {
+        const folder = await cozy.files.statById(folderId, false)
         log('debug', folder, 'folder details')
-        return account
-      })
-      .catch(err => {
+        cozyFields.folder_to_save = folder.attributes.path
+      } catch (err) {
         log('error', err.message)
         log('error', JSON.stringify(err.stack))
         log('error', `error while getting the folder path of ${folderId}`)
         throw new Error('NOT_EXISTING_DIRECTORY')
-      })
-      .then(account => {
-        return Object.assign(
-          {},
-          account.auth,
-          account.oauth,
-          cozyFields.folder_to_save
-            ? {
-                folderPath: cozyFields.folder_to_save
-              }
-            : {}
-        )
-      })
+      }
+    } else {
+      log('debug', 'No folder needed')
+    }
+
+    return Object.assign(
+      {},
+      account.auth,
+      account.oauth,
+      cozyFields.folder_to_save
+        ? {
+            folderPath: cozyFields.folder_to_save
+          }
+        : {}
+    )
   }
 
   /**
