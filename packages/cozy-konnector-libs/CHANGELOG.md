@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.24.2](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.24.0...cozy-konnector-libs@4.24.2) (2019-08-27)
+
+
+### Bug Fixes
+
+* bug if file with already an id detection ([abbf76f](https://github.com/cozy/cozy-konnector-libs/commit/abbf76f))
+* give proper fields to the fetch function even when no destination folder is defined ([c6f4ce7](https://github.com/cozy/cozy-konnector-libs/commit/c6f4ce7))
+* **saveFiles:** better criterias for files updates in metadata d… ([#567](https://github.com/cozy/cozy-konnector-libs/issues/567)) ([85f1fb9](https://github.com/cozy/cozy-konnector-libs/commit/85f1fb9))
+* **saveFiles:** better criterias for files updates in metadata deduplication ([6bf9070](https://github.com/cozy/cozy-konnector-libs/commit/6bf9070))
+
+
+
+
+
 ## [4.24.1](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.24.0...cozy-konnector-libs@4.24.1) (2019-08-27)
 
 
