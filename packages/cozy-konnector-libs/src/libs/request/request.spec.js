@@ -117,11 +117,14 @@ describe('requestFactory', () => {
       )
     })
     test('Wrong Host cert should be refused', async () => {
-      return expect(rq('https://wrong.host.badssl.com')).rejects.toEqual(
-        new Error(
-          "Error: Hostname/IP doesn't match certificate's altnames: \"Host: wrong.host.badssl.com. is not in the cert's altnames: DNS:*.badssl.com, DNS:badssl.com\""
+      expect.assertions(1)
+      try {
+        await rq('https://wrong.host.badssl.com')
+      } catch (err) {
+        expect(err.message).toMatch(
+          /^.*Hostname\/IP.*match certificate's altnames.*$/
         )
-      )
+      }
     })
     test('Untrust Root cert should be refused', async () => {
       expect.assertions(1)
