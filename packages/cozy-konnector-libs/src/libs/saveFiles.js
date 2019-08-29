@@ -582,7 +582,14 @@ async function renameFile(file, entry) {
     throw new Error('shouldReplaceName needs a filename')
   }
   log('debug', `Renaming ${file.name} to ${entry.filename}`)
-  await cozy.files.updateAttributesById(file._id, { name: entry.filename })
+  try {
+    await cozy.files.updateAttributesById(file._id, { name: entry.filename })
+  } catch (err) {
+    if (JSON.parse(err.message).errors.shift().status === '409') {
+      log('warn', `${entry.filename} already exists. Removing ${file.name}`)
+      await cozy.files.trashById(file._id)
+    }
+  }
 }
 
 function getErrorStatus(err) {
