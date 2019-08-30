@@ -1,0 +1,9 @@
+- Parsing env variables should be extracted from run()
+
+
+- Es6 code should be shipped so that unused import can be removed by webpack
+
+Konnector would run the src/ version in dev and would switch to es6/ version on build
+es6 conversion is easily done via a codemod
+
+- getAccount should be called fetchAccount
