@@ -49,16 +49,27 @@ describe('BaseKonnector', () => {
     }
   })
 
-  it('should deactivate auto successful login', async () => {
-    client.data.updateAttributes.mockReturnValue(asyncResolve({}))
-    await konn.deactivateAutoSuccessfulLogin()
-    expect(client.data.updateAttributes).toHaveBeenCalledWith(
-      'io.cozy.accounts',
-      'account-id',
-      {
-        state: 'HANDLE_LOGIN_SUCCESS'
-      }
-    )
+  describe('deactivation of auto successful login', () => {
+    beforeEach(() => {
+      client.data.updateAttributes.mockReturnValue(asyncResolve({}))
+    })
+
+    it('should deactivateAutoSuccessfulLogin', async () => {
+      await konn.deactivateAutoSuccessfulLogin()
+      expect(client.data.updateAttributes).toHaveBeenCalledWith(
+        'io.cozy.accounts',
+        'account-id',
+        {
+          state: 'HANDLE_LOGIN_SUCCESS'
+        }
+      )
+    })
+
+    it('should do nothing after first call', async () => {
+      await konn.deactivateAutoSuccessfulLogin()
+      await konn.deactivateAutoSuccessfulLogin()
+      expect(client.data.updateAttributes).toHaveBeenCalledTimes(1)
+    })
   })
 
   it('should notify of successful login', async () => {

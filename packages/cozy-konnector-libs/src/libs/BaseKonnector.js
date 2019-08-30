@@ -15,6 +15,7 @@ const {
 } = require('../helpers/sentry')
 const sleep = require('util').promisify(global.setTimeout)
 const LOG_ERROR_MSG_LIMIT = 32 * 1024 - 1 // to avoid to cut the json long and make it unreadable by the stack
+const once = require('lodash/once')
 
 /**
  * @class
@@ -65,6 +66,10 @@ class BaseKonnector {
       this.fetch = fetch.bind(this)
       return this.run()
     }
+
+    this.deactivateAutoSuccessfulLogin = once(
+      this.deactivateAutoSuccessfulLogin
+    )
   }
 
   async run() {
@@ -300,6 +305,8 @@ class BaseKonnector {
    * absence of error after 8s to be a success. Afterwards, to notify cozy-home when
    * the user has logged in successfully, for example, after the user has entered 2FA
    * codes, it is necessary to call `notifySuccessfulLogin`.
+   *
+   * Does nothing if called more than once.
    */
   async deactivateAutoSuccessfulLogin() {
     log('info', 'Deactivating auto success for Cozy-Home')
