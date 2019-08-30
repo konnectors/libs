@@ -280,6 +280,33 @@ class BaseKonnector {
   }
 
   /**
+   * Tells Cozy-Home that we have successfully logged in.
+   * Useful when auto-success has been deactivated.
+   * See `deactivateAutoSuccess`
+   */
+  async notifySuccessfulLogin() {
+    log('info', 'Notify Cozy-Home of successful login')
+    await this.updateAccountAttributes({
+      state: 'LOGIN_SUCCESS'
+    })
+  }
+
+  /**
+   * By default, cozy-home considers that the konnector has successfully logged in
+   * when the konnector has run for more than 8s. This is problematic for 2FA since
+   * the konnector can sit idle, just waiting for the 2FA to come back.
+   *
+   * When this method is called, cozy-home is notified and will not consider the
+   * absence of error after 8s to be a success. Afterwards, to notify cozy-home when
+   * the user has logged in successfully, for example, after the user has entered 2FA
+   * codes, it is necessary to call `notifySuccessfulLogin`.
+   */
+  async deactivateAutoSuccessfulLogin() {
+    log('info', 'Deactivating auto success for Cozy-Home')
+    await this.updateAccountAttributes({ state: 'HANDLE_LOGIN_SUCCESS' })
+  }
+
+  /**
    * This is saveBills function from cozy-konnector-libs which automatically adds sourceAccount in
    * metadata of each entry
    *
