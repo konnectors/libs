@@ -39,11 +39,11 @@ describe('BaseKonnector', () => {
     )
   })
 
-  it('waitForTwoFaCode should throw on timeout', async () => {
+  it('waitForTwoFaCode should throw on endTime', async () => {
     client.data.find.mockReturnValue(asyncResolve({ twoFACode: null }))
     client.data.updateAttributes.mockReturnValue(asyncResolve({}))
     try {
-      await konn.waitForTwoFaCode({ timeout: Date.now() })
+      await konn.waitForTwoFaCode({ endTime: Date.now() })
     } catch (err) {
       expect(err.message).toEqual('USER_ACTION_NEEDED.TWOFA_EXPIRED')
     }

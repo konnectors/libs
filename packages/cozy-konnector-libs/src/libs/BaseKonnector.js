@@ -219,6 +219,8 @@ class BaseKonnector {
    * @param {String} options.type (default: "email") - Type of the expected 2FA code. The message displayed
    *   to the user will depend on it. Possible values: email, sms
    * @param {Number} options.timeout (default 3 minutes after now) - After this date, the stop will stop waiting and
+   * and an error will be shown to the user (deprecated and alias of endTime)
+   * @param {Number} options.endTime (default 3 minutes after now) - After this timestamp, the home will stop waiting and
    * and an error will be shown to the user
    * @param {Number} options.heartBeat (default: 5000) - How many milliseconds between each code check
    * @param {Boolean} options.retry (default: false) - Is it a retry. If true, an error message will be
@@ -236,8 +238,7 @@ class BaseKonnector {
    * async function start() {
    *    // we detect the need of a 2FA code
    *    const code = this.waitForTwoFaCode({
-   *      type: 'email',
-   *      timeout: 5 * 60 * 1000
+   *      type: 'email'
    *    })
    *    // send the code to the targeted site
    * }
@@ -255,11 +256,18 @@ class BaseKonnector {
     const startTime = Date.now()
     const defaultParams = {
       type: 'email',
-      timeout: startTime + 3 * 60 * 1000,
+      endTime: startTime + 3 * 60 * 1000,
       heartBeat: 5000,
       retry: false
     }
     options = { ...defaultParams, ...options }
+    if (options.timeout) {
+      log(
+        'warn',
+        `The timeout option for waitForTwoFaCode is deprecated. Please use the endTime option now`
+      )
+      options.endTime = options.timeout
+    }
     let account = {}
     let state = options.retry ? 'TWOFA_NEEDED_RETRY' : 'TWOFA_NEEDED'
     if (options.type === 'email') state += '.EMAIL'
@@ -267,7 +275,7 @@ class BaseKonnector {
     log('info', `Setting ${state} state into the current account`)
     await this.updateAccountAttributes({ state, twoFACode: null })
 
-    while (Date.now() < options.timeout && !account.twoFACode) {
+    while (Date.now() < options.endTime && !account.twoFACode) {
       await sleep(options.heartBeat)
       account = await cozy.data.find('io.cozy.accounts', this.accountId)
       log('info', `current accountState : ${account.state}`)

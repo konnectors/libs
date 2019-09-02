@@ -984,7 +984,8 @@ It uses the account to do the communication with the user
 | Param | Type | Description |
 | --- | --- | --- |
 | options.type | <code>String</code> | (default: "email") - Type of the expected 2FA code. The message displayed   to the user will depend on it. Possible values: email, sms |
-| options.timeout | <code>Number</code> | (default 3 minutes after now) - After this date, the stop will stop waiting and and an error will be shown to the user |
+| options.timeout | <code>Number</code> | (default 3 minutes after now) - After this date, the stop will stop waiting and and an error will be shown to the user (deprecated and alias of endTime) |
+| options.endTime | <code>Number</code> | (default 3 minutes after now) - After this timestamp, the home will stop waiting and and an error will be shown to the user |
 | options.heartBeat | <code>Number</code> | (default: 5000) - How many milliseconds between each code check |
 | options.retry | <code>Boolean</code> | (default: false) - Is it a retry. If true, an error message will be   displayed to the user |
 
@@ -997,8 +998,7 @@ module.exports = new BaseKonnector(start)
 async function start() {
    // we detect the need of a 2FA code
    const code = this.waitForTwoFaCode({
-     type: 'email',
-     timeout: 5 * 60 * 1000
+     type: 'email'
    })
    // send the code to the targeted site
 }
