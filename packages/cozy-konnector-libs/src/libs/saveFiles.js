@@ -475,7 +475,7 @@ const shouldReplaceFile = async function(file, entry, options) {
       `${getFileName({
         file,
         options
-      })} is invalid. Downloading it one more time`
+      })} is invalid`
     )
     throw new Error('BAD_DOWNLOADED_FILE')
   }
