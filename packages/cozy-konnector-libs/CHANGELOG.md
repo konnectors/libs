@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.25.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.24.2...cozy-konnector-libs@4.25.0) (2019-09-02)
+
+
+### Bug Fixes
+
+* **saveFiles:** shouldReplaceName, remove fatal error ([9409620](https://github.com/cozy/cozy-konnector-libs/commit/9409620)), closes [#569](https://github.com/cozy/cozy-konnector-libs/issues/569)
+* unit can work with node 12 and node 8 like this ([6576300](https://github.com/cozy/cozy-konnector-libs/commit/6576300))
+* unit tests can work with node 12 and node 8 like this ([#572](https://github.com/cozy/cozy-konnector-libs/issues/572)) ([9cfad3b](https://github.com/cozy/cozy-konnector-libs/commit/9cfad3b))
+
+
+### Features
+
+* Add notifySuccessfulLogin and deactivateAutoSuccessfulLogin methods ([bf9f2c7](https://github.com/cozy/cozy-konnector-libs/commit/bf9f2c7))
+* deactivateAutoSuccessfulLogin does nothing after 1st call ([267b228](https://github.com/cozy/cozy-konnector-libs/commit/267b228))
+
+
+
+
+
 ## [4.24.2](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.24.0...cozy-konnector-libs@4.24.2) (2019-08-27)
 
 
