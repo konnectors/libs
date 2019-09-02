@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.26.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.25.0...cozy-konnector-libs@4.26.0) (2019-09-02)
+
+
+### Bug Fixes
+
+* **cozy-client-js-stub:** handle file metadata ([0b04723](https://github.com/cozy/cozy-konnector-libs/commit/0b04723))
+* **cozy-client-js-stub:** handle file metadata ([#578](https://github.com/cozy/cozy-konnector-libs/issues/578)) ([eeef14a](https://github.com/cozy/cozy-konnector-libs/commit/eeef14a))
+
+
+### Features
+
+* **BaseKonnector/2fa:** change timeout option to endTime ([43514bb](https://github.com/cozy/cozy-konnector-libs/commit/43514bb))
+* **BaseKonnector/2fa:** change timeout option to endTime ([#574](https://github.com/cozy/cozy-konnector-libs/issues/574)) ([cbabb3c](https://github.com/cozy/cozy-konnector-libs/commit/cbabb3c))
+
+
+
+
+
 # [4.25.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.24.2...cozy-konnector-libs@4.25.0) (2019-09-02)
 
 
