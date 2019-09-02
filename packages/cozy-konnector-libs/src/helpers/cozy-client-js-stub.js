@@ -130,14 +130,24 @@ module.exports = {
         log('debug', `Real path : ${realpath}`)
         if (fs.existsSync(realpath)) {
           const extension = path.extname(pathToCheck).substr(1)
-          resolve({
-            _id: removeFirstSlash(pathToCheck),
-            attributes: {
-              mime: mimetypes.lookup(extension),
-              name: pathToCheck,
-              size: fs.statSync(realpath).size
-            }
-          })
+
+          const doc = db
+            .get('io.cozy.files')
+            .getById(pathToCheck.split('/').pop())
+            .value()
+
+          if (!doc) {
+            resolve({
+              _id: removeFirstSlash(pathToCheck),
+              attributes: {
+                mime: mimetypes.lookup(extension),
+                name: pathToCheck,
+                size: fs.statSync(realpath).size
+              }
+            })
+          } else {
+            resolve(doc)
+          }
         } else {
           const err = new Error(`${pathToCheck} does not exist`)
           err.status = 404
@@ -245,15 +255,11 @@ function createFile(file, options = {}) {
         name: options.name,
         metadata: options.metadata
       },
-      cozyMetadatas: {
+      cozyMetadata: {
         sourceAccount: options.sourceAccount,
         sourceAccountIdentifier: options.sourceAccountIdentifier
       }
     }
-
-    db.get('io.cozy.files')
-      .insert(fileDoc)
-      .write()
 
     if (file.pipe) {
       let writeStream = fs.createWriteStream(finalPath)
@@ -261,6 +267,7 @@ function createFile(file, options = {}) {
 
       file.on('end', () => {
         log('info', `File ${finalPath} created`)
+        addFileSizeAndWrite(fileDoc, finalPath)
         resolve(fileDoc)
       })
       writeStream.on('error', err => {
@@ -270,7 +277,15 @@ function createFile(file, options = {}) {
     } else {
       // file is a string
       fs.writeFileSync(finalPath, file)
+      addFileSizeAndWrite(fileDoc, finalPath)
       resolve(fileDoc)
+    }
+
+    function addFileSizeAndWrite(doc, filePath) {
+      doc.attributes.size = fs.statSync(filePath).size
+      db.get('io.cozy.files')
+        .insert(doc)
+        .write()
     }
   })
 }
