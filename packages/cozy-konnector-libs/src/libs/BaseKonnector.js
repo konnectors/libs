@@ -214,7 +214,9 @@ class BaseKonnector {
 
   /**
    * Notices that 2FA code is needed and wait for the user to submit it.
-   * It uses the account to do the communication with the user
+   * It uses the account to do the communication with the user.
+   *
+   * It 
    *
    * @param {String} options.type (default: "email") - Type of the expected 2FA code. The message displayed
    *   to the user will depend on it. Possible values: email, sms
@@ -225,6 +227,9 @@ class BaseKonnector {
    * @param {Number} options.heartBeat (default: 5000) - How many milliseconds between each code check
    * @param {Boolean} options.retry (default: false) - Is it a retry. If true, an error message will be
    *   displayed to the user
+   * @throws Will throw `USER_ACTION_NEEDED.TWOFA_EXPIRED` if the konnector job is not run manually (we assume that
+   * not run manually means that we do not have a graphic interface to fill the required information)
+   * @throws Will throw `USER_ACTION_NEEDED.TWOFA_EXPIRED` if 2FA is not filled by the user soon enough
    *
    * @returns {Promise} Contains twoFa code entered by user
    *
