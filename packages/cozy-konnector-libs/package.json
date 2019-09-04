@@ -59,9 +59,9 @@
     "testEnvironment": "node"
   },
   "devDependencies": {
-    "babel-cli": "6.26.0",
-    "babel-plugin-transform-object-rest-spread": "6.26.0",
-    "babel-preset-env": "1.7.0",
+    "@babel/cli": "7.5.5",
+    "@babel/core": "7.5.5",
+    "babel-preset-cozy-app": "1.6.0",
     "body-parser": "1.19.0",
     "core-js": "3.2.1",
     "cross-env": "5.2.1",
@@ -70,11 +70,6 @@
     "express": "4.17.1",
     "jest": "24.9.0",
     "jsdoc-to-markdown": "4.0.1",
-    "lerna": "3.16.4",
-    "react": "16.9.0"
-  },
-  "prettier": {
-    "semi": false,
-    "singleQuote": true
+    "lerna": "3.16.4"
   }
 }
