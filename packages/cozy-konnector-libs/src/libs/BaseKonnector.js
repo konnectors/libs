@@ -6,6 +6,7 @@ const { Secret } = require('cozy-logger')
 const manifest = require('./manifest')
 const saveBills = require('./saveBills')
 const saveFiles = require('./saveFiles')
+const signin = require('./signin')
 const get = require('lodash/get')
 const updateOrCreate = require('./updateOrCreate')
 const saveIdentity = require('./saveIdentity')
@@ -216,8 +217,6 @@ class BaseKonnector {
    * Notices that 2FA code is needed and wait for the user to submit it.
    * It uses the account to do the communication with the user.
    *
-   * It 
-   *
    * @param {String} options.type (default: "email") - Type of the expected 2FA code. The message displayed
    *   to the user will depend on it. Possible values: email, sms
    * @param {Number} options.timeout (default 3 minutes after now) - After this date, the stop will stop waiting and
@@ -380,6 +379,18 @@ class BaseKonnector {
       sourceAccountIdentifier: accountIdentifier,
       ...options
     })
+  }
+
+  /**
+   * This is signin function from cozy-konnector-libs which automatically adds deactivateAutoSuccessfulLogin
+   * and notifySuccessfulLogin calls
+   * @return {Promise}
+   */
+  async signin(options = {}) {
+    await this.deactivateAutoSuccessfulLogin()
+    const result = await signin(options)
+    await this.notifySuccessfulLogin()
+    return result
   }
 
   /**

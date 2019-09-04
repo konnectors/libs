@@ -9,6 +9,8 @@ const asyncResolve = data =>
   new Promise(resolve => setImmediate(() => resolve(data)))
 
 const client = require('./cozyclient')
+jest.mock('./signin')
+const signin = require('./signin')
 const BaseKonnector = require('./BaseKonnector')
 
 describe('BaseKonnector', () => {
@@ -116,6 +118,20 @@ describe('BaseKonnector', () => {
         preexistingData: 'here'
       },
       auth: newAuth
+    })
+  })
+
+  describe('signin method', () => {
+    it('should call notify login methods', async () => {
+      konn.deactivateAutoSuccessfulLogin = jest.fn()
+      konn.notifySuccessfulLogin = jest.fn()
+      signin.mockResolvedValue('signin output')
+      const result = await konn.signin('signin input')
+      expect(konn.deactivateAutoSuccessfulLogin).toHaveBeenCalledTimes(1)
+      expect(signin).toHaveBeenCalledTimes(1)
+      expect(signin).toHaveBeenCalledWith('signin input')
+      expect(konn.notifySuccessfulLogin).toHaveBeenCalledTimes(1)
+      expect(result).toEqual('signin output')
     })
   })
 })
