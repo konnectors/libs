@@ -74,14 +74,8 @@ class BaseKonnector {
 
   async run() {
     try {
-      const cozyFields = JSON.parse(process.env.COZY_FIELDS || '{}')
-      const account = await this.getAccount(cozyFields.account)
-      this.accountId = account._id
-      this._account = account
-      this.fields = await this.init(cozyFields, account)
-
-      const cozyParameters = JSON.parse(process.env.COZY_PARAMETERS || '{}')
-      const prom = this.fetch(this.fields, cozyParameters)
+      await this.initAttributes()
+      const prom = this.fetch(this.fields, this.parameters)
       if (!prom || !prom.then) {
         log(
           'warn',
@@ -149,20 +143,33 @@ class BaseKonnector {
   }
 
   /**
-   * Initializes the current connector with data coming from the associated account
+   * Initializes konnector attributes that will be used during its lifetime
    *
-   * @return {Promise} with the fields as an object
+   * - this._account
+   * - this.fields
    */
-  async init(cozyFields, account) {
+  async initAttributes() {
+    // Parse environment variables
+    const cozyFields = JSON.parse(process.env.COZY_FIELDS || '{}')
+    const cozyParameters = JSON.parse(process.env.COZY_PARAMETERS || '{}')
+
+    this.parameters = cozyParameters
+
+    // Set account
+    const account = await this.getAccount(cozyFields.account)
+    this.accountId = account._id
+    this._account = account
+
+    // Set folder
     const folderPath = await this.findFolderPath(cozyFields, account)
     cozyFields.folder_to_save = folderPath
-    return Object.assign(
+    this.fields = Object.assign(
       {},
       account.auth,
       account.oauth,
-      cozyFields.folder_to_save
+      folderPath
         ? {
-            folderPath: cozyFields.folder_to_save
+            folderPath
           }
         : {}
     )
