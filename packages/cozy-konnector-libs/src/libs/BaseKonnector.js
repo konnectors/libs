@@ -125,22 +125,18 @@ class BaseKonnector {
     }
   }
 
-  /**
-   * Initializes the current connector with data coming from the associated account
-   *
-   * @return {Promise} with the fields as an object
-   */
-  async init(cozyFields, account) {
-    // folder ID will be stored in cozyFields.folder_to_save when first connection
+  async findFolderPath(cozyFields, account) {
+    // folderId will be stored in cozyFields.folder_to_save on first run
     if (!cozyFields.folder_to_save) {
       log('warn', `No folder_to_save available in the trigger`)
     }
     const folderId = cozyFields.folder_to_save || account.folderId
+    let folderPath
     if (folderId) {
       try {
         const folder = await cozy.files.statById(folderId, false)
         log('debug', folder, 'folder details')
-        cozyFields.folder_to_save = folder.attributes.path
+        return folder.attributes.path
       } catch (err) {
         log('error', err.message)
         log('error', JSON.stringify(err.stack))
@@ -150,7 +146,16 @@ class BaseKonnector {
     } else {
       log('debug', 'No folder needed')
     }
+  }
 
+  /**
+   * Initializes the current connector with data coming from the associated account
+   *
+   * @return {Promise} with the fields as an object
+   */
+  async init(cozyFields, account) {
+    const folderPath = await this.findFolderPath(cozyFields, account)
+    cozyFields.folder_to_save = folderPath
     return Object.assign(
       {},
       account.auth,
