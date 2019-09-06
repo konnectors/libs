@@ -39,6 +39,18 @@ const findFolderPath = async (cozyFields, account) => {
   }
 }
 
+const checkTOS = err => {
+  if (
+    err &&
+    err.reason &&
+    err.reason.length &&
+    err.reason[0] &&
+    err.reason[0].title === 'TOS Updated'
+  ) {
+    throw new Error('TOS_NOT_ACCEPTED')
+  }
+}
+
 /**
  * @class
  * The class from which all the connectors must inherit.
@@ -134,7 +146,7 @@ class BaseKonnector {
     try {
       return await cozy.data.find('io.cozy.accounts', accountId)
     } catch (err) {
-      this.checkTOS(err)
+      checkTOS(err)
       log('error', err.message)
       log('error', `Account ${accountId} does not exist`)
       throw new Error('CANNOT_FIND_ACCOUNT')
@@ -404,18 +416,6 @@ class BaseKonnector {
     captureExceptionAndDie(err)
   }
 
-  checkTOS(err) {
-    if (
-      err &&
-      err.reason &&
-      err.reason.length &&
-      err.reason[0] &&
-      err.reason[0].title === 'TOS Updated'
-    ) {
-      throw new Error('TOS_NOT_ACCEPTED')
-    }
-  }
-
   /**
    * Get cozyMetaData from the context of the connector
    *
@@ -432,4 +432,6 @@ class BaseKonnector {
 wrapIfSentrySetUp(BaseKonnector.prototype, 'run')
 
 BaseKonnector.findFolderPath = findFolderPath
+BaseKonnector.checkTOS = checkTOS
+
 module.exports = BaseKonnector
