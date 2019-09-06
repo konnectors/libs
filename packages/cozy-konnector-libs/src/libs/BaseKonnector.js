@@ -81,15 +81,7 @@ class BaseKonnector {
       this.fields = await this.init(cozyFields, account)
 
       const cozyParameters = JSON.parse(process.env.COZY_PARAMETERS || '{}')
-      const prom = this.fetch(this.fields, cozyParameters)
-      if (!prom || !prom.then) {
-        log(
-          'warn',
-          `A promise should be returned from the \`fetch\` function. Here ${prom} was returned`
-        )
-        throw new Error('`fetch` should return a Promise')
-      }
-
+      await this.fetch(this.fields, cozyParameters)
       await this.end.bind(this)
     } catch (err) {
       await this.fail.bind(this)
@@ -215,8 +207,6 @@ class BaseKonnector {
   /**
    * Notices that 2FA code is needed and wait for the user to submit it.
    * It uses the account to do the communication with the user.
-   *
-   * It 
    *
    * @param {String} options.type (default: "email") - Type of the expected 2FA code. The message displayed
    *   to the user will depend on it. Possible values: email, sms
