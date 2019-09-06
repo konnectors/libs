@@ -106,18 +106,18 @@ class BaseKonnector {
     )
   }
 
+  /**
+   * Entrypoint of the konnector
+   *
+   * - Initializes connector attributes
+   * - Awaits this.main
+   * - Ensures errors are handled via this.fail
+   * - Calls this.end when the main function succeeded
+   */
   async run() {
     try {
       await this.initAttributes()
-      const prom = this.fetch(this.fields, this.parameters)
-      if (!prom || !prom.then) {
-        log(
-          'warn',
-          `A promise should be returned from the \`fetch\` function. Here ${prom} was returned`
-        )
-        throw new Error('`fetch` should return a Promise')
-      }
-
+      await this.main(this.fields, this.parameters)
       await this.end.bind(this)
     } catch (err) {
       await this.fail.bind(this)
@@ -125,7 +125,17 @@ class BaseKonnector {
   }
 
   /**
-   * Hook called when the connector is ended
+   * Main runs after konnector has been initialized.
+   * Errors thrown will be automatically handled.
+   *
+   * @return {Promise} - The konnector is considered successful when it resolves
+   */
+  main() {
+    return this.fetch(this.fields, this.parameters)
+  }
+
+  /**
+   * Hook called when the connector has ended successfully
    */
   end() {
     log('info', 'The connector has been run')
