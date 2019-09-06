@@ -2,8 +2,28 @@ jest.mock('./cozyclient', () => ({
   data: {
     updateAttributes: jest.fn(),
     find: jest.fn()
+  },
+  files: {
+    statById: jest.fn()
   }
 }))
+
+// Uses before/after each to mock env variables during tests
+const mockEnvVariables = attrs => {
+  let original = {}
+  beforeEach(() => {
+    for (let k in attrs) {
+      original[k] = process.env[k]
+      process.env[k] = attrs[k]
+    }
+  })
+
+  afterEach(() => {
+    for (let k in attrs) {
+      process.env[k] = original[k]
+    }
+  })
+}
 
 const asyncResolve = data =>
   new Promise(resolve => setImmediate(() => resolve(data)))
@@ -11,7 +31,72 @@ const asyncResolve = data =>
 const client = require('./cozyclient')
 const BaseKonnector = require('./BaseKonnector')
 
-describe('BaseKonnector', () => {
+describe('run', () => {
+  const envFields = {
+    COZY_FIELDS: JSON.stringify({
+      COZY_URL: 'http://cozy.tools:8080',
+      fields: {
+        login: 'mylogin',
+        password: 'mypassword'
+      }
+    })
+  }
+
+  mockEnvVariables(envFields)
+
+  const setup = fetch => {
+    class Konnector extends BaseKonnector {
+      fetch() {
+        return fetch()
+      }
+    }
+    const konn = new Konnector()
+    jest.spyOn(konn, 'fail')
+    jest.spyOn(konn, 'end')
+    jest.spyOn(konn, 'getAccount').mockResolvedValue({
+      _id: 'konnector-account',
+      auth: {
+        login: 'mylogin',
+        password: 'mypassword'
+      }
+    })
+
+    return { konn }
+  }
+
+  it('should have initialized attributes for access in fetch', async () => {
+    const { konn } = setup()
+    await konn.initAttributes()
+    expect(konn.fields).toEqual({ login: 'mylogin', password: 'mypassword' })
+  })
+
+  it('should find folder from fields', async () => {
+    const { konn } = setup()
+    const fields = {
+      folder_to_save: 'id-folder'
+    }
+    jest
+      .spyOn(client.files, 'statById')
+      .mockResolvedValue({ attributes: { path: '/Administrative' } })
+    const path = await konn.findFolderPath(fields)
+    expect(client.files.statById).toHaveBeenCalledWith('id-folder', false)
+    expect(path).toBe('/Administrative')
+  })
+
+  it('should find folder from account', async () => {
+    const { konn } = setup()
+    const fields = {}
+    const account = { folderId: 'id-folder' }
+    jest
+      .spyOn(client.files, 'statById')
+      .mockResolvedValue({ attributes: { path: '/Administrative' } })
+    const path = await konn.findFolderPath(fields, account)
+    expect(client.files.statById).toHaveBeenCalledWith('id-folder', false)
+    expect(path).toBe('/Administrative')
+  })
+})
+
+describe('methods', () => {
   let konn
 
   beforeEach(() => {
