@@ -17,6 +17,28 @@ const sleep = require('util').promisify(global.setTimeout)
 const LOG_ERROR_MSG_LIMIT = 32 * 1024 - 1 // to avoid to cut the json long and make it unreadable by the stack
 const once = require('lodash/once')
 
+const findFolderPath = async (cozyFields, account) => {
+  // folderId will be stored in cozyFields.folder_to_save on first run
+  if (!cozyFields.folder_to_save) {
+    log('warn', `No folder_to_save available in the trigger`)
+  }
+  const folderId = cozyFields.folder_to_save || account.folderId
+  if (folderId) {
+    try {
+      const folder = await cozy.files.statById(folderId, false)
+      log('debug', folder, 'folder details')
+      return folder.attributes.path
+    } catch (err) {
+      log('error', err.message)
+      log('error', JSON.stringify(err.stack))
+      log('error', `error while getting the folder path of ${folderId}`)
+      throw new Error('NOT_EXISTING_DIRECTORY')
+    }
+  } else {
+    log('debug', 'No folder needed')
+  }
+}
+
 /**
  * @class
  * The class from which all the connectors must inherit.
@@ -119,29 +141,6 @@ class BaseKonnector {
     }
   }
 
-  async findFolderPath(cozyFields, account) {
-    // folderId will be stored in cozyFields.folder_to_save on first run
-    if (!cozyFields.folder_to_save) {
-      log('warn', `No folder_to_save available in the trigger`)
-    }
-    const folderId = cozyFields.folder_to_save || account.folderId
-    let folderPath
-    if (folderId) {
-      try {
-        const folder = await cozy.files.statById(folderId, false)
-        log('debug', folder, 'folder details')
-        return folder.attributes.path
-      } catch (err) {
-        log('error', err.message)
-        log('error', JSON.stringify(err.stack))
-        log('error', `error while getting the folder path of ${folderId}`)
-        throw new Error('NOT_EXISTING_DIRECTORY')
-      }
-    } else {
-      log('debug', 'No folder needed')
-    }
-  }
-
   /**
    * Initializes konnector attributes that will be used during its lifetime
    *
@@ -161,7 +160,7 @@ class BaseKonnector {
     this._account = account
 
     // Set folder
-    const folderPath = await this.findFolderPath(cozyFields, account)
+    const folderPath = await findFolderPath(cozyFields, account)
     cozyFields.folder_to_save = folderPath
     this.fields = Object.assign(
       {},
@@ -432,4 +431,5 @@ class BaseKonnector {
 
 wrapIfSentrySetUp(BaseKonnector.prototype, 'run')
 
+BaseKonnector.findFolderPath = findFolderPath
 module.exports = BaseKonnector

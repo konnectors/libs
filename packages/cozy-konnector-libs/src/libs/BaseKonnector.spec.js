@@ -31,6 +31,33 @@ const asyncResolve = data =>
 const client = require('./cozyclient')
 const BaseKonnector = require('./BaseKonnector')
 
+const findFolderPath = BaseKonnector.findFolderPath
+
+describe('finding folder path', () => {
+  it('should find folder from fields', async () => {
+    const fields = {
+      folder_to_save: 'id-folder'
+    }
+    jest
+      .spyOn(client.files, 'statById')
+      .mockResolvedValue({ attributes: { path: '/Administrative' } })
+    const path = await findFolderPath(fields)
+    expect(client.files.statById).toHaveBeenCalledWith('id-folder', false)
+    expect(path).toBe('/Administrative')
+  })
+
+  it('should find folder from account', async () => {
+    const fields = {}
+    const account = { folderId: 'id-folder' }
+    jest
+      .spyOn(client.files, 'statById')
+      .mockResolvedValue({ attributes: { path: '/Administrative' } })
+    const path = await findFolderPath(fields, account)
+    expect(client.files.statById).toHaveBeenCalledWith('id-folder', false)
+    expect(path).toBe('/Administrative')
+  })
+})
+
 describe('run', () => {
   const envFields = {
     COZY_FIELDS: JSON.stringify({
@@ -68,31 +95,6 @@ describe('run', () => {
     const { konn } = setup()
     await konn.initAttributes()
     expect(konn.fields).toEqual({ login: 'mylogin', password: 'mypassword' })
-  })
-
-  it('should find folder from fields', async () => {
-    const { konn } = setup()
-    const fields = {
-      folder_to_save: 'id-folder'
-    }
-    jest
-      .spyOn(client.files, 'statById')
-      .mockResolvedValue({ attributes: { path: '/Administrative' } })
-    const path = await konn.findFolderPath(fields)
-    expect(client.files.statById).toHaveBeenCalledWith('id-folder', false)
-    expect(path).toBe('/Administrative')
-  })
-
-  it('should find folder from account', async () => {
-    const { konn } = setup()
-    const fields = {}
-    const account = { folderId: 'id-folder' }
-    jest
-      .spyOn(client.files, 'statById')
-      .mockResolvedValue({ attributes: { path: '/Administrative' } })
-    const path = await konn.findFolderPath(fields, account)
-    expect(client.files.statById).toHaveBeenCalledWith('id-folder', false)
-    expect(path).toBe('/Administrative')
   })
 })
 
