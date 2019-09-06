@@ -8,26 +8,7 @@ jest.mock('./cozyclient', () => ({
   }
 }))
 
-// Uses before/after each to mock env variables during tests
-const mockEnvVariables = attrs => {
-  let original = {}
-  beforeEach(() => {
-    for (let k in attrs) {
-      original[k] = process.env[k]
-      process.env[k] = attrs[k]
-    }
-  })
-
-  afterEach(() => {
-    for (let k in attrs) {
-      process.env[k] = original[k]
-    }
-  })
-}
-
-const asyncResolve = data =>
-  new Promise(resolve => setImmediate(() => resolve(data)))
-
+const { mockEnvVariables, asyncResolve } = require('./testUtils')
 const client = require('./cozyclient')
 const BaseKonnector = require('./BaseKonnector')
 
