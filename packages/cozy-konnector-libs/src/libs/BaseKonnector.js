@@ -118,9 +118,9 @@ class BaseKonnector {
     try {
       await this.initAttributes()
       await this.main(this.fields, this.parameters)
-      await this.end.bind(this)
+      await this.end()
     } catch (err) {
-      await this.fail.bind(this)
+      await this.fail(err)
     }
   }
 

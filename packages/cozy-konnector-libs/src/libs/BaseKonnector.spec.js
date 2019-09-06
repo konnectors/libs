@@ -72,10 +72,30 @@ describe('run', () => {
     return { konn }
   }
 
-  it('should have initialized attributes for access in fetch', async () => {
-    const { konn } = setup()
+  it('should have initialized attributes for access in main', async () => {
+    const { konn } = setup(() => {})
     await konn.initAttributes()
     expect(konn.fields).toEqual({ login: 'mylogin', password: 'mypassword' })
+  })
+
+  it('should call end() on success', async () => {
+    const { konn } = setup(() => {})
+    await konn.run()
+    expect(konn.end).toHaveBeenCalled()
+  })
+
+  it('should call fail() on error', async () => {
+    const err = new Error()
+
+    const { konn } = setup(() => {
+      throw err
+    })
+
+    // Must mock terminate otherwise the process exits with 1
+    jest.spyOn(konn, 'terminate').mockImplementation(() => {})
+    await konn.run()
+    expect(konn.end).not.toHaveBeenCalled()
+    expect(konn.fail).toHaveBeenCalledWith(err)
   })
 })
 
