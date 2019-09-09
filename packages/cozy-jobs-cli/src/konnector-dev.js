@@ -4,6 +4,7 @@
 process.env.NODE_ENV = 'development'
 
 const config = require('./init-konnector-config')()
+const injectDevAccount = require('./inject-dev-account')
 
 if (!process.env.DEBUG) process.env.DEBUG = '*'
 process.env.COZY_URL = config.COZY_URL
@@ -65,7 +66,7 @@ const token = program.token || DEFAULT_TOKEN_PATH
       manifestPath: manifest
     })
     process.env.COZY_CREDENTIALS = JSON.stringify(creds)
-    require('./inject-dev-account')(config)
+    injectDevAccount(config)
 
     if (fs.existsSync(file)) {
       return require(file)
