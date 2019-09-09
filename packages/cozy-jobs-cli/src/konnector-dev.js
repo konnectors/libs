@@ -72,7 +72,7 @@ authenticate({ tokenPath: token, manifestPath: manifest })
     BaseKonnector.prototype.getAccount = async () => {
       return { _id: 'dev-konnector-account-id' }
     }
-    BaseKonnector.prototype.init = async () => {
+    BaseKonnector.prototype.initAttributes = async function() {
       let rootPath = DEFAULT_ROOT_PATH
       try {
         await mkdirp(rootPath)
@@ -87,7 +87,7 @@ authenticate({ tokenPath: token, manifestPath: manifest })
         ...config.fields,
         folderPath: rootPath
       }
-      return fields
+      this.fields = fields
     }
 
     // sentry is not needed in dev mode
