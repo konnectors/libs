@@ -1,4 +1,7 @@
 const CookieKonnector = require('./CookieKonnector')
+const logger = require('cozy-logger')
+
+logger.setLevel('error')
 
 describe('Cookie konnector', () => {
   const setup = fetch => {

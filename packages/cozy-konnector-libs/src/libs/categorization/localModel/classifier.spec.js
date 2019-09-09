@@ -1,6 +1,8 @@
 const { createClassifier } = require('./classifier')
 const { fetchTransactionsWithManualCat } = require('./parameters')
+const logger = require('cozy-logger')
 
+logger.setLevel('error')
 jest.mock('./parameters')
 
 describe('createClassifier', () => {

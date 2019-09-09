@@ -11,6 +11,9 @@ jest.mock('./cozyclient', () => ({
 const { mockEnvVariables, asyncResolve } = require('./testUtils')
 const client = require('./cozyclient')
 const BaseKonnector = require('./BaseKonnector')
+const logger = require('cozy-logger')
+
+logger.setLevel('error')
 
 const findFolderPath = BaseKonnector.findFolderPath
 
