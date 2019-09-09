@@ -8,6 +8,9 @@ jest.mock('./cozyclient', () => ({
 const cozy = require('./cozyclient')
 const hydrateAndFilter = require('./hydrateAndFilter')
 const Document = require('./document')
+const logger = require('cozy-logger')
+
+logger.setLevel('error')
 
 const asyncResolve = data =>
   new Promise(resolve => setImmediate(() => resolve(data)))

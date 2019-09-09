@@ -17,6 +17,40 @@ const sleep = require('util').promisify(global.setTimeout)
 const LOG_ERROR_MSG_LIMIT = 32 * 1024 - 1 // to avoid to cut the json long and make it unreadable by the stack
 const once = require('lodash/once')
 
+const findFolderPath = async (cozyFields, account) => {
+  // folderId will be stored in cozyFields.folder_to_save on first run
+  if (!cozyFields.folder_to_save) {
+    log('warn', `No folder_to_save available in the trigger`)
+  }
+  const folderId = cozyFields.folder_to_save || account.folderId
+  if (folderId) {
+    try {
+      const folder = await cozy.files.statById(folderId, false)
+      log('debug', folder, 'folder details')
+      return folder.attributes.path
+    } catch (err) {
+      log('error', err.message)
+      log('error', JSON.stringify(err.stack))
+      log('error', `error while getting the folder path of ${folderId}`)
+      throw new Error('NOT_EXISTING_DIRECTORY')
+    }
+  } else {
+    log('debug', 'No folder needed')
+  }
+}
+
+const checkTOS = err => {
+  if (
+    err &&
+    err.reason &&
+    err.reason.length &&
+    err.reason[0] &&
+    err.reason[0].title === 'TOS Updated'
+  ) {
+    throw new Error('TOS_NOT_ACCEPTED')
+  }
+}
+
 /**
  * @class
  * The class from which all the connectors must inherit.
@@ -72,32 +106,36 @@ class BaseKonnector {
     )
   }
 
+  /**
+   * Entrypoint of the konnector
+   *
+   * - Initializes connector attributes
+   * - Awaits this.main
+   * - Ensures errors are handled via this.fail
+   * - Calls this.end when the main function succeeded
+   */
   async run() {
     try {
-      const cozyFields = JSON.parse(process.env.COZY_FIELDS || '{}')
-      const account = await this.getAccount(cozyFields.account)
-      this.accountId = account._id
-      this._account = account
-      this.fields = await this.init(cozyFields, account)
-
-      const cozyParameters = JSON.parse(process.env.COZY_PARAMETERS || '{}')
-      const prom = this.fetch(this.fields, cozyParameters)
-      if (!prom || !prom.then) {
-        log(
-          'warn',
-          `A promise should be returned from the \`fetch\` function. Here ${prom} was returned`
-        )
-        throw new Error('`fetch` should return a Promise')
-      }
-
-      await this.end.bind(this)
+      await this.initAttributes()
+      await this.main(this.fields, this.parameters)
+      await this.end()
     } catch (err) {
-      await this.fail.bind(this)
+      await this.fail(err)
     }
   }
 
   /**
-   * Hook called when the connector is ended
+   * Main runs after konnector has been initialized.
+   * Errors thrown will be automatically handled.
+   *
+   * @return {Promise} - The konnector is considered successful when it resolves
+   */
+  main() {
+    return this.fetch(this.fields, this.parameters)
+  }
+
+  /**
+   * Hook called when the connector has ended successfully
    */
   end() {
     log('info', 'The connector has been run')
@@ -118,7 +156,7 @@ class BaseKonnector {
     try {
       return await cozy.data.find('io.cozy.accounts', accountId)
     } catch (err) {
-      this.checkTOS(err)
+      checkTOS(err)
       log('error', err.message)
       log('error', `Account ${accountId} does not exist`)
       throw new Error('CANNOT_FIND_ACCOUNT')
@@ -126,38 +164,33 @@ class BaseKonnector {
   }
 
   /**
-   * Initializes the current connector with data coming from the associated account
+   * Initializes konnector attributes that will be used during its lifetime
    *
-   * @return {Promise} with the fields as an object
+   * - this._account
+   * - this.fields
    */
-  async init(cozyFields, account) {
-    // folder ID will be stored in cozyFields.folder_to_save when first connection
-    if (!cozyFields.folder_to_save) {
-      log('warn', `No folder_to_save available in the trigger`)
-    }
-    const folderId = cozyFields.folder_to_save || account.folderId
-    if (folderId) {
-      try {
-        const folder = await cozy.files.statById(folderId, false)
-        log('debug', folder, 'folder details')
-        cozyFields.folder_to_save = folder.attributes.path
-      } catch (err) {
-        log('error', err.message)
-        log('error', JSON.stringify(err.stack))
-        log('error', `error while getting the folder path of ${folderId}`)
-        throw new Error('NOT_EXISTING_DIRECTORY')
-      }
-    } else {
-      log('debug', 'No folder needed')
-    }
+  async initAttributes() {
+    // Parse environment variables
+    const cozyFields = JSON.parse(process.env.COZY_FIELDS || '{}')
+    const cozyParameters = JSON.parse(process.env.COZY_PARAMETERS || '{}')
 
-    return Object.assign(
+    this.parameters = cozyParameters
+
+    // Set account
+    const account = await this.getAccount(cozyFields.account)
+    this.accountId = account._id
+    this._account = account
+
+    // Set folder
+    const folderPath = await findFolderPath(cozyFields, account)
+    cozyFields.folder_to_save = folderPath
+    this.fields = Object.assign(
       {},
       account.auth,
       account.oauth,
-      cozyFields.folder_to_save
+      folderPath
         ? {
-            folderPath: cozyFields.folder_to_save
+            folderPath
           }
         : {}
     )
@@ -393,18 +426,6 @@ class BaseKonnector {
     captureExceptionAndDie(err)
   }
 
-  checkTOS(err) {
-    if (
-      err &&
-      err.reason &&
-      err.reason.length &&
-      err.reason[0] &&
-      err.reason[0].title === 'TOS Updated'
-    ) {
-      throw new Error('TOS_NOT_ACCEPTED')
-    }
-  }
-
   /**
    * Get cozyMetaData from the context of the connector
    *
@@ -419,5 +440,8 @@ class BaseKonnector {
 }
 
 wrapIfSentrySetUp(BaseKonnector.prototype, 'run')
+
+BaseKonnector.findFolderPath = findFolderPath
+BaseKonnector.checkTOS = checkTOS
 
 module.exports = BaseKonnector

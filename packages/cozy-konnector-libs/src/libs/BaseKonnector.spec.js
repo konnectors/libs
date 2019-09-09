@@ -2,16 +2,107 @@ jest.mock('./cozyclient', () => ({
   data: {
     updateAttributes: jest.fn(),
     find: jest.fn()
+  },
+  files: {
+    statById: jest.fn()
   }
 }))
 
-const asyncResolve = data =>
-  new Promise(resolve => setImmediate(() => resolve(data)))
-
+const { mockEnvVariables, asyncResolve } = require('./testUtils')
 const client = require('./cozyclient')
 const BaseKonnector = require('./BaseKonnector')
+const logger = require('cozy-logger')
 
-describe('BaseKonnector', () => {
+logger.setLevel('error')
+
+const findFolderPath = BaseKonnector.findFolderPath
+
+describe('finding folder path', () => {
+  it('should find folder from fields', async () => {
+    const fields = {
+      folder_to_save: 'id-folder'
+    }
+    jest
+      .spyOn(client.files, 'statById')
+      .mockResolvedValue({ attributes: { path: '/Administrative' } })
+    const path = await findFolderPath(fields)
+    expect(client.files.statById).toHaveBeenCalledWith('id-folder', false)
+    expect(path).toBe('/Administrative')
+  })
+
+  it('should find folder from account', async () => {
+    const fields = {}
+    const account = { folderId: 'id-folder' }
+    jest
+      .spyOn(client.files, 'statById')
+      .mockResolvedValue({ attributes: { path: '/Administrative' } })
+    const path = await findFolderPath(fields, account)
+    expect(client.files.statById).toHaveBeenCalledWith('id-folder', false)
+    expect(path).toBe('/Administrative')
+  })
+})
+
+describe('run', () => {
+  const envFields = {
+    COZY_FIELDS: JSON.stringify({
+      COZY_URL: 'http://cozy.tools:8080',
+      fields: {
+        login: 'mylogin',
+        password: 'mypassword'
+      }
+    })
+  }
+
+  mockEnvVariables(envFields)
+
+  const setup = fetch => {
+    class Konnector extends BaseKonnector {
+      fetch() {
+        return fetch()
+      }
+    }
+    const konn = new Konnector()
+    jest.spyOn(konn, 'fail')
+    jest.spyOn(konn, 'end')
+    jest.spyOn(konn, 'getAccount').mockResolvedValue({
+      _id: 'konnector-account',
+      auth: {
+        login: 'mylogin',
+        password: 'mypassword'
+      }
+    })
+
+    return { konn }
+  }
+
+  it('should have initialized attributes for access in main', async () => {
+    const { konn } = setup(() => {})
+    await konn.initAttributes()
+    expect(konn.fields).toEqual({ login: 'mylogin', password: 'mypassword' })
+  })
+
+  it('should call end() on success', async () => {
+    const { konn } = setup(() => {})
+    await konn.run()
+    expect(konn.end).toHaveBeenCalled()
+  })
+
+  it('should call fail() on error', async () => {
+    const err = new Error()
+
+    const { konn } = setup(() => {
+      throw err
+    })
+
+    // Must mock terminate otherwise the process exits with 1
+    jest.spyOn(konn, 'terminate').mockImplementation(() => {})
+    await konn.run()
+    expect(konn.end).not.toHaveBeenCalled()
+    expect(konn.fail).toHaveBeenCalledWith(err)
+  })
+})
+
+describe('methods', () => {
   let konn
 
   beforeEach(() => {
