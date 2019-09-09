@@ -32,9 +32,11 @@
     "strip-json-comments": "3.0.1"
   },
   "scripts": {
-    "lint": "standard --fix src/*"
+    "lint": "standard --fix src/*",
+    "test": "jest"
   },
   "devDependencies": {
+    "jest": "24.9.0",
     "lerna": "3.16.4"
   },
   "prettier": {
