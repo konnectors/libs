@@ -3,7 +3,6 @@
 const log = require('cozy-logger').namespace('CookieKonnector')
 const BaseKonnector = require('./BaseKonnector')
 const requestFactory = require('./request')
-const signin = require('./signin')
 
 const { CookieJar } = require('tough-cookie')
 const JAR_ACCOUNT_KEY = 'session'
@@ -167,7 +166,7 @@ class CookieKonnector extends BaseKonnector {
    * @return {Promise}
    */
   async signin(options) {
-    const result = await signin({
+    const result = await super.signin({
       ...options,
       requestInstance: this.request
     })
