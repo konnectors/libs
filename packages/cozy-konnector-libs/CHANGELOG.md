@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.28.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.27.0...cozy-konnector-libs@4.28.0) (2019-09-10)
+
+
+### Bug Fixes
+
+* cozy-jobs-cli lint config ([f93295d](https://github.com/cozy/cozy-konnector-libs/commit/f93295d))
+
+
+### Features
+
+* add autologin handling to the signin function ([4a4cd09](https://github.com/cozy/cozy-konnector-libs/commit/4a4cd09))
+* add autologin handling to the signin function ([#580](https://github.com/cozy/cozy-konnector-libs/issues/580)) ([24dba41](https://github.com/cozy/cozy-konnector-libs/commit/24dba41))
+
+
+
+
+
 # [4.27.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.25.0...cozy-konnector-libs@4.27.0) (2019-09-10)
 
 
