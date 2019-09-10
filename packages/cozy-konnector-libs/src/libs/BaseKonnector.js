@@ -116,10 +116,13 @@ class BaseKonnector {
    */
   async run() {
     try {
+      log('info', 'Preparing konnector...')
       await this.initAttributes()
+      log('info', 'Running konnector main...')
       await this.main(this.fields, this.parameters)
       await this.end()
     } catch (err) {
+      log('warn', 'Error from konnector')
       await this.fail(err)
     }
   }
@@ -178,6 +181,10 @@ class BaseKonnector {
 
     // Set account
     const account = await this.getAccount(cozyFields.account)
+    log('info', `Cached Cozy account ${JSON.stringify(account)}`)
+    if (!account || !account._id) {
+      log('warn', 'No account was retrieved from getAccount')
+    }
     this.accountId = account._id
     this._account = account
 
