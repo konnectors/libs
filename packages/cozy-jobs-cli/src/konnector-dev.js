@@ -4,17 +4,15 @@
 process.env.NODE_ENV = 'development'
 
 const config = require('./init-konnector-config')()
+const injectDevAccount = require('./inject-dev-account')
 
 if (!process.env.DEBUG) process.env.DEBUG = '*'
 process.env.COZY_URL = config.COZY_URL
-const DEFAULT_ROOT_PATH = '/cozy-konnector-dev-root'
-process.env.COZY_FIELDS = JSON.stringify({
-  ...config.fields,
-  folderPath: DEFAULT_ROOT_PATH
-})
 if (config.COZY_PARAMETERS) {
   process.env.COZY_PARAMETERS = JSON.stringify(config.COZY_PARAMETERS)
 }
+// sentry is not needed in dev mode
+process.env.SENTRY_DSN = 'false'
 
 const program = require('commander')
 const path = require('path')
@@ -60,51 +58,28 @@ if (!manifest && file) {
 file = abspath(file || process.env.npm_package_main || './src/index.js')
 manifest = manifest || DEFAULT_MANIFEST_PATH
 const token = program.token || DEFAULT_TOKEN_PATH
-authenticate({ tokenPath: token, manifestPath: manifest })
-  .then(result => {
-    const credentials = result.creds
 
-    // check if the token is valid
-    process.env.COZY_CREDENTIALS = JSON.stringify(credentials)
-  })
-  .then(() => {
-    const { BaseKonnector, mkdirp } = require('cozy-konnector-libs')
-    BaseKonnector.prototype.getAccount = async () => {
-      return { _id: 'dev-konnector-account-id' }
-    }
-    BaseKonnector.prototype.initAttributes = async function() {
-      let rootPath = DEFAULT_ROOT_PATH
-      try {
-        await mkdirp(rootPath)
-      } catch (e) {
-        console.log(
-          `Could not create folder ${rootPath}, using / as base folder.`
-        )
-        rootPath = '/'
-      }
-
-      const fields = {
-        ...config.fields,
-        folderPath: rootPath
-      }
-      this.fields = fields
-    }
-
-    // sentry is not needed in dev mode
-    process.env.SENTRY_DSN = 'false'
+;(async () => {
+  try {
+    const { creds } = await authenticate({
+      tokenPath: token,
+      manifestPath: manifest
+    })
+    process.env.COZY_CREDENTIALS = JSON.stringify(creds)
+    injectDevAccount(config)
 
     if (fs.existsSync(file)) {
       return require(file)
     } else {
       console.log(
-        `ERROR: File ${file} does not exist. cozy-run-dev cannot run it.`
+        `ERROR: File ${file} does not exist. cozy-konnector-dev cannot run it.`
       )
     }
-  })
-  .catch(err => {
+  } catch (err) {
     console.log(err, 'unexpected error')
     setImmediate(() => process.exit(1))
-  })
+  }
+})()
 
 function abspath(p) {
   if (p) {

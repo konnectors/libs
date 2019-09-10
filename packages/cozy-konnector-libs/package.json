@@ -52,16 +52,6 @@
     "decrypt-banking-tests": "cd src/libs/categorization/dashboard; gpg -d encrypted.tar.gz.gpg | tar xz",
     "download-banking-tests": "cd src/libs/categorization/dashboard; wget https://bank-autocategorization.cozycloud.cc/bank_classifier_nb_and_voc.json -O bank_classifier_nb_and_voc.json"
   },
-  "standard": {
-    "globals": [
-      "jest",
-      "describe",
-      "test",
-      "beforeEach",
-      "expect",
-      "it"
-    ]
-  },
   "jest": {
     "testPathIgnorePatterns": [
       "<rootDir>/node_modules/"

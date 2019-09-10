@@ -32,13 +32,20 @@
     "strip-json-comments": "3.0.1"
   },
   "scripts": {
-    "lint": "standard --fix src/*"
+    "lint": "eslint src/ --fix",
+    "test": "jest"
   },
   "devDependencies": {
+    "eslint-config-cozy-app": "1.2.2",
+    "jest": "24.9.0",
     "lerna": "3.16.4"
   },
-  "prettier": {
-    "semi": false,
-    "singleQuote": true
+  "eslintConfig": {
+    "extends": [
+      "cozy-app"
+    ]
+  },
+  "jest": {
+    "testEnvironment": "node"
   }
 }
