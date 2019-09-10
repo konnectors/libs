@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.9.20](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@1.9.18...cozy-jobs-cli@1.9.20) (2019-09-10)
+
+
+### Bug Fixes
+
+* **deps:** update dependency commander to v3.0.1 ([1adf9af](https://github.com/cozy/cozy-konnector-libs/commit/1adf9af))
+* **deps:** update dependency commander to v3.0.1 ([#576](https://github.com/cozy/cozy-konnector-libs/issues/576)) ([e7a61e7](https://github.com/cozy/cozy-konnector-libs/commit/e7a61e7))
+* cozy-konnector-dev ([7f355a5](https://github.com/cozy/cozy-konnector-libs/commit/7f355a5))
+
+
+
+
+
 ## [1.9.19](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@1.9.18...cozy-jobs-cli@1.9.19) (2019-09-02)
 
 
