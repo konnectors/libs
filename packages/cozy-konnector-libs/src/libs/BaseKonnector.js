@@ -27,7 +27,6 @@ const findFolderPath = async (cozyFields, account) => {
   if (folderId) {
     try {
       const folder = await cozy.files.statById(folderId, false)
-      log('debug', folder, 'folder details')
       return folder.attributes.path
     } catch (err) {
       log('error', err.message)
