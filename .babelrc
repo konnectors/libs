@@ -1,12 +1,9 @@
 {
   "presets": [
-    ["env", {
-      "targets": {
-        "node": "8"
-      }
+    ["cozy-app", {
+      "node": true,
+      "react": false,
+      "lib": true
     }]
-  ],
-  "plugins": [
-    "transform-object-rest-spread"
   ]
 }
