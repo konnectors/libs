@@ -340,6 +340,10 @@ async function getFileFromMetaData(
     'cozyMetadata.sourceAccountIdentifier',
     'cozyMetadata.createdByApp'
   ])
+  log(
+    'debug',
+    `Checking existence of ${calculateFileKey(entry, fileIdAttributes)}`
+  )
   const files = await queryAll(
     'io.cozy.files',
     {
@@ -366,11 +370,15 @@ async function getFileFromMetaData(
       )
     }
     return files[0]
-  } else return false
+  } else {
+    log('debug', 'not found')
+    return false
+  }
 }
 
 async function getFileFromPath(entry, options) {
   try {
+    log('debug', `Checking existence of ${getFilePath({ entry, options })}`)
     const result = await cozy.files.statByPath(getFilePath({ entry, options }))
     return result
   } catch (err) {
@@ -403,6 +411,7 @@ async function createFile(entry, options, method, fileId) {
       ...createFileOptions,
       ...{
         metadata: {
+          ...createFileOptions.metadata,
           fileIdAttributes: calculateFileKey(entry, options.fileIdAttributes)
         }
       }
