@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.9.22](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@1.9.21...cozy-jobs-cli@1.9.22) (2019-09-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency cozy-logger to v1.6.0 ([4ba564b](https://github.com/cozy/cozy-konnector-libs/commit/4ba564b))
+
+
+
+
+
 ## [1.9.21](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@1.9.20...cozy-jobs-cli@1.9.21) (2019-09-10)
 
 

@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.28.1](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.28.0...cozy-konnector-libs@4.28.1) (2019-09-16)
+
+
+### Bug Fixes
+
+* keep other metadata when saving a file ([042a7fb](https://github.com/cozy/cozy-konnector-libs/commit/042a7fb))
+* remove to many log messages in libs ([3c4e442](https://github.com/cozy/cozy-konnector-libs/commit/3c4e442))
+* **deps:** update dependency cozy-logger to v1.6.0 ([#582](https://github.com/cozy/cozy-konnector-libs/issues/582)) ([3f37103](https://github.com/cozy/cozy-konnector-libs/commit/3f37103))
+* remove to many log messages in libs ([a1211c5](https://github.com/cozy/cozy-konnector-libs/commit/a1211c5))
+* **deps:** update dependency cozy-logger to v1.6.0 ([4ba564b](https://github.com/cozy/cozy-konnector-libs/commit/4ba564b))
+
+
+
+
+
 # [4.28.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.27.0...cozy-konnector-libs@4.28.0) (2019-09-10)
 
 
