@@ -170,25 +170,10 @@ class BaseKonnector {
    * - this._account
    * - this.fields
    */
-  async init(cozyFields, account) {
-    // folder ID will be stored in cozyFields.folder_to_save when first connection
-    if (!cozyFields.folder_to_save) {
-      log('warn', `No folder_to_save available in the trigger`)
-    }
-    const folderId = cozyFields.folder_to_save || account.folderId
-    if (folderId) {
-      try {
-        const folder = await cozy.files.statById(folderId, false)
-        cozyFields.folder_to_save = folder.attributes.path
-      } catch (err) {
-        log('error', err.message)
-        log('error', JSON.stringify(err.stack))
-        log('error', `error while getting the folder path of ${folderId}`)
-        throw new Error('NOT_EXISTING_DIRECTORY')
-      }
-    } else {
-      log('debug', 'No folder needed')
-    }
+  async initAttributes() {
+    // Parse environment variables
+    const cozyFields = JSON.parse(process.env.COZY_FIELDS || '{}')
+    const cozyParameters = JSON.parse(process.env.COZY_PARAMETERS || '{}')
 
     this.parameters = cozyParameters
 

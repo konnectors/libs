@@ -71,7 +71,11 @@ const suitableCall = (funcOrMethod, ...args) => {
 const hydrateAndFilter = (documents = [], doctype, options = {}) => {
   const cozy = require('./cozyclient')
 
-  log('info', `${documents.length} items before hydrateAndFilter`)
+  log(
+    'info',
+    String(documents.length),
+    'Number of items before hydrateAndFilter'
+  )
   if (!doctype)
     return Promise.reject(
       new Error(`Doctype is mandatory to filter the connector data.`)
@@ -79,6 +83,8 @@ const hydrateAndFilter = (documents = [], doctype, options = {}) => {
 
   const keys = options.keys ? options.keys : ['_id']
   const store = {}
+
+  log('debug', keys, 'keys')
 
   const createHash = item => {
     return keys
@@ -98,7 +104,11 @@ const hydrateAndFilter = (documents = [], doctype, options = {}) => {
   }
 
   const getItems = async index => {
+    log('debug', index, 'index')
+
     const selector = options.selector ? options.selector : null
+
+    log('debug', selector, 'selector')
 
     return await queryAll(doctype, selector, index)
   }
@@ -151,7 +161,11 @@ const hydrateAndFilter = (documents = [], doctype, options = {}) => {
   }
 
   const formatOutput = entries => {
-    log('info', `${entries.length} items after hydrateAndFilter`)
+    log(
+      'info',
+      String(entries.length),
+      'Number of items after hydrateAndFilter'
+    )
     return entries
   }
 
