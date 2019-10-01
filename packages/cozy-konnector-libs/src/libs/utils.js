@@ -8,7 +8,6 @@ const groupBy = require('lodash/groupBy')
 const keyBy = require('lodash/keyBy')
 const sortBy = require('lodash/sortBy')
 const range = require('lodash/range')
-const pdfjs = require('pdfjs-dist')
 const format = require('date-fns/format')
 
 /**
@@ -219,6 +218,9 @@ const batchDelete = async (doctype, documents) => {
  * * `options` :
  *    - `pages` (array or number) : The list of page you want to interpret
  *
+ *
+ * You need to add pdfjs-dist package as a dependency to your connector to allow this to work
+ *
  * Returns a promise which resolves with an object with the following attributes:
  *    - `text` (string) : The full text of the pdf
  *    - `1` : The full pdfjs data for page 1
@@ -231,6 +233,14 @@ const batchDelete = async (doctype, documents) => {
  * ```
  */
 const getPdfText = async (fileId, options = {}) => {
+  let pdfjs
+  try {
+    pdfjs = require('pdfjs-dist')
+  } catch (err) {
+    throw new Error(
+      'pdfjs-dist dependency is missing. Please add it in your package.json'
+    )
+  }
   const response = await cozyClient.files.downloadById(fileId)
   const buffer = await response.buffer()
   const document = await pdfjs.getDocument(buffer)
