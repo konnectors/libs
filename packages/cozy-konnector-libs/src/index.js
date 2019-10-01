@@ -41,7 +41,8 @@ module.exports = {
   solveCaptcha: require('./libs/solveCaptcha'),
   createCategorizer: categorization.createCategorizer,
   categorize: categorization.categorize,
-  manifest: require('./libs/manifest')
+  manifest: require('./libs/manifest'),
+  zombie: require('./libs/zombie')
 }
 
 function deprecate(wrapped, message) {

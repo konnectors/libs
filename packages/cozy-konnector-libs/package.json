@@ -42,7 +42,8 @@
   },
   "peerDependencies": {
     "pdfjs": "^2.3.0",
-    "pdfjs-dist": "^2.1.266"
+    "pdfjs-dist": "^2.1.266",
+    "zombie": "^6.1.4"
   },
   "scripts": {
     "build": "npm run transpile",
@@ -74,6 +75,7 @@
     "jsdoc-to-markdown": "4.0.1",
     "lerna": "3.16.4",
     "pdfjs": "2.3.0",
-    "pdfjs-dist": "2.1.266"
+    "pdfjs-dist": "2.1.266",
+    "zombie": "6.1.4"
   }
 }
