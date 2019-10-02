@@ -16,7 +16,6 @@ program
   .parse(process.argv)
 
 process.env.NODE_ENV = 'standalone'
-if (!process.env.DEBUG) process.env.DEBUG = '*'
 
 const rootPath = path.resolve('./data')
 if (!fs.existsSync(rootPath)) fs.mkdirSync(rootPath)

@@ -3,8 +3,6 @@
 
 process.env.NODE_ENV = 'development'
 
-if (!process.env.DEBUG) process.env.DEBUG = '*'
-
 const program = require('commander')
 const path = require('path')
 const fs = require('fs')

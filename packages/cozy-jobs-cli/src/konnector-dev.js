@@ -6,7 +6,6 @@ process.env.NODE_ENV = 'development'
 const config = require('./init-konnector-config')()
 const injectDevAccount = require('./inject-dev-account')
 
-if (!process.env.DEBUG) process.env.DEBUG = '*'
 process.env.COZY_URL = config.COZY_URL
 if (config.COZY_PARAMETERS) {
   process.env.COZY_PARAMETERS = JSON.stringify(config.COZY_PARAMETERS)
