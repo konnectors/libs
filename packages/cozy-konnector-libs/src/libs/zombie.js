@@ -183,7 +183,7 @@ function getCozyBrowser() {
                 new Fetch.Response(response, {
                   url: request.url,
                   status: response.statusCode,
-                  headers: new Headers(arrayOfHeaders)
+                  headers: new Fetch.Headers(arrayOfHeaders)
                 })
               )
             })
