@@ -5,8 +5,6 @@
 const { basename, dirname, join } = require('path').posix
 const cozyClient = require('./cozyclient')
 
-const log = () => {}
-
 /**
  * Creates a directory and its missing ancestors as needed.
  *
@@ -44,33 +42,26 @@ mkdirp.fromCozy = fromCozy
 function fromCozy(cozy) {
   return async function mkdirp(...pathComponents) {
     const path = join('/', ...pathComponents)
-    const pathRepr = JSON.stringify(path)
 
-    log('debug', `Checking wether directory ${pathRepr} exists...`)
     let doc = null
     try {
       doc = await cozy.files.statByPath(path)
-      log('debug', `Directory ${pathRepr} found.`)
       return doc
     } catch (err) {
       if (![404, 409].includes(err.status)) throw err
-      log('debug', `Directory ${pathRepr} not found.`)
 
       const name = basename(path)
       const parentPath = dirname(path)
       const parentDoc = await mkdirp(parentPath)
 
-      log('info', `Creating directory ${pathRepr}...`)
       try {
         doc = await cozy.files.createDirectory({
           name,
           dirID: parentDoc._id
         })
-        log('info', `Directory ${pathRepr} created!`)
         return doc
       } catch (createErr) {
         if (![404, 409].includes(createErr.status)) throw createErr
-        log('info', 'Directory already exists')
         return doc
       }
     }
