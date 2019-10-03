@@ -18,6 +18,8 @@ const sleep = require('util').promisify(global.setTimeout)
 const LOG_ERROR_MSG_LIMIT = 32 * 1024 - 1 // to avoid to cut the json long and make it unreadable by the stack
 const once = require('lodash/once')
 
+const errors = require('./error')
+
 const findFolderPath = async (cozyFields, account) => {
   // folderId will be stored in cozyFields.folder_to_save on first run
   if (!cozyFields.folder_to_save) {
@@ -104,6 +106,8 @@ class BaseKonnector {
     this.deactivateAutoSuccessfulLogin = once(
       this.deactivateAutoSuccessfulLogin
     )
+
+    errors.attachProcessEventHandlers()
   }
 
   /**

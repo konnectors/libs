@@ -3,8 +3,6 @@ const requestFactory = require('./libs/request')
 const hydrateAndFilter = require('./libs/hydrateAndFilter')
 const categorization = require('./libs/categorization')
 
-require('./libs/error')
-
 module.exports = {
   BaseKonnector: require('./libs/BaseKonnector'),
   CookieKonnector: require('./libs/CookieKonnector'),
