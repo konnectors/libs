@@ -42,7 +42,7 @@ module.exports = {
   createCategorizer: categorization.createCategorizer,
   categorize: categorization.categorize,
   manifest: require('./libs/manifest'),
-  zombie: require('./libs/zombie')
+  CozyBrowser: require('./libs/CozyBrowser')
 }
 
 function deprecate(wrapped, message) {

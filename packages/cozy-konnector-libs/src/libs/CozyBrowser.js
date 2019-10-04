@@ -1,9 +1,10 @@
 /**
  * Get a javascript simulation of a real browser (jsdom)
  *
- * @module zombie
+ * @module CozyBrowser
  */
 
+const { CookieJar } = require('tough-cookie')
 const log = require('cozy-logger').namespace('zombie')
 const DEFAULT_USER_AGENT =
   'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:62.0) Gecko/20100101 Firefox/62.0'
@@ -11,21 +12,23 @@ const DEFAULT_USER_AGENT =
 /**
  * Get a preconfigured jsdom browser simulator using the zombie npm package
  * See http://zombie.js.org/ for complete documentation
- * You have to import the zombie npm package yourself.
+ * The connector has to import the zombie npm package itself.
  *
  * @param  {string} options.userAgent - The user agent string used by the browser
- * @returns {Obect} Zombie browser instance
+ * @returns {Class} Zombie browser extended class
  *
  * @example
  *
  * ```javascript
- * const { zombie } = require('cozy-konnector-libs')
- * await zombie.visit('http://quotes.toscrape.com/')
+ * const { CozyBrowser } = require('cozy-konnector-libs')
+ * const Browser = CozyBrowser()
+ * const browser = new Browser()
+ * await browser.visit('http://quotes.toscrape.com/')
  * ```
  *
- * @alias module:zombie
+ * @alias module:CozyBrowser
  */
-function zombie(options) {
+function Zombie(options) {
   const defaultOptions = {
     waitDuration: '20s',
     userAgent: DEFAULT_USER_AGENT
@@ -33,11 +36,15 @@ function zombie(options) {
 
   const finalOptions = { ...defaultOptions, options }
   const CozyBrowser = getCozyBrowser()
-  const browser = new CozyBrowser(finalOptions)
-  browser.pipeline = new CozyBrowser.Pipeline(browser)
-  addListeners(browser)
+  CozyBrowser.extend(function(browser) {
+    browser.pipeline = new CozyBrowser.Pipeline(browser)
+    addListeners(browser)
+    Object.assign(browser, finalOptions)
+    browser.getCookieJar = getCookieJar.bind(browser)
+    browser.loadCookieJar = loadCookieJar.bind(browser)
+  })
 
-  return browser
+  return CozyBrowser
 }
 
 /**
@@ -73,6 +80,31 @@ function addListeners(browser) {
   browser.on('response', (request, response) => {
     log('info', `response: ${response._url}`)
   })
+}
+
+function loadCookieJar(jar) {
+  for (const cookie of jar.toJSON().cookies) {
+    this.setCookie(
+      {
+        name: cookie.key,
+        domain: cookie.domain,
+        path: cookie.path,
+        expires: cookie.expires,
+        maxAge: cookie['max-age'],
+        secure: cookie.secure,
+        httpOnly: cookie.httpOnly
+      },
+      cookie.value
+    )
+  }
+}
+
+function getCookieJar() {
+  return CookieJar.fromJSON(
+    JSON.stringify({
+      cookies: this.cookies.filter(c => c.toJSON).map(c => c.toJSON())
+    })
+  )
 }
 
 /**
@@ -196,4 +228,4 @@ function getCozyBrowser() {
   return Browser
 }
 
-module.exports = zombie
+module.exports = Zombie

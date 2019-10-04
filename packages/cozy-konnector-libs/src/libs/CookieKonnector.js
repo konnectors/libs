@@ -151,8 +151,13 @@ class CookieKonnector extends BaseKonnector {
    *
    * @return {Promise}
    */
-  async saveSession() {
+  async saveSession(obj) {
     const accountData = { ...this._account.data, auth: {} }
+
+    if (obj && obj.getCookieJar) {
+      this._jar._jar = obj.getCookieJar()
+    }
+
     accountData.auth[JAR_ACCOUNT_KEY] = JSON.stringify(this._jar._jar.toJSON())
     await this.saveAccountData(accountData)
     log('info', 'saved the session')
