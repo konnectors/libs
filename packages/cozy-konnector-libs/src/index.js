@@ -41,8 +41,7 @@ module.exports = {
   solveCaptcha: require('./libs/solveCaptcha'),
   createCategorizer: categorization.createCategorizer,
   categorize: categorization.categorize,
-  manifest: require('./libs/manifest'),
-  CozyBrowser: require('./libs/CozyBrowser')
+  manifest: require('./libs/manifest')
 }
 
 function deprecate(wrapped, message) {

@@ -163,13 +163,12 @@ Get a javascript simulation of a real browser (jsdom)
 
 
 * [CozyBrowser](#module_CozyBrowser)
-    * [Zombie()](#exp_module_CozyBrowser--Zombie) ⇒ <code>Class</code> ⏏
-        * [~addListeners()](#module_CozyBrowser--Zombie..addListeners)
-        * [~getCozyBrowser()](#module_CozyBrowser--Zombie..getCozyBrowser)
+    * [getCozyBrowser()](#exp_module_CozyBrowser--getCozyBrowser) ⇒ <code>Class</code> ⏏
+        * [~addListeners()](#module_CozyBrowser--getCozyBrowser..addListeners)
 
-<a name="exp_module_CozyBrowser--Zombie"></a>
+<a name="exp_module_CozyBrowser--getCozyBrowser"></a>
 
-### Zombie() ⇒ <code>Class</code> ⏏
+### getCozyBrowser() ⇒ <code>Class</code> ⏏
 Get a preconfigured jsdom browser simulator using the zombie npm package
 See http://zombie.js.org/ for complete documentation
 The connector has to import the zombie npm package itself.
@@ -183,24 +182,17 @@ The connector has to import the zombie npm package itself.
 
 **Example**  
 ```javascript
-const { CozyBrowser } = require('cozy-konnector-libs')
-const Browser = CozyBrowser()
+const { getCozyBrowser } = require('cozy-konnector-libs')
+const Browser = getCozyBrowser()
 const browser = new Browser()
 await browser.visit('http://quotes.toscrape.com/')
 ```
-<a name="module_CozyBrowser--Zombie..addListeners"></a>
+<a name="module_CozyBrowser--getCozyBrowser..addListeners"></a>
 
-#### Zombie~addListeners()
+#### getCozyBrowser~addListeners()
 Add cozy-konnector-libs specific logs to browser events
 
-**Kind**: inner method of [<code>Zombie</code>](#exp_module_CozyBrowser--Zombie)  
-<a name="module_CozyBrowser--Zombie..getCozyBrowser"></a>
-
-#### Zombie~getCozyBrowser()
-Create a Zombie class patched to not use bind rights which will allow it to work in our nsjail
-environment
-
-**Kind**: inner method of [<code>Zombie</code>](#exp_module_CozyBrowser--Zombie)  
+**Kind**: inner method of [<code>getCozyBrowser</code>](#exp_module_CozyBrowser--getCozyBrowser)  
 <a name="module_addData"></a>
 
 ## addData
