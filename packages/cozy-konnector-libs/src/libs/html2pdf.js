@@ -1,9 +1,5 @@
 const { URL } = require('url')
 
-const pdf = require('pdfjs')
-const helveticaBold = require('pdfjs/font/Helvetica-Bold')
-const helveticaEm = require('pdfjs/font/Helvetica-Oblique')
-
 const computeWidth = $table => {
   let out = 0
   const tds = $table
@@ -27,6 +23,16 @@ const makeLinkOpts = ($el, opts) => {
 }
 
 function htmlToPDF($, frag, $parent, opts) {
+  let pdf
+  try {
+    pdf = require('pdfjs')
+  } catch (err) {
+    throw new Error(
+      'pdfjs dependency is missing. Please add it in your package.json'
+    )
+  }
+  const helveticaBold = require('pdfjs/font/Helvetica-Bold')
+  const helveticaEm = require('pdfjs/font/Helvetica-Oblique')
   opts = Object.assign(
     {
       baseURL: '',
@@ -204,6 +210,14 @@ function htmlToPDF($, frag, $parent, opts) {
 }
 
 function createCozyPDFDocument(headline, url) {
+  let pdf
+  try {
+    pdf = require('pdfjs')
+  } catch (err) {
+    throw new Error(
+      'pdfjs dependency is missing. Please add it in your package.json'
+    )
+  }
   var doc = new pdf.Document()
   const cell = doc.cell({ paddingBottom: 0.5 * pdf.cm }).text()
   cell.add(headline, {
