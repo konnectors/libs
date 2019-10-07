@@ -163,17 +163,17 @@ Get a javascript simulation of a real browser (jsdom)
 
 
 * [CozyBrowser](#module_CozyBrowser)
-    * [getCozyBrowser()](#exp_module_CozyBrowser--getCozyBrowser) ⇒ <code>Class</code> ⏏
-        * [~addListeners()](#module_CozyBrowser--getCozyBrowser..addListeners)
+    * [defaultOptions](#exp_module_CozyBrowser--defaultOptions) ⇒ <code>Class</code> ⏏
+        * [~addListeners()](#module_CozyBrowser--defaultOptions..addListeners)
 
-<a name="exp_module_CozyBrowser--getCozyBrowser"></a>
+<a name="exp_module_CozyBrowser--defaultOptions"></a>
 
-### getCozyBrowser() ⇒ <code>Class</code> ⏏
+### defaultOptions ⇒ <code>Class</code> ⏏
 Get a preconfigured jsdom browser simulator using the zombie npm package
 See http://zombie.js.org/ for complete documentation
 The connector has to import the zombie npm package itself.
 
-**Kind**: Exported function  
+**Kind**: Exported constant  
 **Returns**: <code>Class</code> - Zombie browser extended class  
 
 | Param | Type | Description |
@@ -182,17 +182,16 @@ The connector has to import the zombie npm package itself.
 
 **Example**  
 ```javascript
-const { getCozyBrowser } = require('cozy-konnector-libs')
-const Browser = getCozyBrowser()
+const Browser = require('cozy-konnector-libs/libs/CozyBrowser')
 const browser = new Browser()
 await browser.visit('http://quotes.toscrape.com/')
 ```
-<a name="module_CozyBrowser--getCozyBrowser..addListeners"></a>
+<a name="module_CozyBrowser--defaultOptions..addListeners"></a>
 
-#### getCozyBrowser~addListeners()
+#### defaultOptions~addListeners()
 Add cozy-konnector-libs specific logs to browser events
 
-**Kind**: inner method of [<code>getCozyBrowser</code>](#exp_module_CozyBrowser--getCozyBrowser)  
+**Kind**: inner method of [<code>defaultOptions</code>](#exp_module_CozyBrowser--defaultOptions)  
 <a name="module_addData"></a>
 
 ## addData
@@ -804,6 +803,9 @@ Parameters:
 * `fileId` (string): the id of the file in the cozy
 * `options` :
    - `pages` (array or number) : The list of page you want to interpret
+
+
+You need to add pdfjs-dist package as a dependency to your connector to allow this to work
 
 Returns a promise which resolves with an object with the following attributes:
    - `text` (string) : The full text of the pdf
