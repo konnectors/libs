@@ -43,10 +43,10 @@ const attachProcessEventHandlers = (prcs = process) => {
 
   return () => {
     attached = false
-    prcs.off('uncaughtException', handleUncaughtException)
-    prcs.off('unhandledRejection', handleUnhandledRejection)
-    prcs.off('SIGTERM', handleSigterm)
-    prcs.off('SIGINT', handleSigint)
+    prcs.removeEventListener('uncaughtException', handleUncaughtException)
+    prcs.removeEventListener('unhandledRejection', handleUnhandledRejection)
+    prcs.removeEventListener('SIGTERM', handleSigterm)
+    prcs.removeEventListener('SIGINT', handleSigint)
   }
 }
 
