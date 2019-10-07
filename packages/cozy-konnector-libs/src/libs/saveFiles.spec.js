@@ -3,6 +3,8 @@ const cozyClient = require('./cozyclient')
 const manifest = require('./manifest')
 jest.mock('./utils')
 const { queryAll } = require('./utils')
+jest.mock('./mkdirp')
+const mkdirp = require('./mkdirp')
 const logger = require('cozy-logger')
 const saveFiles = require('./saveFiles')
 const getFileIfExists = saveFiles.getFileIfExists
@@ -398,4 +400,55 @@ describe('getFileIfExists', function() {
       })
     })
   })
+})
+
+describe('subPath options testing', function() {
+  const files = [
+    {
+      fileurl: 'http://books.toscrape.com/media/cache/26/0c/260c6ae16bce31c8f8c95daddd9f4a1c.jpg',
+      filename: 'Tipping the Velvet.jpg',
+//      subPath: 'test'
+    },
+    {
+      fileurl: 'http://books.toscrape.com/media/cache/3e/ef/3eef99c9d9adef34639f510662022830.jpg',
+      filename: 'Soumission.jpg',
+//      subPath: 'test'
+    }
+  ]
+  it('Adding subPath by option', async () => {
+    cozyClient.files.statByPath.mockImplementation(path => {
+      // Must check if we are stating on the folder or on the file
+      return path === FOLDER_PATH
+        ? asyncResolve({ _id: 'folderId' })
+      : asyncResolve()
+    })
+    cozyClient.files.create.mockReset()
+    cozyClient.files.create.mockImplementation((rqPromise, options) => {
+      console.log('MOCK 1')
+      console.log(options)
+
+      return { _id: 'newFileId', attributes: { ...options } }
+    })
+    mkdirp.mockImplementation(path => {
+      console.log(path)
+      return path
+    })
+
+    const options = { subPath: 'test1' }
+    const res = await saveFiles(files, {}, options)
+    console.log(res)
+    console.log('nb mkdirp',mkdirp.mock.calls.length)
+    console.log(cozyClient.files.create.mock.calls.length)
+    console.log(cozyClient.files.updateById.mock.calls.length)
+    expect(cozyClient.files.create.mock.calls[0][0]).toEqual(1)
+  })
+  // it('should do nothing2', async () => {
+  //   throw 'aaa'
+  // })
+
+    // Test
+    // Multiple level directory
+    // doubleslash, point
+
+
 })

@@ -14,6 +14,7 @@ const log = require('cozy-logger').namespace('saveFiles')
 const manifest = require('./manifest')
 const cozy = require('./cozyclient')
 const { queryAll } = require('./utils')
+const mkdirp = require('./mkdirp')
 const errors = require('../helpers/errors')
 const stream = require('stream')
 const fileType = require('file-type')
@@ -43,6 +44,7 @@ const DEFAULT_RETRY = 1 // do not retry by default
  *   want the last version.
  *   + `fileAttributes` (object) ex: `{created_at: new Date()}` sets some additionnal file
  *   attributes passed to cozyClient.file.create
+ *   + `subPath` (string) : A subpath to save all files, will be created if needed.
  *
  * - `fields` (string) is the argument given to the main function of your connector by the BaseKonnector.
  *      It especially contains a `folderPath` which is the string path configured by the user in
@@ -69,6 +71,7 @@ const DEFAULT_RETRY = 1 // do not retry by default
  *   + `fileIdAttributes` (array of strings). Describes which attributes of files will be taken as primary key for
  *   files to check if they already exist, even if they are moved. If not given, the file path will
  *   used for deduplication as before.
+ *   + `subPath` (string) : A subpath to save this file, will be created if needed.
  * @example
  * ```javascript
  * await saveFiles([{fileurl: 'https://...', filename: 'bill1.pdf'}], fields, {
@@ -110,6 +113,7 @@ const saveFiles = async (entries, fields, options = {}) => {
     requestInstance: options.requestInstance,
     shouldReplaceFile: options.shouldReplaceFile,
     validateFile: options.validateFile || defaultValidateFile,
+    subPath: options.subPath,
     sourceAccountOptions: {
       sourceAccount: options.sourceAccount,
       sourceAccountIdentifier: options.sourceAccountIdentifier
@@ -122,6 +126,12 @@ const saveFiles = async (entries, fields, options = {}) => {
     } else if (typeof options.validateFileContent === 'function') {
       saveOptions.validateFileContent = options.validateFileContent
     }
+  }
+
+  if (saveOptions.subPath) {
+    saveOptions.folderPath = saveOptions.folderPath + '/' + saveOptions.subPath
+    await mkdirp(saveOptions.folderPath)
+    delete saveOptions.subPath
   }
 
   const canBeSaved = entry =>
@@ -170,7 +180,13 @@ const saveFiles = async (entries, fields, options = {}) => {
         }
 
         if (canBeSaved(entry)) {
-          entry = await saveEntry(entry, saveOptions)
+          let entrySaveOptions = saveOptions
+          if (entry.subPath) {
+            entrySaveOptions.folderPath = saveOptions.folderPath + '/' + entry.subPath
+            await mkdirp(entrySaveOptions.folderPath)
+            delete entry.subPath
+          }
+          entry = await saveEntry(entry, entrySaveOptions)
           if (entry && entry._cozy_file_to_create) {
             savedFiles++
             delete entry._cozy_file_to_create
