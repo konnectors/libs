@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.29.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.28.2...cozy-konnector-libs@4.29.0) (2019-10-07)
+
+
+### Bug Fixes
+
+* properly handle headers ([aa78147](https://github.com/cozy/cozy-konnector-libs/commit/aa78147))
+
+
+### Features
+
+* add zombie browser simulator ([f9da2df](https://github.com/cozy/cozy-konnector-libs/commit/f9da2df))
+* make pdfjs dependencies optionnal ([03fb254](https://github.com/cozy/cozy-konnector-libs/commit/03fb254))
+* make pdfjs dependencies optionnal ([#598](https://github.com/cozy/cozy-konnector-libs/issues/598)) ([dcedea7](https://github.com/cozy/cozy-konnector-libs/commit/dcedea7))
+
+
+
+
+
 ## [4.28.2](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.28.1...cozy-konnector-libs@4.28.2) (2019-09-16)
 
 **Note:** Version bump only for package cozy-konnector-libs
