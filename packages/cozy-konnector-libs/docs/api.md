@@ -3,6 +3,9 @@
 ## Modules
 
 <dl>
+<dt><a href="#module_CozyBrowser">CozyBrowser</a></dt>
+<dd><p>Get a javascript simulation of a real browser (jsdom)</p>
+</dd>
 <dt><a href="#module_addData">addData</a></dt>
 <dd><p>Saves the data into the cozy blindly without check.</p>
 </dd>
@@ -153,6 +156,43 @@ instead of imperatively building them.</p>
 </dd>
 </dl>
 
+<a name="module_CozyBrowser"></a>
+
+## CozyBrowser
+Get a javascript simulation of a real browser (jsdom)
+
+
+* [CozyBrowser](#module_CozyBrowser)
+    * [getCozyBrowser()](#exp_module_CozyBrowser--getCozyBrowser) ⇒ <code>Class</code> ⏏
+        * [~addListeners()](#module_CozyBrowser--getCozyBrowser..addListeners)
+
+<a name="exp_module_CozyBrowser--getCozyBrowser"></a>
+
+### getCozyBrowser() ⇒ <code>Class</code> ⏏
+Get a preconfigured jsdom browser simulator using the zombie npm package
+See http://zombie.js.org/ for complete documentation
+The connector has to import the zombie npm package itself.
+
+**Kind**: Exported function  
+**Returns**: <code>Class</code> - Zombie browser extended class  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| options.userAgent | <code>string</code> | The user agent string used by the browser |
+
+**Example**  
+```javascript
+const { getCozyBrowser } = require('cozy-konnector-libs')
+const Browser = getCozyBrowser()
+const browser = new Browser()
+await browser.visit('http://quotes.toscrape.com/')
+```
+<a name="module_CozyBrowser--getCozyBrowser..addListeners"></a>
+
+#### getCozyBrowser~addListeners()
+Add cozy-konnector-libs specific logs to browser events
+
+**Kind**: inner method of [<code>getCozyBrowser</code>](#exp_module_CozyBrowser--getCozyBrowser)  
 <a name="module_addData"></a>
 
 ## addData
@@ -870,17 +910,22 @@ fetch account information for your connector.
 
 * [BaseKonnector](#BaseKonnector)
     * [new BaseKonnector(fetch)](#new_BaseKonnector_new)
+    * [.run()](#BaseKonnector+run)
+    * [.main()](#BaseKonnector+main) ⇒ <code>Promise</code>
     * [.end()](#BaseKonnector+end)
     * [.fail()](#BaseKonnector+fail)
-    * [.init()](#BaseKonnector+init) ⇒ <code>Promise</code>
+    * [.initAttributes()](#BaseKonnector+initAttributes)
     * [.saveAccountData(data, options)](#BaseKonnector+saveAccountData) ⇒ <code>Promise</code>
     * [.getAccountData()](#BaseKonnector+getAccountData) ⇒ <code>object</code>
     * [.updateAccountAttributes()](#BaseKonnector+updateAccountAttributes)
     * [.waitForTwoFaCode()](#BaseKonnector+waitForTwoFaCode) ⇒ <code>Promise</code>
+    * [.notifySuccessfulLogin()](#BaseKonnector+notifySuccessfulLogin)
+    * [.deactivateAutoSuccessfulLogin()](#BaseKonnector+deactivateAutoSuccessfulLogin)
     * [.saveBills()](#BaseKonnector+saveBills) ⇒ <code>Promise</code>
     * [.saveFiles()](#BaseKonnector+saveFiles) ⇒ <code>Promise</code>
     * [.updateOrCreate()](#BaseKonnector+updateOrCreate) ⇒ <code>Promise</code>
     * [.saveIdentity()](#BaseKonnector+saveIdentity) ⇒ <code>Promise</code>
+    * [.signin()](#BaseKonnector+signin) ⇒ <code>Promise</code>
     * [.terminate(message)](#BaseKonnector+terminate)
     * [.getCozyMetadata(data)](#BaseKonnector+getCozyMetadata)
 
@@ -917,10 +962,29 @@ module.exports = new BaseKonnector(function fetch () {
    .then(saveBills)
 })
 ```
+<a name="BaseKonnector+run"></a>
+
+### baseKonnector.run()
+Entrypoint of the konnector
+
+- Initializes connector attributes
+- Awaits this.main
+- Ensures errors are handled via this.fail
+- Calls this.end when the main function succeeded
+
+**Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)  
+<a name="BaseKonnector+main"></a>
+
+### baseKonnector.main() ⇒ <code>Promise</code>
+Main runs after konnector has been initialized.
+Errors thrown will be automatically handled.
+
+**Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)  
+**Returns**: <code>Promise</code> - - The konnector is considered successful when it resolves  
 <a name="BaseKonnector+end"></a>
 
 ### baseKonnector.end()
-Hook called when the connector is ended
+Hook called when the connector has ended successfully
 
 **Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)  
 <a name="BaseKonnector+fail"></a>
@@ -929,13 +993,15 @@ Hook called when the connector is ended
 Hook called when the connector fails
 
 **Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)  
-<a name="BaseKonnector+init"></a>
+<a name="BaseKonnector+initAttributes"></a>
 
-### baseKonnector.init() ⇒ <code>Promise</code>
-Initializes the current connector with data coming from the associated account
+### baseKonnector.initAttributes()
+Initializes konnector attributes that will be used during its lifetime
+
+- this._account
+- this.fields
 
 **Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)  
-**Returns**: <code>Promise</code> - with the fields as an object  
 <a name="BaseKonnector+saveAccountData"></a>
 
 ### baseKonnector.saveAccountData(data, options) ⇒ <code>Promise</code>
@@ -976,10 +1042,16 @@ Update account attributes and cache the account
 
 ### baseKonnector.waitForTwoFaCode() ⇒ <code>Promise</code>
 Notices that 2FA code is needed and wait for the user to submit it.
-It uses the account to do the communication with the user
+It uses the account to do the communication with the user.
 
 **Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)  
 **Returns**: <code>Promise</code> - Contains twoFa code entered by user  
+**Throws**:
+
+- Will throw `USER_ACTION_NEEDED.TWOFA_EXPIRED` if the konnector job is not run manually (we assume that
+not run manually means that we do not have a graphic interface to fill the required information)
+- Will throw `USER_ACTION_NEEDED.TWOFA_EXPIRED` if 2FA is not filled by the user soon enough
+
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -1003,6 +1075,29 @@ async function start() {
    // send the code to the targeted site
 }
 ```
+<a name="BaseKonnector+notifySuccessfulLogin"></a>
+
+### baseKonnector.notifySuccessfulLogin()
+Tells Cozy-Home that we have successfully logged in.
+Useful when auto-success has been deactivated.
+See `deactivateAutoSuccess`
+
+**Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)  
+<a name="BaseKonnector+deactivateAutoSuccessfulLogin"></a>
+
+### baseKonnector.deactivateAutoSuccessfulLogin()
+By default, cozy-home considers that the konnector has successfully logged in
+when the konnector has run for more than 8s. This is problematic for 2FA since
+the konnector can sit idle, just waiting for the 2FA to come back.
+
+When this method is called, cozy-home is notified and will not consider the
+absence of error after 8s to be a success. Afterwards, to notify cozy-home when
+the user has logged in successfully, for example, after the user has entered 2FA
+codes, it is necessary to call `notifySuccessfulLogin`.
+
+Does nothing if called more than once.
+
+**Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)  
 <a name="BaseKonnector+saveBills"></a>
 
 ### baseKonnector.saveBills() ⇒ <code>Promise</code>
@@ -1029,6 +1124,13 @@ metadata of each entry
 ### baseKonnector.saveIdentity() ⇒ <code>Promise</code>
 This is saveIdentity function from cozy-konnector-libs which automatically adds sourceAccount in
 metadata of each entry
+
+**Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)  
+<a name="BaseKonnector+signin"></a>
+
+### baseKonnector.signin() ⇒ <code>Promise</code>
+This is signin function from cozy-konnector-libs which automatically adds deactivateAutoSuccessfulLogin
+and notifySuccessfulLogin calls
 
 **Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)  
 <a name="BaseKonnector+terminate"></a>
@@ -1069,7 +1171,7 @@ it to save/restore cookies
 
 * [CookieKonnector](#CookieKonnector)
     * [new CookieKonnector(requestFactoryOptions)](#new_CookieKonnector_new)
-    * [.init()](#CookieKonnector+init) ⇒ <code>Promise</code>
+    * [.initAttributes()](#CookieKonnector+initAttributes) ⇒ <code>Promise</code>
     * [.end()](#CookieKonnector+end)
     * [.requestFactory(options)](#CookieKonnector+requestFactory) ⇒ <code>object</code>
     * [.resetSession()](#CookieKonnector+resetSession) ⇒ <code>Promise</code>
@@ -1108,9 +1210,9 @@ const connector = new MyKonnector({
 })
 connector.run()
 ```
-<a name="CookieKonnector+init"></a>
+<a name="CookieKonnector+initAttributes"></a>
 
-### cookieKonnector.init() ⇒ <code>Promise</code>
+### cookieKonnector.initAttributes() ⇒ <code>Promise</code>
 Initializes the current connector with data coming from the associated account
 and also the session
 
