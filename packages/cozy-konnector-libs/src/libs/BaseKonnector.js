@@ -18,6 +18,8 @@ const sleep = require('util').promisify(global.setTimeout)
 const LOG_ERROR_MSG_LIMIT = 32 * 1024 - 1 // to avoid to cut the json long and make it unreadable by the stack
 const once = require('lodash/once')
 
+const errors = require('./error')
+
 const findFolderPath = async (cozyFields, account) => {
   // folderId will be stored in cozyFields.folder_to_save on first run
   if (!cozyFields.folder_to_save) {
@@ -104,6 +106,8 @@ class BaseKonnector {
     this.deactivateAutoSuccessfulLogin = once(
       this.deactivateAutoSuccessfulLogin
     )
+
+    errors.attachProcessEventHandlers()
   }
 
   /**
@@ -116,10 +120,13 @@ class BaseKonnector {
    */
   async run() {
     try {
+      log('info', 'Preparing konnector...')
       await this.initAttributes()
+      log('info', 'Running konnector main...')
       await this.main(this.fields, this.parameters)
       await this.end()
     } catch (err) {
+      log('warn', 'Error from konnector')
       await this.fail(err)
     }
   }
@@ -178,6 +185,10 @@ class BaseKonnector {
 
     // Set account
     const account = await this.getAccount(cozyFields.account)
+    log('info', `Cached Cozy account ${JSON.stringify(account)}`)
+    if (!account || !account._id) {
+      log('warn', 'No account was retrieved from getAccount')
+    }
     this.accountId = account._id
     this._account = account
 
