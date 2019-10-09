@@ -3,6 +3,8 @@ const cozyClient = require('./cozyclient')
 const manifest = require('./manifest')
 jest.mock('./utils')
 const { queryAll } = require('./utils')
+jest.mock('./mkdirp')
+const mkdirp = require('./mkdirp')
 const logger = require('cozy-logger')
 const saveFiles = require('./saveFiles')
 const getFileIfExists = saveFiles.getFileIfExists
@@ -270,6 +272,61 @@ describe('saveFiles', function() {
         { timeout: 1 }
       )
       expect(cozyClient.files.create).not.toHaveBeenCalled()
+    })
+  })
+})
+
+describe('subPath handling', () => {
+  beforeEach(function() {
+    mkdirp.mockReset()
+    cozyClient.files.statByPath.mockImplementation(async path => {
+      if (path.includes('randomfileurl.txt')) {
+        return asyncReject({})
+      } else {
+        return asyncResolve({ _id: path })
+      }
+    })
+  })
+  it('should not create subPath if no subPath specified', async () => {
+    await saveFiles([{ fileurl: 'randomfileurl.txt' }], {
+      folderPath: 'mainPath'
+    })
+
+    expect(mkdirp.mock.calls.length).toBe(0)
+    expect(cozyClient.files.create).toHaveBeenCalledTimes(1)
+    expect(cozyClient.files.create.mock.calls[0][1]).toMatchObject({
+      name: 'randomfileurl.txt',
+      dirID: 'mainPath'
+    })
+  })
+  it('should change the folderPath for entries with subPath', async () => {
+    await saveFiles([{ fileurl: 'randomfileurl.txt', subPath: 'mySubPath' }], {
+      folderPath: 'mainPath'
+    })
+
+    expect(mkdirp.mock.calls.length).toBe(1)
+    expect(mkdirp.mock.calls[0][0]).toBe('mainPath/mySubPath')
+    expect(cozyClient.files.create).toHaveBeenCalledTimes(1)
+    expect(cozyClient.files.create.mock.calls[0][1]).toMatchObject({
+      name: 'randomfileurl.txt',
+      dirID: 'mainPath/mySubPath'
+    })
+  })
+  it('should change the folderPath with subPath main option', async () => {
+    await saveFiles(
+      [{ fileurl: 'randomfileurl.txt' }],
+      {
+        folderPath: 'mainPath'
+      },
+      { subPath: 'mySubPath' }
+    )
+
+    expect(mkdirp.mock.calls.length).toBe(1)
+    expect(mkdirp.mock.calls[0][0]).toBe('mainPath/mySubPath')
+    expect(cozyClient.files.create).toHaveBeenCalledTimes(1)
+    expect(cozyClient.files.create.mock.calls[0][1]).toMatchObject({
+      name: 'randomfileurl.txt',
+      dirID: 'mainPath/mySubPath'
     })
   })
 })
