@@ -14,6 +14,7 @@ const log = require('cozy-logger').namespace('saveFiles')
 const manifest = require('./manifest')
 const cozy = require('./cozyclient')
 const { queryAll } = require('./utils')
+const mkdirp = require('./mkdirp')
 const errors = require('../helpers/errors')
 const stream = require('stream')
 const fileType = require('file-type')
@@ -43,6 +44,7 @@ const DEFAULT_RETRY = 1 // do not retry by default
  *   want the last version.
  *   + `fileAttributes` (object) ex: `{created_at: new Date()}` sets some additionnal file
  *   attributes passed to cozyClient.file.create
+ *   + `subPath` (string) : A subpath to save all files, will be created if needed.
  *
  * - `fields` (string) is the argument given to the main function of your connector by the BaseKonnector.
  *      It especially contains a `folderPath` which is the string path configured by the user in
@@ -69,6 +71,7 @@ const DEFAULT_RETRY = 1 // do not retry by default
  *   + `fileIdAttributes` (array of strings). Describes which attributes of files will be taken as primary key for
  *   files to check if they already exist, even if they are moved. If not given, the file path will
  *   used for deduplication as before.
+ *   + `subPath` (string) : A subpath to save this file, will be created if needed.
  * @example
  * ```javascript
  * await saveFiles([{fileurl: 'https://...', filename: 'bill1.pdf'}], fields, {
@@ -110,6 +113,7 @@ const saveFiles = async (entries, fields, options = {}) => {
     requestInstance: options.requestInstance,
     shouldReplaceFile: options.shouldReplaceFile,
     validateFile: options.validateFile || defaultValidateFile,
+    subPath: options.subPath,
     sourceAccountOptions: {
       sourceAccount: options.sourceAccount,
       sourceAccountIdentifier: options.sourceAccountIdentifier
@@ -170,7 +174,11 @@ const saveFiles = async (entries, fields, options = {}) => {
         }
 
         if (canBeSaved(entry)) {
-          entry = await saveEntry(entry, saveOptions)
+          const folderPath = await getOrCreateDestinationPath(
+            entry,
+            saveOptions
+          )
+          entry = await saveEntry(entry, { ...saveOptions, folderPath })
           if (entry && entry._cozy_file_to_create) {
             savedFiles++
             delete entry._cozy_file_to_create
@@ -248,9 +256,7 @@ const saveEntry = async function(entry, options) {
         if (err.message === 'BAD_DOWNLOADED_FILE') {
           log(
             'warn',
-            `Could not download file after ${
-              options.retry
-            } tries removing the file`
+            `Could not download file after ${options.retry} tries removing the file`
           )
         } else {
           log('warn', 'unknown file download error: ' + err.message)
@@ -571,9 +577,7 @@ function logFileStream(fileStream) {
   if (fileStream && fileStream.constructor && fileStream.constructor.name) {
     log(
       'info',
-      `The fileStream attribute is an instance of ${
-        fileStream.constructor.name
-      }`
+      `The fileStream attribute is an instance of ${fileStream.constructor.name}`
     )
   } else {
     log('info', `The fileStream attribute is a ${typeof fileStream}`)
@@ -697,4 +701,14 @@ function getFilePath({ file, entry, options }) {
 
 function getAttribute(obj, attribute) {
   return get(obj, `attributes.${attribute}`, get(obj, attribute))
+}
+
+async function getOrCreateDestinationPath(entry, saveOptions) {
+  const subPath = entry.subPath || saveOptions.subPath
+  let finalPath = saveOptions.folderPath
+  if (subPath) {
+    finalPath += '/' + subPath
+    await mkdirp(finalPath)
+  }
+  return finalPath
 }
