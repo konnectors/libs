@@ -124,6 +124,8 @@ const saveFiles = async (entries, fields, options = {}) => {
     }
   }
 
+  noMetadataDeduplicationWarning(saveOptions)
+
   const canBeSaved = entry =>
     entry.fileurl || entry.requestOptions || entry.filestream
 
@@ -248,9 +250,7 @@ const saveEntry = async function(entry, options) {
         if (err.message === 'BAD_DOWNLOADED_FILE') {
           log(
             'warn',
-            `Could not download file after ${
-              options.retry
-            } tries removing the file`
+            `Could not download file after ${options.retry} tries removing the file`
           )
         } else {
           log('warn', 'unknown file download error: ' + err.message)
@@ -281,7 +281,7 @@ const saveEntry = async function(entry, options) {
   return entry
 }
 
-async function getFileIfExists(entry, options) {
+function noMetadataDeduplicationWarning(options) {
   const fileIdAttributes = options.fileIdAttributes
   if (!fileIdAttributes) {
     log(
@@ -308,6 +308,15 @@ async function getFileIfExists(entry, options) {
       `saveFiles: no sourceAccountIdentifier is defined in options, file deduplication will be based on file path`
     )
   }
+}
+
+async function getFileIfExists(entry, options) {
+  const fileIdAttributes = options.fileIdAttributes
+  const slug = manifest.data.slug
+  const sourceAccountIdentifier = get(
+    options,
+    'sourceAccountOptions.sourceAccountIdentifier'
+  )
 
   const isReadyForFileMetadata =
     fileIdAttributes && slug && sourceAccountIdentifier
@@ -571,9 +580,7 @@ function logFileStream(fileStream) {
   if (fileStream && fileStream.constructor && fileStream.constructor.name) {
     log(
       'info',
-      `The fileStream attribute is an instance of ${
-        fileStream.constructor.name
-      }`
+      `The fileStream attribute is an instance of ${fileStream.constructor.name}`
     )
   } else {
     log('info', `The fileStream attribute is a ${typeof fileStream}`)
