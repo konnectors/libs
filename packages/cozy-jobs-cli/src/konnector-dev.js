@@ -5,6 +5,7 @@ process.env.NODE_ENV = 'development'
 
 const config = require('./init-konnector-config')()
 const injectDevAccount = require('./inject-dev-account')
+const ArgumentParser = require('argparse').ArgumentParser
 
 process.env.COZY_URL = config.COZY_URL
 if (config.COZY_PARAMETERS) {
@@ -23,31 +24,36 @@ const authenticate = require('./cozy-authenticate')
 const DEFAULT_MANIFEST_PATH = path.resolve('manifest.konnector')
 const DEFAULT_TOKEN_PATH = path.resolve('.token.json')
 
-const main = async () => {
-  let file, manifest
+const parseArgs = () => {
+  const parser = new ArgumentParser()
+  parser.addArgument(['-t', '--token'], {
+    type: abspath,
+    defaultValue: DEFAULT_TOKEN_PATH,
+    help: 'Token file location (will be created if does not exist)'
+  })
+  parser.addArgument(['-m', '--manifest'], {
+    type: abspath,
+    defaultValue: DEFAULT_MANIFEST_PATH,
+    help:
+      'Manifest file for permissions (manifest.webapp or manifest.konnector)'
+  })
+  parser.addArgument(['-a', '--create-account'], {
+    action: 'storeTrue',
+    dest: 'createAccount',
+    help:
+      'Indicates that the account should be created on the stack. By default, getAccount is mocked which breaks updateAccountAttributes and access to the konnector account'
+  })
+  parser.addArgument('file', {
+    type: abspath,
+    defaultValue: process.env.npm_package_main || './src/index.js',
+    help: 'Konnector script'
+  })
+  const args = parser.parseArgs()
 
-  program
-    .usage('[options] <file>')
-    .arguments('<file>')
-    .action(_file => {
-      file = _file
-    })
-    .option(
-      '-t, --token [value]',
-      'Token file location (will be created if does not exist)',
-      abspath
-    )
-    .option(
-      '-m, --manifest [value]',
-      'Manifest file for permissions (manifest.webapp or manifest.konnector)',
-      abspath
-    )
-    .parse(process.argv)
-
-  file = abspath(file || process.env.npm_package_main || './src/index.js')
+  let file = args.file
+  let manifest = args.manifest
 
   // Check for a .konnector file next to the launched file
-  manifest = program.manifest
   if (!manifest && file) {
     const possibleManifestFile = file.replace(/\.js$/, '.konnector')
     if (fs.existsSync(possibleManifestFile)) {
@@ -55,11 +61,12 @@ const main = async () => {
     }
   }
 
-  file = abspath(file || process.env.npm_package_main || './src/index.js')
-  manifest = manifest || DEFAULT_MANIFEST_PATH
-  const token = program.token || DEFAULT_TOKEN_PATH
+  return args
+}
 
-  await launchKonnector({ manifest, token, file })
+const main = async () => {
+  const args = parseArgs()
+  await launchKonnector(args)
 }
 
 const launchKonnector = async ({ manifest, token, file }) => {
