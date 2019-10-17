@@ -14,7 +14,6 @@ if (config.COZY_PARAMETERS) {
 // sentry is not needed in dev mode
 process.env.SENTRY_DSN = 'false'
 
-const program = require('commander')
 const path = require('path')
 const fs = require('fs')
 require('./open-in-browser')
