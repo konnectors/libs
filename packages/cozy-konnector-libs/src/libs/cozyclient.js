@@ -1,5 +1,5 @@
 /**
- * [cozy-client-js](https://cozy.github.io/cozy-client-js/) instance already
+ * [cozy-client-js](https://github.com/cozy/cozy-client-js) instance already
  * initialized and ready to use.
  *
  * @module cozyClient
@@ -82,11 +82,11 @@ const getCozyClient = function(environment = 'production') {
 }
 
 /**
- * [cozy-client-js](https://cozy.github.io/cozy-client-js/) instance already initialized and ready to use.
+ * [cozy-client-js](https://github.com/cozy/cozy-client-js) instance already initialized and ready to use.
  *
  * If you want to access cozy-client-js directly, this method gives you directly an instance of it,
  * initialized according to `COZY_URL` and `COZY_CREDENTIALS` environment variable given by cozy-stack
- * You can refer to the [cozy-client-js documentation](https://cozy.github.io/cozy-client-js/) for more information.
+ * You can refer to the [cozy-client-js documentation](https://github.com/cozy/cozy-client-js) for more information.
  *
  * Example :
  *
