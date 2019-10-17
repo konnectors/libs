@@ -20,12 +20,41 @@ const fs = require('fs')
 require('./open-in-browser')
 
 const authenticate = require('./cozy-authenticate')
+const CozyClient = require('cozy-client').default
 
 const DEFAULT_MANIFEST_PATH = path.resolve('manifest.konnector')
 const DEFAULT_TOKEN_PATH = path.resolve('.token.json')
+const DEFAULT_ACCOUNT_PATH = path.resolve('.account')
 
-const parseArgs = () => {
-  const parser = new ArgumentParser()
+const readAccountIdFromFile = accountFilePath => {
+  if (fs.existsSync(accountFilePath)) {
+    return fs.readFileSync(accountFilePath).toString()
+  } else {
+    return
+  }
+}
+
+const ensureStackAccount = async config => {
+  const { fields: auth } = config
+
+  const client = CozyClient.fromEnv()
+  const accountsCol = client.collection('io.cozy.accounts')
+  let accountId = readAccountIdFromFile(DEFAULT_ACCOUNT_PATH)
+
+  if (!accountId) {
+    const { data: newAccount } = await accountsCol.create({
+      auth
+    })
+    accountId = newAccount._id
+    fs.writeFileSync(DEFAULT_ACCOUNT_PATH, newAccount._id)
+  }
+  process.env.COZY_FIELDS = JSON.stringify({
+    account: accountId
+  })
+}
+
+const parseArgs = argv => {
+  const parser = new ArgumentParser({ debug: Boolean(argv) })
   parser.addArgument(['-t', '--token'], {
     type: abspath,
     defaultValue: DEFAULT_TOKEN_PATH,
@@ -45,12 +74,12 @@ const parseArgs = () => {
   })
   parser.addArgument('file', {
     type: abspath,
-    defaultValue: process.env.npm_package_main || './src/index.js',
+    nargs: '?',
     help: 'Konnector script'
   })
-  const args = parser.parseArgs()
+  const args = parser.parseArgs(argv || process.argv)
 
-  let file = args.file
+  let file = args.file || process.env.npm_package_main || './src/index.js'
   let manifest = args.manifest
 
   // Check for a .konnector file next to the launched file
@@ -61,7 +90,11 @@ const parseArgs = () => {
     }
   }
 
-  return args
+  return {
+    ...args,
+    file,
+    manifest
+  }
 }
 
 const main = async () => {
@@ -69,13 +102,18 @@ const main = async () => {
   await launchKonnector(args)
 }
 
-const launchKonnector = async ({ manifest, token, file }) => {
+const launchKonnector = async ({ manifest, token, file, createAccount }) => {
   const { creds } = await authenticate({
     tokenPath: token,
     manifestPath: manifest
   })
   process.env.COZY_CREDENTIALS = JSON.stringify(creds)
-  injectDevAccount(config)
+
+  if (createAccount) {
+    await ensureStackAccount(config)
+  } else {
+    injectDevAccount(config)
+  }
 
   if (fs.existsSync(file)) {
     return require(file)
@@ -91,6 +129,11 @@ if (require.main === module) {
     console.error(e)
     process.exit(1)
   })
+}
+
+module.exports = {
+  launchKonnector,
+  parseArgs
 }
 
 function abspath(p) {
