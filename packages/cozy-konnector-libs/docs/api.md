@@ -10,7 +10,7 @@
 <dd><p>Saves the data into the cozy blindly without check.</p>
 </dd>
 <dt><a href="#module_cozyClient">cozyClient</a></dt>
-<dd><p><a href="https://cozy.github.io/cozy-client-js/">cozy-client-js</a> instance already
+<dd><p><a href="https://github.com/cozy/cozy-client-js">cozy-client-js</a> instance already
 initialized and ready to use.</p>
 </dd>
 <dt><a href="#module_hydrateAndFilter">hydrateAndFilter</a></dt>
@@ -145,6 +145,12 @@ DefinePlugin</p>
 ## Functions
 
 <dl>
+<dt><a href="#attachProcessEventHandlers">attachProcessEventHandlers(prcs)</a> ⇒ <code>function</code></dt>
+<dd><p>Attach event handlers to catch uncaught exceptions/rejections and signals.
+Log them as critical and exit the process accordingly.
+If the cleanup function has not been called, calling again the function
+is a no-op.</p>
+</dd>
 <dt><a href="#mkSpec">mkSpec()</a></dt>
 <dd><p>Declarative scraping.</p>
 <p>Describe your items attributes and where to find/parse them
@@ -232,17 +238,17 @@ return addData(documents, 'io.cozy.height')
 <a name="module_cozyClient"></a>
 
 ## cozyClient
-[cozy-client-js](https://cozy.github.io/cozy-client-js/) instance already
+[cozy-client-js](https://github.com/cozy/cozy-client-js) instance already
 initialized and ready to use.
 
 <a name="exp_module_cozyClient--cozyClient"></a>
 
 ### cozyClient ⏏
-[cozy-client-js](https://cozy.github.io/cozy-client-js/) instance already initialized and ready to use.
+[cozy-client-js](https://github.com/cozy/cozy-client-js) instance already initialized and ready to use.
 
 If you want to access cozy-client-js directly, this method gives you directly an instance of it,
 initialized according to `COZY_URL` and `COZY_CREDENTIALS` environment variable given by cozy-stack
-You can refer to the [cozy-client-js documentation](https://cozy.github.io/cozy-client-js/) for more information.
+You can refer to the [cozy-client-js documentation](https://github.com/cozy/cozy-client-js) for more information.
 
 Example :
 
@@ -468,6 +474,7 @@ You need the full permission on `io.cozy.files` in your manifest to use this fun
   want the last version.
   + `fileAttributes` (object) ex: `{created_at: new Date()}` sets some additionnal file
   attributes passed to cozyClient.file.create
+  + `subPath` (string) : A subpath to save all files, will be created if needed.
 
 - `fields` (string) is the argument given to the main function of your connector by the BaseKonnector.
      It especially contains a `folderPath` which is the string path configured by the user in
@@ -494,6 +501,7 @@ You need the full permission on `io.cozy.files` in your manifest to use this fun
   + `fileIdAttributes` (array of strings). Describes which attributes of files will be taken as primary key for
   files to check if they already exist, even if they are moved. If not given, the file path will
   used for deduplication as before.
+  + `subPath` (string) : A subpath to save this file, will be created if needed.
 
 **Kind**: Exported function  
 **Example**  
@@ -845,7 +853,7 @@ Bank transactions categorization
 
 * [categorization](#module_categorization)
     * [~createCategorizer()](#module_categorization..createCategorizer) ⇒ <code>Object</code>
-    * [~categorize()](#module_categorization..categorize) ⇒ <code>[ &#x27;Array&#x27; ].&lt;Object&gt;</code>
+    * [~categorize()](#module_categorization..categorize) ⇒ <code>Array.&lt;Object&gt;</code>
 
 <a name="module_categorization..createCategorizer"></a>
 
@@ -881,11 +889,11 @@ class BankingKonnector extends BaseKonnector {
 ```
 <a name="module_categorization..categorize"></a>
 
-### categorization~categorize() ⇒ <code>[ &#x27;Array&#x27; ].&lt;Object&gt;</code>
+### categorization~categorize() ⇒ <code>Array.&lt;Object&gt;</code>
 Initialize global and local models and categorize the given array of transactions
 
 **Kind**: inner method of [<code>categorization</code>](#module_categorization)  
-**Returns**: <code>[ &#x27;Array&#x27; ].&lt;Object&gt;</code> - the categorized transactions  
+**Returns**: <code>Array.&lt;Object&gt;</code> - the categorized transactions  
 **See**: [createCategorizer](createCategorizer) for more informations about models initialization  
 **Example**  
 ```js
@@ -920,6 +928,8 @@ fetch account information for your connector.
     * [.saveAccountData(data, options)](#BaseKonnector+saveAccountData) ⇒ <code>Promise</code>
     * [.getAccountData()](#BaseKonnector+getAccountData) ⇒ <code>object</code>
     * [.updateAccountAttributes()](#BaseKonnector+updateAccountAttributes)
+    * [.setTwoFAState()](#BaseKonnector+setTwoFAState)
+    * [.resetTwoFAState()](#BaseKonnector+resetTwoFAState)
     * [.waitForTwoFaCode()](#BaseKonnector+waitForTwoFaCode) ⇒ <code>Promise</code>
     * [.notifySuccessfulLogin()](#BaseKonnector+notifySuccessfulLogin)
     * [.deactivateAutoSuccessfulLogin()](#BaseKonnector+deactivateAutoSuccessfulLogin)
@@ -1040,6 +1050,29 @@ Get the data saved by saveAccountData
 Update account attributes and cache the account
 
 **Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)  
+<a name="BaseKonnector+setTwoFAState"></a>
+
+### baseKonnector.setTwoFAState()
+Sets the 2FA state, according to the type passed.
+Doing so resets the twoFACode field
+
+Typically you should not use that directly, prefer to use waitForTwoFaCode since
+the wait for user input will be handled for you. It is useful though for the "app"
+type where no user input (inside Cozy) is needed.
+
+**Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| options.type | <code>String</code> | Used by the front to show the right message (email/sms/app) |
+| options.retry | <code>Boolean</code> |  |
+
+<a name="BaseKonnector+resetTwoFAState"></a>
+
+### baseKonnector.resetTwoFAState()
+Resets 2FA state when not needed anymore
+
+**Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)  
 <a name="BaseKonnector+waitForTwoFaCode"></a>
 
 ### baseKonnector.waitForTwoFaCode() ⇒ <code>Promise</code>
@@ -1068,7 +1101,6 @@ not run manually means that we do not have a graphic interface to fill the requi
 const { BaseKonnector } = require('cozy-konnector-libs')
 
 module.exports = new BaseKonnector(start)
-
 async function start() {
    // we detect the need of a 2FA code
    const code = this.waitForTwoFaCode({
@@ -1401,6 +1433,21 @@ The user needs to accept a CGU form before accessing the rest of the website
 solveCaptcha failed to solve the captcha
 
 **Kind**: global constant  
+<a name="attachProcessEventHandlers"></a>
+
+## attachProcessEventHandlers(prcs) ⇒ <code>function</code>
+Attach event handlers to catch uncaught exceptions/rejections and signals.
+Log them as critical and exit the process accordingly.
+If the cleanup function has not been called, calling again the function
+is a no-op.
+
+**Kind**: global function  
+**Returns**: <code>function</code> - When called, removes the signal handlers  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| prcs | <code>Process</code> | Process object, default to current process |
+
 <a name="mkSpec"></a>
 
 ## mkSpec()
