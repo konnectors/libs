@@ -128,6 +128,8 @@ const saveFiles = async (entries, fields, options = {}) => {
     }
   }
 
+  noMetadataDeduplicationWarning(saveOptions)
+
   const canBeSaved = entry =>
     entry.fileurl || entry.requestOptions || entry.filestream
 
@@ -287,7 +289,7 @@ const saveEntry = async function(entry, options) {
   return entry
 }
 
-async function getFileIfExists(entry, options) {
+function noMetadataDeduplicationWarning(options) {
   const fileIdAttributes = options.fileIdAttributes
   if (!fileIdAttributes) {
     log(
@@ -314,6 +316,15 @@ async function getFileIfExists(entry, options) {
       `saveFiles: no sourceAccountIdentifier is defined in options, file deduplication will be based on file path`
     )
   }
+}
+
+async function getFileIfExists(entry, options) {
+  const fileIdAttributes = options.fileIdAttributes
+  const slug = manifest.data.slug
+  const sourceAccountIdentifier = get(
+    options,
+    'sourceAccountOptions.sourceAccountIdentifier'
+  )
 
   const isReadyForFileMetadata =
     fileIdAttributes && slug && sourceAccountIdentifier
