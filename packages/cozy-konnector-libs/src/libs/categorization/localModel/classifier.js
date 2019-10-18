@@ -149,9 +149,7 @@ const createClassifier = async options => {
 
   log(
     'info',
-    `Fetched ${
-      transactionsWithManualCat.length
-    } manually categorized transactions`
+    `Fetched ${transactionsWithManualCat.length} manually categorized transactions`
   )
 
   log('info', 'Instanciating a new classifier')

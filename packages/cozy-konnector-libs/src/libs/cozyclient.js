@@ -24,9 +24,7 @@ const getCredentials = function(environment) {
     }
   } catch (err) {
     console.error(
-      `Please provide proper COZY_CREDENTIALS environment variable. ${
-        process.env.COZY_CREDENTIALS
-      } is not OK`
+      `Please provide proper COZY_CREDENTIALS environment variable. ${process.env.COZY_CREDENTIALS} is not OK`
     )
     throw err
   }
