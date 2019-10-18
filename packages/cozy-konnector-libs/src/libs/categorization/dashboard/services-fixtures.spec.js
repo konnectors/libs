@@ -213,30 +213,18 @@ const fmtResults = transactions => {
     }
     if (status === STATUS_UNCATEGORIZED) {
       fmtedResult += `${ICONE_UNCATEGORIZED}:`
-      fmtedResult += ` (${op.amount}€)\t<<${op.label}>> was NOT categorized. ${
-        op.method
-      } predicted it as ${op.catNameDisplayed}`
+      fmtedResult += ` (${op.amount}€)\t<<${op.label}>> was NOT categorized. ${op.method} predicted it as ${op.catNameDisplayed}`
     } else if (status === STATUS_OK) {
       fmtedResult += `${method === METHOD_BI ? ICONE_OK_BI : ICONE_OK}:`
-      fmtedResult += ` (${op.amount}€)\t<<${
-        op.label
-      }>> - is properly predicted by ${op.method} as ${op.catNameTrue}`
+      fmtedResult += ` (${op.amount}€)\t<<${op.label}>> - is properly predicted by ${op.method} as ${op.catNameTrue}`
     } else if (status === STATUS_OK_FALLBACK) {
       fmtedResult += `${
         method === METHOD_BI ? ICONE_OK_BI : ICONE_OK_FALLBACK
       }:`
-      fmtedResult += ` (${op.amount}€)\t<<${
-        op.label
-      }>> - is ALMOST properly predicted by ${op.method} as ${
-        op.catNameTrue
-      } (user would have seen ${op.catNameDisplayed})`
+      fmtedResult += ` (${op.amount}€)\t<<${op.label}>> - is ALMOST properly predicted by ${op.method} as ${op.catNameTrue} (user would have seen ${op.catNameDisplayed})`
     } else if (status === STATUS_KO) {
       fmtedResult += `${ICONE_KO}:`
-      fmtedResult += ` (${op.amount}€)\t<<${
-        op.label
-      }>> - is NOT properly predicted by ${op.method} as ${
-        op.catNameTrue
-      } that said ${op.catNameDisplayed}`
+      fmtedResult += ` (${op.amount}€)\t<<${op.label}>> - is NOT properly predicted by ${op.method} as ${op.catNameTrue} that said ${op.catNameDisplayed}`
     }
     return fmtedResult
   })

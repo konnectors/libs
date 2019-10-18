@@ -72,6 +72,7 @@ const DEFAULT_RETRY = 1 // do not retry by default
  *   files to check if they already exist, even if they are moved. If not given, the file path will
  *   used for deduplication as before.
  *   + `subPath` (string) : A subpath to save this file, will be created if needed.
+ *
  * @example
  * ```javascript
  * await saveFiles([{fileurl: 'https://...', filename: 'bill1.pdf'}], fields, {

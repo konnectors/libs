@@ -29,7 +29,7 @@ let attached = false
  * is a no-op.
  *
  * @param  {Process} prcs - Process object, default to current process
- * @return {Function} When called, removes the signal handlers
+ * @returns {Function} When called, removes the signal handlers
  */
 const attachProcessEventHandlers = (prcs = process) => {
   if (attached) {

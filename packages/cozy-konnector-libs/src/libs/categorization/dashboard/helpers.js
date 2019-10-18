@@ -38,9 +38,7 @@ const fmtManualCategorizations = manualCategorizations => {
     const label = op.label
     const manualCategoryName = cat2name[op.manualCategoryId]
     const automaticCategoryName = cat2name[op.automaticCategoryId]
-    const formatedStr = `\t${
-      op.occurrence
-    } x <<${label}>>\t mapped from ${automaticCategoryName} to ${manualCategoryName}`
+    const formatedStr = `\t${op.occurrence} x <<${label}>>\t mapped from ${automaticCategoryName} to ${manualCategoryName}`
     fmtedManualCategorizations.push(formatedStr)
   }
   const headOfSummary = [
