@@ -16,7 +16,7 @@ jest.mock('../globalModel/parameters')
 
 const fixturePath = path.join(__dirname, 'fixtures')
 
-const BACKUP_DIR = process.env.BACKUP_DIR
+const BACKUP_DIR = process.env.BACKUP_DIR || '/tmp/'
 const IT_IS_A_TEST = process.env.IT_IS_A_TEST
 
 const globalModelJSON = softRequire('./bank_classifier_nb_and_voc.json')
