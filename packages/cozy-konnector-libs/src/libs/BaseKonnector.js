@@ -257,6 +257,40 @@ class BaseKonnector {
   }
 
   /**
+   * Sets the 2FA state, according to the type passed.
+   * Doing so resets the twoFACode field
+   *
+   * Typically you should not use that directly, prefer to use waitForTwoFaCode since
+   * the wait for user input will be handled for you. It is useful though for the "app"
+   * type where no user input (inside Cozy) is needed.
+   *
+   * @param {String}  options.type - Used by the front to show the right message (email/sms/app)
+   * @param {Boolean} options.retry
+   */
+  async setTwoFAState({ type, retry = false } = {}) {
+    let state = retry ? 'TWOFA_NEEDED_RETRY' : 'TWOFA_NEEDED'
+    if (type === 'email') {
+      state += '.EMAIL'
+    } else if (type === 'sms') {
+      state += '.SMS'
+    } else if (type === 'app') {
+      state += '.APP'
+    }
+    log('info', `Setting ${state} state into the current account`)
+    await this.updateAccountAttributes({ state, twoFACode: null })
+  }
+
+  /**
+   * Resets 2FA state when not needed anymore
+   */
+  async resetTwoFAState() {
+    await this.updateAccountAttributes({
+      state: null,
+      twoFACode: null
+    })
+  }
+
+  /**
    * Notices that 2FA code is needed and wait for the user to submit it.
    * It uses the account to do the communication with the user.
    *
@@ -281,7 +315,7 @@ class BaseKonnector {
    * const { BaseKonnector } = require('cozy-konnector-libs')
    *
    * module.exports = new BaseKonnector(start)
-   *
+
    * async function start() {
    *    // we detect the need of a 2FA code
    *    const code = this.waitForTwoFaCode({
@@ -316,11 +350,11 @@ class BaseKonnector {
       options.endTime = options.timeout
     }
     let account = {}
-    let state = options.retry ? 'TWOFA_NEEDED_RETRY' : 'TWOFA_NEEDED'
-    if (options.type === 'email') state += '.EMAIL'
-    if (options.type === 'sms') state += '.SMS'
-    log('info', `Setting ${state} state into the current account`)
-    await this.updateAccountAttributes({ state, twoFACode: null })
+
+    await this.setTwoFAState({
+      type: options.type,
+      retry: options.retry
+    })
 
     while (Date.now() < options.endTime && !account.twoFACode) {
       await sleep(options.heartBeat)
@@ -330,12 +364,10 @@ class BaseKonnector {
     }
 
     if (account.twoFACode) {
-      await this.updateAccountAttributes({
-        state: null,
-        twoFACode: null
-      })
+      await this.resetTwoFAState()
       return account.twoFACode
     }
+
     throw new Error('USER_ACTION_NEEDED.TWOFA_EXPIRED')
   }
 

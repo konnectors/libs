@@ -114,6 +114,32 @@ describe('methods', () => {
     client.data.find.mockReset()
   })
 
+  it('should set two fa state', async () => {
+    client.data.find.mockReturnValue(
+      asyncResolve({ twoFACode: 'expected code' })
+    )
+    client.data.updateAttributes.mockReturnValue(asyncResolve({}))
+    await konn.setTwoFAState({ type: 'app' })
+    expect(client.data.updateAttributes).toHaveBeenCalledWith(
+      'io.cozy.accounts',
+      'account-id',
+      { state: 'TWOFA_NEEDED.APP', twoFACode: null }
+    )
+  })
+
+  it('should reset two fa state', async () => {
+    client.data.find.mockReturnValue(
+      asyncResolve({ twoFACode: 'expected code' })
+    )
+    client.data.updateAttributes.mockReturnValue(asyncResolve({}))
+    await konn.resetTwoFAState()
+    expect(client.data.updateAttributes).toHaveBeenCalledWith(
+      'io.cozy.accounts',
+      'account-id',
+      { state: null, twoFACode: null }
+    )
+  })
+
   it('waitForTwoFaCode should wait for 2FA code', async () => {
     client.data.find.mockReturnValue(
       asyncResolve({ twoFACode: 'expected code' })

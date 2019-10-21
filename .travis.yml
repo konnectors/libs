@@ -10,3 +10,7 @@ cache:
 script:
     - lerna bootstrap
     - yarn test
+    - cd packages/cozy-konnector-libs
+    - yarn docs
+    - set +e
+    - (git diff --exit-code -- docs && echo "Docs are up-to-date") || (echo "Docs are not up-to-date, please run yarn docs inside cozy-konnector-libs directory and repush" && false)
