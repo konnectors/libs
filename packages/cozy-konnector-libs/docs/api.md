@@ -95,49 +95,49 @@ DefinePlugin</p>
 </li>
 </ul>
 </dd>
-<dt><a href="#LOGIN_FAILED">LOGIN_FAILED</a> : <code>String</code></dt>
+<dt><a href="#LOGIN_FAILED">LOGIN_FAILED</a> : <code>string</code></dt>
 <dd><p>The konnector could not login</p>
 </dd>
-<dt><a href="#NOT_EXISTING_DIRECTORY">NOT_EXISTING_DIRECTORY</a> : <code>String</code></dt>
+<dt><a href="#NOT_EXISTING_DIRECTORY">NOT_EXISTING_DIRECTORY</a> : <code>string</code></dt>
 <dd><p>The folder specified as folder_to_save does not exist (checked by BaseKonnector)</p>
 </dd>
-<dt><a href="#VENDOR_DOWN">VENDOR_DOWN</a> : <code>String</code></dt>
+<dt><a href="#VENDOR_DOWN">VENDOR_DOWN</a> : <code>string</code></dt>
 <dd><p>The vendor&#39;s website is down</p>
 </dd>
-<dt><a href="#USER_ACTION_NEEDED">USER_ACTION_NEEDED</a> : <code>String</code></dt>
+<dt><a href="#USER_ACTION_NEEDED">USER_ACTION_NEEDED</a> : <code>string</code></dt>
 <dd><p>There was an unexpected error, please take a look at the logs to know what happened</p>
 </dd>
-<dt><a href="#FILE_DOWNLOAD_FAILED">FILE_DOWNLOAD_FAILED</a> : <code>String</code></dt>
+<dt><a href="#FILE_DOWNLOAD_FAILED">FILE_DOWNLOAD_FAILED</a> : <code>string</code></dt>
 <dd><p>There was a problem while downloading a file</p>
 </dd>
-<dt><a href="#SAVE_FILE_FAILED">SAVE_FILE_FAILED</a> : <code>String</code></dt>
+<dt><a href="#SAVE_FILE_FAILED">SAVE_FILE_FAILED</a> : <code>string</code></dt>
 <dd><p>There was a problem while saving a file</p>
 </dd>
-<dt><a href="#DISK_QUOTA_EXCEEDED">DISK_QUOTA_EXCEEDED</a> : <code>String</code></dt>
+<dt><a href="#DISK_QUOTA_EXCEEDED">DISK_QUOTA_EXCEEDED</a> : <code>string</code></dt>
 <dd><p>Could not save a file to the cozy because of disk quota exceeded</p>
 </dd>
-<dt><a href="#CHALLENGE_ASKED">CHALLENGE_ASKED</a> : <code>String</code></dt>
+<dt><a href="#CHALLENGE_ASKED">CHALLENGE_ASKED</a> : <code>string</code></dt>
 <dd><p>It seems that the website requires a second authentification factor that we don’t support yet.</p>
 </dd>
-<dt><a href="#LOGIN_FAILED_TOO_MANY_ATTEMPTS">LOGIN_FAILED_TOO_MANY_ATTEMPTS</a> : <code>String</code></dt>
+<dt><a href="#LOGIN_FAILED_TOO_MANY_ATTEMPTS">LOGIN_FAILED_TOO_MANY_ATTEMPTS</a> : <code>string</code></dt>
 <dd><p>Temporarily blocked</p>
 </dd>
-<dt><a href="#USER_ACTION_NEEDED_OAUTH_OUTDATED">USER_ACTION_NEEDED_OAUTH_OUTDATED</a> : <code>String</code></dt>
+<dt><a href="#USER_ACTION_NEEDED_OAUTH_OUTDATED">USER_ACTION_NEEDED_OAUTH_OUTDATED</a> : <code>string</code></dt>
 <dd><p>Access refresh required</p>
 </dd>
-<dt><a href="#USER_ACTION_NEEDED_ACCOUNT_REMOVED">USER_ACTION_NEEDED_ACCOUNT_REMOVED</a> : <code>String</code></dt>
+<dt><a href="#USER_ACTION_NEEDED_ACCOUNT_REMOVED">USER_ACTION_NEEDED_ACCOUNT_REMOVED</a> : <code>string</code></dt>
 <dd><p>Unavailable account</p>
 </dd>
-<dt><a href="#USER_ACTION_NEEDED_CHANGE_PASSWORD">USER_ACTION_NEEDED_CHANGE_PASSWORD</a> : <code>String</code></dt>
+<dt><a href="#USER_ACTION_NEEDED_CHANGE_PASSWORD">USER_ACTION_NEEDED_CHANGE_PASSWORD</a> : <code>string</code></dt>
 <dd><p>Unavailable account</p>
 </dd>
-<dt><a href="#USER_ACTION_NEEDED_PERMISSIONS_CHANGED">USER_ACTION_NEEDED_PERMISSIONS_CHANGED</a> : <code>String</code></dt>
+<dt><a href="#USER_ACTION_NEEDED_PERMISSIONS_CHANGED">USER_ACTION_NEEDED_PERMISSIONS_CHANGED</a> : <code>string</code></dt>
 <dd><p>Password update required</p>
 </dd>
-<dt><a href="#USER_ACTION_NEEDED_CGU_FORM">USER_ACTION_NEEDED_CGU_FORM</a> : <code>String</code></dt>
+<dt><a href="#USER_ACTION_NEEDED_CGU_FORM">USER_ACTION_NEEDED_CGU_FORM</a> : <code>string</code></dt>
 <dd><p>The user needs to accept a CGU form before accessing the rest of the website</p>
 </dd>
-<dt><a href="#CAPTCHA_RESOLUTION_FAILED">CAPTCHA_RESOLUTION_FAILED</a> : <code>String</code></dt>
+<dt><a href="#CAPTCHA_RESOLUTION_FAILED">CAPTCHA_RESOLUTION_FAILED</a> : <code>string</code></dt>
 <dd><p>solveCaptcha failed to solve the captcha</p>
 </dd>
 </dl>
@@ -157,7 +157,7 @@ is a no-op.</p>
 instead of imperatively building them.</p>
 <p>Heavily inspired by <a href="https://medialab.github.io/artoo/">artoo</a> scraping method.</p>
 </dd>
-<dt><a href="#scrape">scrape($, spec(s), [childSelector])</a> ⇒ <code>object</code> | <code>array</code></dt>
+<dt><a href="#scrape">scrape($, spec(s), [childSelector])</a> ⇒ <code>object</code> | <code>Array</code></dt>
 <dd><p>Scrape a cheerio object for properties</p>
 </dd>
 </dl>
@@ -852,12 +852,12 @@ Bank transactions categorization
 
 
 * [categorization](#module_categorization)
-    * [~createCategorizer()](#module_categorization..createCategorizer) ⇒ <code>Object</code>
-    * [~categorize()](#module_categorization..categorize) ⇒ <code>Array.&lt;Object&gt;</code>
+    * [~createCategorizer()](#module_categorization..createCategorizer) ⇒ <code>object</code>
+    * [~categorize()](#module_categorization..categorize) ⇒ <code>Array.&lt;object&gt;</code>
 
 <a name="module_categorization..createCategorizer"></a>
 
-### categorization~createCategorizer() ⇒ <code>Object</code>
+### categorization~createCategorizer() ⇒ <code>object</code>
 Initialize global and local models and return an object exposing a
 `categorize` function that applies both models on an array of transactions
 
@@ -872,7 +872,7 @@ Each model adds two properties to the transactions:
 In the end, each transaction can have up to four different categories. An application can use these categories to show the most significant for the user. See https://github.com/cozy/cozy-doctypes/blob/master/docs/io.cozy.bank.md#categories for more informations.
 
 **Kind**: inner method of [<code>categorization</code>](#module_categorization)  
-**Returns**: <code>Object</code> - an object with a `categorize` method  
+**Returns**: <code>object</code> - an object with a `categorize` method  
 **Example**  
 ```js
 const { BaseKonnector, createCategorizer } = require('cozy-konnector-libs')
@@ -889,11 +889,11 @@ class BankingKonnector extends BaseKonnector {
 ```
 <a name="module_categorization..categorize"></a>
 
-### categorization~categorize() ⇒ <code>Array.&lt;Object&gt;</code>
+### categorization~categorize() ⇒ <code>Array.&lt;object&gt;</code>
 Initialize global and local models and categorize the given array of transactions
 
 **Kind**: inner method of [<code>categorization</code>](#module_categorization)  
-**Returns**: <code>Array.&lt;Object&gt;</code> - the categorized transactions  
+**Returns**: <code>Array.&lt;object&gt;</code> - the categorized transactions  
 **See**: [createCategorizer](createCategorizer) for more informations about models initialization  
 **Example**  
 ```js
@@ -1090,11 +1090,11 @@ not run manually means that we do not have a graphic interface to fill the requi
 
 | Param | Type | Description |
 | --- | --- | --- |
-| options.type | <code>String</code> | (default: "email") - Type of the expected 2FA code. The message displayed   to the user will depend on it. Possible values: email, sms |
-| options.timeout | <code>Number</code> | (default 3 minutes after now) - After this date, the stop will stop waiting and and an error will be shown to the user (deprecated and alias of endTime) |
-| options.endTime | <code>Number</code> | (default 3 minutes after now) - After this timestamp, the home will stop waiting and and an error will be shown to the user |
-| options.heartBeat | <code>Number</code> | (default: 5000) - How many milliseconds between each code check |
-| options.retry | <code>Boolean</code> | (default: false) - Is it a retry. If true, an error message will be   displayed to the user |
+| options.type | <code>string</code> | (default: "email") - Type of the expected 2FA code. The message displayed   to the user will depend on it. Possible values: email, sms |
+| options.timeout | <code>number</code> | (default 3 minutes after now) - After this date, the stop will stop waiting and and an error will be shown to the user (deprecated and alias of endTime) |
+| options.endTime | <code>number</code> | (default 3 minutes after now) - After this timestamp, the home will stop waiting and and an error will be shown to the user |
+| options.heartBeat | <code>number</code> | (default: 5000) - How many milliseconds between each code check |
+| options.retry | <code>boolean</code> | (default: false) - Is it a retry. If true, an error message will be   displayed to the user |
 
 **Example**  
 ```javascript
@@ -1345,91 +1345,91 @@ Manifest is provided differently in developement that in production.
 **Kind**: global constant  
 <a name="LOGIN_FAILED"></a>
 
-## LOGIN\_FAILED : <code>String</code>
+## LOGIN\_FAILED : <code>string</code>
 The konnector could not login
 
 **Kind**: global constant  
 <a name="NOT_EXISTING_DIRECTORY"></a>
 
-## NOT\_EXISTING\_DIRECTORY : <code>String</code>
+## NOT\_EXISTING\_DIRECTORY : <code>string</code>
 The folder specified as folder_to_save does not exist (checked by BaseKonnector)
 
 **Kind**: global constant  
 <a name="VENDOR_DOWN"></a>
 
-## VENDOR\_DOWN : <code>String</code>
+## VENDOR\_DOWN : <code>string</code>
 The vendor's website is down
 
 **Kind**: global constant  
 <a name="USER_ACTION_NEEDED"></a>
 
-## USER\_ACTION\_NEEDED : <code>String</code>
+## USER\_ACTION\_NEEDED : <code>string</code>
 There was an unexpected error, please take a look at the logs to know what happened
 
 **Kind**: global constant  
 <a name="FILE_DOWNLOAD_FAILED"></a>
 
-## FILE\_DOWNLOAD\_FAILED : <code>String</code>
+## FILE\_DOWNLOAD\_FAILED : <code>string</code>
 There was a problem while downloading a file
 
 **Kind**: global constant  
 <a name="SAVE_FILE_FAILED"></a>
 
-## SAVE\_FILE\_FAILED : <code>String</code>
+## SAVE\_FILE\_FAILED : <code>string</code>
 There was a problem while saving a file
 
 **Kind**: global constant  
 <a name="DISK_QUOTA_EXCEEDED"></a>
 
-## DISK\_QUOTA\_EXCEEDED : <code>String</code>
+## DISK\_QUOTA\_EXCEEDED : <code>string</code>
 Could not save a file to the cozy because of disk quota exceeded
 
 **Kind**: global constant  
 <a name="CHALLENGE_ASKED"></a>
 
-## CHALLENGE\_ASKED : <code>String</code>
+## CHALLENGE\_ASKED : <code>string</code>
 It seems that the website requires a second authentification factor that we don’t support yet.
 
 **Kind**: global constant  
 <a name="LOGIN_FAILED_TOO_MANY_ATTEMPTS"></a>
 
-## LOGIN\_FAILED\_TOO\_MANY\_ATTEMPTS : <code>String</code>
+## LOGIN\_FAILED\_TOO\_MANY\_ATTEMPTS : <code>string</code>
 Temporarily blocked
 
 **Kind**: global constant  
 <a name="USER_ACTION_NEEDED_OAUTH_OUTDATED"></a>
 
-## USER\_ACTION\_NEEDED\_OAUTH\_OUTDATED : <code>String</code>
+## USER\_ACTION\_NEEDED\_OAUTH\_OUTDATED : <code>string</code>
 Access refresh required
 
 **Kind**: global constant  
 <a name="USER_ACTION_NEEDED_ACCOUNT_REMOVED"></a>
 
-## USER\_ACTION\_NEEDED\_ACCOUNT\_REMOVED : <code>String</code>
+## USER\_ACTION\_NEEDED\_ACCOUNT\_REMOVED : <code>string</code>
 Unavailable account
 
 **Kind**: global constant  
 <a name="USER_ACTION_NEEDED_CHANGE_PASSWORD"></a>
 
-## USER\_ACTION\_NEEDED\_CHANGE\_PASSWORD : <code>String</code>
+## USER\_ACTION\_NEEDED\_CHANGE\_PASSWORD : <code>string</code>
 Unavailable account
 
 **Kind**: global constant  
 <a name="USER_ACTION_NEEDED_PERMISSIONS_CHANGED"></a>
 
-## USER\_ACTION\_NEEDED\_PERMISSIONS\_CHANGED : <code>String</code>
+## USER\_ACTION\_NEEDED\_PERMISSIONS\_CHANGED : <code>string</code>
 Password update required
 
 **Kind**: global constant  
 <a name="USER_ACTION_NEEDED_CGU_FORM"></a>
 
-## USER\_ACTION\_NEEDED\_CGU\_FORM : <code>String</code>
+## USER\_ACTION\_NEEDED\_CGU\_FORM : <code>string</code>
 The user needs to accept a CGU form before accessing the rest of the website
 
 **Kind**: global constant  
 <a name="CAPTCHA_RESOLUTION_FAILED"></a>
 
-## CAPTCHA\_RESOLUTION\_FAILED : <code>String</code>
+## CAPTCHA\_RESOLUTION\_FAILED : <code>string</code>
 solveCaptcha failed to solve the captcha
 
 **Kind**: global constant  
@@ -1463,11 +1463,11 @@ Heavily inspired by [artoo] scraping method.
 **Kind**: global function  
 <a name="scrape"></a>
 
-## scrape($, spec(s), [childSelector]) ⇒ <code>object</code> \| <code>array</code>
+## scrape($, spec(s), [childSelector]) ⇒ <code>object</code> \| <code>Array</code>
 Scrape a cheerio object for properties
 
 **Kind**: global function  
-**Returns**: <code>object</code> \| <code>array</code> - - Item(s) scraped  
+**Returns**: <code>object</code> \| <code>Array</code> - - Item(s) scraped  
 
 | Param | Type | Description |
 | --- | --- | --- |
