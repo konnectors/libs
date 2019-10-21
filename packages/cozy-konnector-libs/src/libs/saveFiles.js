@@ -259,9 +259,7 @@ const saveEntry = async function(entry, options) {
         if (err.message === 'BAD_DOWNLOADED_FILE') {
           log(
             'warn',
-            `Could not download file after ${
-              options.retry
-            } tries removing the file`
+            `Could not download file after ${options.retry} tries removing the file`
           )
         } else {
           log('warn', 'unknown file download error: ' + err.message)
@@ -591,9 +589,7 @@ function logFileStream(fileStream) {
   if (fileStream && fileStream.constructor && fileStream.constructor.name) {
     log(
       'info',
-      `The fileStream attribute is an instance of ${
-        fileStream.constructor.name
-      }`
+      `The fileStream attribute is an instance of ${fileStream.constructor.name}`
     )
   } else {
     log('info', `The fileStream attribute is a ${typeof fileStream}`)

@@ -1064,8 +1064,8 @@ type where no user input (inside Cozy) is needed.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| options.type | <code>String</code> | Used by the front to show the right message (email/sms/app) |
-| options.retry | <code>Boolean</code> |  |
+| options.type | <code>string</code> | Used by the front to show the right message (email/sms/app) |
+| options.retry | <code>boolean</code> |  |
 
 <a name="BaseKonnector+resetTwoFAState"></a>
 

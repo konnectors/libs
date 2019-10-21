@@ -264,8 +264,8 @@ class BaseKonnector {
    * the wait for user input will be handled for you. It is useful though for the "app"
    * type where no user input (inside Cozy) is needed.
    *
-   * @param {String}  options.type - Used by the front to show the right message (email/sms/app)
-   * @param {Boolean} options.retry
+   * @param {string}  options.type - Used by the front to show the right message (email/sms/app)
+   * @param {boolean} options.retry
    */
   async setTwoFAState({ type, retry = false } = {}) {
     let state = retry ? 'TWOFA_NEEDED_RETRY' : 'TWOFA_NEEDED'
@@ -315,7 +315,7 @@ class BaseKonnector {
    * const { BaseKonnector } = require('cozy-konnector-libs')
    *
    * module.exports = new BaseKonnector(start)
-
+   
    * async function start() {
    *    // we detect the need of a 2FA code
    *    const code = this.waitForTwoFaCode({
