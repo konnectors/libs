@@ -91,7 +91,7 @@ class BaseKonnector {
   /**
    * Constructor
    *
-   * @param  {function} fetch    - Function to be run automatically after account data is fetched.
+   * @param  {Function} fetch    - Function to be run automatically after account data is fetched.
    * This function will be binded to the current connector.
    *
    * If not fetch function is given. The connector will have to handle itself it's own exection and
@@ -135,7 +135,7 @@ class BaseKonnector {
    * Main runs after konnector has been initialized.
    * Errors thrown will be automatically handled.
    *
-   * @return {Promise} - The konnector is considered successful when it resolves
+   * @returns {Promise} - The konnector is considered successful when it resolves
    */
   main() {
     return this.fetch(this.fields, this.parameters)
@@ -223,7 +223,7 @@ class BaseKonnector {
    *
    * @param  {object} data    - Attributes to be merged
    * @param  {object} options - { merge: true|false }
-   * @return {Promise}: resolved with the modified account
+   * @returns {Promise}: resolved with the modified account
    */
   saveAccountData(data, options) {
     options = options || {}
@@ -238,7 +238,7 @@ class BaseKonnector {
   /**
    * Get the data saved by saveAccountData
    *
-   * @return {object}
+   * @returns {object}
    */
   getAccountData() {
     return new Secret(this._account.data || {})
@@ -294,14 +294,14 @@ class BaseKonnector {
    * Notices that 2FA code is needed and wait for the user to submit it.
    * It uses the account to do the communication with the user.
    *
-   * @param {String} options.type (default: "email") - Type of the expected 2FA code. The message displayed
+   * @param {string} options.type (default: "email") - Type of the expected 2FA code. The message displayed
    *   to the user will depend on it. Possible values: email, sms
-   * @param {Number} options.timeout (default 3 minutes after now) - After this date, the stop will stop waiting and
+   * @param {number} options.timeout (default 3 minutes after now) - After this date, the stop will stop waiting and
    * and an error will be shown to the user (deprecated and alias of endTime)
-   * @param {Number} options.endTime (default 3 minutes after now) - After this timestamp, the home will stop waiting and
+   * @param {number} options.endTime (default 3 minutes after now) - After this timestamp, the home will stop waiting and
    * and an error will be shown to the user
-   * @param {Number} options.heartBeat (default: 5000) - How many milliseconds between each code check
-   * @param {Boolean} options.retry (default: false) - Is it a retry. If true, an error message will be
+   * @param {number} options.heartBeat (default: 5000) - How many milliseconds between each code check
+   * @param {boolean} options.retry (default: false) - Is it a retry. If true, an error message will be
    *   displayed to the user
    * @throws Will throw `USER_ACTION_NEEDED.TWOFA_EXPIRED` if the konnector job is not run manually (we assume that
    * not run manually means that we do not have a graphic interface to fill the required information)
@@ -404,7 +404,7 @@ class BaseKonnector {
    * This is saveBills function from cozy-konnector-libs which automatically adds sourceAccount in
    * metadata of each entry
    *
-   * @return {Promise}
+   * @returns {Promise}
    */
   saveBills(entries, fields, options) {
     return saveBills(entries, fields, {
@@ -418,7 +418,7 @@ class BaseKonnector {
    * This is saveFiles function from cozy-konnector-libs which automatically adds sourceAccount and
    * sourceAccountIdentifier cozyMetadatas to files
    *
-   * @return {Promise}
+   * @returns {Promise}
    */
   saveFiles(entries, fields, options) {
     return saveFiles(entries, fields, {
@@ -432,7 +432,7 @@ class BaseKonnector {
    * This is updateOrCreate function from cozy-konnector-libs which automatically adds sourceAccount in
    * metadata of each entry
    *
-   * @return {Promise}
+   * @returns {Promise}
    */
   updateOrCreate(entries, doctype, matchingAttributes, options) {
     return updateOrCreate(entries, doctype, matchingAttributes, {
@@ -446,7 +446,7 @@ class BaseKonnector {
    * This is saveIdentity function from cozy-konnector-libs which automatically adds sourceAccount in
    * metadata of each entry
    *
-   * @return {Promise}
+   * @returns {Promise}
    */
   saveIdentity(contact, accountIdentifier, options = {}) {
     return saveIdentity(contact, accountIdentifier, {
@@ -459,7 +459,8 @@ class BaseKonnector {
   /**
    * This is signin function from cozy-konnector-libs which automatically adds deactivateAutoSuccessfulLogin
    * and notifySuccessfulLogin calls
-   * @return {Promise}
+   *
+   * @returns {Promise}
    */
   async signin(options = {}) {
     await this.deactivateAutoSuccessfulLogin()

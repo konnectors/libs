@@ -69,9 +69,10 @@ const getClassifierOptions = transactionsWithManualCat => {
 
 /**
  * Create a ready to use classifier for the local categorization model
+ *
  * @param {Array} transactionsToLearn - Transactions to learn from
- * @param {Object} intializationOptions - Options to pass to the classifier initialization
- * @param {Object} configurationOptions - Options used to configure the classifier
+ * @param {object} intializationOptions - Options to pass to the classifier initialization
+ * @param {object} configurationOptions - Options used to configure the classifier
  */
 const createLocalClassifier = (
   transactionsToLearn,
@@ -109,6 +110,7 @@ const createLocalClassifier = (
  * The `log(frequencyCount)` smooths the probabilities of a word across the
  * possible categories to avoid the probability of the most targeted category
  * to explode.
+ *
  * @param {*} classifier - classifier to reweight
  * @param {*} category - category in which to reweight a word
  * @param {*} word  - word to reweight
@@ -149,9 +151,7 @@ const createClassifier = async options => {
 
   log(
     'info',
-    `Fetched ${
-      transactionsWithManualCat.length
-    } manually categorized transactions`
+    `Fetched ${transactionsWithManualCat.length} manually categorized transactions`
   )
 
   log('info', 'Instanciating a new classifier')

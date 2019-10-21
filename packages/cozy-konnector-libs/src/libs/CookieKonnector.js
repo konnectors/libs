@@ -42,7 +42,7 @@ class CookieKonnector extends BaseKonnector {
   /**
    * Constructor
    *
-   * @param  {function} requestFactoryOptions    - Option object passed to requestFactory to
+   * @param  {Function} requestFactoryOptions    - Option object passed to requestFactory to
    * initialize this.request. It is still possible to change this.request doing :
    *
    * ```javascript
@@ -70,7 +70,7 @@ class CookieKonnector extends BaseKonnector {
    * Initializes the current connector with data coming from the associated account
    * and also the session
    *
-   * @return {Promise} with the fields as an object
+   * @returns {Promise} with the fields as an object
    */
   async initAttributes(cozyFields, account) {
     await super.initAttributes(cozyFields, account)
@@ -89,7 +89,7 @@ class CookieKonnector extends BaseKonnector {
    * Calls cozy-konnector-libs requestFactory forcing this._jar as the cookie
    *
    * @param  {object} options - requestFactory option
-   * @return {object} - The resulting request object
+   * @returns {object} - The resulting request object
    */
   requestFactory(options) {
     this._jar = this._jar || requestFactory().jar()
@@ -102,7 +102,7 @@ class CookieKonnector extends BaseKonnector {
   /**
    * Reset cookie session with a new empty session and save it to the associated account
    *
-   * @return {Promise}
+   * @returns {Promise}
    */
   async resetSession() {
     log('info', 'Reset cookie session...')
@@ -113,7 +113,7 @@ class CookieKonnector extends BaseKonnector {
   /**
    * Get the cookie session from the account if any
    *
-   * @return {Promise} true or false if the session in the account exists or not
+   * @returns {Promise} true or false if the session in the account exists or not
    */
   async initSession() {
     const accountData = this.getAccountData()
@@ -149,7 +149,7 @@ class CookieKonnector extends BaseKonnector {
   /**
    * Saves the current cookie session to the account
    *
-   * @return {Promise}
+   * @returns {Promise}
    */
   async saveSession(obj) {
     const accountData = { ...this._account.data, auth: {} }
@@ -168,7 +168,7 @@ class CookieKonnector extends BaseKonnector {
    * and current request from CookieKonnector. It also automatically saves the session after
    * signin if it is a success.
    *
-   * @return {Promise}
+   * @returns {Promise}
    */
   async signin(options) {
     const result = await super.signin({
@@ -183,7 +183,7 @@ class CookieKonnector extends BaseKonnector {
    * This is saveFiles function from cozy-konnector-libs which is forced to use the current cookies
    * and current request from CookieKonnector.
    *
-   * @return {Promise}
+   * @returns {Promise}
    */
   saveFiles(entries, fields, options) {
     return super.saveFiles(entries, fields, {
@@ -196,7 +196,7 @@ class CookieKonnector extends BaseKonnector {
    * This is saveBills function from cozy-konnector-libs which is forced to use the current cookies
    * and current request from CookieKonnector.
    *
-   * @return {Promise}
+   * @returns {Promise}
    */
   saveBills(entries, fields, options) {
     return super.saveBills(entries, fields, {

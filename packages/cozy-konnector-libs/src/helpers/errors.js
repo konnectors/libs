@@ -2,92 +2,107 @@
 
 /**
  * The konnector could not login
- * @type {String}
+ *
+ * @type {string}
  */
 const LOGIN_FAILED = 'LOGIN_FAILED'
 
 /**
  * The folder specified as folder_to_save does not exist (checked by BaseKonnector)
- * @type {String}
+ *
+ * @type {string}
  */
 const NOT_EXISTING_DIRECTORY = 'NOT_EXISTING_DIRECTORY'
 
 /**
  * The vendor's website is down
- * @type {String}
+ *
+ * @type {string}
  */
 const VENDOR_DOWN = 'VENDOR_DOWN'
 
 /**
  * There was an unexpected error, please take a look at the logs to know what happened
- * @type {String}
+ *
+ * @type {string}
  */
 const USER_ACTION_NEEDED = 'USER_ACTION_NEEDED'
 
 /**
  * There was a problem while downloading a file
- * @type {String}
+ *
+ * @type {string}
  */
 const FILE_DOWNLOAD_FAILED = 'FILE_DOWNLOAD_FAILED'
 
 /**
  * There was a problem while saving a file
- * @type {String}
+ *
+ * @type {string}
  */
 const SAVE_FILE_FAILED = 'SAVE_FILE_FAILED'
 
 /**
  * Could not save a file to the cozy because of disk quota exceeded
- * @type {String}
+ *
+ * @type {string}
  */
 const DISK_QUOTA_EXCEEDED = 'DISK_QUOTA_EXCEEDED'
 
 /**
  * It seems that the website requires a second authentification factor that we don’t support yet.
- * @type {String}
+ *
+ * @type {string}
  */
 const CHALLENGE_ASKED = 'CHALLENGE_ASKED'
 
 /**
  * Temporarily blocked
- * @type {String}
+ *
+ * @type {string}
  */
 const LOGIN_FAILED_TOO_MANY_ATTEMPTS = 'LOGIN_FAILED.TOO_MANY_ATTEMPTS'
 
 /**
  * Access refresh required
- * @type {String}
+ *
+ * @type {string}
  */
 const USER_ACTION_NEEDED_OAUTH_OUTDATED = 'USER_ACTION_NEEDED.OAUTH_OUTDATED'
 
 /**
  * Unavailable account
- * @type {String}
+ *
+ * @type {string}
  */
 const USER_ACTION_NEEDED_ACCOUNT_REMOVED = 'USER_ACTION_NEEDED.ACCOUNT_REMOVED'
 
 /**
  * Unavailable account
- * @type {String}
+ *
+ * @type {string}
  */
 const USER_ACTION_NEEDED_CHANGE_PASSWORD = 'USER_ACTION_NEEDED.CHANGE_PASSWORD'
 
 /**
  * Password update required
- * @type {String}
+ *
+ * @type {string}
  */
 const USER_ACTION_NEEDED_PERMISSIONS_CHANGED =
   'USER_ACTION_NEEDED.PERMISSIONS_CHANGED'
 
 /**
  * The user needs to accept a CGU form before accessing the rest of the website
- * @type {String}
+ *
+ * @type {string}
  */
 const USER_ACTION_NEEDED_CGU_FORM = 'USER_ACTION_NEEDED.CGU_FORM'
 
 /**
  * solveCaptcha failed to solve the captcha
- * @type {String}
+ *
+ * @type {string}
  */
 const CAPTCHA_RESOLUTION_FAILED = 'CAPTCHA_RESOLUTION_FAILED'
 

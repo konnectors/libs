@@ -9,14 +9,11 @@
     "babel-preset-env": "1.7.0",
     "cross-env": "5.2.1",
     "eslint-config-cozy-app": "1.3.2",
+    "eslint-plugin-jsdoc": "^15.12.0",
     "lerna": "3.16.4",
     "lerna-changelog": "0.8.2"
   },
-  "eslintConfig": {
-    "extends": [
-      "cozy-app"
-    ]
-  },
+  
   "prettier": {
     "semi": false,
     "singleQuote": true

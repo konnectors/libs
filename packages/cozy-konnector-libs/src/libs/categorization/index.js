@@ -1,5 +1,6 @@
 /**
  * Bank transactions categorization
+ *
  * @module categorization
  */
 
@@ -24,7 +25,7 @@ const log = logger.namespace('categorization')
  *
  * In the end, each transaction can have up to four different categories. An application can use these categories to show the most significant for the user. See https://github.com/cozy/cozy-doctypes/blob/master/docs/io.cozy.bank.md#categories for more informations.
  *
- * @return {Object} an object with a `categorize` method
+ * @returns {object} an object with a `categorize` method
  *
  * @example
  * const { BaseKonnector, createCategorizer } = require('cozy-konnector-libs')
@@ -76,7 +77,7 @@ async function createCategorizer() {
  *
  * @see {@link createCategorizer} for more informations about models initialization
  *
- * @return {Object[]} the categorized transactions
+ * @returns {object[]} the categorized transactions
  *
  * @example
  * const { BaseKonnector, categorize } = require('cozy-konnector-libs')
