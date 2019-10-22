@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.30.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.29.0...cozy-konnector-libs@4.30.0) (2019-10-22)
+
+
+### Bug Fixes
+
+* Default value for backup dir ([1082551](https://github.com/cozy/cozy-konnector-libs/commit/1082551))
+* display only one warning for no metadata deduplication ([41b8fc3](https://github.com/cozy/cozy-konnector-libs/commit/41b8fc3))
+* display only one warning for no metadata deduplication ([#603](https://github.com/cozy/cozy-konnector-libs/issues/603)) ([d175977](https://github.com/cozy/cozy-konnector-libs/commit/d175977))
+
+
+### Features
+
+* More logs in BaseKonnector ([57bd97c](https://github.com/cozy/cozy-konnector-libs/commit/57bd97c))
+* Use removeEventListener instead of off ([0052fef](https://github.com/cozy/cozy-konnector-libs/commit/0052fef))
+* **saveFiles:** add subPath option ([a779572](https://github.com/cozy/cozy-konnector-libs/commit/a779572))
+
+
+
+
+
 # [4.29.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.28.2...cozy-konnector-libs@4.29.0) (2019-10-07)
 
 

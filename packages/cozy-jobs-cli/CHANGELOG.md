@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.10.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@1.9.24...cozy-jobs-cli@1.10.0) (2019-10-22)
+
+
+### Features
+
+* Ability to really create the io.cozy.account ([3368dca](https://github.com/cozy/cozy-konnector-libs/commit/3368dca))
+
+
+
+
+
 ## [1.9.24](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@1.9.23...cozy-jobs-cli@1.9.24) (2019-10-07)
 
 
