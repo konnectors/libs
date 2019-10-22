@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.30.2](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.30.1...cozy-konnector-libs@4.30.2) (2019-10-22)
+
+
+### Bug Fixes
+
+* Require pdfjs deps inside try/catch ([4f6260c](https://github.com/cozy/cozy-konnector-libs/commit/4f6260c))
+
+
+
+
+
 ## [4.30.1](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.30.0...cozy-konnector-libs@4.30.1) (2019-10-22)
 
 
