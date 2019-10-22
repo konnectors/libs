@@ -23,16 +23,20 @@ const makeLinkOpts = ($el, opts) => {
 }
 
 function htmlToPDF($, frag, $parent, opts) {
-  let pdf
+  let pdf, helveticaBold, helveticaEm
+
+  // pdfjs is an optional dependency, this is why the requires are done in
+  // a try/catch. webpack detects this and does not crash when building
+  // if requires are done in a try/catch.
   try {
     pdf = require('pdfjs')
+    helveticaBold = require('pdfjs/font/Helvetica-Bold')
+    helveticaEm = require('pdfjs/font/Helvetica-Oblique')
   } catch (err) {
     throw new Error(
       'pdfjs dependency is missing. Please add it in your package.json'
     )
   }
-  const helveticaBold = require('pdfjs/font/Helvetica-Bold')
-  const helveticaEm = require('pdfjs/font/Helvetica-Oblique')
   opts = Object.assign(
     {
       baseURL: '',
@@ -210,9 +214,13 @@ function htmlToPDF($, frag, $parent, opts) {
 }
 
 function createCozyPDFDocument(headline, url) {
-  let pdf
+  let pdf, helveticaBold
+  // pdfjs is an optional dependency, this is why the requires are done in
+  // a try/catch. webpack detects this and does not crash when building
+  // if requires are done in a try/catch.
   try {
     pdf = require('pdfjs')
+    helveticaBold = require('pdfjs/font/Helvetica-Bold')
   } catch (err) {
     throw new Error(
       'pdfjs dependency is missing. Please add it in your package.json'
@@ -221,7 +229,7 @@ function createCozyPDFDocument(headline, url) {
   var doc = new pdf.Document()
   const cell = doc.cell({ paddingBottom: 0.5 * pdf.cm }).text()
   cell.add(headline, {
-    font: require('pdfjs/font/Helvetica-Bold'),
+    font: helveticaBold,
     fontSize: 14
   })
   cell.add(url, {
