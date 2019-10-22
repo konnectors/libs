@@ -3,7 +3,7 @@
 
 `cozy-konnector-libs` helps you scrape and save data to your cozy.
 
-For an easy introduction to scraping your personal data with Cozy :
+For an easy introduction to scraping your personal data with Cozy:
 
 1. Read the [tutorial](https://docs.cozy.io/en/tutorials/konnector/).
 
