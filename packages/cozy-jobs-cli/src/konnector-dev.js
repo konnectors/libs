@@ -76,7 +76,7 @@ const parseArgs = argv => {
     nargs: '?',
     help: 'Konnector script'
   })
-  const args = parser.parseArgs(argv || process.argv)
+  const args = argv ? parser.parseArgs(argv) : parser.parseArgs()
 
   let file = args.file || process.env.npm_package_main || './src/index.js'
   let manifest = args.manifest
