@@ -36,6 +36,8 @@ const requiredAttributes = {
  *   + `vendor` (String): the name of the vendor associated to the bill. Ex: 'trainline'
  *   + `currency` (String) default: EUR:  The ISO currency value (not mandatory since there is a
  *   default value.
+ *   + `contractId` (String): Contract unique identicator used to deduplicate bills
+ *   + `contractLabel`: (String) User label if define, must be used with contractId
  *   + `matchingCriterias` (Object): criterias that can be used by an external service to match bills
  *   with bank operations. If not specified but the 'banksTransactionRegExp' attribute is specified in the
  *   manifest of the connector, this value is automatically added to the bill
@@ -63,7 +65,12 @@ const requiredAttributes = {
  *
  * @alias module:saveBills
  */
-const saveBills = async (entries, fields, options = {}) => {
+const saveBills = async (inputEntries, fields, inputOptions = {}) => {
+  // Cloning input arguments since both entries and options are expected
+  // to be modified by functions called inside saveBills.
+  const entries = _.cloneDeep(inputEntries)
+  const options = _.cloneDeep(inputOptions)
+
   if (!_.isArray(entries) || entries.length === 0) {
     log('warn', 'saveBills: no bills to save')
     return Promise.resolve()
@@ -98,8 +105,8 @@ const saveBills = async (entries, fields, options = {}) => {
       return defaultShouldUpdate(entry, dbEntry) || fn(entry, dbEntry)
     }
   }
-
-  let tempEntries = entries
+  let tempEntries
+  tempEntries = manageContractsData(entries, options)
   tempEntries = await saveFiles(tempEntries, fields, options)
 
   if (options.processPdf) {
@@ -197,4 +204,75 @@ function checkRequiredAttributes(entries) {
     }
   }
 }
+
+function manageContractsData(tempEntries, options) {
+  if (options.contractLabel && options.contractId === undefined) {
+    log('warn', 'contractLabel used without contractId, ignoring it.')
+    return tempEntries
+  }
+
+  let newEntries = tempEntries
+  // if contractId passed by option
+  if (options.contractId) {
+    // Define contractlabel from contractId if not set in options
+    if (!options.contractLabel) {
+      options.contractLabel = options.contractId
+    }
+    // Set saving path from contractLabel
+    options.subPath = options.contractLabel
+    // Add contractId to deduplication keys
+    addContractIdToDeduplication(options)
+    // Add contract data to bills
+    newEntries = newEntries.map(entry => addContractsDataToBill(entry, options))
+
+    // if contractId passed by bill attribute
+  } else if (billsHaveContractId(newEntries)) {
+    // Add contractId to deduplication keys
+    addContractIdToDeduplication(options)
+
+    newEntries = newEntries.map(entry => mergeContractsDataInBill(entry))
+    //manageContractsDataPassedByAttribute(newEntries, options
+  }
+  return newEntries
+}
+
+function addContractsDataToBill(entry, options) {
+  entry.contractLabel = options.contractLabel
+  entry.contractId = options.contractId
+  return entry
+}
+
+function mergeContractsDataInBill(entry) {
+  // Only treat bill with data
+  if (entry.contractId) {
+    // Surcharge label in needed
+    if (!entry.contractLabel) {
+      entry.contractLabel = entry.contractId
+    }
+    // Edit subpath of each bill according to contractLabel
+    entry.subPath = entry.contractLabel
+  }
+  return entry
+}
+
+/* This function return true if at least one bill of entries has a contractId
+ */
+function billsHaveContractId(entries) {
+  for (const entry of entries) {
+    if (entry.contractId) {
+      return true
+    }
+  }
+  return false
+}
+
+/* Add contractId to deduplication keys
+ */
+function addContractIdToDeduplication(options) {
+  if (options.keys) {
+    options.keys.push('contractId')
+  }
+}
+
 module.exports = saveBills
+module.exports.manageContractsData = manageContractsData
