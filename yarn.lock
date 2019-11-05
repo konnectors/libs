@@ -4182,10 +4182,10 @@ eslint-config-prettier@4.3.0:
   dependencies:
     get-stdin "^6.0.0"
 
-eslint-plugin-jsdoc@15.12.0:
-  version "15.12.0"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-jsdoc/-/eslint-plugin-jsdoc-15.12.0.tgz#15c456f6532c7c88231f10a59e7a7a003e88404d"
-  integrity sha512-oP+rOqAf54QLbJM3ECqhg8VOrcMfqBSbGSYCWAVX8cy0ySWXK1Z7yg8QylY1bedrRBAvxyWBxdgzDP6Uy6WoTg==
+eslint-plugin-jsdoc@15.12.2:
+  version "15.12.2"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-jsdoc/-/eslint-plugin-jsdoc-15.12.2.tgz#d8afb762921dbf841bad42d4b2b554de1ece9305"
+  integrity sha512-QHzPc3VKTEbTn369/HpqDjl/czv3fCei/bZg5NA5tu9Od10MfpTH4kc1xnRDobhQoDs3AMz9wuaI4coHWRzMQw==
   dependencies:
     comment-parser "^0.6.2"
     debug "^4.1.1"
