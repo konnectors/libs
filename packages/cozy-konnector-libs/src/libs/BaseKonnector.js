@@ -185,7 +185,6 @@ class BaseKonnector {
 
     // Set account
     const account = await this.getAccount(cozyFields.account)
-    log('info', `Cached Cozy account ${JSON.stringify(account)}`)
     if (!account || !account._id) {
       log('warn', 'No account was retrieved from getAccount')
     }
@@ -315,7 +314,7 @@ class BaseKonnector {
    * const { BaseKonnector } = require('cozy-konnector-libs')
    *
    * module.exports = new BaseKonnector(start)
-   
+
    * async function start() {
    *    // we detect the need of a 2FA code
    *    const code = this.waitForTwoFaCode({
