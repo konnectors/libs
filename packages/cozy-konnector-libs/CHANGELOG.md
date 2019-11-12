@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.31.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.30.2...cozy-konnector-libs@4.31.0) (2019-11-12)
+
+
+### Bug Fixes
+
+* Less verbose BaseKonnector ([39a7ab7](https://github.com/cozy/cozy-konnector-libs/commit/39a7ab7b3f0304b546b84864f36b192b136b7fd3))
+* **deps:** update dependency parcel to v1.12.4 ([1f5abdd](https://github.com/cozy/cozy-konnector-libs/commit/1f5abddc06a50bcfdc468db2574fdbfe9f2e895a))
+* **deps:** update dependency parcel to v1.12.4 ([#619](https://github.com/cozy/cozy-konnector-libs/issues/619)) ([71036f0](https://github.com/cozy/cozy-konnector-libs/commit/71036f05d65765b1c74e64917ca75d0fa91eaee7))
+
+
+### Features
+
+* Add contractId and contractLabel for bills ([fee079f](https://github.com/cozy/cozy-konnector-libs/commit/fee079f03d03558492779a355dafabba57a95600))
+* Add contractId and contractLabel for bills ([#605](https://github.com/cozy/cozy-konnector-libs/issues/605)) ([bcde9f2](https://github.com/cozy/cozy-konnector-libs/commit/bcde9f2d42a005c7ecdce6dfc44a398a62bebf5d))
+
+
+
+
+
 ## [4.30.2](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.30.1...cozy-konnector-libs@4.30.2) (2019-10-22)
 
 

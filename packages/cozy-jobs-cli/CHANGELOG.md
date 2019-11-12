@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.10.3](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@1.10.2...cozy-jobs-cli@1.10.3) (2019-11-12)
+
+
+### Bug Fixes
+
+* **deps:** update dependency commander to v3.0.2 ([#595](https://github.com/cozy/cozy-konnector-libs/issues/595)) ([cc48471](https://github.com/cozy/cozy-konnector-libs/commit/cc48471217d99a640924932ebf56cc08b0138a47))
+* Do not pass process.argv ([baa6dd6](https://github.com/cozy/cozy-konnector-libs/commit/baa6dd62692aebe791620f7be4972fed36936514))
+* **deps:** update dependency commander to v3.0.2 ([9c062f3](https://github.com/cozy/cozy-konnector-libs/commit/9c062f3b789f296f4ccce07fe15a15fc578a6663))
+
+
+
+
+
 ## [1.10.2](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@1.10.1...cozy-jobs-cli@1.10.2) (2019-10-22)
 
 **Note:** Version bump only for package cozy-jobs-cli
