@@ -4,19 +4,21 @@
   "main": "index.js",
   "license": "MIT",
   "renovate-config": {
-    "extends": [
-      "cozy",
-      "schedule:weekly"
-    ],
-    "updateNotScheduled": true,
-    "packageRules": [
-      {
-        "packagePatterns": [
-          "^cozy-konnector-libs",
-          "^cozy-jobs-cli"
-        ],
-        "schedule": "at any time"
-      }
-    ]
+    "default": {
+      "extends": [
+        "cozy",
+        "schedule:weekly"
+      ],
+      "updateNotScheduled": true,
+      "packageRules": [
+        {
+          "packagePatterns": [
+            "^cozy-konnector-libs",
+            "^cozy-jobs-cli"
+          ],
+          "schedule": "at any time"
+        }
+      ]
+    }
   }
 }
