@@ -16,7 +16,11 @@
             "^cozy-konnector-libs",
             "^cozy-jobs-cli"
           ],
-          "schedule": "at any time"
+          "schedule": "at any time",
+          "automerge": true,
+          "major": {
+            "automerge": false
+          }
         }
       ]
     }
