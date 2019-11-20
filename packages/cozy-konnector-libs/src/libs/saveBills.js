@@ -119,11 +119,10 @@ const saveBills = async (inputEntries, fields, inputOptions = {}) => {
         } catch (err) {
           log(
             'warn',
-            `processPdf: Failed to read pdf content in ${JSON.stringify(
-              entry.fileDocument
-            )}`
+            `processPdf: Failed to read pdf content in ${_.get(entry, 'fileDocument.attributes.name')}`
           )
           log('warn', err.message)
+          entry.__ignore = true
         }
       }
     }
@@ -139,6 +138,7 @@ const saveBills = async (inputEntries, fields, inputOptions = {}) => {
   }
 
   tempEntries = tempEntries
+    .filter(entry => !entry.__ignore)
     // we do not save bills without associated file anymore
     .filter(entry => entry.fileDocument)
     .map(entry => {
@@ -154,7 +154,7 @@ const saveBills = async (inputEntries, fields, inputOptions = {}) => {
       return entry
     })
 
-  checkRequiredAttributes(entries)
+  checkRequiredAttributes(tempEntries)
 
   tempEntries = await hydrateAndFilter(tempEntries, DOCTYPE, options)
   tempEntries = await addData(tempEntries, DOCTYPE, options)
@@ -165,8 +165,8 @@ const saveBills = async (inputEntries, fields, inputOptions = {}) => {
       fields,
       options
     )
+    log('info', 'after linkbankoperation')
   }
-  log('info', 'after linkbankoperation')
   return tempEntries
 }
 
