@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.32.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.31.0...cozy-konnector-libs@4.32.0) (2019-11-20)
+
+
+### Features
+
+* **saveBills:** ignore bills for unprocessable pdf ([4763ee9](https://github.com/cozy/cozy-konnector-libs/commit/4763ee9eb4f4f3d35860c5cd6c4e218be155fcf5))
+
+
+
+
+
 # [4.31.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.30.2...cozy-konnector-libs@4.31.0) (2019-11-12)
 
 
