@@ -119,7 +119,10 @@ const saveBills = async (inputEntries, fields, inputOptions = {}) => {
         } catch (err) {
           log(
             'warn',
-            `processPdf: Failed to read pdf content in ${_.get(entry, 'fileDocument.attributes.name')}`
+            `processPdf: Failed to read pdf content in ${_.get(
+              entry,
+              'fileDocument.attributes.name'
+            )}`
           )
           log('warn', err.message)
           entry.__ignore = true
