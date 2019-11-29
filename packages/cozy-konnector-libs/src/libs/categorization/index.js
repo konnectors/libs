@@ -50,15 +50,15 @@ async function createCategorizer() {
   try {
     globalModel = await createGlobalModel(classifierOptions)
   } catch (e) {
-    log('info', 'Failed to create global model:')
-    log('info', e.message)
+    log('warn', 'Failed to create global model:')
+    log('warn', e.message)
   }
 
   try {
     localModel = await createLocalModel(classifierOptions)
   } catch (e) {
-    log('info', 'Failed to create local model:')
-    log('info', e.message)
+    log('warn', 'Failed to create local model:')
+    log('warn', e.message)
   }
 
   const modelsToApply = [globalModel, localModel].filter(Boolean)

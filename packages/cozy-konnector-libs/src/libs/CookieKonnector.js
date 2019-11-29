@@ -105,7 +105,7 @@ class CookieKonnector extends BaseKonnector {
    * @returns {Promise}
    */
   async resetSession() {
-    log('info', 'Reset cookie session...')
+    log('debug', 'Reset cookie session...')
     this._jar = requestFactory().jar()
     return this.saveSession()
   }
@@ -119,7 +119,7 @@ class CookieKonnector extends BaseKonnector {
     const accountData = this.getAccountData()
     try {
       if (this._account.state === 'RESET_SESSION') {
-        log('info', 'RESET_SESSION state found')
+        log('debug', 'RESET_SESSION state found')
         await this.resetSession()
         await this.updateAccountAttributes({ state: null })
       }
@@ -135,14 +135,14 @@ class CookieKonnector extends BaseKonnector {
       }
 
       if (jar) {
-        log('info', 'found saved session, using it...')
+        log('debug', 'found saved session, using it...')
         this._jar._jar = CookieJar.fromJSON(jar, this._jar._jar.store)
         return true
       }
     } catch (err) {
-      log('info', 'Could not parse session')
+      log('debug', 'Could not parse session')
     }
-    log('info', 'Found no session')
+    log('debug', 'Found no session')
     return false
   }
 
@@ -160,7 +160,7 @@ class CookieKonnector extends BaseKonnector {
 
     accountData.auth[JAR_ACCOUNT_KEY] = JSON.stringify(this._jar._jar.toJSON())
     await this.saveAccountData(accountData)
-    log('info', 'saved the session')
+    log('debug', 'saved the session')
   }
 
   /**

@@ -174,10 +174,10 @@ module.exports = {
     createDirectory(options) {
       setDefaults()
       return new Promise(resolve => {
-        log('info', `Creating new directory ${options.name}`)
+        log('debug', `Creating new directory ${options.name}`)
         const finalPath = path.join(rootPath, options.dirID, options.name)
         const returnPath = path.join(options.dirID, options.name)
-        log('info', `Real path : ${finalPath}`)
+        log('debug', `Real path : ${finalPath}`)
         fs.mkdirSync(finalPath)
         resolve({ _id: returnPath, path: returnPath })
       })
@@ -267,7 +267,7 @@ function createFile(file, options = {}) {
       file.pipe(writeStream)
 
       file.on('end', () => {
-        log('info', `File ${finalPath} created`)
+        log('debug', `File ${finalPath} created`)
         addFileSizeAndWrite(fileDoc, finalPath)
         resolve(fileDoc)
       })

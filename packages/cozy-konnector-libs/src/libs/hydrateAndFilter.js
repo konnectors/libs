@@ -71,7 +71,7 @@ const suitableCall = (funcOrMethod, ...args) => {
 const hydrateAndFilter = (documents = [], doctype, options = {}) => {
   const cozy = require('./cozyclient')
 
-  log('info', `${documents.length} items before hydrateAndFilter`)
+  log('debug', `${documents.length} items before hydrateAndFilter`)
   if (!doctype)
     return Promise.reject(
       new Error(`Doctype is mandatory to filter the connector data.`)
@@ -150,7 +150,7 @@ const hydrateAndFilter = (documents = [], doctype, options = {}) => {
   }
 
   const formatOutput = entries => {
-    log('info', `${entries.length} items after hydrateAndFilter`)
+    log('debug', `${entries.length} items after hydrateAndFilter`)
     return entries
   }
 

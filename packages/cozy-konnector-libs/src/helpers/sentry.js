@@ -28,7 +28,7 @@ const SENTRY_DSN = process.env.SENTRY_DSN
 const afterFatalError = function(_err, sendErr, eventId) {
   if (!sendErr) {
     log(
-      'info',
+      'debug',
       'Successfully sent fatal error with eventId ' + eventId + ' to Sentry'
     )
   }
@@ -38,7 +38,7 @@ const afterFatalError = function(_err, sendErr, eventId) {
 const afterCaptureException = function(sendErr, eventId) {
   if (!sendErr) {
     log(
-      'info',
+      'debug',
       'Successfully sent exception with eventId ' + eventId + ' to Sentry'
     )
   }
@@ -47,7 +47,7 @@ const afterCaptureException = function(sendErr, eventId) {
 
 const setupSentry = function() {
   try {
-    log('info', 'process.env.SENTRY_DSN found, setting up Raven')
+    log('debug', 'process.env.SENTRY_DSN found, setting up Raven')
     const release =
       typeof __APP_VERSION__ !== 'undefined' ? __APP_VERSION__ : 'dev'
     const domain = getDomain()
@@ -62,7 +62,7 @@ const setupSentry = function() {
     }).install(afterFatalError)
     Raven.mergeContext({ tags: { domain, instance } })
     isRavenConfigured = true
-    log('info', 'Raven configured !')
+    log('debug', 'Raven configured !')
   } catch (e) {
     log('warn', 'Could not load Raven, errors will not be sent to Sentry')
     log('warn', e)
@@ -70,12 +70,12 @@ const setupSentry = function() {
 }
 
 module.exports.captureExceptionAndDie = function(err) {
-  log('info', 'Capture exception and die')
+  log('debug', 'Capture exception and die')
   if (!isRavenConfigured) {
     process.exit(1)
   } else {
     try {
-      log('info', 'Sending exception to Sentry')
+      log('debug', 'Sending exception to Sentry')
       Raven.captureException(
         err,
         { fingerprint: [err.message || err] },

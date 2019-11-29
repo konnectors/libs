@@ -116,7 +116,7 @@ async function solveWithAntiCaptcha(
   // we try to solve the captcha with anticaptcha
   const clientKey = secrets.antiCaptchaClientKey
   if (clientKey) {
-    log('info', '  Creating captcha resolution task...')
+    log('debug', '  Creating captcha resolution task...')
     const task = await request.post(`${antiCaptchaApiUrl}/createTask`, {
       body: {
         clientKey,
@@ -125,7 +125,7 @@ async function solveWithAntiCaptcha(
       json: true
     })
     if (task && task.taskId) {
-      log('info', `    Task id : ${task.taskId}`)
+      log('debug', `    Task id : ${task.taskId}`)
       while (!gRecaptchaResponse) {
         const resp = await request.post(`${antiCaptchaApiUrl}/getTaskResult`, {
           body: {
@@ -139,10 +139,10 @@ async function solveWithAntiCaptcha(
             log('error', `Anticaptcha error: ${JSON.stringify(resp)}`)
             throw new Error(errors.CAPTCHA_RESOLUTION_FAILED)
           }
-          log('warn', `  Found Recaptcha response : ${JSON.stringify(resp)}`)
+          log('info', `  Found Recaptcha response : ${JSON.stringify(resp)}`)
           return resp.solution[resultAttribute]
         } else {
-          log('info', `    ${Math.round((Date.now() - startTime) / 1000)}s...`)
+          log('debug', `    ${Math.round((Date.now() - startTime) / 1000)}s...`)
           if (Date.now() > timeout) {
             log('warn', `  Captcha resolution timeout`)
             throw new Error(errors.CAPTCHA_RESOLUTION_FAILED + '.TIMEOUT')

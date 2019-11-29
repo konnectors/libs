@@ -38,7 +38,7 @@ const updateOrCreate = require('./updateOrCreate')
  */
 
 const saveIdentity = async (contact, accountIdentifier, options = {}) => {
-  log('info', 'saving user identity')
+  log('debug', 'saving user identity')
   if (accountIdentifier == null) {
     log('warn', "Can't set identity as no accountIdentifier was provided")
     return

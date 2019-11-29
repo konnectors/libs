@@ -38,7 +38,7 @@ class Linker {
   }
 
   async removeBillsFromOperations(bills, operations) {
-    log('info', `Removing ${bills.length} bills from bank operations`)
+    log('debug', `Removing ${bills.length} bills from bank operations`)
     for (let op of operations) {
       let needUpdate = false
       let billsAttribute = op.bills || []
