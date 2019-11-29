@@ -4,6 +4,7 @@ const log = require('cozy-logger').namespace('cozy-client-js-stub')
 const mimetypes = require('mime-types')
 const low = require('lowdb')
 const lodashId = require('lodash-id')
+const get = require('lodash/get')
 const FileSync = require('lowdb/adapters/FileSync')
 const rawBody = require('raw-body')
 const stripJsonComments = require('strip-json-comments')
@@ -249,7 +250,7 @@ function createFile(file, options = {}) {
     const mime = mimetypes.lookup(extension)
 
     const fileDoc = {
-      _id: options.name,
+      _id: get(options, 'metadata.fileIdAttributes') || options.name,
       attributes: {
         mime,
         name: options.name,
