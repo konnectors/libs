@@ -187,7 +187,7 @@ class BaseKonnector {
       log('warn', 'No account was retrieved from getAccount')
     }
     this.accountId = account._id
-    this._account = account
+    this._account = new Secret(account)
 
     // Set folder
     const folderPath = await findFolderPath(cozyFields, account)
@@ -248,7 +248,7 @@ class BaseKonnector {
     return cozy.data
       .updateAttributes('io.cozy.accounts', this.accountId, attributes)
       .then(account => {
-        this._account = account
+        this._account = new Secret(account)
         return account
       })
   }
