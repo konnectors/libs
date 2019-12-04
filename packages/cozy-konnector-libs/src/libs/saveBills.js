@@ -168,7 +168,7 @@ const saveBills = async (inputEntries, fields, inputOptions = {}) => {
       fields,
       options
     )
-    log('info', 'after linkbankoperation')
+    log('debug', 'after linkbankoperation')
   }
   return tempEntries
 }

@@ -12,7 +12,7 @@ const {
 const log = logger.namespace('categorization/localModel/model')
 
 async function createModel(options) {
-  log('info', 'Create a new classifier')
+  log('debug', 'Create a new classifier')
   const classifier = await createClassifier(options)
 
   const vocabulary = Object.keys(classifier.vocabulary)
@@ -27,7 +27,7 @@ async function createModel(options) {
       // First : check if tokens from the transaction's label are in the model
       if (pctOfThisTokensInVoc > LOCAL_MODEL_PCT_TOKENS_IN_VOC_THRESHOLD) {
         // If OK : continue
-        log('info', `Applying model to ${label}`)
+        log('debug', `Applying model to ${label}`)
         ;({ category, proba } = maxBy(
           classifier.categorize(label).likelihoods,
           'proba'
@@ -36,15 +36,15 @@ async function createModel(options) {
         transaction.localCategoryProba = proba
       } else {
         // If KO : abort with category '0' and proba 1/nbUniqueCat
-        log('info', `Giving up for ${label}`)
+        log('debug', `Giving up for ${label}`)
         category = LOCAL_MODEL_CATEG_FALLBACK
         proba = LOCAL_MODEL_PROBA_FALLBACK
         transaction.localCategoryId = category
         transaction.localCategoryProba = proba
       }
-      log('info', `Results for ${label} :`)
-      log('info', `localCategory: ${category}`)
-      log('info', `localProba: ${proba}`)
+      log('debug', `Results for ${label} :`)
+      log('debug', `localCategory: ${category}`)
+      log('debug', `localProba: ${proba}`)
     }
   }
 

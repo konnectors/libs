@@ -55,7 +55,7 @@ const getClassifierOptions = transactionsWithManualCat => {
   let addFakeTransaction = false
   if (nbUniqueCategories === 1) {
     log(
-      'info',
+      'debug',
       'Not enough different categories, adding a fake transaction to balance the weight of the categories'
     )
     addFakeTransaction = true
@@ -87,7 +87,7 @@ const createLocalClassifier = (
 
   const classifier = bayes(initializationOptions)
 
-  log('info', 'Learning from manually categorized transactions')
+  log('debug', 'Learning from manually categorized transactions')
   for (const transaction of transactionsToLearn) {
     classifier.learn(
       getLabelWithTags(transaction),
@@ -146,15 +146,15 @@ const reweightModel = classifier => {
 }
 
 const createClassifier = async options => {
-  log('info', 'Fetching manually categorized transactions')
+  log('debug', 'Fetching manually categorized transactions')
   const transactionsWithManualCat = await fetchTransactionsWithManualCat()
 
   log(
-    'info',
+    'debug',
     `Fetched ${transactionsWithManualCat.length} manually categorized transactions`
   )
 
-  log('info', 'Instanciating a new classifier')
+  log('debug', 'Instanciating a new classifier')
 
   const classifierOptions = getClassifierOptions(transactionsWithManualCat)
   const classifier = createLocalClassifier(
@@ -164,13 +164,13 @@ const createClassifier = async options => {
   )
 
   log(
-    'info',
+    'debug',
     'Reweighting model to lower the impact of amount in the prediction'
   )
   reweightModel(classifier)
 
   log(
-    'info',
+    'debug',
     'Reweighting model to lower the impact of amount in the prediction'
   )
   reweightModel(classifier)

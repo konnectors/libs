@@ -235,7 +235,7 @@ const saveEntry = async function(entry, options) {
 
   if (shouldReplace && file) {
     method = 'updateById'
-    log('info', `Will replace ${getFilePath({ options, file })}...`)
+    log('debug', `Will replace ${getFilePath({ options, file })}...`)
   }
 
   try {
@@ -442,7 +442,7 @@ async function createFile(entry, options, method, fileId) {
   if (method === 'create') {
     fileDocument = await cozy.files.create(toCreate, createFileOptions)
   } else if (method === 'updateById') {
-    log('info', `replacing file for ${entry.filename}`)
+    log('debug', `replacing file for ${entry.filename}`)
     fileDocument = await cozy.files.updateById(
       fileId,
       toCreate,
@@ -588,11 +588,11 @@ function logFileStream(fileStream) {
 
   if (fileStream && fileStream.constructor && fileStream.constructor.name) {
     log(
-      'info',
+      'debug',
       `The fileStream attribute is an instance of ${fileStream.constructor.name}`
     )
   } else {
-    log('info', `The fileStream attribute is a ${typeof fileStream}`)
+    log('debug', `The fileStream attribute is a ${typeof fileStream}`)
   }
 }
 

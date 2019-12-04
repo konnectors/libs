@@ -162,33 +162,33 @@ Browser.extend(function(browser) {
  */
 function addListeners(browser) {
   browser.on('error', error => {
-    log('info', `event error: ${error}`)
+    log('debug', `event error: ${error}`)
   })
   browser.on('loading', doc => {
-    log('info', `event loading: ${doc.location.href}`)
+    log('debug', `event loading: ${doc.location.href}`)
     return doc
   })
   browser.on('loaded', doc => {
-    log('info', `event loaded: ${doc.location}`)
+    log('debug', `event loaded: ${doc.location}`)
     return doc
   })
   browser.on('setInterval', () => {
-    log('info', `event interval`)
+    log('debug', `event interval`)
   })
   browser.on('setTimeout', () => {
-    log('info', `event setTimeout`)
+    log('debug', `event setTimeout`)
   })
   browser.on('idle', () => {
-    log('info', `event idle`)
+    log('debug', `event idle`)
   })
   browser.on('redirect', (request, response) => {
-    log('info', `redirect: ${request.url} -> ${response._url}`)
+    log('debug', `redirect: ${request.url} -> ${response._url}`)
   })
   browser.on('request', request => {
-    log('info', `request: ${request.url}`)
+    log('debug', `request: ${request.url}`)
   })
   browser.on('response', (request, response) => {
-    log('info', `response: ${response._url}`)
+    log('debug', `response: ${response._url}`)
   })
 }
 

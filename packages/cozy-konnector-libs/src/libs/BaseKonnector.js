@@ -118,9 +118,9 @@ class BaseKonnector {
    */
   async run() {
     try {
-      log('info', 'Preparing konnector...')
+      log('debug', 'Preparing konnector...')
       await this.initAttributes()
-      log('info', 'Running konnector main...')
+      log('debug', 'Running konnector main...')
       await this.main(this.fields, this.parameters)
       await this.end()
     } catch (err) {
@@ -143,14 +143,14 @@ class BaseKonnector {
    * Hook called when the connector has ended successfully
    */
   end() {
-    log('info', 'The connector has been run')
+    log('debug', 'The connector has been run')
   }
 
   /**
    * Hook called when the connector fails
    */
   fail(err) {
-    log('info', 'Error caught by BaseKonnector')
+    log('debug', 'Error caught by BaseKonnector')
 
     const error = err.message || err
 
@@ -187,7 +187,7 @@ class BaseKonnector {
       log('warn', 'No account was retrieved from getAccount')
     }
     this.accountId = account._id
-    this._account = account
+    this._account = new Secret(account)
 
     // Set folder
     const folderPath = await findFolderPath(cozyFields, account)
@@ -248,7 +248,7 @@ class BaseKonnector {
     return cozy.data
       .updateAttributes('io.cozy.accounts', this.accountId, attributes)
       .then(account => {
-        this._account = account
+        this._account = new Secret(account)
         return account
       })
   }
@@ -273,7 +273,7 @@ class BaseKonnector {
     } else if (type === 'app') {
       state += '.APP'
     }
-    log('info', `Setting ${state} state into the current account`)
+    log('debug', `Setting ${state} state into the current account`)
     await this.updateAccountAttributes({ state, twoFACode: null })
   }
 
@@ -312,7 +312,7 @@ class BaseKonnector {
    * const { BaseKonnector } = require('cozy-konnector-libs')
    *
    * module.exports = new BaseKonnector(start)
-   
+
    * async function start() {
    *    // we detect the need of a 2FA code
    *    const code = this.waitForTwoFaCode({
@@ -356,8 +356,8 @@ class BaseKonnector {
     while (Date.now() < options.endTime && !account.twoFACode) {
       await sleep(options.heartBeat)
       account = await cozy.data.find('io.cozy.accounts', this.accountId)
-      log('info', `current accountState : ${account.state}`)
-      log('info', `current twoFACode : ${account.twoFACode}`)
+      log('debug', `current accountState : ${account.state}`)
+      log('debug', `current twoFACode : ${account.twoFACode}`)
     }
 
     if (account.twoFACode) {
@@ -374,7 +374,7 @@ class BaseKonnector {
    * See `deactivateAutoSuccess`
    */
   async notifySuccessfulLogin() {
-    log('info', 'Notify Cozy-Home of successful login')
+    log('debug', 'Notify Cozy-Home of successful login')
     await this.updateAccountAttributes({
       state: 'LOGIN_SUCCESS'
     })
@@ -393,7 +393,7 @@ class BaseKonnector {
    * Does nothing if called more than once.
    */
   async deactivateAutoSuccessfulLogin() {
-    log('info', 'Deactivating auto success for Cozy-Home')
+    log('debug', 'Deactivating auto success for Cozy-Home')
     await this.updateAccountAttributes({ state: 'HANDLE_LOGIN_SUCCESS' })
   }
 
