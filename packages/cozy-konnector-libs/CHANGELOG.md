@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.32.1](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.32.0...cozy-konnector-libs@4.32.1) (2019-12-04)
+
+
+### Bug Fixes
+
+* allow cozy-client-js-stub to work with file meta ids ([b7bf40a](https://github.com/cozy/cozy-konnector-libs/commit/b7bf40a5d3430d21783eb0be7c7d7bacd7fe7762))
+
+
+### Features
+
+* **BaseKonnector:** make this._account a secret ([b83cc3c](https://github.com/cozy/cozy-konnector-libs/commit/b83cc3c3d8f97888ee073f2af9d48a125792b8f6))
+
+
+
+
+
 # [4.32.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.31.0...cozy-konnector-libs@4.32.0) (2019-11-20)
 
 

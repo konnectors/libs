@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.10.5](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@1.10.4...cozy-jobs-cli@1.10.5) (2019-12-04)
+
+
+### Bug Fixes
+
+* **cozy-konnector-dev:** give absolute path to require connector… ([#631](https://github.com/cozy/cozy-konnector-libs/issues/631)) ([608a80d](https://github.com/cozy/cozy-konnector-libs/commit/608a80d978970a51786e2f6e33d7638276211206))
+* yarn dev did not work at all ([5128b04](https://github.com/cozy/cozy-konnector-libs/commit/5128b04df640358a7789f77ddc3be5b22490ce89))
+* **deps:** update dependency cli-highlight to v2.1.4 ([f289661](https://github.com/cozy/cozy-konnector-libs/commit/f289661d5a4a165e25e1133f60946b6ebebea452))
+
+
+
+
+
 ## [1.10.4](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@1.10.3...cozy-jobs-cli@1.10.4) (2019-11-20)
 
 **Note:** Version bump only for package cozy-jobs-cli
