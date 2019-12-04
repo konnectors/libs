@@ -115,7 +115,7 @@ const launchKonnector = async ({ manifest, token, file, createAccount }) => {
   }
 
   if (fs.existsSync(file)) {
-    return require(file)
+    return require(abspath(file))
   } else {
     console.log(
       `ERROR: File ${file} does not exist. cozy-konnector-dev cannot run it.`
