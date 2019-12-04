@@ -74,7 +74,7 @@
     "eslint-plugin-jsdoc": "17.1.2",
     "jest": "24.9.0",
     "jsdoc-to-markdown": "4.0.1",
-    "lerna": "3.18.5",
+    "lerna": "3.19.0",
     "lerna-changelog": "0.8.3",
     "pdfjs": "2.3.2",
     "pdfjs-dist": "2.2.228",
