@@ -191,7 +191,12 @@ module.exports = {
     },
     downloadById(fileId) {
       setDefaults()
-      const realpath = path.join(rootPath, fileId)
+      const fileInDb = db.get('io.cozy.files').getById(fileId).value()
+      let fileName
+      if (fileInDb) {
+        fileName = fileInDb.attributes.name
+      } else throw new Error('could not find the file')
+      const realpath = path.join(rootPath, fileName)
       const stream = fs.createReadStream(realpath)
       return {
         body: stream,
