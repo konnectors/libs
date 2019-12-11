@@ -8,6 +8,7 @@ const get = require('lodash/get')
 const FileSync = require('lowdb/adapters/FileSync')
 const rawBody = require('raw-body')
 const stripJsonComments = require('strip-json-comments')
+const manifest = require('../libs/manifest')
 
 const rootPath = JSON.parse(
   process.env.COZY_FIELDS || '{"folder_to_save": "."}'
@@ -67,12 +68,10 @@ module.exports = {
       const { doctype } = index
       setDefaults(doctype)
       const { selector } = options
-      const keys = Object.keys(selector)
+
       let result = db
         .get(doctype)
-        .filter(doc =>
-          keys.every(key => doc[key] && doc[key] === selector[key])
-        )
+        .filter(selector)
         .value()
 
       if (options.wholeResponse) {
@@ -178,7 +177,11 @@ module.exports = {
         const finalPath = path.join(rootPath, options.dirID, options.name)
         const returnPath = path.join(options.dirID, options.name)
         log('debug', `Real path : ${finalPath}`)
+        try {
         fs.mkdirSync(finalPath)
+        } catch (err) {
+          // directory already exists
+        }
         resolve({ _id: returnPath, path: returnPath })
       })
     },
@@ -251,14 +254,16 @@ function createFile(file, options = {}) {
 
     const fileDoc = {
       _id: get(options, 'metadata.fileIdAttributes') || options.name,
+      metadata: options.metadata,
+      trashed: false,
       attributes: {
         mime,
-        name: options.name,
-        metadata: options.metadata
+        name: options.name
       },
       cozyMetadata: {
         sourceAccount: options.sourceAccount,
-        sourceAccountIdentifier: options.sourceAccountIdentifier
+        sourceAccountIdentifier: options.sourceAccountIdentifier,
+        createdByApp: manifest.data.slug
       }
     }
 
