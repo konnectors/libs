@@ -6,6 +6,7 @@ const saveBills = require('./saveBills')
 const saveFiles = require('./saveFiles')
 const signin = require('./signin')
 const get = require('lodash/get')
+const omit = require('lodash/omit')
 const updateOrCreate = require('./updateOrCreate')
 const saveIdentity = require('./saveIdentity')
 const {
@@ -312,7 +313,7 @@ class BaseKonnector {
    * const { BaseKonnector } = require('cozy-konnector-libs')
    *
    * module.exports = new BaseKonnector(start)
-   
+
    * async function start() {
    *    // we detect the need of a 2FA code
    *    const code = this.waitForTwoFaCode({
@@ -461,8 +462,10 @@ class BaseKonnector {
    */
   async signin(options = {}) {
     await this.deactivateAutoSuccessfulLogin()
-    const result = await signin(options)
-    await this.notifySuccessfulLogin()
+    const result = await signin(omit(options, 'notifySuccessfulLogin'))
+    if (options.notifySuccessfulLogin !== false) {
+      await this.notifySuccessfulLogin()
+    }
     return result
   }
 
