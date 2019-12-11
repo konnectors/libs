@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.32.2](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.32.1...cozy-konnector-libs@4.32.2) (2019-12-11)
+
+
+### Bug Fixes
+
+* allow cozy-client-js stub to work better with file metadata deduplication ([85c4387](https://github.com/cozy/cozy-konnector-libs/commit/85c438719ce687342b5efcb1367694ebda987d3f))
+* more cozy-client-js-stub fix about files ([586f707](https://github.com/cozy/cozy-konnector-libs/commit/586f7073e084be2381f1c0848d024e677a8a05be))
+
+
+### Features
+
+* **BaseKonnector:** add notifySuccessfulLogin option to the signin method ([acce06c](https://github.com/cozy/cozy-konnector-libs/commit/acce06c60c48b9dc85751c5af7a806e5dcac9be1))
+
+
+
+
+
 ## [4.32.1](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.32.0...cozy-konnector-libs@4.32.1) (2019-12-04)
 
 
