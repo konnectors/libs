@@ -22,7 +22,7 @@ const errors = require('./error')
 const findFolderPath = async (cozyFields, account) => {
   // folderId will be stored in cozyFields.folder_to_save on first run
   if (!cozyFields.folder_to_save) {
-    log('warn', `No folder_to_save available in the trigger`)
+    log('info', `No folder_to_save available in the trigger`)
   }
   const folderId = cozyFields.folder_to_save || account.folderId
   if (folderId) {
