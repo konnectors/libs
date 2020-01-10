@@ -4,6 +4,10 @@
 const program = require('commander')
 const fs = require('fs')
 const path = require('path')
+const {Polly} = require('@pollyjs/core')
+const nodeHttpAdapter = require('@pollyjs/adapter-node-http')
+const fsPersister = require('@pollyjs/persister-fs')
+
 require('./open-in-browser')
 
 program
@@ -63,10 +67,26 @@ if (fs.existsSync(path.resolve(filename))) {
  */
 function initReplay() {
   const replayOption = ['record', 'replay'].find(opt => program[opt] === true)
-  if (replayOption) process.env.REPLAY = replayOption
+  if (replayOption) {
+    Polly.register(nodeHttpAdapter)
+    Polly.register(fsPersister)
 
-  process.env.REPLAY =
-    replayOption || (process.env.REPLAY ? process.env.REPLAY : 'bloody')
+    const polly = new Polly('standaloneRun', {
+      adapters: ['node-http'],
+      persister: ['fs'],
+      logging: true,
+      recordFailedRequests: true
+    })
 
-  if (process.env.REPLAY !== 'bloody') require('replay')
+    if (program.record) {
+      polly.record()
+      process.on('beforeExit', async () => {
+        await polly.stop()
+      })
+    }
+
+    if (program.replay) {
+      polly.replay()
+    }
+  }
 }
