@@ -2895,7 +2895,7 @@ btoa-lite@^1.0.0:
   resolved "https://registry.yarnpkg.com/btoa-lite/-/btoa-lite-1.0.0.tgz#337766da15801210fdd956c22e9c6891ab9d0337"
   integrity sha1-M3dm2hWAEhD92VbCLpxokaudAzc=
 
-btoa@1.2.1:
+btoa@1.2.1, btoa@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/btoa/-/btoa-1.2.1.tgz#01a9909f8b2c93f6bf680ba26131eb30f7fa3d73"
   integrity sha512-SB4/MIGlsiVkMcHmT+pSmIPoNDoHg+7cMzmt3Uxt628MTz2487DKSqK/fuhFBrkuqrYv5UCEnACpF4dTFNKc/g==
@@ -3567,6 +3567,27 @@ cozy-client-js@0.16.4, cozy-client-js@^0.16.4:
     pouchdb-browser "7.0.0"
     pouchdb-find "7.0.0"
 
+cozy-client@9.8.1:
+  version "9.8.1"
+  resolved "https://registry.yarnpkg.com/cozy-client/-/cozy-client-9.8.1.tgz#e83aac74e84c6ac7c2dbb414c77bea8b3b5ea20e"
+  integrity sha512-nyrQX3HIVTBl7PnBW502vpJi1N0SZRXEUvJP23Qq26UkQ98t9asXFENa5EVz2yFMAQOkCZXno3ZP16q232LqGg==
+  dependencies:
+    btoa "^1.2.1"
+    cozy-device-helper "^1.7.3"
+    cozy-logger "^1.6.0"
+    cozy-stack-client "^9.8.1"
+    isomorphic-fetch "^2.2.1"
+    lodash "^4.17.13"
+    microee "^0.0.6"
+    opn "^6.0.0"
+    prop-types "^15.6.2"
+    react-redux "^5.0.7"
+    redux "^3.7.2"
+    redux-thunk "^2.3.0"
+    server-destroy "^1.0.1"
+    sift "^6.0.0"
+    url-search-params-polyfill "^7.0.0"
+
 cozy-client@^8.7.1:
   version "8.7.1"
   resolved "https://registry.yarnpkg.com/cozy-client/-/cozy-client-8.7.1.tgz#a22bbae22fac4b5b9bdbf8a8a9cd66eb7deb1014"
@@ -3614,6 +3635,15 @@ cozy-stack-client@^8.7.1:
   version "8.7.1"
   resolved "https://registry.yarnpkg.com/cozy-stack-client/-/cozy-stack-client-8.7.1.tgz#c461c96281db5f2fa447fcd58c48e2163ffeb028"
   integrity sha512-ANpE2DPp2x902VMbKdHRpnh3eOlnmMj/GqgG8acpL/Psn5RYWjxYp25MvoBUHXfA7BZPCQTOnqIXF8pu420yeQ==
+  dependencies:
+    detect-node "^2.0.4"
+    mime "^2.4.0"
+    qs "^6.7.0"
+
+cozy-stack-client@^9.8.1:
+  version "9.8.1"
+  resolved "https://registry.yarnpkg.com/cozy-stack-client/-/cozy-stack-client-9.8.1.tgz#807b349d6394f4430e8f5cdfd6c60ca71aaa11d3"
+  integrity sha512-2Fo1Y9nd2zqsITRQDm+Ps01Fwrfd22OSveRkZqm8ugWQHjvRfccTMFx7Dnji2ZWnDvZv6GdKX271eHfojIOllg==
   dependencies:
     detect-node "^2.0.4"
     mime "^2.4.0"
@@ -7235,6 +7265,13 @@ opentype.js@^1.1.0:
     string.prototype.codepointat "^0.2.1"
     tiny-inflate "^1.0.2"
 
+opn@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/opn/-/opn-6.0.0.tgz#3c5b0db676d5f97da1233d1ed42d182bc5a27d2d"
+  integrity sha512-I9PKfIZC+e4RXZ/qr1RhgyCnGgYX0UEIlXgWnCOVACIvFgaC9rz6Won7xbdhoHrd8IIhV7YEpHjreNUNkqCGkQ==
+  dependencies:
+    is-wsl "^1.1.0"
+
 optimist@^0.6.1:
   version "0.6.1"
   resolved "https://registry.yarnpkg.com/optimist/-/optimist-0.6.1.tgz#da3ea74686fa21a19a111c326e90eb15a0196686"
@@ -8555,6 +8592,11 @@ semver@~5.3.0:
   version "5.3.0"
   resolved "https://registry.yarnpkg.com/semver/-/semver-5.3.0.tgz#9b2ce5d3de02d17c6012ad326aa6b4d0cf54f94f"
   integrity sha1-myzl094C0XxgEq0yaqa00M9U+U8=
+
+server-destroy@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/server-destroy/-/server-destroy-1.0.1.tgz#f13bf928e42b9c3e79383e61cc3998b5d14e6cdd"
+  integrity sha1-8Tv5KOQrnD55OD5hzDmYtdFObN0=
 
 set-blocking@^2.0.0, set-blocking@~2.0.0:
   version "2.0.0"
