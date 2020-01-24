@@ -855,7 +855,7 @@ Bank transactions categorization
 
 * [categorization](#module_categorization)
     * [~createCategorizer()](#module_categorization..createCategorizer) ⇒ <code>object</code>
-    * [~categorize()](#module_categorization..categorize) ⇒ <code>Array.&lt;object&gt;</code>
+    * [~categorize()](#module_categorization..categorize) ⇒ <code>[ &#x27;Array&#x27; ].&lt;object&gt;</code>
 
 <a name="module_categorization..createCategorizer"></a>
 
@@ -891,11 +891,11 @@ class BankingKonnector extends BaseKonnector {
 ```
 <a name="module_categorization..categorize"></a>
 
-### categorization~categorize() ⇒ <code>Array.&lt;object&gt;</code>
+### categorization~categorize() ⇒ <code>[ &#x27;Array&#x27; ].&lt;object&gt;</code>
 Initialize global and local models and categorize the given array of transactions
 
 **Kind**: inner method of [<code>categorization</code>](#module_categorization)  
-**Returns**: <code>Array.&lt;object&gt;</code> - the categorized transactions  
+**Returns**: <code>[ &#x27;Array&#x27; ].&lt;object&gt;</code> - the categorized transactions  
 **See**: [createCategorizer](createCategorizer) for more informations about models initialization  
 **Example**  
 ```js
