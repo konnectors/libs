@@ -244,10 +244,10 @@ describe('methods', () => {
       konn.deactivateAutoSuccessfulLogin = jest.fn()
       konn.notifySuccessfulLogin = jest.fn()
       signin.mockResolvedValue('signin output')
-      const result = await konn.signin({toto: 'coucou'})
+      const result = await konn.signin({ toto: 'coucou' })
       expect(konn.deactivateAutoSuccessfulLogin).toHaveBeenCalledTimes(1)
       expect(signin).toHaveBeenCalledTimes(1)
-      expect(signin).toHaveBeenCalledWith({toto: 'coucou'})
+      expect(signin).toHaveBeenCalledWith({ toto: 'coucou' })
       expect(konn.notifySuccessfulLogin).toHaveBeenCalledTimes(1)
       expect(result).toEqual('signin output')
     })
@@ -256,10 +256,13 @@ describe('methods', () => {
       konn.deactivateAutoSuccessfulLogin = jest.fn()
       konn.notifySuccessfulLogin = jest.fn()
       signin.mockResolvedValue('signin output')
-      const result = await konn.signin({toto: 'coucou', notifySuccessfulLogin: false})
+      const result = await konn.signin({
+        toto: 'coucou',
+        notifySuccessfulLogin: false
+      })
       expect(konn.deactivateAutoSuccessfulLogin).toHaveBeenCalledTimes(1)
       expect(signin).toHaveBeenCalledTimes(1)
-      expect(signin).toHaveBeenCalledWith({toto: 'coucou'})
+      expect(signin).toHaveBeenCalledWith({ toto: 'coucou' })
       expect(konn.notifySuccessfulLogin).toHaveBeenCalledTimes(0)
       expect(result).toEqual('signin output')
     })

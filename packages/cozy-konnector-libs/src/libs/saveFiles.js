@@ -170,11 +170,10 @@ const saveFiles = async (entries, fields, options = {}) => {
 
           if (fileFound) {
             await renameFile(fileFound, entry)
-            return
-          } else {
-            delete entry.shouldReplaceName
-            // And continue as normal
+            // we continue because saveFile mays also add fileIdAttributes to the renamed file
           }
+
+          delete entry.shouldReplaceName
         }
 
         if (canBeSaved(entry)) {
@@ -612,7 +611,13 @@ async function renameFile(file, entry) {
     await cozy.files.updateAttributesById(file._id, { name: entry.filename })
   } catch (err) {
     if (JSON.parse(err.message).errors.shift().status === '409') {
-      log('warn', `${entry.filename} already exists. Removing ${getAttribute(file, 'name')}`)
+      log(
+        'warn',
+        `${entry.filename} already exists. Removing ${getAttribute(
+          file,
+          'name'
+        )}`
+      )
       await cozy.files.trashById(file._id)
     }
   }

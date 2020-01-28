@@ -157,7 +157,10 @@ module.exports = {
     },
     statById(id) {
       setDefaults()
-      const doc = db.get('io.cozy.files').getById(id).value()
+      const doc = db
+        .get('io.cozy.files')
+        .getById(id)
+        .value()
 
       if (doc) {
         return doc
@@ -171,7 +174,7 @@ module.exports = {
       return createFile(file, options)
     },
 
-    async updateAttributesById(id, attrs, options) {
+    async updateAttributesById(id, attrs) {
       setDefaults()
       const doc = db
         .get('io.cozy.files')
@@ -182,10 +185,10 @@ module.exports = {
         if (attrs.name && attrs.name !== get(doc, 'attributes.name')) {
           await renameFile(id, attrs.name)
         }
-        doc.attributes = {...doc.attributes, ...attrs}
+        doc.attributes = { ...doc.attributes, ...attrs }
         db.get('io.cozy.files')
-        .updateById(id, doc)
-        .write()
+          .updateById(id, doc)
+          .write()
       }
     },
 
@@ -201,7 +204,7 @@ module.exports = {
         const returnPath = path.join(options.dirID, options.name)
         log('debug', `Real path : ${finalPath}`)
         try {
-        fs.mkdirSync(finalPath)
+          fs.mkdirSync(finalPath)
         } catch (err) {
           // directory already exists
         }
@@ -214,7 +217,10 @@ module.exports = {
     },
     downloadById(fileId) {
       setDefaults()
-      const fileInDb = db.get('io.cozy.files').getById(fileId).value()
+      const fileInDb = db
+        .get('io.cozy.files')
+        .getById(fileId)
+        .value()
       let fileName
       if (fileInDb) {
         fileName = fileInDb.attributes.name
@@ -239,7 +245,10 @@ module.exports = {
 }
 
 async function removeFile(fileId) {
-  const file = db.get('io.cozy.files').getById(fileId).value()
+  const file = db
+    .get('io.cozy.files')
+    .getById(fileId)
+    .value()
   db.get('io.cozy.files')
     .removeById(fileId)
     .write()
@@ -248,7 +257,8 @@ async function removeFile(fileId) {
 }
 
 async function renameFile(fileId, newName) {
-  const doc = db.get('io.cozy.files')
+  const doc = db
+    .get('io.cozy.files')
     .getById(fileId)
     .write()
   const oldPath = path.join(rootPath, doc.dir_id, doc.attributes.name)
