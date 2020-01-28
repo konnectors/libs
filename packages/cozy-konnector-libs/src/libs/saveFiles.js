@@ -37,8 +37,8 @@ const DEFAULT_RETRY = 1 // do not retry by default
  *   + filename : The file name of the item written on disk. This attribute is optional and as default value, the
  *     file name will be "smartly" guessed by the function. Use this attribute if the guess is not smart
  *   enough for you, or if you use `filestream` (can be a function returning the value).
- *   + `shouldReplaceName` (string) used to migrate filename. If saveFiles find a file linked to this entry and this
- *   file name matches `shouldReplaceName`, the file is renames to `filename` (can be a function returning the value)
+ *   + `shouldReplaceName` (string) used to migrate filename. If saveFiles finds a file linked to this entry and this
+ *   file name matches `shouldReplaceName`, the file is renamed to `filename` (can be a function returning the value)
  *   + `shouldReplaceFile` (function) use this function to state if the current entry should be forced
  *   to be redownloaded and replaced. Usefull if we know the file content can change and we always
  *   want the last version.
@@ -165,8 +165,9 @@ const saveFiles = async (entries, fields, options = {}) => {
             filesArray = await getFiles(fields.folderPath)
           }
           const fileFound = filesArray.find(
-            f => f.name === entry.shouldReplaceName
+            f => getAttribute(f, 'name') === entry.shouldReplaceName
           )
+
           if (fileFound) {
             await renameFile(fileFound, entry)
             return
@@ -606,12 +607,12 @@ async function renameFile(file, entry) {
   if (!entry.filename) {
     throw new Error('shouldReplaceName needs a filename')
   }
-  log('debug', `Renaming ${file.name} to ${entry.filename}`)
+  log('debug', `Renaming ${getAttribute(file, 'name')} to ${entry.filename}`)
   try {
     await cozy.files.updateAttributesById(file._id, { name: entry.filename })
   } catch (err) {
     if (JSON.parse(err.message).errors.shift().status === '409') {
-      log('warn', `${entry.filename} already exists. Removing ${file.name}`)
+      log('warn', `${entry.filename} already exists. Removing ${getAttribute(file, 'name')}`)
       await cozy.files.trashById(file._id)
     }
   }

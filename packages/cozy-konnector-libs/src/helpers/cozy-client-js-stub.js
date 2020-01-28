@@ -155,15 +155,38 @@ module.exports = {
         }
       })
     },
-    statById() {
+    statById(id) {
       setDefaults()
-      // just return the / path for dev purpose
-      return Promise.resolve({ attributes: { path: '/' } })
+      const doc = db.get('io.cozy.files').getById(id).value()
+
+      if (doc) {
+        return doc
+      } else {
+        return Promise.resolve({ attributes: { path: '/' } })
+      }
     },
     async updateById(id, file, options) {
       setDefaults()
       await removeFile(id)
       return createFile(file, options)
+    },
+
+    async updateAttributesById(id, attrs, options) {
+      setDefaults()
+      const doc = db
+        .get('io.cozy.files')
+        .getById(id)
+        .value()
+
+      if (doc) {
+        if (attrs.name && attrs.name !== get(doc, 'attributes.name')) {
+          await renameFile(id, attrs.name)
+        }
+        doc.attributes = {...doc.attributes, ...attrs}
+        db.get('io.cozy.files')
+        .updateById(id, doc)
+        .write()
+      }
     },
 
     create(file, options) {
@@ -216,11 +239,21 @@ module.exports = {
 }
 
 async function removeFile(fileId) {
+  const file = db.get('io.cozy.files').getById(fileId).value()
   db.get('io.cozy.files')
     .removeById(fileId)
     .write()
-  const realpath = path.join(rootPath, fileId)
+  const realpath = path.join(rootPath, file.dir_id, file.attributes.name)
   fs.unlinkSync(realpath)
+}
+
+async function renameFile(fileId, newName) {
+  const doc = db.get('io.cozy.files')
+    .getById(fileId)
+    .write()
+  const oldPath = path.join(rootPath, doc.dir_id, doc.attributes.name)
+  const newPath = path.join(rootPath, doc.dir_id, newName)
+  fs.renameSync(oldPath, newPath)
 }
 
 function setUpDb() {
@@ -259,6 +292,7 @@ function createFile(file, options = {}) {
 
     const fileDoc = {
       _id: get(options, 'metadata.fileIdAttributes') || options.name,
+      dir_id: options.dirID || '.',
       metadata: options.metadata,
       trashed: false,
       attributes: {

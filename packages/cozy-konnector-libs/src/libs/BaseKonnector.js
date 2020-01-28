@@ -152,6 +152,7 @@ class BaseKonnector {
    */
   fail(err) {
     log('debug', 'Error caught by BaseKonnector')
+      console.log('err', err)
 
     const error = err.message || err
 
