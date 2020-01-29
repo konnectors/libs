@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.32.3](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.32.2...cozy-konnector-libs@4.32.3) (2020-01-29)
+
+
+### Bug Fixes
+
+* **saveFiles:** allow file renaming to works in standalone mode ([7428900](https://github.com/cozy/cozy-konnector-libs/commit/7428900b9fea5b18ca6a40b9824827f3ebe0ffad))
+* do not log a warning when no folder_to_save ([93cbed9](https://github.com/cozy/cozy-konnector-libs/commit/93cbed9517a28aab03aa735b70ac5c0a0b365143))
+
+
+
+
+
 ## [4.32.2](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.32.1...cozy-konnector-libs@4.32.2) (2019-12-11)
 
 

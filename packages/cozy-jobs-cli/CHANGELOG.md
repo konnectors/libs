@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.11.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@1.10.6...cozy-jobs-cli@1.11.0) (2020-01-29)
+
+
+### Features
+
+* use pollyjs record/replay standalone sessions ([8f996ec](https://github.com/cozy/cozy-konnector-libs/commit/8f996ecabaf599f200d5f547e60a2b8f3ee913ab))
+
+
+
+
+
 ## [1.10.6](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@1.10.5...cozy-jobs-cli@1.10.6) (2019-12-11)
 
 **Note:** Version bump only for package cozy-jobs-cli
