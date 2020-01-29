@@ -4,7 +4,7 @@
 const program = require('commander')
 const fs = require('fs')
 const path = require('path')
-const {Polly} = require('@pollyjs/core')
+const { Polly } = require('@pollyjs/core')
 const nodeHttpAdapter = require('@pollyjs/adapter-node-http')
 const fsPersister = require('@pollyjs/persister-fs')
 
