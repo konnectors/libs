@@ -1533,42 +1533,6 @@
     inquirer "^6.2.0"
     npmlog "^4.1.2"
 
-"@lerna/publish@3.20.1":
-  version "3.20.1"
-  resolved "https://registry.yarnpkg.com/@lerna/publish/-/publish-3.20.1.tgz#740acc4af52ec69eb603b46b476eab093a72e95b"
-  integrity sha512-F0Eb2lyIkwMiucGVzOq91RyhJSkJsuh/9xKnKgm6VK8tuVbLDD8cNE7dLRIIDtBYWPtEmujTW+nBg/aDdJBjWg==
-  dependencies:
-    "@evocateur/libnpmaccess" "^3.1.2"
-    "@evocateur/npm-registry-fetch" "^4.0.0"
-    "@evocateur/pacote" "^9.6.3"
-    "@lerna/check-working-tree" "3.16.5"
-    "@lerna/child-process" "3.16.5"
-    "@lerna/collect-updates" "3.20.0"
-    "@lerna/command" "3.18.5"
-    "@lerna/describe-ref" "3.16.5"
-    "@lerna/log-packed" "3.16.0"
-    "@lerna/npm-conf" "3.16.0"
-    "@lerna/npm-dist-tag" "3.18.5"
-    "@lerna/npm-publish" "3.18.5"
-    "@lerna/otplease" "3.18.5"
-    "@lerna/output" "3.13.0"
-    "@lerna/pack-directory" "3.16.4"
-    "@lerna/prerelease-id-from-version" "3.16.0"
-    "@lerna/prompt" "3.18.5"
-    "@lerna/pulse-till-done" "3.13.0"
-    "@lerna/run-lifecycle" "3.16.2"
-    "@lerna/run-topologically" "3.18.5"
-    "@lerna/validation-error" "3.13.0"
-    "@lerna/version" "3.20.1"
-    figgy-pudding "^3.5.1"
-    fs-extra "^8.1.0"
-    npm-package-arg "^6.1.0"
-    npmlog "^4.1.2"
-    p-finally "^1.0.0"
-    p-map "^2.1.0"
-    p-pipe "^1.2.0"
-    semver "^6.2.0"
-
 "@lerna/publish@3.20.2":
   version "3.20.2"
   resolved "https://registry.yarnpkg.com/@lerna/publish/-/publish-3.20.2.tgz#a45d29813099b3249657ea913d0dc3f8ebc5cc2e"
@@ -1707,38 +1671,6 @@
   integrity sha512-SiJP75nwB8GhgwLKQfdkSnDufAaCbkZWJqEDlKOUPUvVOplRGnfL+BPQZH5nvq2BYSRXsksXWZ4UHVnQZI/HYA==
   dependencies:
     npmlog "^4.1.2"
-
-"@lerna/version@3.20.1":
-  version "3.20.1"
-  resolved "https://registry.yarnpkg.com/@lerna/version/-/version-3.20.1.tgz#1b6b7f30705ecb37af5c796ae2ef7f24f81d073e"
-  integrity sha512-MY80FV4uqdjxHNl6WaZ5k9hr0IGeQXo1+bKTKzMUudpr3HlTS0c0PoAwSGB2KHafGFpoyb9WHBhb1uDyhL+OfQ==
-  dependencies:
-    "@lerna/check-working-tree" "3.16.5"
-    "@lerna/child-process" "3.16.5"
-    "@lerna/collect-updates" "3.20.0"
-    "@lerna/command" "3.18.5"
-    "@lerna/conventional-commits" "3.18.5"
-    "@lerna/github-client" "3.16.5"
-    "@lerna/gitlab-client" "3.15.0"
-    "@lerna/output" "3.13.0"
-    "@lerna/prerelease-id-from-version" "3.16.0"
-    "@lerna/prompt" "3.18.5"
-    "@lerna/run-lifecycle" "3.16.2"
-    "@lerna/run-topologically" "3.18.5"
-    "@lerna/validation-error" "3.13.0"
-    chalk "^2.3.1"
-    dedent "^0.7.0"
-    load-json-file "^5.3.0"
-    minimatch "^3.0.4"
-    npmlog "^4.1.2"
-    p-map "^2.1.0"
-    p-pipe "^1.2.0"
-    p-reduce "^1.0.0"
-    p-waterfall "^1.0.0"
-    semver "^6.2.0"
-    slash "^2.0.0"
-    temp-write "^3.4.0"
-    write-json-file "^3.2.0"
 
 "@lerna/version@3.20.2":
   version "3.20.2"
@@ -6914,30 +6846,6 @@ lerna-changelog@1.0.0:
     p-map "^3.0.0"
     progress "^2.0.0"
     yargs "^13.0.0"
-
-lerna@3.20.1:
-  version "3.20.1"
-  resolved "https://registry.yarnpkg.com/lerna/-/lerna-3.20.1.tgz#68d42768fc1a243db144558a10d4191c9337646a"
-  integrity sha512-TUS6aSyVdOoXLF1CMwUsT0zCGwgO1LvRUP9zUqWRYdvZP8NofSEzd4ChkRXZWGwXyQ8ozA9bIfwWxMck2QpfIA==
-  dependencies:
-    "@lerna/add" "3.20.0"
-    "@lerna/bootstrap" "3.20.0"
-    "@lerna/changed" "3.20.0"
-    "@lerna/clean" "3.20.0"
-    "@lerna/cli" "3.18.5"
-    "@lerna/create" "3.18.5"
-    "@lerna/diff" "3.18.5"
-    "@lerna/exec" "3.20.0"
-    "@lerna/import" "3.18.5"
-    "@lerna/info" "3.20.0"
-    "@lerna/init" "3.18.5"
-    "@lerna/link" "3.18.5"
-    "@lerna/list" "3.20.0"
-    "@lerna/publish" "3.20.1"
-    "@lerna/run" "3.20.0"
-    "@lerna/version" "3.20.1"
-    import-local "^2.0.0"
-    npmlog "^4.1.2"
 
 lerna@3.20.2:
   version "3.20.2"
