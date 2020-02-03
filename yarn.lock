@@ -8477,17 +8477,17 @@ pdfjs-dist@2.2.228:
     node-ensure "^0.0.0"
     worker-loader "^2.0.0"
 
-pdfjs@2.3.3:
-  version "2.3.3"
-  resolved "https://registry.yarnpkg.com/pdfjs/-/pdfjs-2.3.3.tgz#be082b05a638ef77b471a308d8121d3a3ef08914"
-  integrity sha512-c3HJpD3NmJ8h/XInPzjXarchsnaBMoah1FADTiHdj4d3+IGJl2TsR1DqE7jjvEelZSCJUJ3MbiuunvhZJqMXdQ==
+pdfjs@2.3.4:
+  version "2.3.4"
+  resolved "https://registry.yarnpkg.com/pdfjs/-/pdfjs-2.3.4.tgz#ee999868bb9876ccb43aafaae1e1852e6e6e5c2a"
+  integrity sha512-DY9jb8PuT9lX9E29wL9O4209bRe/WIgfwQkhUZxQEQsIbF/QyCre/5KOAdrN38IG+7LfzSQdh4MzOEjtGiCsTw==
   dependencies:
     "@rkusa/linebreak" "^1.0.0"
     opentype.js "^1.1.0"
     pako "^1.0.10"
-    readable-stream "^3.4.0"
+    readable-stream "^3.5.0"
     unorm "^1.6.0"
-    uuid "^3.3.3"
+    uuid "^3.4.0"
 
 peek-readable@^3.1.0:
   version "3.1.0"
@@ -9014,7 +9014,7 @@ read@1, read@~1.0.1:
     string_decoder "~1.1.1"
     util-deprecate "~1.0.1"
 
-"readable-stream@2 || 3", readable-stream@^3.0.2, readable-stream@^3.1.1, readable-stream@^3.4.0:
+"readable-stream@2 || 3", readable-stream@^3.0.2, readable-stream@^3.1.1, readable-stream@^3.5.0:
   version "3.5.0"
   resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-3.5.0.tgz#465d70e6d1087f6162d079cd0b5db7fbebfd1606"
   integrity sha512-gSz026xs2LfxBPudDuI41V1lka8cxg64E66SGe78zJlsUofOg/yqwezdIcdfwik6B4h8LFmWPA9ef9X3FiNFLA==
@@ -10674,7 +10674,7 @@ uuid@3.3.2:
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.3.2.tgz#1b4af4955eb3077c501c23872fc6513811587131"
   integrity sha512-yXJmeNaw3DnnKAOKJE51sL/ZaYfWJRl1pK9dr19YFCu0ObS231AB1/LbqTKRAQ5kw8A90rA6fr4riOUpTZvQZA==
 
-uuid@^3.0.1, uuid@^3.3.2, uuid@^3.3.3:
+uuid@^3.0.1, uuid@^3.3.2, uuid@^3.4.0:
   version "3.4.0"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.4.0.tgz#b23e4358afa8a202fe7a100af1f5f883f02007ee"
   integrity sha512-HjSDRw6gZE5JMggctHBcjVak08+KEVhSIiDzFnT9S9aegmp85S/bReBVTb4QTFaRNptJ9kuYaNhnbNEOkbKb/A==

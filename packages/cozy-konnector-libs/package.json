@@ -78,7 +78,7 @@
     "jsdoc-to-markdown": "4.0.1",
     "lerna": "3.20.2",
     "lerna-changelog": "1.0.0",
-    "pdfjs": "2.3.3",
+    "pdfjs": "2.3.4",
     "pdfjs-dist": "2.2.228",
     "zombie": "6.1.4"
   }
