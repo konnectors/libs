@@ -651,7 +651,7 @@ function defaultValidateFile(fileDocument) {
 async function defaultValidateFileContent(fileDocument) {
   const response = await cozy.files.downloadById(fileDocument._id)
   const mime = getAttribute(fileDocument, 'mime')
-  const fileTypeFromContent = fileType(await response.buffer())
+  const fileTypeFromContent = await fileType.fromBuffer(await response.buffer())
   if (!fileTypeFromContent) {
     log('warn', `Could not find mime type from file content`)
     return false
