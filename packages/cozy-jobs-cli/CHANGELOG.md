@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.11.3](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@1.11.2...cozy-jobs-cli@1.11.3) (2020-02-11)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @pollyjs/adapter-node-http to v4.0.3 ([3c93189](https://github.com/cozy/cozy-konnector-libs/commit/3c9318967f8ad3d364c9d28a908b9bef518d4b50))
+
+
+
+
+
 ## [1.11.2](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@1.11.1...cozy-jobs-cli@1.11.2) (2020-01-29)
 
 **Note:** Version bump only for package cozy-jobs-cli

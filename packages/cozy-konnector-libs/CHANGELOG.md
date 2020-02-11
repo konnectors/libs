@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.32.5](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.32.4...cozy-konnector-libs@4.32.5) (2020-02-11)
+
+
+### Bug Fixes
+
+* **saveFiles:** fix validateFileContentOption ([05648aa](https://github.com/cozy/cozy-konnector-libs/commit/05648aafe8cd8234bea3ace1b4f510da9d8205fc))
+
+
+
+
+
 ## [4.32.4](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.32.3...cozy-konnector-libs@4.32.4) (2020-01-29)
 
 **Note:** Version bump only for package cozy-konnector-libs
