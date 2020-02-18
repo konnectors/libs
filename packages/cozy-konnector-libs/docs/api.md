@@ -463,6 +463,9 @@ You need the full permission on `io.cozy.files` in your manifest to use this fun
 
   + fileurl: The url of the file (can be a function returning the value). Ignored if `filestream`
   is given
+  + fetchFile: the connector can give it's own function to fetch the file from the website,
+  which will be run only when necessary (if the corresponding file is missing on the cozy)
+  function returning the stream). This function must return a promise resolved as a stream
   + filestream: the stream which will be directly passed to cozyClient.files.create (can also be
   function returning the stream)
   + requestOptions (object) : The options passed to request to fetch fileurl (can be a function returning the value)
@@ -504,6 +507,9 @@ You need the full permission on `io.cozy.files` in your manifest to use this fun
   files to check if they already exist, even if they are moved. If not given, the file path will
   used for deduplication as before.
   + `subPath` (string) : A subpath to save this file, will be created if needed.
+  + `fetchFile` (function) : the connector can give it's own function to fetch the file from the website,
+  which will be run only when necessary (if the corresponding file is missing on the cozy)
+  function returning the stream). This function must return a promise resolved as a stream
 
 **Kind**: Exported function  
 **Example**  
