@@ -243,7 +243,7 @@ const getPdfText = async (fileId, options = {}) => {
   }
   const response = await cozyClient.files.downloadById(fileId)
   const buffer = await response.buffer()
-  const document = await pdfjs.getDocument(buffer)
+  const document = await pdfjs.getDocument(buffer).promise
   let pages
   if (options.pages) {
     pages = Array.isArray(options.pages) ? options.pages : [options.pages]
