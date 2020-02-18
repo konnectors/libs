@@ -157,7 +157,7 @@ is a no-op.</p>
 instead of imperatively building them.</p>
 <p>Heavily inspired by <a href="https://medialab.github.io/artoo/">artoo</a> scraping method.</p>
 </dd>
-<dt><a href="#scrape">scrape($, spec(s), [childSelector])</a> ⇒ <code>object</code> | <code>Array</code></dt>
+<dt><a href="#scrape">scrape($, specs, [childSelector])</a> ⇒ <code>object</code> | <code>Array</code></dt>
 <dd><p>Scrape a cheerio object for properties</p>
 </dd>
 </dl>
@@ -169,18 +169,18 @@ Get a javascript simulation of a real browser (jsdom)
 
 
 * [CozyBrowser](#module_CozyBrowser)
-    * [defaultOptions](#exp_module_CozyBrowser--defaultOptions) ⇒ <code>Class</code> ⏏
+    * [defaultOptions](#exp_module_CozyBrowser--defaultOptions) ⇒ <code>object</code> ⏏
         * [~addListeners()](#module_CozyBrowser--defaultOptions..addListeners)
 
 <a name="exp_module_CozyBrowser--defaultOptions"></a>
 
-### defaultOptions ⇒ <code>Class</code> ⏏
+### defaultOptions ⇒ <code>object</code> ⏏
 Get a preconfigured jsdom browser simulator using the zombie npm package
 See http://zombie.js.org/ for complete documentation
 The connector has to import the zombie npm package itself.
 
 **Kind**: Exported constant  
-**Returns**: <code>Class</code> - Zombie browser extended class  
+**Returns**: <code>object</code> - Zombie browser extended class  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -936,9 +936,9 @@ fetch account information for your connector.
     * [.saveAccountData(data, options)](#BaseKonnector+saveAccountData) ⇒ <code>Promise</code>
     * [.getAccountData()](#BaseKonnector+getAccountData) ⇒ <code>object</code>
     * [.updateAccountAttributes()](#BaseKonnector+updateAccountAttributes)
-    * [.setTwoFAState()](#BaseKonnector+setTwoFAState)
+    * [.setTwoFAState(options)](#BaseKonnector+setTwoFAState)
     * [.resetTwoFAState()](#BaseKonnector+resetTwoFAState)
-    * [.waitForTwoFaCode()](#BaseKonnector+waitForTwoFaCode) ⇒ <code>Promise</code>
+    * [.waitForTwoFaCode(options)](#BaseKonnector+waitForTwoFaCode) ⇒ <code>Promise</code>
     * [.notifySuccessfulLogin()](#BaseKonnector+notifySuccessfulLogin)
     * [.deactivateAutoSuccessfulLogin()](#BaseKonnector+deactivateAutoSuccessfulLogin)
     * [.saveBills()](#BaseKonnector+saveBills) ⇒ <code>Promise</code>
@@ -946,7 +946,7 @@ fetch account information for your connector.
     * [.updateOrCreate()](#BaseKonnector+updateOrCreate) ⇒ <code>Promise</code>
     * [.saveIdentity()](#BaseKonnector+saveIdentity) ⇒ <code>Promise</code>
     * [.signin()](#BaseKonnector+signin) ⇒ <code>Promise</code>
-    * [.terminate(message)](#BaseKonnector+terminate)
+    * [.terminate(err)](#BaseKonnector+terminate)
     * [.getCozyMetadata(data)](#BaseKonnector+getCozyMetadata)
 
 <a name="new_BaseKonnector_new"></a>
@@ -1052,6 +1052,7 @@ Don't forget to modify the manifest.konnector file to give the right to write on
 Get the data saved by saveAccountData
 
 **Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)  
+**Returns**: <code>object</code> - the account data  
 <a name="BaseKonnector+updateAccountAttributes"></a>
 
 ### baseKonnector.updateAccountAttributes()
@@ -1060,7 +1061,7 @@ Update account attributes and cache the account
 **Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)  
 <a name="BaseKonnector+setTwoFAState"></a>
 
-### baseKonnector.setTwoFAState()
+### baseKonnector.setTwoFAState(options)
 Sets the 2FA state, according to the type passed.
 Doing so resets the twoFACode field
 
@@ -1072,8 +1073,9 @@ type where no user input (inside Cozy) is needed.
 
 | Param | Type | Description |
 | --- | --- | --- |
+| options | <code>object</code> | The list of options |
 | options.type | <code>string</code> | Used by the front to show the right message (email/sms/app) |
-| options.retry | <code>boolean</code> |  |
+| options.retry | <code>boolean</code> | Is this function call a retry ? This changes the resulting message to the user |
 
 <a name="BaseKonnector+resetTwoFAState"></a>
 
@@ -1083,7 +1085,7 @@ Resets 2FA state when not needed anymore
 **Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)  
 <a name="BaseKonnector+waitForTwoFaCode"></a>
 
-### baseKonnector.waitForTwoFaCode() ⇒ <code>Promise</code>
+### baseKonnector.waitForTwoFaCode(options) ⇒ <code>Promise</code>
 Notices that 2FA code is needed and wait for the user to submit it.
 It uses the account to do the communication with the user.
 
@@ -1098,6 +1100,7 @@ not run manually means that we do not have a graphic interface to fill the requi
 
 | Param | Type | Description |
 | --- | --- | --- |
+| options | <code>object</code> | The list of options |
 | options.type | <code>string</code> | (default: "email") - Type of the expected 2FA code. The message displayed   to the user will depend on it. Possible values: email, sms |
 | options.timeout | <code>number</code> | (default 3 minutes after now) - After this date, the stop will stop waiting and and an error will be shown to the user (deprecated and alias of endTime) |
 | options.endTime | <code>number</code> | (default 3 minutes after now) - After this timestamp, the home will stop waiting and and an error will be shown to the user |
@@ -1147,6 +1150,7 @@ This is saveBills function from cozy-konnector-libs which automatically adds sou
 metadata of each entry
 
 **Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)  
+**Returns**: <code>Promise</code> - resolves with entries hydrated with db data  
 <a name="BaseKonnector+saveFiles"></a>
 
 ### baseKonnector.saveFiles() ⇒ <code>Promise</code>
@@ -1154,6 +1158,7 @@ This is saveFiles function from cozy-konnector-libs which automatically adds sou
 sourceAccountIdentifier cozyMetadatas to files
 
 **Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)  
+**Returns**: <code>Promise</code> - resolves with the list of entries with file objects  
 <a name="BaseKonnector+updateOrCreate"></a>
 
 ### baseKonnector.updateOrCreate() ⇒ <code>Promise</code>
@@ -1161,6 +1166,7 @@ This is updateOrCreate function from cozy-konnector-libs which automatically add
 metadata of each entry
 
 **Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)  
+**Returns**: <code>Promise</code> - resolves to an array of db objects  
 <a name="BaseKonnector+saveIdentity"></a>
 
 ### baseKonnector.saveIdentity() ⇒ <code>Promise</code>
@@ -1168,6 +1174,7 @@ This is saveIdentity function from cozy-konnector-libs which automatically adds 
 metadata of each entry
 
 **Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)  
+**Returns**: <code>Promise</code> - empty promise  
 <a name="BaseKonnector+signin"></a>
 
 ### baseKonnector.signin() ⇒ <code>Promise</code>
@@ -1175,9 +1182,10 @@ This is signin function from cozy-konnector-libs which automatically adds deacti
 and notifySuccessfulLogin calls
 
 **Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)  
+**Returns**: <code>Promise</code> - resolve with an object containing form data  
 <a name="BaseKonnector+terminate"></a>
 
-### baseKonnector.terminate(message)
+### baseKonnector.terminate(err)
 Send a special error code which is interpreted by the cozy stack to terminate the execution of the
 connector now
 
@@ -1185,7 +1193,7 @@ connector now
 
 | Param | Type | Description |
 | --- | --- | --- |
-| message | <code>string</code> | The error code to be saved as connector result see [docs/ERROR_CODES.md] |
+| err | <code>string</code> | The error code to be saved as connector result see [docs/ERROR_CODES.md] |
 
 <a name="BaseKonnector+getCozyMetadata"></a>
 
@@ -1284,6 +1292,7 @@ Calls cozy-konnector-libs requestFactory forcing this._jar as the cookie
 Reset cookie session with a new empty session and save it to the associated account
 
 **Kind**: instance method of [<code>CookieKonnector</code>](#CookieKonnector)  
+**Returns**: <code>Promise</code> - empty promise  
 <a name="CookieKonnector+initSession"></a>
 
 ### cookieKonnector.initSession() ⇒ <code>Promise</code>
@@ -1297,6 +1306,7 @@ Get the cookie session from the account if any
 Saves the current cookie session to the account
 
 **Kind**: instance method of [<code>CookieKonnector</code>](#CookieKonnector)  
+**Returns**: <code>Promise</code> - empty promise  
 <a name="CookieKonnector+signin"></a>
 
 ### cookieKonnector.signin() ⇒ <code>Promise</code>
@@ -1305,6 +1315,7 @@ and current request from CookieKonnector. It also automatically saves the sessio
 signin if it is a success.
 
 **Kind**: instance method of [<code>CookieKonnector</code>](#CookieKonnector)  
+**Returns**: <code>Promise</code> - resolve with an object containing form data  
 <a name="CookieKonnector+saveFiles"></a>
 
 ### cookieKonnector.saveFiles() ⇒ <code>Promise</code>
@@ -1312,6 +1323,7 @@ This is saveFiles function from cozy-konnector-libs which is forced to use the c
 and current request from CookieKonnector.
 
 **Kind**: instance method of [<code>CookieKonnector</code>](#CookieKonnector)  
+**Returns**: <code>Promise</code> - resolves with the list of entries with file objects  
 <a name="CookieKonnector+saveBills"></a>
 
 ### cookieKonnector.saveBills() ⇒ <code>Promise</code>
@@ -1319,6 +1331,7 @@ This is saveBills function from cozy-konnector-libs which is forced to use the c
 and current request from CookieKonnector.
 
 **Kind**: instance method of [<code>CookieKonnector</code>](#CookieKonnector)  
+**Returns**: <code>Promise</code> - resolves with entries hydrated with db data  
 <a name="Document"></a>
 
 ## Document
@@ -1471,7 +1484,7 @@ Heavily inspired by [artoo] scraping method.
 **Kind**: global function  
 <a name="scrape"></a>
 
-## scrape($, spec(s), [childSelector]) ⇒ <code>object</code> \| <code>Array</code>
+## scrape($, specs, [childSelector]) ⇒ <code>object</code> \| <code>Array</code>
 Scrape a cheerio object for properties
 
 **Kind**: global function  
@@ -1480,7 +1493,7 @@ Scrape a cheerio object for properties
 | Param | Type | Description |
 | --- | --- | --- |
 | $ | <code>cheerio</code> | Cheerio node which will be scraped |
-| spec(s) | <code>object</code> \| <code>string</code> | Options object describing what you want to scrape |
+| specs | <code>object</code> \| <code>string</code> | Options object describing what you want to scrape |
 | [childSelector] | <code>string</code> | If passed, scrape will return an array of items |
 
 **Example**  

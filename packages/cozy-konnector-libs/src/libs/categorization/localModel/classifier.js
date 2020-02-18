@@ -71,7 +71,7 @@ const getClassifierOptions = transactionsWithManualCat => {
  * Create a ready to use classifier for the local categorization model
  *
  * @param {Array} transactionsToLearn - Transactions to learn from
- * @param {object} intializationOptions - Options to pass to the classifier initialization
+ * @param {object} initializationOptions - Options to pass to the classifier initialization
  * @param {object} configurationOptions - Options used to configure the classifier
  */
 const createLocalClassifier = (

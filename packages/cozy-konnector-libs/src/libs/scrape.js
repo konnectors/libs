@@ -23,7 +23,7 @@ const mkSpec = function(spec) {
  * Scrape a cheerio object for properties
  *
  * @param  {cheerio} $ - Cheerio node which will be scraped
- * @param  {object|string} spec(s) - Options object describing what you want to scrape
+ * @param  {object|string} specs - Options object describing what you want to scrape
  * @param  {string} [childSelector] -  If passed, scrape will return an array of items
  * @returns {object|Array} - Item(s) scraped
  * @example

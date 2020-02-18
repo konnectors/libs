@@ -1,5 +1,3 @@
-'use strict'
-
 const log = require('cozy-logger').namespace('CookieKonnector')
 const BaseKonnector = require('./BaseKonnector')
 const requestFactory = require('./request')
@@ -102,7 +100,7 @@ class CookieKonnector extends BaseKonnector {
   /**
    * Reset cookie session with a new empty session and save it to the associated account
    *
-   * @returns {Promise}
+   * @returns {Promise} empty promise
    */
   async resetSession() {
     log('debug', 'Reset cookie session...')
@@ -149,7 +147,7 @@ class CookieKonnector extends BaseKonnector {
   /**
    * Saves the current cookie session to the account
    *
-   * @returns {Promise}
+   * @returns {Promise} empty promise
    */
   async saveSession(obj) {
     const accountData = { ...this._account.data, auth: {} }
@@ -168,7 +166,7 @@ class CookieKonnector extends BaseKonnector {
    * and current request from CookieKonnector. It also automatically saves the session after
    * signin if it is a success.
    *
-   * @returns {Promise}
+   * @returns {Promise} resolve with an object containing form data
    */
   async signin(options) {
     const result = await super.signin({
@@ -183,7 +181,7 @@ class CookieKonnector extends BaseKonnector {
    * This is saveFiles function from cozy-konnector-libs which is forced to use the current cookies
    * and current request from CookieKonnector.
    *
-   * @returns {Promise}
+   * @returns {Promise} resolves with the list of entries with file objects
    */
   saveFiles(entries, fields, options) {
     return super.saveFiles(entries, fields, {
@@ -196,7 +194,7 @@ class CookieKonnector extends BaseKonnector {
    * This is saveBills function from cozy-konnector-libs which is forced to use the current cookies
    * and current request from CookieKonnector.
    *
-   * @returns {Promise}
+   * @returns {Promise} resolves with entries hydrated with db data
    */
   saveBills(entries, fields, options) {
     return super.saveBills(entries, fields, {

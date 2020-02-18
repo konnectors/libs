@@ -32,7 +32,7 @@ const Request = require('request')
  * The connector has to import the zombie npm package itself.
  *
  * @param  {string} options.userAgent - The user agent string used by the browser
- * @returns {Class} Zombie browser extended class
+ * @returns {object} Zombie browser extended class
  *
  * @example
  *

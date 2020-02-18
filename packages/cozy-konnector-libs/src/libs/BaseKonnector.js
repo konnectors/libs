@@ -236,7 +236,7 @@ class BaseKonnector {
   /**
    * Get the data saved by saveAccountData
    *
-   * @returns {object}
+   * @returns {object} the account data
    */
   getAccountData() {
     return new Secret(this._account.data || {})
@@ -262,8 +262,9 @@ class BaseKonnector {
    * the wait for user input will be handled for you. It is useful though for the "app"
    * type where no user input (inside Cozy) is needed.
    *
+   * @param {object}  options - The list of options
    * @param {string}  options.type - Used by the front to show the right message (email/sms/app)
-   * @param {boolean} options.retry
+   * @param {boolean} options.retry - Is this function call a retry ? This changes the resulting message to the user
    */
   async setTwoFAState({ type, retry = false } = {}) {
     let state = retry ? 'TWOFA_NEEDED_RETRY' : 'TWOFA_NEEDED'
@@ -292,6 +293,7 @@ class BaseKonnector {
    * Notices that 2FA code is needed and wait for the user to submit it.
    * It uses the account to do the communication with the user.
    *
+   * @param {object} options - The list of options
    * @param {string} options.type (default: "email") - Type of the expected 2FA code. The message displayed
    *   to the user will depend on it. Possible values: email, sms
    * @param {number} options.timeout (default 3 minutes after now) - After this date, the stop will stop waiting and
@@ -402,7 +404,7 @@ class BaseKonnector {
    * This is saveBills function from cozy-konnector-libs which automatically adds sourceAccount in
    * metadata of each entry
    *
-   * @returns {Promise}
+   * @returns {Promise} resolves with entries hydrated with db data
    */
   saveBills(entries, fields, options) {
     return saveBills(entries, fields, {
@@ -416,7 +418,7 @@ class BaseKonnector {
    * This is saveFiles function from cozy-konnector-libs which automatically adds sourceAccount and
    * sourceAccountIdentifier cozyMetadatas to files
    *
-   * @returns {Promise}
+   * @returns {Promise} resolves with the list of entries with file objects
    */
   saveFiles(entries, fields, options) {
     return saveFiles(entries, fields, {
@@ -430,7 +432,7 @@ class BaseKonnector {
    * This is updateOrCreate function from cozy-konnector-libs which automatically adds sourceAccount in
    * metadata of each entry
    *
-   * @returns {Promise}
+   * @returns {Promise} resolves to an array of db objects
    */
   updateOrCreate(entries, doctype, matchingAttributes, options) {
     return updateOrCreate(entries, doctype, matchingAttributes, {
@@ -444,7 +446,7 @@ class BaseKonnector {
    * This is saveIdentity function from cozy-konnector-libs which automatically adds sourceAccount in
    * metadata of each entry
    *
-   * @returns {Promise}
+   * @returns {Promise} empty promise
    */
   saveIdentity(contact, accountIdentifier, options = {}) {
     return saveIdentity(contact, accountIdentifier, {
@@ -458,7 +460,7 @@ class BaseKonnector {
    * This is signin function from cozy-konnector-libs which automatically adds deactivateAutoSuccessfulLogin
    * and notifySuccessfulLogin calls
    *
-   * @returns {Promise}
+   * @returns {Promise} resolve with an object containing form data
    */
   async signin(options = {}) {
     await this.deactivateAutoSuccessfulLogin()
@@ -473,7 +475,7 @@ class BaseKonnector {
    * Send a special error code which is interpreted by the cozy stack to terminate the execution of the
    * connector now
    *
-   * @param  {string} message - The error code to be saved as connector result see [docs/ERROR_CODES.md]
+   * @param  {string} err - The error code to be saved as connector result see [docs/ERROR_CODES.md]
    */
   terminate(err) {
     log('critical', String(err).substr(0, LOG_ERROR_MSG_LIMIT))
