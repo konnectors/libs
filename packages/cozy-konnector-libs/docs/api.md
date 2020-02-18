@@ -454,64 +454,36 @@ Saves the given files in the given folder via the Cozy API.
 
 <a name="exp_module_saveFiles--saveFiles"></a>
 
-### saveFiles() ⏏
+### saveFiles(files, fields, options) ⏏
 Saves the files given in the fileurl attribute of each entries
 
 You need the full permission on `io.cozy.files` in your manifest to use this function.
 
-- `files` is an array of objects with the following possible attributes :
-
-  + fileurl: The url of the file (can be a function returning the value). Ignored if `filestream`
-  is given
-  + fetchFile: the connector can give it's own function to fetch the file from the website,
-  which will be run only when necessary (if the corresponding file is missing on the cozy)
-  function returning the stream). This function must return a promise resolved as a stream
-  + filestream: the stream which will be directly passed to cozyClient.files.create (can also be
-  function returning the stream)
-  + requestOptions (object) : The options passed to request to fetch fileurl (can be a function returning the value)
-  + filename : The file name of the item written on disk. This attribute is optional and as default value, the
-    file name will be "smartly" guessed by the function. Use this attribute if the guess is not smart
-  enough for you, or if you use `filestream` (can be a function returning the value).
-  + `shouldReplaceName` (string) used to migrate filename. If saveFiles finds a file linked to this entry and this
-  file name matches `shouldReplaceName`, the file is renamed to `filename` (can be a function returning the value)
-  + `shouldReplaceFile` (function) use this function to state if the current entry should be forced
-  to be redownloaded and replaced. Usefull if we know the file content can change and we always
-  want the last version.
-  + `fileAttributes` (object) ex: `{created_at: new Date()}` sets some additionnal file
-  attributes passed to cozyClient.file.create
-  + `subPath` (string) : A subpath to save all files, will be created if needed.
-
-- `fields` (string) is the argument given to the main function of your connector by the BaseKonnector.
-     It especially contains a `folderPath` which is the string path configured by the user in
-     collect/home
-
-- `options` (object) is optional. Possible options :
-
-  + `timeout` (timestamp) can be used if your connector needs to fetch a lot of files and if the
-  stack does not give enough time to your connector to fetch it all. It could happen that the
-  connector is stopped right in the middle of the download of the file and the file will be
-  broken. With the `timeout` option, the `saveFiles` function will check if the timeout has
-  passed right after downloading each file and then will be sure to be stopped cleanly if the
-  timeout is not too long. And since it is really fast to check that a file has already been
-  downloaded, on the next run of the connector, it will be able to download some more
-  files, and so on. If you want the timeout to be in 10s, do `Date.now() + 10*1000`.
-  You can try it in the previous code.
-  + `contentType` (string or boolean) ex: 'application/pdf' used to force the contentType of documents when
-  they are badly recognized by cozy. If "true" the content type will be recognized from the file
-  name and forced the same way.
-  + `concurrency` (number) default: `1` sets the maximum number of concurrent downloads
-  + `validateFile` (function) default: do not validate if file is empty or has bad mime type
-  + `validateFileContent` (boolean or function) default false. Also check the content of the file to
-  recognize the mime type
-  + `fileIdAttributes` (array of strings). Describes which attributes of files will be taken as primary key for
-  files to check if they already exist, even if they are moved. If not given, the file path will
-  used for deduplication as before.
-  + `subPath` (string) : A subpath to save this file, will be created if needed.
-  + `fetchFile` (function) : the connector can give it's own function to fetch the file from the website,
-  which will be run only when necessary (if the corresponding file is missing on the cozy)
-  function returning the stream). This function must return a promise resolved as a stream
-
 **Kind**: Exported function  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| files | <code>Array</code> | list of object describing files to save |
+| files.fileurl | <code>string</code> | The url of the file (can be a function returning the value). Ignored if `filestream` is given |
+| files.fetchFile | <code>function</code> | the connector can give it's own function to fetch the file from the website, which will be run only when necessary (if the corresponding file is missing on the cozy) function returning the stream). This function must return a promise resolved as a stream |
+| files.filestream | <code>object</code> | the stream which will be directly passed to cozyClient.files.create (can also be function returning the stream) |
+| files.requestOptions | <code>object</code> | The options passed to request to fetch fileurl (can be a function returning the value) |
+| files.filename | <code>string</code> | The file name of the item written on disk. This attribute is optional and as default value, the file name will be "smartly" guessed by the function. Use this attribute if the guess is not smart enough for you, or if you use `filestream` (can be a function returning the value). |
+| files.shouldReplaceName | <code>string</code> | used to migrate filename. If saveFiles finds a file linked to this entry and this file name matches `shouldReplaceName`, the file is renamed to `filename` (can be a function returning the value) |
+| files.shouldReplaceFile | <code>function</code> | use this function to state if the current entry should be forced to be redownloaded and replaced. Usefull if we know the file content can change and we always want the last version. |
+| files.fileAttributes | <code>object</code> | ex: `{created_at: new Date()}` sets some additionnal file attributes passed to cozyClient.file.create |
+| files.subPath | <code>string</code> | A subpath to save all files, will be created if needed. |
+| fields | <code>object</code> | is the argument given to the main function of your connector by the BaseKonnector.  It especially contains a `folderPath` which is the string path configured by the user in collect/home |
+| options | <code>object</code> | global options |
+| options.timeout | <code>number</code> | timestamp which can be used if your connector needs to fetch a lot of files and if the stack does not give enough time to your connector to fetch it all. It could happen that the connector is stopped right in the middle of the download of the file and the file will be broken. With the `timeout` option, the `saveFiles` function will check if the timeout has passed right after downloading each file and then will be sure to be stopped cleanly if the timeout is not too long. And since it is really fast to check that a file has already been downloaded, on the next run of the connector, it will be able to download some more files, and so on. If you want the timeout to be in 10s, do `Date.now() + 10*1000`.  You can try it in the previous code. |
+| options.contentType | <code>number</code> \| <code>boolean</code> | ex: 'application/pdf' used to force the contentType of documents when they are badly recognized by cozy. If "true" the content type will be recognized from the file name and forced the same way. |
+| options.concurrency | <code>number</code> | default: `1` sets the maximum number of concurrent downloads |
+| options.validateFile | <code>function</code> | default: do not validate if file is empty or has bad mime type |
+| options.validateFileContent | <code>boolean</code> \| <code>function</code> | default false. Also check the content of the file to recognize the mime type |
+| options.fileIdAttributes | <code>Array</code> | array of strings : Describes which attributes of files will be taken as primary key for files to check if they already exist, even if they are moved. If not given, the file path will used for deduplication as before. |
+| options.subPath | <code>string</code> | A subpath to save this file, will be created if needed. |
+| options.fetchFile | <code>function</code> | the connector can give it's own function to fetch the file from the website, which will be run only when necessary (if the corresponding file is missing on the cozy) function returning the stream). This function must return a promise resolved as a stream |
+
 **Example**  
 ```javascript
 await saveFiles([{fileurl: 'https://...', filename: 'bill1.pdf'}], fields, {
