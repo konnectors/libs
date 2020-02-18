@@ -31,6 +31,9 @@ const DEFAULT_RETRY = 1 // do not retry by default
  *
  *   + fileurl: The url of the file (can be a function returning the value). Ignored if `filestream`
  *   is given
+ *   + fetchFile: the connector can give it's own function to fetch the file from the website,
+ *   which will be run only when necessary (if the corresponding file is missing on the cozy)
+ *   function returning the stream). This function must return a promise resolved as a stream
  *   + filestream: the stream which will be directly passed to cozyClient.files.create (can also be
  *   function returning the stream)
  *   + requestOptions (object) : The options passed to request to fetch fileurl (can be a function returning the value)
@@ -72,6 +75,9 @@ const DEFAULT_RETRY = 1 // do not retry by default
  *   files to check if they already exist, even if they are moved. If not given, the file path will
  *   used for deduplication as before.
  *   + `subPath` (string) : A subpath to save this file, will be created if needed.
+ *   + `fetchFile` (function) : the connector can give it's own function to fetch the file from the website,
+ *   which will be run only when necessary (if the corresponding file is missing on the cozy)
+ *   function returning the stream). This function must return a promise resolved as a stream
  *
  * @example
  * ```javascript
@@ -132,7 +138,7 @@ const saveFiles = async (entries, fields, options = {}) => {
   noMetadataDeduplicationWarning(saveOptions)
 
   const canBeSaved = entry =>
-    entry.fileurl || entry.requestOptions || entry.filestream
+    entry.fetchFile || entry.fileurl || entry.requestOptions || entry.filestream
 
   let filesArray = undefined
   let savedFiles = 0
@@ -436,8 +442,15 @@ async function createFile(entry, options, method, fileId) {
     }
   }
 
-  const toCreate =
-    entry.filestream || downloadEntry(entry, { ...options, simple: false })
+  let toCreate
+  if (entry.filestream) {
+    toCreate = entry.filestream
+  } else if (entry.fetchFile || options.fetchFile) {
+    toCreate = await (entry.fetchFile || options.fetchFile)(entry)
+  } else {
+    toCreate = downloadEntry(entry, { ...options, simple: false })
+  }
+
   let fileDocument
   if (method === 'create') {
     fileDocument = await cozy.files.create(toCreate, createFileOptions)
@@ -474,7 +487,7 @@ function downloadEntry(entry, options) {
   )
 
   if (options.contentType) {
-    // the developper wants to foce the contentType of the document
+    // the developper wants to force the contentType of the document
     // we pipe the stream to remove headers with bad contentType from the request
     return filePromise.pipe(new stream.PassThrough())
   }
@@ -668,6 +681,7 @@ async function defaultValidateFileContent(fileDocument) {
 }
 
 function sanitizeEntry(entry) {
+  delete entry.fetchFile
   delete entry.requestOptions
   delete entry.filestream
   delete entry.shouldReplaceFile
