@@ -110,12 +110,16 @@ const saveBills = async (inputEntries, fields, inputOptions = {}) => {
   tempEntries = await saveFiles(tempEntries, fields, options)
 
   if (options.processPdf) {
+    let moreEntries = []
     for (let entry of tempEntries) {
       if (entry.fileDocument) {
         let pdfContent
         try {
           pdfContent = await utils.getPdfText(entry.fileDocument._id)
-          await options.processPdf(entry, pdfContent.text, pdfContent)
+
+          // allow to create more entries related to the same file
+          const result = await options.processPdf(entry, pdfContent.text, pdfContent)
+          if (result && result.length) moreEntries = [...moreEntries, ...result]
         } catch (err) {
           log(
             'warn',
@@ -129,6 +133,7 @@ const saveBills = async (inputEntries, fields, inputOptions = {}) => {
         }
       }
     }
+    if (moreEntries.length) tempEntries = [...tempEntries, ...moreEntries]
   }
 
   // try to get transaction regexp from the manifest
