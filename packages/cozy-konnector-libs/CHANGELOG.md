@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.33.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.32.5...cozy-konnector-libs@4.33.0) (2020-02-20)
+
+
+### Bug Fixes
+
+* avoid pdfjs warning on bad api usage ([1de4561](https://github.com/cozy/cozy-konnector-libs/commit/1de4561d7b158a6d9a8cc318639ab4cd488f9859))
+
+
+### Features
+
+* **saveBills:** allow processPdf to associate multiple bills to one file ([1a6a69b](https://github.com/cozy/cozy-konnector-libs/commit/1a6a69b730682e9e32a1b519554c7ed3d83e8b9c))
+* **saveFiles:** add the fetchFile option to allow a connector to give it's own file retrieving function which will be run only when needed. ([88bda03](https://github.com/cozy/cozy-konnector-libs/commit/88bda03fc226e7093bccefad5198e61abeb416be))
+
+
+
+
+
 ## [4.32.5](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.32.4...cozy-konnector-libs@4.32.5) (2020-02-11)
 
 
