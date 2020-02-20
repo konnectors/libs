@@ -28,7 +28,7 @@ let attached = false
  * If the cleanup function has not been called, calling again the function
  * is a no-op.
  *
- * @param  {Process} prcs - Process object, default to current process
+ * @param  {object} prcs - Process object, default to current process
  * @returns {Function} When called, removes the signal handlers
  */
 const attachProcessEventHandlers = (prcs = process) => {

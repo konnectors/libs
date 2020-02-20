@@ -59,6 +59,14 @@ const checkTOS = err => {
  * You need at least the `GET` permission on `io.cozy.accounts` in your manifest to allow it to
  * fetch account information for your connector.
  *
+ * Its role is twofold :
+ *
+ * - Make the link between account data and konnector
+ * - Handle errors
+ *
+ * ⚠️  A promise should be returned from the `fetch` function otherwise
+ * the konnector cannot know that asynchronous code has been called.
+ *
  * @example
  * ```javascript
  * const { BaseKonnector } = require('cozy-konnector-libs')
@@ -71,19 +79,6 @@ const checkTOS = err => {
  *    .then(computeReimbursements)
  *    .then(saveBills)
  * })
- * ```
- *
- * @description
- * Its role is twofold :
- *
- * - Make the link between account data and konnector
- * - Handle errors
- *
- * ⚠️  A promise should be returned from the `fetch` function otherwise
- * the konnector cannot know that asynchronous code has been called.
- *
- * ```
- * this.terminate('LOGIN_FAILED')
  * ```
  */
 class BaseKonnector {
@@ -476,6 +471,11 @@ class BaseKonnector {
    * connector now
    *
    * @param  {string} err - The error code to be saved as connector result see [docs/ERROR_CODES.md]
+   *
+   * @example
+   * ```javascript
+   * this.terminate('LOGIN_FAILED')
+   * ```
    */
   terminate(err) {
     log('critical', String(err).substr(0, LOG_ERROR_MSG_LIMIT))

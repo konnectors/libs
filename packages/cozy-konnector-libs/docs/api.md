@@ -65,6 +65,13 @@ exist in the cozy or not</p>
 It takes a fetch function in parameter that must return a <code>Promise</code>.
 You need at least the <code>GET</code> permission on <code>io.cozy.accounts</code> in your manifest to allow it to
 fetch account information for your connector.</p>
+<p>Its role is twofold :</p>
+<ul>
+<li>Make the link between account data and konnector</li>
+<li>Handle errors</li>
+</ul>
+<p>⚠️  A promise should be returned from the <code>fetch</code> function otherwise
+the konnector cannot know that asynchronous code has been called.</p>
 </dd>
 <dt><a href="#CookieKonnector">CookieKonnector</a></dt>
 <dd><p>Connector base class extending BaseKonnector which handles cookie session in a central way
@@ -454,7 +461,7 @@ Saves the given files in the given folder via the Cozy API.
 
 <a name="exp_module_saveFiles--saveFiles"></a>
 
-### saveFiles(files, fields, options) ⏏
+### saveFiles(entries, fields, options) ⏏
 Saves the files given in the fileurl attribute of each entries
 
 You need the full permission on `io.cozy.files` in your manifest to use this function.
@@ -463,16 +470,16 @@ You need the full permission on `io.cozy.files` in your manifest to use this fun
 
 | Param | Type | Description |
 | --- | --- | --- |
-| files | <code>Array</code> | list of object describing files to save |
-| files.fileurl | <code>string</code> | The url of the file (can be a function returning the value). Ignored if `filestream` is given |
-| files.fetchFile | <code>function</code> | the connector can give it's own function to fetch the file from the website, which will be run only when necessary (if the corresponding file is missing on the cozy) function returning the stream). This function must return a promise resolved as a stream |
-| files.filestream | <code>object</code> | the stream which will be directly passed to cozyClient.files.create (can also be function returning the stream) |
-| files.requestOptions | <code>object</code> | The options passed to request to fetch fileurl (can be a function returning the value) |
-| files.filename | <code>string</code> | The file name of the item written on disk. This attribute is optional and as default value, the file name will be "smartly" guessed by the function. Use this attribute if the guess is not smart enough for you, or if you use `filestream` (can be a function returning the value). |
-| files.shouldReplaceName | <code>string</code> | used to migrate filename. If saveFiles finds a file linked to this entry and this file name matches `shouldReplaceName`, the file is renamed to `filename` (can be a function returning the value) |
-| files.shouldReplaceFile | <code>function</code> | use this function to state if the current entry should be forced to be redownloaded and replaced. Usefull if we know the file content can change and we always want the last version. |
-| files.fileAttributes | <code>object</code> | ex: `{created_at: new Date()}` sets some additionnal file attributes passed to cozyClient.file.create |
-| files.subPath | <code>string</code> | A subpath to save all files, will be created if needed. |
+| entries | <code>Array</code> | list of object describing files to save |
+| entries.fileurl | <code>string</code> | The url of the file (can be a function returning the value). Ignored if `filestream` is given |
+| entries.fetchFile | <code>function</code> | the connector can give it's own function to fetch the file from the website, which will be run only when necessary (if the corresponding file is missing on the cozy) function returning the stream). This function must return a promise resolved as a stream |
+| entries.filestream | <code>object</code> | the stream which will be directly passed to cozyClient.files.create (can also be function returning the stream) |
+| entries.requestOptions | <code>object</code> | The options passed to request to fetch fileurl (can be a function returning the value) |
+| entries.filename | <code>string</code> | The file name of the item written on disk. This attribute is optional and as default value, the file name will be "smartly" guessed by the function. Use this attribute if the guess is not smart enough for you, or if you use `filestream` (can be a function returning the value). |
+| entries.shouldReplaceName | <code>string</code> | used to migrate filename. If saveFiles finds a file linked to this entry and this file name matches `shouldReplaceName`, the file is renamed to `filename` (can be a function returning the value) |
+| entries.shouldReplaceFile | <code>function</code> | use this function to state if the current entry should be forced to be redownloaded and replaced. Usefull if we know the file content can change and we always want the last version. |
+| entries.fileAttributes | <code>object</code> | ex: `{created_at: new Date()}` sets some additionnal file attributes passed to cozyClient.file.create |
+| entries.subPath | <code>string</code> | A subpath to save all files, will be created if needed. |
 | fields | <code>object</code> | is the argument given to the main function of your connector by the BaseKonnector.  It especially contains a `folderPath` which is the string path configured by the user in collect/home |
 | options | <code>object</code> | global options |
 | options.timeout | <code>number</code> | timestamp which can be used if your connector needs to fetch a lot of files and if the stack does not give enough time to your connector to fetch it all. It could happen that the connector is stopped right in the middle of the download of the file and the file will be broken. With the `timeout` option, the `saveFiles` function will check if the timeout has passed right after downloading each file and then will be sure to be stopped cleanly if the timeout is not too long. And since it is really fast to check that a file has already been downloaded, on the next run of the connector, it will be able to download some more files, and so on. If you want the timeout to be in 10s, do `Date.now() + 10*1000`.  You can try it in the previous code. |
@@ -833,7 +840,7 @@ Bank transactions categorization
 
 * [categorization](#module_categorization)
     * [~createCategorizer()](#module_categorization..createCategorizer) ⇒ <code>object</code>
-    * [~categorize()](#module_categorization..categorize) ⇒ <code>[ &#x27;Array&#x27; ].&lt;object&gt;</code>
+    * [~categorize()](#module_categorization..categorize) ⇒ <code>Array.&lt;object&gt;</code>
 
 <a name="module_categorization..createCategorizer"></a>
 
@@ -869,11 +876,11 @@ class BankingKonnector extends BaseKonnector {
 ```
 <a name="module_categorization..categorize"></a>
 
-### categorization~categorize() ⇒ <code>[ &#x27;Array&#x27; ].&lt;object&gt;</code>
+### categorization~categorize() ⇒ <code>Array.&lt;object&gt;</code>
 Initialize global and local models and categorize the given array of transactions
 
 **Kind**: inner method of [<code>categorization</code>](#module_categorization)  
-**Returns**: <code>[ &#x27;Array&#x27; ].&lt;object&gt;</code> - the categorized transactions  
+**Returns**: <code>Array.&lt;object&gt;</code> - the categorized transactions  
 **See**: [createCategorizer](createCategorizer) for more informations about models initialization  
 **Example**  
 ```js
@@ -895,6 +902,14 @@ The class from which all the connectors must inherit.
 It takes a fetch function in parameter that must return a `Promise`.
 You need at least the `GET` permission on `io.cozy.accounts` in your manifest to allow it to
 fetch account information for your connector.
+
+Its role is twofold :
+
+- Make the link between account data and konnector
+- Handle errors
+
+⚠️  A promise should be returned from the `fetch` function otherwise
+the konnector cannot know that asynchronous code has been called.
 
 **Kind**: global class  
 
@@ -924,17 +939,7 @@ fetch account information for your connector.
 <a name="new_BaseKonnector_new"></a>
 
 ### new BaseKonnector(fetch)
-Its role is twofold :
-
-- Make the link between account data and konnector
-- Handle errors
-
-⚠️  A promise should be returned from the `fetch` function otherwise
-the konnector cannot know that asynchronous code has been called.
-
-```
-this.terminate('LOGIN_FAILED')
-```
+Constructor
 
 
 | Param | Type | Description |
@@ -1167,6 +1172,10 @@ connector now
 | --- | --- | --- |
 | err | <code>string</code> | The error code to be saved as connector result see [docs/ERROR_CODES.md] |
 
+**Example**  
+```javascript
+this.terminate('LOGIN_FAILED')
+```
 <a name="BaseKonnector+getCozyMetadata"></a>
 
 ### baseKonnector.getCozyMetadata(data)
@@ -1439,7 +1448,7 @@ is a no-op.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| prcs | <code>Process</code> | Process object, default to current process |
+| prcs | <code>object</code> | Process object, default to current process |
 
 <a name="mkSpec"></a>
 
@@ -1464,7 +1473,7 @@ Scrape a cheerio object for properties
 
 | Param | Type | Description |
 | --- | --- | --- |
-| $ | <code>cheerio</code> | Cheerio node which will be scraped |
+| $ | <code>object</code> | Cheerio node which will be scraped |
 | specs | <code>object</code> \| <code>string</code> | Options object describing what you want to scrape |
 | [childSelector] | <code>string</code> | If passed, scrape will return an array of items |
 
