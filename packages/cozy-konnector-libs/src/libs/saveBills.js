@@ -118,7 +118,11 @@ const saveBills = async (inputEntries, fields, inputOptions = {}) => {
           pdfContent = await utils.getPdfText(entry.fileDocument._id)
 
           // allow to create more entries related to the same file
-          const result = await options.processPdf(entry, pdfContent.text, pdfContent)
+          const result = await options.processPdf(
+            entry,
+            pdfContent.text,
+            pdfContent
+          )
           if (result && result.length) moreEntries = [...moreEntries, ...result]
         } catch (err) {
           log(
