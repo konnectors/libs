@@ -310,7 +310,7 @@ class BaseKonnector {
    * const { BaseKonnector } = require('cozy-konnector-libs')
    *
    * module.exports = new BaseKonnector(start)
-   
+
    * async function start() {
    *    // we detect the need of a 2FA code
    *    const code = this.waitForTwoFaCode({
@@ -330,10 +330,13 @@ class BaseKonnector {
     }
 
     const startTime = Date.now()
+    const ms = 1
+    const s = 1000 * ms
+    const m = 60 * s
     const defaultParams = {
       type: 'email',
-      endTime: startTime + 3 * 60 * 1000,
-      heartBeat: 5000,
+      endTime: startTime + 3 * m,
+      heartBeat: 5 * s,
       retry: false
     }
     options = { ...defaultParams, ...options }

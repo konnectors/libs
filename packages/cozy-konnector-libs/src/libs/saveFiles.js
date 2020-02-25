@@ -18,7 +18,10 @@ const mkdirp = require('./mkdirp')
 const errors = require('../helpers/errors')
 const stream = require('stream')
 const fileType = require('file-type')
-const DEFAULT_TIMEOUT = Date.now() + 4 * 60 * 1000 // 4 minutes by default since the stack allows 5 minutes
+const ms = 1
+const s = 1000 * ms
+const m = 60 * s
+const DEFAULT_TIMEOUT = Date.now() + 4 * m // 4 minutes by default since the stack allows 5 minutes
 const DEFAULT_CONCURRENCY = 1
 const DEFAULT_RETRY = 1 // do not retry by default
 
@@ -190,7 +193,7 @@ const saveFiles = async (entries, fields, options = {}) => {
 
 const saveEntry = async function(entry, options) {
   if (options.timeout && Date.now() > options.timeout) {
-    const remainingTime = Math.floor((options.timeout - Date.now()) / 1000)
+    const remainingTime = Math.floor((options.timeout - Date.now()) / s)
     log('info', `${remainingTime}s timeout finished for ${options.folderPath}`)
     throw new Error('TIMEOUT')
   }
