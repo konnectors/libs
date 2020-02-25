@@ -102,11 +102,14 @@ const main = async () => {
 }
 
 const launchKonnector = async ({ manifest, token, file, createAccount }) => {
-  const { creds } = await authenticate({
+  const client = await authenticate({
     tokenPath: token,
     manifestPath: manifest
   })
-  process.env.COZY_CREDENTIALS = JSON.stringify(creds)
+  process.env.COZY_CREDENTIALS = JSON.stringify({
+    oauthOptions: client.stackClient.oauthOptions,
+    token: client.stackClient.token
+  })
 
   if (createAccount) {
     await ensureStackAccount(config)

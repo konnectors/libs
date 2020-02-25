@@ -25,7 +25,6 @@
     "cli-highlight": "2.1.4",
     "commander": "4.1.1",
     "cozy-client": "12.5.0",
-    "cozy-client-js": "0.16.4",
     "cozy-konnector-libs": "^4.33.0",
     "cozy-logger": "1.6.0",
     "open": "7.0.2",

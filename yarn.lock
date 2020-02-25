@@ -3899,7 +3899,7 @@ cosmiconfig@^6.0.0:
     path-type "^4.0.0"
     yaml "^1.7.2"
 
-cozy-client-js@0.16.4, cozy-client-js@^0.16.4:
+cozy-client-js@^0.16.4:
   version "0.16.4"
   resolved "https://registry.yarnpkg.com/cozy-client-js/-/cozy-client-js-0.16.4.tgz#2f902bb985b3d8babb925d3f889f423aceb7f676"
   integrity sha512-xiW+RpOMo3gPuvUcOx8+VtVRmLjxcTv8ZKHgbKifUa5r+T/qTpibswA5/46AGaWsLLa75tbGnoWUnIiyoe5Tcw==
