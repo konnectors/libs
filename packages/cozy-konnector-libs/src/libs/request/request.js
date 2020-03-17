@@ -74,12 +74,15 @@
 
 let request = require('request-promise')
 const requestdebug = require('request-debug')
+const DEFAULT_USER_AGENT =
+  'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:74.0) Gecko/20100101 Firefox/74.0'
 
 exports = module.exports = {
   default: requestFactory,
   mergeDefaultOptions,
   transformWithCheerio,
-  getRequestOptions
+  getRequestOptions,
+  DEFAULT_USER_AGENT
 }
 
 function requestFactory({ debug, ...options } = { debug: false }) {
@@ -179,16 +182,14 @@ function transformWithCheerio(body, response, resolveWithFullResponse) {
 }
 
 function getRequestOptions({ cheerio, userAgent, ...options }) {
+  const userAgentOption = options.headers['User-Agent']
   return cheerio
     ? {
         ...options,
         transform: transformWithCheerio,
         headers: {
           ...options.headers,
-          'User-Agent':
-            userAgent === undefined || userAgent
-              ? DEFAULT_USER_AGENT
-              : options.headers['User-Agent']
+          'User-Agent': userAgentOption ? userAgentOption : (userAgent === false ? undefined : DEFAULT_USER_AGENT)
         }
       }
     : {
@@ -201,6 +202,3 @@ function getRequestOptions({ cheerio, userAgent, ...options }) {
         }
       }
 }
-
-const DEFAULT_USER_AGENT =
-  'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:62.0) Gecko/20100101 Firefox/62.0'
