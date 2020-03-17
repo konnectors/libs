@@ -189,7 +189,11 @@ function getRequestOptions({ cheerio, userAgent, ...options }) {
         transform: transformWithCheerio,
         headers: {
           ...options.headers,
-          'User-Agent': userAgentOption ? userAgentOption : (userAgent === false ? undefined : DEFAULT_USER_AGENT)
+          'User-Agent': userAgentOption
+            ? userAgentOption
+            : userAgent === false
+            ? undefined
+            : DEFAULT_USER_AGENT
         }
       }
     : {

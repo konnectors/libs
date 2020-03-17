@@ -1,4 +1,8 @@
-const { default: requestFactory, DEFAULT_USER_AGENT, ...request } = require('./request')
+const {
+  default: requestFactory,
+  DEFAULT_USER_AGENT,
+  ...request
+} = require('./request')
 
 describe('requestFactory', () => {
   describe('get request options', () => {
