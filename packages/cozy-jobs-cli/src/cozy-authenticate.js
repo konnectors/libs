@@ -1,86 +1,33 @@
 #!/usr/bin/env node
 
 /* eslint no-console: off */
-const http = require('http')
-const fs = require('fs')
-const log = require('cozy-logger').namespace('cozy-authenticate')
-const { Client, MemoryStorage } = require('cozy-client-js')
+const { createClientInteractive } = require('cozy-client/dist/cli')
 const manifest = require('./manifest')
 
-const cozyURL = process.env.COZY_URL
-  ? process.env.COZY_URL
-  : 'http://cozy.tools:8080'
-log('debug', cozyURL, 'COZY_URL')
-
-// check if we have a token file
-// if any return a promise with the credentials
-
-function onRegistered(client, url) {
-  let server
-  return new Promise(resolve => {
-    server = http.createServer((request, response) => {
-      if (request.url.indexOf('/do_access') === 0) {
-        log('debug', request.url, 'url received')
-        resolve(request.url)
-        response.end(
-          'Authorization registered, you can close this page and go back to the cli'
-        )
-      }
-    })
-    server.listen(3333, () => {
-      require('open')(url, { wait: false })
-      console.log(
-        'A new tab just opened in your browser to require the right authorizations for this connector in your cozy. Waiting for it...'
-      )
-      console.log(
-        'If your browser does not open (maybe your are in a headless virtual machine...), then paste this url in your browser'
-      )
-      console.log(url)
-    })
-  }).then(
-    url => {
-      server.close()
-      return url
-    },
-    err => {
-      server.close()
-      log('error', err, 'registration error')
-      throw err
-    }
-  )
-}
-
-function authenticate({ manifestPath, tokenPath }) {
+async function authenticate({ manifestPath, tokenPath }) {
   const scopes = manifest.getScopes(manifestPath)
+
+  // add account scope to allow eventual account creation for dev mode
   if (!scopes.includes('io.cozy.accounts')) {
     scopes.push('io.cozy.accounts')
   }
-  if (fs.existsSync(tokenPath)) {
-    log('debug', 'token file already present')
-    return Promise.resolve({
-      creds: JSON.parse(fs.readFileSync(tokenPath)),
-      scopes
-    })
-  } else {
-    const cozy = new Client({
-      cozyURL,
-      oauth: {
-        storage: new MemoryStorage(),
-        clientParams: {
-          redirectURI: 'http://localhost:3333/do_access',
-          softwareID: 'foobar',
-          clientName: 'konnector', // should be the connector name (package.json's name ?)
-          scopes
-        },
-        onRegistered
-      }
-    })
 
-    return cozy.authorize().then(creds => {
-      fs.writeFileSync(tokenPath, JSON.stringify(creds))
-      return { creds, scopes }
-    })
-  }
+  const client = await createClientInteractive(
+    {
+      uri: process.env.COZY_URL
+        ? process.env.COZY_URL
+        : 'http://cozy.tools:8080',
+      scope: scopes,
+      oauth: {
+        softwareID: 'dev-connector'
+      }
+    },
+    {
+      getSavedCredentials: () => tokenPath
+    }
+  )
+
+  return client
 }
 
 module.exports = authenticate

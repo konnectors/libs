@@ -44,9 +44,11 @@ process.env.COZY_URL = process.env.COZY_URL
   : 'http://cozy.tools:8080'
 
 authenticate({ tokenPath: token, manifestPath: manifest })
-  .then(result => {
-    const credentials = result.creds
-    process.env.COZY_CREDENTIALS = JSON.stringify(credentials)
+  .then(client => {
+    process.env.COZY_CREDENTIALS = JSON.stringify({
+      oauthOptions: client.stackClient.oauthOptions,
+      token: client.stackClient.token
+    })
   })
   .then(() => {
     const spawned = spawn(program.args[0], program.args.slice(1), {
