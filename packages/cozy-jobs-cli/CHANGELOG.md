@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.13.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@1.12.0...cozy-jobs-cli@1.13.0) (2020-03-17)
+
+
+### Features
+
+* now use cozy-client's createClientInteractive ([6d46874](https://github.com/cozy/cozy-konnector-libs/commit/6d46874c62d5c871bb2616314d51ec7d2b09a929))
+
+
+
+
+
 # [1.12.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@1.11.3...cozy-jobs-cli@1.12.0) (2020-02-20)
 
 **Note:** Version bump only for package cozy-jobs-cli

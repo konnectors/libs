@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.34.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.33.0...cozy-konnector-libs@4.34.0) (2020-03-17)
+
+
+### Bug Fixes
+
+* **request:** allow to override user agent in cheerio mode ([fd0e737](https://github.com/cozy/cozy-konnector-libs/commit/fd0e737a9b591f66fd98396121d26ed95f403e20))
+
+
+### Features
+
+* now use cozy-client's createClientInteractive ([6d46874](https://github.com/cozy/cozy-konnector-libs/commit/6d46874c62d5c871bb2616314d51ec7d2b09a929))
+* use more explicit time notation ([3715afd](https://github.com/cozy/cozy-konnector-libs/commit/3715afd5e4151792b686e809ed788b8732e5f7f8))
+
+
+
+
+
 # [4.33.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.32.5...cozy-konnector-libs@4.33.0) (2020-02-20)
 
 
