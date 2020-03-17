@@ -1,4 +1,4 @@
-const { default: requestFactory, ...request } = require('./request')
+const { default: requestFactory, DEFAULT_USER_AGENT, ...request } = require('./request')
 
 describe('requestFactory', () => {
   describe('get request options', () => {
@@ -21,9 +21,7 @@ describe('requestFactory', () => {
         })
       )
       expect(options.transform).toBeDefined()
-      expect(options.headers['User-Agent']).toBe(
-        'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:62.0) Gecko/20100101 Firefox/62.0'
-      )
+      expect(options.headers['User-Agent']).toBe(DEFAULT_USER_AGENT)
     })
     test('user-defined UserAgent is preserved', () => {
       const options = getRequestOptions(
@@ -43,9 +41,19 @@ describe('requestFactory', () => {
         })
       )
       expect(options.transform).toBeDefined()
-      expect(options.headers['User-Agent']).toBe(
-        'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:62.0) Gecko/20100101 Firefox/62.0'
+      expect(options.headers['User-Agent']).toBe(DEFAULT_USER_AGENT)
+    })
+    test('with cheerio and user defined userAgent preserve user agent', () => {
+      const options = getRequestOptions(
+        mergeDefaultOptions({
+          cheerio: true,
+          headers: {
+            'User-Agent': 'My specific User-Agent'
+          }
+        })
       )
+      expect(options.transform).toBeDefined()
+      expect(options.headers['User-Agent']).toBe('My specific User-Agent')
     })
   })
 
