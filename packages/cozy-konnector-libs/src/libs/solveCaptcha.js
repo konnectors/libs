@@ -10,7 +10,11 @@ const request = require('request-promise')
 const sleep = require('util').promisify(global.setTimeout)
 
 const connectorStartTime = Date.now()
-const DEFAULT_TIMEOUT = connectorStartTime + 3 * 60 * 1000 // 3 minutes by default to let 1 min to the connector to fetch files
+const ms = 1
+const s = 1000 * ms
+const m = 60 * s
+
+const DEFAULT_TIMEOUT = connectorStartTime + 3 * m // 3 minutes by default to let 1 min to the connector to fetch files
 
 /**
  * Use every possible means to solve a captcha. At the moment, Anticaptcha web service is used if
