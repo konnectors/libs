@@ -19,7 +19,7 @@
   "dependencies": {
     "@pollyjs/adapter-node-http": "4.0.3",
     "@pollyjs/core": "4.0.2",
-    "@pollyjs/persister-fs": "4.0.2",
+    "@pollyjs/persister-fs": "4.0.4",
     "babel-runtime": "6.26.0",
     "cheerio": "1.0.0-rc.3",
     "cli-highlight": "2.1.4",
