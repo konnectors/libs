@@ -101,7 +101,7 @@ module.exports = {
       if (doctype === 'io.cozy.accounts') {
         const configPath = path.resolve('konnector-dev-config.json')
         const config = JSON.parse(
-          stripJsonComments(fs.readFileSync(configPath))
+          stripJsonComments(fs.readFileSync(configPath, 'utf8'))
         )
         result = { _id: id, ...result, auth: config.fields }
         if (!accountExists) {
