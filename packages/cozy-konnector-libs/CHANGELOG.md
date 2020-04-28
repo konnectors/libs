@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.34.2](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.34.0...cozy-konnector-libs@4.34.2) (2020-04-28)
+
+
+### Bug Fixes
+
+* cozy-client-js-stub file encoding ([9accd04](https://github.com/cozy/cozy-konnector-libs/commit/9accd0424322787a0fc63cf6459707551a3187d3))
+
+
+
+
+
 ## [4.34.1](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.34.0...cozy-konnector-libs@4.34.1) (2020-04-28)
 
 
