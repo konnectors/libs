@@ -1,6 +1,6 @@
 {
   "name": "cozy-jobs-cli",
-  "version": "1.13.2",
+  "version": "1.13.3",
   "description": "Manage cozy jobs",
   "main": "index.js",
   "repository": {

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.13.3](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@1.13.2...cozy-jobs-cli@1.13.3) (2020-04-28)
+
+
+### Bug Fixes
+
+* forgot one strip-json-comment in cozy-jobs-cli... ([969396c](https://github.com/cozy/cozy-konnector-libs/commit/969396c5610a9c5dc7e6e8c16500514569778390))
+
+
+
+
+
 ## [1.13.2](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@1.13.0...cozy-jobs-cli@1.13.2) (2020-04-28)
 
 **Note:** Version bump only for package cozy-jobs-cli
