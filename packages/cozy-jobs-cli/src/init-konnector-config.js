@@ -12,7 +12,7 @@ const configPath = path.resolve('konnector-dev-config.json')
 function getKonnectorConfig() {
   if (!fs.existsSync(configPath)) createKonnectorConfig()
 
-  return JSON.parse(stripJsonComments(fs.readFileSync(configPath)))
+  return JSON.parse(stripJsonComments(fs.readFileSync(configPath, 'utf8')))
 }
 
 const template = {
