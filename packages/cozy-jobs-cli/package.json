@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/cozy/cozy-konnector-libs#readme",
   "dependencies": {
-    "@pollyjs/adapter-node-http": "4.1.0",
+    "@pollyjs/adapter-node-http": "4.2.1",
     "@pollyjs/core": "4.2.1",
     "@pollyjs/persister-fs": "4.2.1",
     "babel-runtime": "6.26.0",
