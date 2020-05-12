@@ -1950,20 +1950,20 @@
   dependencies:
     "@types/node" ">= 8"
 
-"@pollyjs/adapter-node-http@4.1.0":
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/@pollyjs/adapter-node-http/-/adapter-node-http-4.1.0.tgz#7be98225da35819d18f8d52d8efe85b94be3a7c2"
-  integrity sha512-mqdeMCWcwkAViiAc+Oil7+XlsdxRuySy6mqMs+sWiaWLiKz8xYKoDrCSCndiqu2qnVIVLi9gb+3m3XYk7N6mkg==
+"@pollyjs/adapter-node-http@4.2.1":
+  version "4.2.1"
+  resolved "https://registry.yarnpkg.com/@pollyjs/adapter-node-http/-/adapter-node-http-4.2.1.tgz#70645866c411fadda9d2bef39d3e74d6fd50c82e"
+  integrity sha512-W+eTXQXPVHb1c9oI8gOQNgyiM5at6lQpGXfk4r8Sik4jxN9MJ+EBfLSXgmrfqN3xRD6R61px//hx88a/6uESCQ==
   dependencies:
-    "@pollyjs/adapter" "^4.1.0"
+    "@pollyjs/adapter" "^4.2.1"
     "@pollyjs/utils" "^4.1.0"
     lodash-es "^4.17.11"
     nock "^12.0.3"
 
-"@pollyjs/adapter@^4.1.0":
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/@pollyjs/adapter/-/adapter-4.1.0.tgz#05e080167db1a2ff7531062022d7e32ef31eaef9"
-  integrity sha512-/KGsXLqlaBX6Xcfzl37gq5Rl5wk3n+PR8XH17kZJXBw61sP8Xr6aMlNFbF4rG8CFTKFoV/bnGifTVrj6CUttvg==
+"@pollyjs/adapter@^4.2.1":
+  version "4.2.1"
+  resolved "https://registry.yarnpkg.com/@pollyjs/adapter/-/adapter-4.2.1.tgz#223dff3124261ea36df65f61454f8dbd821d576d"
+  integrity sha512-MZLqsff1hveWhmNKBBpN25giM43gApW4kRFAhCeX4HinoO2W33Dscy/V3D8FUktvyJWmr84LQQX5DsW0dGsOmQ==
   dependencies:
     "@pollyjs/utils" "^4.1.0"
 
