@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.13.4](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@1.13.3...cozy-jobs-cli@1.13.4) (2020-05-14)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @pollyjs/adapter-node-http to v4.2.1 ([a2f3c0b](https://github.com/cozy/cozy-konnector-libs/commit/a2f3c0b77c9e069abc341d39593a957ac7c9b6c1))
+* **deps:** update dependency @pollyjs/core to v4.2.1 ([fb0c1e5](https://github.com/cozy/cozy-konnector-libs/commit/fb0c1e5d1013b4f55792943483c052840cfebf50))
+* **deps:** update dependency @pollyjs/persister-fs to v4.2.1 ([4cb79a1](https://github.com/cozy/cozy-konnector-libs/commit/4cb79a115e38dbc847c7c1fce042a6092f532933))
+
+
+
+
+
 ## [1.13.3](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@1.13.2...cozy-jobs-cli@1.13.3) (2020-04-28)
 
 

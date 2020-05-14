@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.34.3](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.34.2...cozy-konnector-libs@4.34.3) (2020-05-14)
+
+
+### Bug Fixes
+
+* Window issue on fetch ([d7d8ca1](https://github.com/cozy/cozy-konnector-libs/commit/d7d8ca1e6dacda18ec4981b0de085fbc21e845fd))
+
+
+
+
+
 ## [4.34.2](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.34.0...cozy-konnector-libs@4.34.2) (2020-04-28)
 
 
