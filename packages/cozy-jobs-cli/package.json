@@ -24,7 +24,7 @@
     "cheerio": "1.0.0-rc.3",
     "cli-highlight": "2.1.4",
     "commander": "5.1.0",
-    "cozy-client": "13.5.2",
+    "cozy-client": "13.6.0",
     "cozy-konnector-libs": "^4.34.2",
     "cozy-logger": "1.6.0",
     "open": "7.0.3",
@@ -37,8 +37,9 @@
   },
   "devDependencies": {
     "eslint-config-cozy-app": "1.5.0",
-    "jest": "25.5.3",
-    "lerna": "3.20.2"
+    "eslint-plugin-jsdoc": "25.4.1",
+    "jest": "26.0.1",
+    "lerna": "3.21.0"
   },
   "eslintConfig": {
     "extends": [
