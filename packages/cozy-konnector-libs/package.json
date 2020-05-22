@@ -72,13 +72,13 @@
     "cross-env": "7.0.2",
     "csv-writer": "1.6.0",
     "eslint-config-cozy-app": "1.5.0",
-    "eslint-plugin-jsdoc": "25.4.1",
+    "eslint-plugin-jsdoc": "25.4.2",
     "husky": "4.2.5",
     "jest": "26.0.1",
     "jsdoc-to-markdown": "5.0.3",
     "lerna": "3.21.0",
     "lerna-changelog": "1.0.1",
-    "pdfjs": "2.3.6",
+    "pdfjs": "2.3.7",
     "pdfjs-dist": "2.3.200",
     "zombie": "6.1.4"
   }
