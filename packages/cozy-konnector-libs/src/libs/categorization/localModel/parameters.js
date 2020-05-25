@@ -1,9 +1,4 @@
-const cozyClient = require('../../cozyclient')
 const { BankTransaction } = require('cozy-doctypes')
-
-if (!BankTransaction.cozyClient) {
-  BankTransaction.registerClient(cozyClient)
-}
 
 async function fetchTransactionsWithManualCat() {
   const transactionsWithManualCat = await BankTransaction.queryAll({
