@@ -9,6 +9,7 @@ const FileSync = require('lowdb/adapters/FileSync')
 const rawBody = require('raw-body')
 const stripJsonComments = require('strip-json-comments')
 const manifest = require('../libs/manifest')
+const sleep = require('util').promisify(global.setTimeout)
 
 const rootPath = JSON.parse(
   process.env.COZY_FIELDS || '{"folder_to_save": "."}'
@@ -292,55 +293,56 @@ function removeFirstSlash(pathToCheck) {
   return pathToCheck
 }
 
-function createFile(file, options = {}) {
-  return new Promise((resolve, reject) => {
-    log('debug', `Creating new file ${options.name}`)
-    const finalPath = path.join(rootPath, options.dirID, options.name)
-    log('debug', `Real path : ${finalPath}`)
-    const extension = path.extname(options.name).substr(1)
-    const mime = mimetypes.lookup(extension)
-
-    const fileDoc = {
-      _id: get(options, 'metadata.fileIdAttributes') || options.name,
-      dir_id: options.dirID || '.',
-      metadata: options.metadata,
-      trashed: false,
-      attributes: {
-        mime,
-        name: options.name
-      },
-      cozyMetadata: {
-        sourceAccount: options.sourceAccount,
-        sourceAccountIdentifier: options.sourceAccountIdentifier,
-        createdByApp: manifest.data.slug
-      }
+async function createFile(file, options = {}) {
+  log('debug', `Creating new file ${options.name}`)
+  const finalPath = path.join(rootPath, options.dirID, options.name)
+  log('debug', `Real path : ${finalPath}`)
+  const extension = path.extname(options.name).substr(1)
+  const mime = mimetypes.lookup(extension)
+  const fileDoc = {
+    _id: get(options, 'metadata.fileIdAttributes') || options.name,
+    dir_id: options.dirID || '.',
+    metadata: options.metadata,
+    trashed: false,
+    attributes: {
+      mime,
+      name: options.name
+    },
+    cozyMetadata: {
+      sourceAccount: options.sourceAccount,
+      sourceAccountIdentifier: options.sourceAccountIdentifier,
+      createdByApp: manifest.data.slug
     }
+  }
 
-    if (file.pipe) {
-      let writeStream = fs.createWriteStream(finalPath)
-      file.pipe(writeStream)
+  if (file.pipe) {
+    let writeStream = fs.createWriteStream(finalPath)
+    file.pipe(writeStream)
+    await waitForFileEnd(file, finalPath, writeStream)
+  } else {
+    // file is a string
+    fs.writeFileSync(finalPath, file)
+  }
 
-      file.on('end', () => {
-        log('debug', `File ${finalPath} created`)
-        addFileSizeAndWrite(fileDoc, finalPath)
-        resolve(fileDoc)
-      })
-      writeStream.on('error', err => {
-        log('warn', `Error : ${err} while trying to write file`)
-        reject(new Error(err))
-      })
-    } else {
-      // file is a string
-      fs.writeFileSync(finalPath, file)
-      addFileSizeAndWrite(fileDoc, finalPath)
-      resolve(fileDoc)
-    }
+  addFileSizeAndWrite(fileDoc, finalPath)
+  return fileDoc
+}
 
-    function addFileSizeAndWrite(doc, filePath) {
-      doc.attributes.size = fs.statSync(filePath).size
-      db.get('io.cozy.files')
-        .insert(doc)
-        .write()
-    }
+function addFileSizeAndWrite(doc, filePath) {
+  doc.attributes.size = fs.statSync(filePath).size
+  db.get('io.cozy.files').insert(doc).write()
+}
+
+async function waitForFileEnd(file, finalPath, writeStream) {
+  await new Promise((resolve, reject) => {
+    file.on('end', () => {
+      log('debug', `File ${finalPath} created`)
+      resolve()
+    })
+    writeStream.on('error', err => {
+      log('warn', `Error : ${err} while trying to write file`)
+      reject(new Error(err))
+    })
   })
+  await sleep(1) // allow the the file size to be correct (or else we get 0)
 }
