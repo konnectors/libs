@@ -1,7 +1,7 @@
 const sortBy = require('lodash/sortBy')
-const addDays = require('date-fns/add_days')
-const subDays = require('date-fns/sub_days')
-const differenceInDays = require('date-fns/difference_in_days')
+const addDays = require('date-fns/addDays')
+const subDays = require('date-fns/subDays')
+const differenceInDays = require('date-fns/differenceInDays')
 
 const getOperationAmountFromBill = (bill, options) => {
   const searchingCredit = options && options.credit
@@ -21,8 +21,8 @@ const getIdentifiers = options => options.identifiers
 const getDateRangeFromBill = (bill, options) => {
   const date = getOperationDateFromBill(bill, options)
   return {
-    minDate: subDays(date, options.pastWindow),
-    maxDate: addDays(date, options.futureWindow)
+    minDate: subDays(new Date(date), options.pastWindow),
+    maxDate: addDays(new Date(date), options.futureWindow)
   }
 }
 
@@ -57,7 +57,9 @@ const sortedOperations = (bill, operations) => {
     const opAmount = getOperationAmountFromBill(bill)
 
     return operation => {
-      const dateDiff = Math.abs(differenceInDays(opDate, operation.date))
+      const dateDiff = Math.abs(
+        differenceInDays(new Date(opDate), new Date(operation.date))
+      )
       const amountDiff = Math.abs(opAmount - operation.amount)
 
       return dateWeight * dateDiff + amountWeight * amountDiff

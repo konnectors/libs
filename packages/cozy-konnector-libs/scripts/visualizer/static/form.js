@@ -10,7 +10,7 @@ const serialize = formData => {
 }
 
 function formatDate(d) {
-  return `<span class='date'>${format(parse(d), 'D MMM YYYY', {
+  return `<span class='date'>${format(parse(d), 'd MMM yyyy', {
     locale: frLocale
   })}</span>`
 }
