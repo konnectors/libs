@@ -68,7 +68,13 @@ const requiredAttributes = {
 const saveBills = async (inputEntries, fields, inputOptions = {}) => {
   // Cloning input arguments since both entries and options are expected
   // to be modified by functions called inside saveBills.
-  const entries = _.cloneDeep(inputEntries)
+  const entries = _.cloneDeepWith(inputEntries, value => {
+    // do not try to clone streams https://github.com/konnectors/libs/issues/682
+    if (value && value.readable) {
+      return value
+    }
+    return undefined
+  })
   const options = _.cloneDeep(inputOptions)
 
   if (!_.isArray(entries) || entries.length === 0) {
