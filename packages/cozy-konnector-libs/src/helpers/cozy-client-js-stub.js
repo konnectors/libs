@@ -330,7 +330,9 @@ async function createFile(file, options = {}) {
 
 function addFileSizeAndWrite(doc, filePath) {
   doc.attributes.size = fs.statSync(filePath).size
-  db.get('io.cozy.files').insert(doc).write()
+  db.get('io.cozy.files')
+    .insert(doc)
+    .write()
 }
 
 async function waitForFileEnd(file, finalPath, writeStream) {

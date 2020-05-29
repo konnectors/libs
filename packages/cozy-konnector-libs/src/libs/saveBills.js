@@ -14,7 +14,6 @@ const linkBankOperations = require('./linkBankOperations')
 const DOCTYPE = 'io.cozy.bills'
 const _ = require('lodash')
 const manifest = require('./manifest')
-const stream = require('stream')
 
 const requiredAttributes = {
   date: 'isDate',
@@ -69,7 +68,7 @@ const requiredAttributes = {
 const saveBills = async (inputEntries, fields, inputOptions = {}) => {
   // Cloning input arguments since both entries and options are expected
   // to be modified by functions called inside saveBills.
-  const entries = _.cloneDeepWith(inputEntries, (value) => {
+  const entries = _.cloneDeepWith(inputEntries, value => {
     // do not try to clone streams https://github.com/konnectors/libs/issues/682
     if (value && value.readable) {
       return value
