@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.34.4](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.34.3...cozy-konnector-libs@4.34.4) (2020-05-29)
+
+
+### Bug Fixes
+
+* **cozy-client-js-stub:** get proper file size for a filestream ([ea08a65](https://github.com/cozy/cozy-konnector-libs/commit/ea08a65ac5e2150c441a4cd79aba1f3ffd1c9042))
+* **saveBills:** do not try to clone a filestream ([08eba00](https://github.com/cozy/cozy-konnector-libs/commit/08eba00d52132bc2db6e0927084eb5382c65ba29))
+* Do not register client in library ([e8d1d9a](https://github.com/cozy/cozy-konnector-libs/commit/e8d1d9a5002a4305dffb361f3c36a2e97a83e8f7))
+
+
+
+
+
 ## [4.34.3](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.34.2...cozy-konnector-libs@4.34.3) (2020-05-14)
 
 

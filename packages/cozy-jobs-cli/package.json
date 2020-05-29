@@ -1,6 +1,6 @@
 {
   "name": "cozy-jobs-cli",
-  "version": "1.13.4",
+  "version": "1.13.5",
   "description": "Manage cozy jobs",
   "main": "index.js",
   "repository": {
@@ -25,7 +25,7 @@
     "cli-highlight": "2.1.4",
     "commander": "5.1.0",
     "cozy-client": "13.8.2",
-    "cozy-konnector-libs": "^4.34.3",
+    "cozy-konnector-libs": "^4.34.4",
     "cozy-logger": "1.6.0",
     "open": "7.0.4",
     "pretty": "2.0.0",
