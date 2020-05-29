@@ -356,7 +356,7 @@ class Linker {
   groupBills(bills) {
     const billsToGroup = bills.filter(bill => this.billCanBeGrouped(bill))
     const groups = groupBy(billsToGroup, bill => {
-      return [format(getBillDate(bill), 'YYYY-MM-DD'), bill.vendor]
+      return [format(new Date(getBillDate(bill)), 'yyyy-MM-dd'), bill.vendor]
     })
 
     return Object.values(groups)
