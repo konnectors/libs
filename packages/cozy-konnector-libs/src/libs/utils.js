@@ -8,7 +8,7 @@ const groupBy = require('lodash/groupBy')
 const keyBy = require('lodash/keyBy')
 const sortBy = require('lodash/sortBy')
 const range = require('lodash/range')
-const format = require('date-fns/format')
+const { format } = require('date-fns')
 
 /**
  * This function allows to fetch all documents for a given doctype. It is the fastest to get all

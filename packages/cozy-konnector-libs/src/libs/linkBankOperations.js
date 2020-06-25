@@ -16,7 +16,7 @@ const groupBy = require('lodash/groupBy')
 const flatten = require('lodash/flatten')
 const sumBy = require('lodash/sumBy')
 const geco = require('geco')
-const format = require('date-fns/format')
+const { format } = require('date-fns')
 const cozyClient = require('./cozyclient')
 
 const DOCTYPE_OPERATIONS = 'io.cozy.bank.operations'
