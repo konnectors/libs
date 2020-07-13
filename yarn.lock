@@ -4199,37 +4199,15 @@ cozy-client-js@^0.16.4:
     pouchdb-browser "7.0.0"
     pouchdb-find "7.0.0"
 
-cozy-client@13.12.1:
-  version "13.12.1"
-  resolved "https://registry.yarnpkg.com/cozy-client/-/cozy-client-13.12.1.tgz#36a716d26eb4d11df0829953297656478c55c767"
-  integrity sha512-iPTAool9OAbPrtywUTqywyzQsmQHmRMgICGaNt0kBeMdgNrG5qYLgVFktUTTrZ9WBm41CLqbpedqBsFRqAmNOA==
+cozy-client@13.13.0, cozy-client@^13.13.0:
+  version "13.13.0"
+  resolved "https://registry.yarnpkg.com/cozy-client/-/cozy-client-13.13.0.tgz#9fdc59e293c3486cbc5257d30f907e3cdc3a3c1a"
+  integrity sha512-etcA/9rQoqzsvC6T+FtabDysRB1w8B7igBWTgtlxmyTT9VWGE5Q0ca22AVVb3SDLuf33VCpBLbOY6IRSfLtxYw==
   dependencies:
     btoa "^1.2.1"
     cozy-device-helper "^1.7.3"
     cozy-logger "^1.6.0"
     cozy-stack-client "^13.12.1"
-    isomorphic-fetch "^2.2.1"
-    lodash "^4.17.13"
-    microee "^0.0.6"
-    minilog "https://github.com/cozy/minilog.git#master"
-    open "^7.0.2"
-    prop-types "^15.6.2"
-    react-redux "^7.2.0"
-    redux "^3.7.2"
-    redux-thunk "^2.3.0"
-    server-destroy "^1.0.1"
-    sift "^6.0.0"
-    url-search-params-polyfill "^7.0.0"
-
-cozy-client@^13.8.2:
-  version "13.8.2"
-  resolved "https://registry.yarnpkg.com/cozy-client/-/cozy-client-13.8.2.tgz#1bbb92cd3751a34c408cfbf65141e993eeb2ef44"
-  integrity sha512-jRCNZua2ZugKlSWSlgdfdcvdz/JvimTLeffPw8m/nugd45QBAy0FRKHUP3U8JLXAF3ZG+PFDcYTSvOe5iGpPJg==
-  dependencies:
-    btoa "^1.2.1"
-    cozy-device-helper "^1.7.3"
-    cozy-logger "^1.6.0"
-    cozy-stack-client "^13.8.2"
     isomorphic-fetch "^2.2.1"
     lodash "^4.17.13"
     microee "^0.0.6"
@@ -4274,15 +4252,6 @@ cozy-stack-client@^13.12.1:
   version "13.12.1"
   resolved "https://registry.yarnpkg.com/cozy-stack-client/-/cozy-stack-client-13.12.1.tgz#9de6e2cbe3202e351f935d5e16faf2fa27cfa3af"
   integrity sha512-lZhWm3XB3YpvJ6dP1IPLioSJvVQLbPl3eeIrqI6RmGWi4KyIEES6jw1xEWaO7BNLT6p27BboGedqxeZzMXoBjw==
-  dependencies:
-    detect-node "^2.0.4"
-    mime "^2.4.0"
-    qs "^6.7.0"
-
-cozy-stack-client@^13.8.2:
-  version "13.8.2"
-  resolved "https://registry.yarnpkg.com/cozy-stack-client/-/cozy-stack-client-13.8.2.tgz#7d461cff492cf83d883110de5310065ce05082aa"
-  integrity sha512-RPHz4L7guYl7G3CjPc5x/GZ1toOADMq5LM/pJrDEMoULhbgBkm0bB+0FUgf63QXyxpXcq5FHueNzxWxA/cQ3yQ==
   dependencies:
     detect-node "^2.0.4"
     mime "^2.4.0"
@@ -7739,12 +7708,6 @@ min-indent@^1.0.0:
 "minilog@git+https://github.com/cozy/minilog.git#master":
   version "3.1.0"
   resolved "git+https://github.com/cozy/minilog.git#f01f7d9dfe20981177dd34b9662c2f077d818f82"
-  dependencies:
-    microee "0.0.6"
-
-"minilog@https://github.com/cozy/minilog.git#master":
-  version "3.1.0"
-  resolved "https://github.com/cozy/minilog.git#f01f7d9dfe20981177dd34b9662c2f077d818f82"
   dependencies:
     microee "0.0.6"
 
