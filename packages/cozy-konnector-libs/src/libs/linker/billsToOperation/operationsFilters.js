@@ -1,7 +1,7 @@
 const includes = require('lodash/includes')
 const some = require('lodash/some')
 const sumBy = require('lodash/sumBy')
-const isWithinRange = require('date-fns/isWithinInterval')
+const isWithinInterval = require('date-fns/isWithinInterval')
 
 const {
   getIdentifiers,
@@ -68,7 +68,7 @@ const filterByIdentifiers = identifiers => {
 
 const filterByDates = ({ minDate, maxDate }) => {
   const dateFilter = operation => {
-    return isWithinRange(new Date(operation.date), {
+    return isWithinInterval(new Date(operation.date), {
       start: new Date(minDate),
       end: new Date(maxDate)
     })
