@@ -79,7 +79,7 @@
     "lerna": "3.22.1",
     "lerna-changelog": "1.0.1",
     "pdfjs": "2.3.9",
-    "pdfjs-dist": "2.3.200",
+    "pdfjs-dist": "2.4.456",
     "zombie": "6.1.4"
   }
 }
