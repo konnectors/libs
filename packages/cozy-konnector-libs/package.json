@@ -25,7 +25,7 @@
     "cheerio": "^1.0.0-rc.3",
     "classificator": "^0.3.3",
     "cozy-client": "^13.13.0",
-    "cozy-client-js": "^0.16.4",
+    "cozy-client-js": "^0.17.3",
     "cozy-doctypes": "^1.72.0",
     "cozy-logger": "^1.6.0",
     "date-fns": "^2.14.0",
