@@ -26,7 +26,7 @@
     "classificator": "^0.3.3",
     "cozy-client": "^13.13.0",
     "cozy-client-js": "^0.17.3",
-    "cozy-doctypes": "^1.72.0",
+    "cozy-doctypes": "^1.73.0",
     "cozy-logger": "^1.6.0",
     "date-fns": "^2.14.0",
     "file-type": "^14.6.2",
@@ -66,7 +66,7 @@
   "devDependencies": {
     "@babel/cli": "7.10.5",
     "@babel/core": "7.10.5",
-    "babel-preset-cozy-app": "1.8.1",
+    "babel-preset-cozy-app": "1.9.0",
     "body-parser": "1.19.0",
     "btoa": "1.2.1",
     "cross-env": "7.0.2",
