@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.34.5](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.34.4...cozy-konnector-libs@4.34.5) (2020-07-16)
+
+
+### Bug Fixes
+
+* regressions after upgrade of date-fns to version 2 ([c5cc903](https://github.com/cozy/cozy-konnector-libs/commit/c5cc9033366b5889e4fdf9f7ea6ff8415c613351))
+
+
+
+
+
 ## [4.34.4](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.34.3...cozy-konnector-libs@4.34.4) (2020-05-29)
 
 
