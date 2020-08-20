@@ -54,7 +54,7 @@ The connector is run by calling yarn start with the following envrionment variab
 
  - COZY_CREDENTIALS needs to be the result of `cozy-stack instances token-cli <instance name> <scope>`
  - COZY_URL is the full http or https url to your cozy
- - COZY_FIELDS is something like :
+ - COZY_FIELDS contains context information for the konnector. Here is an example:
 ```javascript
 {
   "data":{
