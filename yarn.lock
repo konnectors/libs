@@ -3031,10 +3031,10 @@ babel-plugin-transform-strict-mode@^6.24.1:
     babel-runtime "^6.22.0"
     babel-types "^6.24.1"
 
-babel-preset-cozy-app@1.9.0:
-  version "1.9.0"
-  resolved "https://registry.yarnpkg.com/babel-preset-cozy-app/-/babel-preset-cozy-app-1.9.0.tgz#41cb3bcff34f5f6d2f4619b95fbb1e4889421df9"
-  integrity sha512-YK3pLJBHBTpH37yt9lIRw0FiBznOH6xyjrBzHCIkOWC0tPgQ55igr/nLaaCtjxy4DtGHbf0jf1auMdEEwB4Asw==
+babel-preset-cozy-app@1.9.1:
+  version "1.9.1"
+  resolved "https://registry.yarnpkg.com/babel-preset-cozy-app/-/babel-preset-cozy-app-1.9.1.tgz#a190df4702feaaea5560eafa2e506d5816024f2a"
+  integrity sha512-zi2NCe1WSWrC0fKU9C9MTiY0XGXQ9EdEZqK3rLTk7mr8M2hRWjWEUwH2HyOMd0ZkL25c29YSUpmYJXk7xBIIWw==
   dependencies:
     "@babel/core" "7.2.2"
     "@babel/helper-plugin-utils" "7.0.0"
@@ -3044,7 +3044,7 @@ babel-preset-cozy-app@1.9.0:
     "@babel/preset-env" "7.3.1"
     "@babel/preset-react" "7.0.0"
     "@babel/runtime" "7.2.0"
-    browserslist-config-cozy "^0.3.0"
+    browserslist-config-cozy "^0.3.1"
     lodash "4.17.19"
 
 babel-preset-current-node-syntax@^0.1.2:
@@ -3288,10 +3288,10 @@ browser-process-hrtime@^1.0.0:
   resolved "https://registry.yarnpkg.com/browser-process-hrtime/-/browser-process-hrtime-1.0.0.tgz#3c9b4b7d782c8121e56f10106d84c0d0ffc94626"
   integrity sha512-9o5UecI3GhkpM6DrXr69PblIuWxPKk9Y0jHBRhdocZ2y7YECBFCsHm79Pr3OyR2AvjhDkabFJaDJMYRazHgsow==
 
-browserslist-config-cozy@^0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/browserslist-config-cozy/-/browserslist-config-cozy-0.3.0.tgz#8df42275b168885c6961ce4b0d253b5f415d357f"
-  integrity sha512-EWCKW1Vb6OGNFgHvqnTDOI0anqVRaXmuf/uP8QB6jiH8FVrL0DAj/WuxYUFd4oVYawJZ2A5Xit86NSEWtILsSw==
+browserslist-config-cozy@^0.3.1:
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/browserslist-config-cozy/-/browserslist-config-cozy-0.3.1.tgz#17313c224a8c04e5c0943e8da6fdc7fa03a5936f"
+  integrity sha512-p9YGQRu3eI+uylGrDnaLro6EZpiOnIvAO7I97hTG8gq2sBL0MdcbhybSG8jK9A+UIRwIOSp/Nw/pJeSpyew+lg==
 
 browserslist@^3.2.6:
   version "3.2.8"
@@ -7621,10 +7621,10 @@ min-indent@^1.0.0:
   resolved "https://registry.yarnpkg.com/min-indent/-/min-indent-1.0.1.tgz#a63f681673b30571fbe8bc25686ae746eefa9869"
   integrity sha512-I9jwMn07Sy/IwOj3zVkVik2JTvgpaykDZEigL6Rx6N9LbMywwUSMtxET+7lVoDLLd3O3IXwJwvuuns8UB/HeAg==
 
-"minilog@https://github.com/cozy/minilog.git#master":
+"minilog@git+https://github.com/cozy/minilog.git#master":
   version "3.1.0"
   uid f01f7d9dfe20981177dd34b9662c2f077d818f82
-  resolved "https://github.com/cozy/minilog.git#f01f7d9dfe20981177dd34b9662c2f077d818f82"
+  resolved "git+https://github.com/cozy/minilog.git#f01f7d9dfe20981177dd34b9662c2f077d818f82"
   dependencies:
     microee "0.0.6"
 
