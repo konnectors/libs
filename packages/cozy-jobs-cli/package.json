@@ -23,11 +23,11 @@
     "babel-runtime": "6.26.0",
     "cheerio": "1.0.0-rc.3",
     "cli-highlight": "2.1.4",
-    "commander": "5.1.0",
-    "cozy-client": "13.18.0",
+    "commander": "6.1.0",
+    "cozy-client": "14.0.0",
     "cozy-konnector-libs": "^4.34.5",
     "cozy-logger": "1.6.0",
-    "open": "7.1.0",
+    "open": "7.2.1",
     "pretty": "2.0.0",
     "strip-json-comments": "3.1.1"
   },
@@ -36,7 +36,7 @@
     "test": "jest"
   },
   "devDependencies": {
-    "eslint-config-cozy-app": "1.5.0",
+    "eslint-config-cozy-app": "1.6.0",
     "eslint-plugin-jsdoc": "29.2.0",
     "jest": "26.4.2",
     "lerna": "3.22.1"
