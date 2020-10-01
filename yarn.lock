@@ -4013,7 +4013,29 @@ cozy-client-js@^0.17.3:
     pouchdb-browser "7.0.0"
     pouchdb-find "7.0.0"
 
-cozy-client@14.0.0, cozy-client@^14.0.0:
+cozy-client@14.6.0:
+  version "14.6.0"
+  resolved "https://registry.yarnpkg.com/cozy-client/-/cozy-client-14.6.0.tgz#634d6b545a8a7c5e0e07878c50247ec256677e07"
+  integrity sha512-IbaED4CMPpFbiNoceGex+J5LfbnVgiLiYPcyDR/xrwoc4P2gjZ4XFuNfoM7LDe17iSGGetsY+XVaim+UVpzejw==
+  dependencies:
+    btoa "^1.2.1"
+    cozy-device-helper "^1.7.3"
+    cozy-logger "^1.6.0"
+    cozy-stack-client "^14.1.2"
+    isomorphic-fetch "^2.2.1"
+    lodash "^4.17.13"
+    microee "^0.0.6"
+    minilog "git+https://github.com/cozy/minilog.git#master"
+    open "^7.0.2"
+    prop-types "^15.6.2"
+    react-redux "^7.2.0"
+    redux "^3.7.2"
+    redux-thunk "^2.3.0"
+    server-destroy "^1.0.1"
+    sift "^6.0.0"
+    url-search-params-polyfill "^7.0.0"
+
+cozy-client@^14.0.0:
   version "14.0.0"
   resolved "https://registry.yarnpkg.com/cozy-client/-/cozy-client-14.0.0.tgz#8352155a449c3e785ee340557b23d7c340d85d42"
   integrity sha512-1cRJP7cvnb1ogL45A7/+ARQblBt4GwlFc5IAgqYGR9aY3IUEV+V/PA+gYVLEpDIs9gcg2cIl5+tmxVGApN5CSQ==
@@ -4066,6 +4088,15 @@ cozy-stack-client@^14.0.0:
   version "14.0.0"
   resolved "https://registry.yarnpkg.com/cozy-stack-client/-/cozy-stack-client-14.0.0.tgz#212aa56d8499865d97c7be7b5bf2ac00c1b77f05"
   integrity sha512-0v7sBx6F7A00ZwN2wbSc59GrgLGNhX0W8P2xMBybSe1F7CLhx6SXlVe4lqKwunpYfbMSW+BM7fCjBmFu1hGNGw==
+  dependencies:
+    detect-node "^2.0.4"
+    mime "^2.4.0"
+    qs "^6.7.0"
+
+cozy-stack-client@^14.1.2:
+  version "14.1.2"
+  resolved "https://registry.yarnpkg.com/cozy-stack-client/-/cozy-stack-client-14.1.2.tgz#606ce89cabf4def2875cb8749b28b3ee8b96d18f"
+  integrity sha512-0IyYvBQu+vuwN9qe6PHA7khXBQT8TGSjVia7SVTGQ88tEFSLLGXjfZe3pkZQ1ihBdJvmeon12dm0BWeEb+9KZw==
   dependencies:
     detect-node "^2.0.4"
     mime "^2.4.0"
@@ -7536,6 +7567,13 @@ min-indent@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/min-indent/-/min-indent-1.0.1.tgz#a63f681673b30571fbe8bc25686ae746eefa9869"
   integrity sha512-I9jwMn07Sy/IwOj3zVkVik2JTvgpaykDZEigL6Rx6N9LbMywwUSMtxET+7lVoDLLd3O3IXwJwvuuns8UB/HeAg==
+
+"minilog@git+https://github.com/cozy/minilog.git#master":
+  version "3.1.0"
+  uid f01f7d9dfe20981177dd34b9662c2f077d818f82
+  resolved "git+https://github.com/cozy/minilog.git#f01f7d9dfe20981177dd34b9662c2f077d818f82"
+  dependencies:
+    microee "0.0.6"
 
 "minilog@https://github.com/cozy/minilog.git#master":
   version "3.1.0"
