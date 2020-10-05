@@ -13,8 +13,25 @@
       "packageRules": [
         {
           "packagePatterns": [
-            "^cozy-konnector-libs",
-            "^cozy-jobs-cli"
+            "copy-webpack-plugin",
+            "eslint-config-cozy-app",
+            "git-directory-deploy",
+            "husky",
+            "svgo",
+            "webpack",
+            "webpack-cli"
+          ],
+          "automerge": true,
+          "major": {
+            "automerge": false
+          }
+        },
+        {
+          "packagePatterns": [
+            "cozy-konnector-libs",
+            "cozy-jobs-cli",
+            "cozy-app-publish",
+            "eslint-config-cozy-app"
           ],
           "schedule": "at any time",
           "automerge": true,
