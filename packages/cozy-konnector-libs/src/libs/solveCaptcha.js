@@ -87,10 +87,7 @@ const solveCaptcha = async (params = {}) => {
       'gRecaptchaResponse'
     )
   } else if (params.type === 'hcaptcha') {
-    checkMandatoryParams(params, [
-      'websiteKey',
-      'websiteURL'
-    ])
+    checkMandatoryParams(params, ['websiteKey', 'websiteURL'])
     const { websiteKey, websiteURL } = params
     return solveWithAntiCaptcha(
       {
