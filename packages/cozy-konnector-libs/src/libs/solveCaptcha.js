@@ -86,6 +86,22 @@ const solveCaptcha = async (params = {}) => {
       secrets,
       'gRecaptchaResponse'
     )
+  } else if (params.type === 'hcaptcha') {
+    checkMandatoryParams(params, [
+      'websiteKey',
+      'websiteURL'
+    ])
+    const { websiteKey, websiteURL } = params
+    return solveWithAntiCaptcha(
+      {
+        websiteKey,
+        websiteURL,
+        type: 'HCaptchaTaskProxyless'
+      },
+      params.timeout,
+      secrets,
+      'gRecaptchaResponse'
+    )
   } else if (params.type === 'image') {
     checkMandatoryParams(params, ['body'])
     return solveWithAntiCaptcha(
