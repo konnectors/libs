@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.35.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.34.5...cozy-konnector-libs@4.35.0) (2020-10-22)
+
+
+### Features
+
+* **solveCaptcha:** add hcaptcha solving ([70ea67c](https://github.com/cozy/cozy-konnector-libs/commit/70ea67ce62e927a114c39a0fc5a5a1884a42bb01))
+
+
+
+
+
 ## [4.34.5](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.34.4...cozy-konnector-libs@4.34.5) (2020-07-16)
 
 
