@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.14.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@1.13.7...cozy-jobs-cli@1.14.0) (2020-11-05)
+
+
+### Bug Fixes
+
+* **deps:** update dependency cozy-client to v15.6.0 ([c0d6502](https://github.com/cozy/cozy-konnector-libs/commit/c0d6502d1db172616c1b370b3434bec1d5891ee7))
+
+
+### Features
+
+* upgrade cozy-client to 16.1.1 for security warnings ([e29c75e](https://github.com/cozy/cozy-konnector-libs/commit/e29c75e8e807bbd029980f3d2afa1184ea48bd0f))
+
+
+
+
+
 ## [1.13.7](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@1.13.6...cozy-jobs-cli@1.13.7) (2020-10-22)
 
 

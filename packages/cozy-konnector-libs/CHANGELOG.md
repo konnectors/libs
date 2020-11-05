@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.36.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.35.0...cozy-konnector-libs@4.36.0) (2020-11-05)
+
+
+### Bug Fixes
+
+* avoid date-fns error when built with webpack ([112d82b](https://github.com/cozy/cozy-konnector-libs/commit/112d82b3a8acc1bc6c20bddb627e15a97412fc1f))
+
+
+### Features
+
+* upgrade cozy-client to 16.1.1 for security warnings ([e29c75e](https://github.com/cozy/cozy-konnector-libs/commit/e29c75e8e807bbd029980f3d2afa1184ea48bd0f))
+* upgrade cozy-doctypes ([98c569c](https://github.com/cozy/cozy-konnector-libs/commit/98c569c2ed0140c90b841177ef7cb4b8dd04a794))
+
+
+
+
+
 # [4.35.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.34.5...cozy-konnector-libs@4.35.0) (2020-10-22)
 
 
