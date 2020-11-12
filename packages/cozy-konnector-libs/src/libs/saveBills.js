@@ -249,7 +249,7 @@ function manageContractsData(tempEntries, options) {
     addContractIdToDeduplication(options)
 
     newEntries = newEntries.map(entry => mergeContractsDataInBill(entry))
-    //manageContractsDataPassedByAttribute(newEntries, options
+    // manageContractsDataPassedByAttribute(newEntries, options
   }
   return newEntries
 }
