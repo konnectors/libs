@@ -24,7 +24,7 @@
     "btoa": "1.2.1",
     "cheerio": "^1.0.0-rc.3",
     "classificator": "^0.3.3",
-    "cozy-client": "^16.1.1",
+    "cozy-client": "^16.2.0",
     "cozy-client-js": "^0.17.4",
     "cozy-doctypes": "^1.74.8",
     "cozy-logger": "^1.6.0",
