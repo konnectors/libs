@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.37.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.36.0...cozy-konnector-libs@4.37.0) (2020-11-12)
+
+
+### Bug Fixes
+
+* bad regression in cozy-client with isomorphic-fetch v3.0 ([6ed4e9e](https://github.com/cozy/cozy-konnector-libs/commit/6ed4e9e10d27f5358e488954a74be4c35c5f4097))
+
+
+### Features
+
+* add cozy-konnector-build package ([2dcc657](https://github.com/cozy/cozy-konnector-libs/commit/2dcc657ed540a8a9e54aa67f91f194906522bd5e))
+
+
+
+
+
 # [4.36.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.35.0...cozy-konnector-libs@4.36.0) (2020-11-05)
 
 
