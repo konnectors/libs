@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.10](https://github.com/konnectors/libs/compare/renovate-config-cozy-konnector@1.2.8...renovate-config-cozy-konnector@1.2.10) (2020-12-01)
+
+
+### Features
+
+* automerge cozy-konnecor-build ([7ebd190](https://github.com/konnectors/libs/commit/7ebd190c66623d5feffea539f5b9857445cc3788))
+
+
+
+## 1.2.9 (2020-10-23)
+
+
+
+
+
 ## [1.2.8](https://github.com/konnectors/libs/compare/renovate-config-cozy-konnector@1.2.7...renovate-config-cozy-konnector@1.2.8) (2019-11-18)
 
 **Note:** Version bump only for package renovate-config-cozy-konnector
