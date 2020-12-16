@@ -17,7 +17,7 @@ let manifest =
     ? {}
     : __WEBPACK_PROVIDED_MANIFEST__
 
-if (process.env.NODE_ENV !== 'none' && process.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV !== undefined && process.env.NODE_ENV !== 'none' && process.env.NODE_ENV !== 'production') {
   try {
     manifest = getManifestFromFile()
   } catch (err) {

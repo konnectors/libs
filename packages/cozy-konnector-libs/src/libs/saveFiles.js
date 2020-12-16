@@ -204,7 +204,7 @@ const saveEntry = async function(entry, options) {
     try {
       shouldReplace = await shouldReplaceFile(file, entry, options)
     } catch (err) {
-      log('info', `Error in shouldReplace : ${err.message}`)
+      log('info', `Error in shouldReplaceFile : ${err.message}`)
       shouldReplace = true
     }
   }
