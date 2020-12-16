@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.37.2](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.37.1...cozy-konnector-libs@4.37.2) (2020-12-16)
+
+
+### Bug Fixes
+
+* env mode recognition ([50ebee4](https://github.com/cozy/cozy-konnector-libs/commit/50ebee494effb1dca6a7dae6d54f18b2ff3d0d5e))
+
+
+
+
+
 ## [4.37.1](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.37.0...cozy-konnector-libs@4.37.1) (2020-12-01)
 
 **Note:** Version bump only for package cozy-konnector-libs
