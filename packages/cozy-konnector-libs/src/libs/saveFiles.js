@@ -492,6 +492,9 @@ const shouldReplaceFile = async function(file, entry, options) {
     throw new Error('BAD_DOWNLOADED_FILE')
   }
   const defaultShouldReplaceFile = (file, entry) => {
+    const shouldForceMetadataAttr = attr =>
+      !getAttribute(file, `metadata.${attr}`) &&
+      get(entry, `fileAttributes.metadata.${attr}`)
     // replace all files with meta if there is file metadata to add
     const fileHasNoMetadata = !getAttribute(file, 'metadata')
     const fileHasNoId = !getAttribute(file, 'metadata.fileIdAttributes')
@@ -507,7 +510,9 @@ const shouldReplaceFile = async function(file, entry, options) {
     const result =
       (fileHasNoMetadata && entryHasMetadata) ||
       (fileHasNoId && !!options.fileIdAttributes) ||
-      (hasSourceAccountIdentifierOption && !fileHasSourceAccountIdentifier)
+      (hasSourceAccountIdentifierOption && !fileHasSourceAccountIdentifier) ||
+      shouldForceMetadataAttr('carbonCopy') ||
+      shouldForceMetadataAttr('electronicSafe')
     return result
   }
   const shouldReplaceFileFn =
