@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.38.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.37.2...cozy-konnector-libs@4.38.0) (2020-12-17)
+
+
+### Features
+
+* **saveFiles:** forces file replace when missing carbonCopy or electronicSafe attribute in the existing file ([9edeee2](https://github.com/cozy/cozy-konnector-libs/commit/9edeee2a808c01c7f81cfba47d1ffabd7ac4d500))
+
+
+
+
+
 ## [4.37.2](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.37.1...cozy-konnector-libs@4.37.2) (2020-12-16)
 
 

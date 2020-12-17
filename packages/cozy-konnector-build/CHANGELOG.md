@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.3](https://github.com/konnectors/libs/compare/cozy-konnector-build@1.1.2...cozy-konnector-build@1.1.3) (2020-12-17)
+
+**Note:** Version bump only for package cozy-konnector-build
+
+
+
+
+
 ## [1.1.2](https://github.com/konnectors/libs/compare/cozy-konnector-build@1.1.1...cozy-konnector-build@1.1.2) (2020-12-16)
 
 **Note:** Version bump only for package cozy-konnector-build
