@@ -274,6 +274,40 @@ describe('saveFiles', function() {
       expect(cozyClient.files.create).not.toHaveBeenCalled()
     })
   })
+
+  describe('when new carbonCopy metadata available in entry', () => {
+    it('should update the file', async () => {
+      expect.assertions(2)
+      cozyClient.files.statByPath.mockImplementation(path => {
+        // Must check if we are stating on the folder or on the file
+        return path === FOLDER_PATH
+          ? asyncResolve({ _id: 'folderId' })
+          : asyncResolve(
+              makeFile('existingFileId', {
+                name: 'bill.pdf'
+              })
+            )
+      })
+      await saveFiles(
+        [
+          {
+            fileurl: 'https://coucou.com/filetodownload.pdf',
+            filename: 'bill.pdf',
+            fileAttributes: {
+              metadata: {
+                carbonCopy: true
+              }
+            }
+          }
+        ],
+        {
+          folderPath: 'mainPath'
+        }
+      )
+      expect(cozyClient.files.create).not.toHaveBeenCalled()
+      expect(cozyClient.files.updateById).toHaveBeenCalled()
+    })
+  })
 })
 
 describe('subPath handling', () => {
