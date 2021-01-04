@@ -3,6 +3,39 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.38.2-beta.2](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.38.1...cozy-konnector-libs@4.38.2-beta.2) (2021-01-04)
+
+
+### Bug Fixes
+
+* include fetch before cozy-client-js ([b21ffd1](https://github.com/cozy/cozy-konnector-libs/commit/b21ffd101015127c5e990641922cc1b73fab7553))
+
+
+
+
+
+## [4.38.2-beta.1](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.38.1...cozy-konnector-libs@4.38.2-beta.1) (2021-01-04)
+
+
+### Bug Fixes
+
+* include fetch before cozy-client-js ([b21ffd1](https://github.com/cozy/cozy-konnector-libs/commit/b21ffd101015127c5e990641922cc1b73fab7553))
+
+
+
+
+
+## [4.38.2-beta.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.38.1...cozy-konnector-libs@4.38.2-beta.0) (2021-01-04)
+
+
+### Bug Fixes
+
+* include fetch before cozy-client-js ([b21ffd1](https://github.com/cozy/cozy-konnector-libs/commit/b21ffd101015127c5e990641922cc1b73fab7553))
+
+
+
+
+
 ## [4.38.1](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.38.0...cozy-konnector-libs@4.38.1) (2021-01-01)
 
 **Note:** Version bump only for package cozy-konnector-libs

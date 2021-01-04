@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.5-beta.1](https://github.com/konnectors/libs/compare/cozy-konnector-build@1.1.4...cozy-konnector-build@1.1.5-beta.1) (2021-01-04)
+
+
+### Bug Fixes
+
+* include fetch before cozy-client-js ([b21ffd1](https://github.com/konnectors/libs/commit/b21ffd101015127c5e990641922cc1b73fab7553))
+
+
+
+
+
+## [1.1.5-beta.0](https://github.com/konnectors/libs/compare/cozy-konnector-build@1.1.4...cozy-konnector-build@1.1.5-beta.0) (2021-01-04)
+
+
+### Bug Fixes
+
+* include fetch before cozy-client-js ([b21ffd1](https://github.com/konnectors/libs/commit/b21ffd101015127c5e990641922cc1b73fab7553))
+
+
+
+
+
 ## [1.1.4](https://github.com/konnectors/libs/compare/cozy-konnector-build@1.1.3...cozy-konnector-build@1.1.4) (2021-01-01)
 
 **Note:** Version bump only for package cozy-konnector-build

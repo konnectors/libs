@@ -3,6 +3,41 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.15.5-beta.3](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@1.15.5-beta.2...cozy-jobs-cli@1.15.5-beta.3) (2021-01-04)
+
+
+### Bug Fixes
+
+* deactivate account notification in dev mode ([2110909](https://github.com/cozy/cozy-konnector-libs/commit/2110909ab97f35c26cc8e1adc7af7a3bdcbab350))
+
+
+
+
+
+## [1.15.5-beta.2](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@1.15.4...cozy-jobs-cli@1.15.5-beta.2) (2021-01-04)
+
+**Note:** Version bump only for package cozy-jobs-cli
+
+
+
+
+
+## [1.15.5-beta.1](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@1.15.4...cozy-jobs-cli@1.15.5-beta.1) (2021-01-04)
+
+**Note:** Version bump only for package cozy-jobs-cli
+
+
+
+
+
+## [1.15.5-beta.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@1.15.4...cozy-jobs-cli@1.15.5-beta.0) (2021-01-04)
+
+**Note:** Version bump only for package cozy-jobs-cli
+
+
+
+
+
 ## [1.15.4](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@1.15.3...cozy-jobs-cli@1.15.4) (2021-01-01)
 
 **Note:** Version bump only for package cozy-jobs-cli

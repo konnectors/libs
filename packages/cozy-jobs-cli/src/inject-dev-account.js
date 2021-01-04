@@ -1,3 +1,6 @@
+const globalFetch = require('node-fetch').default
+global.fetch = globalFetch
+global.Headers = globalFetch.Headers
 module.exports = function injectDevAccount(config) {
   const { BaseKonnector, mkdirp } = require('cozy-konnector-libs')
   const DEFAULT_ROOT_PATH = '/cozy-konnector-dev-root'
