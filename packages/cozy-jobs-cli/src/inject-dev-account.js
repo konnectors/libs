@@ -11,4 +11,6 @@ module.exports = function injectDevAccount(config) {
       folderPath: DEFAULT_ROOT_PATH
     }
   }
+  BaseKonnector.prototype.deactivateAutoSuccessfulLogin = async function() {}
+  BaseKonnector.prototype.notifySuccessfulLogin = async function() {}
 }
