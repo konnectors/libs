@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.15.5](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@1.15.4...cozy-jobs-cli@1.15.5) (2021-01-05)
+
+
+### Bug Fixes
+
+* deactivate account notification in dev mode ([d0a0ea3](https://github.com/cozy/cozy-konnector-libs/commit/d0a0ea3bc21a879b4e43619a52d3650730df810a))
+* include fetch in dev mode ([a158fec](https://github.com/cozy/cozy-konnector-libs/commit/a158fec51ba891fccc1d410315c699a66d5047fd))
+
+
+
+
+
 ## [1.15.5-beta.3](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@1.15.5-beta.2...cozy-jobs-cli@1.15.5-beta.3) (2021-01-04)
 
 

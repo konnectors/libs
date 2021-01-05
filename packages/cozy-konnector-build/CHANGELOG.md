@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.5](https://github.com/konnectors/libs/compare/cozy-konnector-build@1.1.4...cozy-konnector-build@1.1.5) (2021-01-05)
+
+
+### Bug Fixes
+
+* include fetch in dev mode ([a158fec](https://github.com/konnectors/libs/commit/a158fec51ba891fccc1d410315c699a66d5047fd))
+
+
+
+
+
 ## [1.1.5-beta.1](https://github.com/konnectors/libs/compare/cozy-konnector-build@1.1.4...cozy-konnector-build@1.1.5-beta.1) (2021-01-04)
 
 
