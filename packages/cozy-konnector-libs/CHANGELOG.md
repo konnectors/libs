@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.39.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.38.2...cozy-konnector-libs@4.39.0) (2021-01-15)
+
+
+### Features
+
+* Randomly assign user agent in request factory ([53a66c2](https://github.com/cozy/cozy-konnector-libs/commit/53a66c23b7b014e11b2b159036fa922088eb3715))
+
+
+
+
+
 ## [4.38.2](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.38.1...cozy-konnector-libs@4.38.2) (2021-01-05)
 
 
