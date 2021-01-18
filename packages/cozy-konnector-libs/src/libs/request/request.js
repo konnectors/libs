@@ -88,7 +88,8 @@ const AGENTS_LIST = [
   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36 Edg/87.0.664.75',
   'Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36 Edg/87.0.664.75'
 ]
-const DEFAULT_USER_AGENT = AGENTS_LIST[Math.floor(Math.random()*AGENTS_LIST.length)]
+const DEFAULT_USER_AGENT =
+  AGENTS_LIST[Math.floor(Math.random() * AGENTS_LIST.length)]
 
 exports = module.exports = {
   default: requestFactory,
