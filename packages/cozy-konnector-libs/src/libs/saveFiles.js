@@ -492,9 +492,13 @@ const shouldReplaceFile = async function(file, entry, options) {
     throw new Error('BAD_DOWNLOADED_FILE')
   }
   const defaultShouldReplaceFile = (file, entry) => {
-    const shouldForceMetadataAttr = attr =>
-      !getAttribute(file, `metadata.${attr}`) &&
-      get(entry, `fileAttributes.metadata.${attr}`)
+    const shouldForceMetadataAttr = attr => {
+      const result =
+        !getAttribute(file, `metadata.${attr}`) &&
+        get(entry, `fileAttributes.metadata.${attr}`)
+      if (result) log('debug', `filereplacement: adding ${attr} metadata`)
+      return result
+    }
     // replace all files with meta if there is file metadata to add
     const fileHasNoMetadata = !getAttribute(file, 'metadata')
     const fileHasNoId = !getAttribute(file, 'metadata.fileIdAttributes')
@@ -512,7 +516,18 @@ const shouldReplaceFile = async function(file, entry, options) {
       (fileHasNoId && !!options.fileIdAttributes) ||
       (hasSourceAccountIdentifierOption && !fileHasSourceAccountIdentifier) ||
       shouldForceMetadataAttr('carbonCopy') ||
-      shouldForceMetadataAttr('electronicSafe')
+      shouldForceMetadataAttr('electronicSafe') ||
+      shouldForceMetadataAttr('categories')
+
+    if (result) {
+      if (fileHasNoMetadata && entryHasMetadata)
+        log('debug', 'filereplacement: metadata to add')
+      if (fileHasNoId && !!options.fileIdAttributes)
+        log('debug', 'filereplacement: adding fileIdAttributes')
+      if (hasSourceAccountIdentifierOption && !fileHasSourceAccountIdentifier)
+        log('debug', 'filereplacement: adding sourceAccountIdentifier')
+    }
+
     return result
   }
   const shouldReplaceFileFn =
