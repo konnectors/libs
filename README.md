@@ -13,7 +13,7 @@ This package contains all the shared libs which can help the creation of a conne
 
 1. View the [interactive tutorial](https://tech.io/playgrounds/1482/cozy-connector-tutorial/save-cats).
 
-2. Check out [SFR mobile connector](https://github.com/cozy/cozy-konnector-sfrmobile.git) for a real life konnector
+2. Check out [Ameli connector](https://github.com/konnectors/cozy-konnector-ameli) for a real life konnector
 
 3. Read the docs
 
