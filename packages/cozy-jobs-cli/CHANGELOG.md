@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.15.9](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@1.15.8...cozy-jobs-cli@1.15.9) (2021-02-09)
+
+**Note:** Version bump only for package cozy-jobs-cli
+
+
+
+
+
 ## [1.15.8](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@1.15.7...cozy-jobs-cli@1.15.8) (2021-02-09)
 
 
