@@ -267,6 +267,8 @@ class BaseKonnector {
       state += '.EMAIL'
     } else if (type === 'sms') {
       state += '.SMS'
+    } else if (type === 'app_code') {
+      state += '.APP_CODE'
     } else if (type === 'app') {
       state += '.APP'
     }
@@ -310,7 +312,7 @@ class BaseKonnector {
    * const { BaseKonnector } = require('cozy-konnector-libs')
    *
    * module.exports = new BaseKonnector(start)
-   
+
    * async function start() {
    *    // we detect the need of a 2FA code
    *    const code = this.waitForTwoFaCode({
