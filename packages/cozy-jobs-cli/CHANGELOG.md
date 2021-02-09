@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.15.8](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@1.15.7...cozy-jobs-cli@1.15.8) (2021-02-09)
+
+
+### Bug Fixes
+
+* **deps:** update dependency cli-highlight to v2.1.10 ([0a488f4](https://github.com/cozy/cozy-konnector-libs/commit/0a488f418ec1def0ee86fa52a3e19af3aa6e44ad))
+
+
+
+
+
 ## [1.15.7](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@1.15.6...cozy-jobs-cli@1.15.7) (2021-01-18)
 
 **Note:** Version bump only for package cozy-jobs-cli

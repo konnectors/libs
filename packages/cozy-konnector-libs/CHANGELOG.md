@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.40.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.39.1...cozy-konnector-libs@4.40.0) (2021-02-09)
+
+
+### Features
+
+* **saveFiles:** replace files which do not have categories metadata ([1541872](https://github.com/cozy/cozy-konnector-libs/commit/15418729295aa0f9cce3f1572ed34435d08a7ecd))
+* Add new 2FA type (app_code) ([7f9b478](https://github.com/cozy/cozy-konnector-libs/commit/7f9b4784a33735e530b451048026893000c4cb09))
+
+
+
+
+
 ## [4.39.1](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.39.0...cozy-konnector-libs@4.39.1) (2021-01-18)
 
 **Note:** Version bump only for package cozy-konnector-libs
