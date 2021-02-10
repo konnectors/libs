@@ -258,7 +258,7 @@ class BaseKonnector {
    * type where no user input (inside Cozy) is needed.
    *
    * @param {object}  options - The list of options
-   * @param {string}  options.type - Used by the front to show the right message (email/sms/app)
+   * @param {string}  options.type - Used by the front to show the right message (email/sms/app/app_code)
    * @param {boolean} options.retry - Is this function call a retry ? This changes the resulting message to the user
    */
   async setTwoFAState({ type, retry = false } = {}) {
@@ -312,7 +312,7 @@ class BaseKonnector {
    * const { BaseKonnector } = require('cozy-konnector-libs')
    *
    * module.exports = new BaseKonnector(start)
-   
+
    * async function start() {
    *    // we detect the need of a 2FA code
    *    const code = this.waitForTwoFaCode({
