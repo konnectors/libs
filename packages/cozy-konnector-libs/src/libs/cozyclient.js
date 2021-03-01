@@ -9,6 +9,7 @@
 
 const { Client, MemoryStorage } = require('cozy-client-js')
 const NewCozyClient = require('cozy-client').default
+const { models } = require('cozy-client')
 const globalFetch = require('node-fetch').default
 global.fetch = globalFetch
 global.Headers = globalFetch.Headers
@@ -28,6 +29,7 @@ const getCozyClient = function(environment = 'production') {
       version: manifest.data.version
     }
   })
+  newCozyClient.models = models
 
   const options = {
     cozyURL: newCozyClient.stackClient.uri
@@ -45,9 +47,7 @@ const getCozyClient = function(environment = 'production') {
     }
     cozyClient.saveCredentials(credentials.oauthOptions, credentials.token)
   }
-
   cozyClient.new = newCozyClient
-
   return cozyClient
 }
 
