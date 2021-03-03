@@ -2262,6 +2262,14 @@
   dependencies:
     "@types/istanbul-lib-report" "*"
 
+"@types/jest@^26.0.20":
+  version "26.0.20"
+  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-26.0.20.tgz#cd2f2702ecf69e86b586e1f5223a60e454056307"
+  integrity sha512-9zi2Y+5USJRxd0FsahERhBwlcvFh6D2GLQnY2FH2BzK8J9s9omvNHIbvABwIluXa0fD8XVKMLTO0aOEuUfACAA==
+  dependencies:
+    jest-diff "^26.0.0"
+    pretty-format "^26.0.0"
+
 "@types/json-schema@*", "@types/json-schema@^7.0.6":
   version "7.0.6"
   resolved "https://registry.yarnpkg.com/@types/json-schema/-/json-schema-7.0.6.tgz#f4c7ec43e81b319a9815115031709f26987891f0"
@@ -4506,7 +4514,7 @@ cozy-client-js@^0.17.4:
     pouchdb-browser "7.0.0"
     pouchdb-find "7.0.0"
 
-cozy-client@16.10.2, cozy-client@^16.10.2:
+cozy-client@16.10.2:
   version "16.10.2"
   resolved "https://registry.yarnpkg.com/cozy-client/-/cozy-client-16.10.2.tgz#c13e0911fa88f12be0688ec70acacd23291b2bb5"
   integrity sha512-yCB8NRtHYnI/n+FTbdnSBYH8KkN6U2kC6khKY+VHUUcW6yk3rzRPM1ibNI+DJTHVm1hxNSjTtOofxAZJ9MteQg==
@@ -4523,6 +4531,29 @@ cozy-client@16.10.2, cozy-client@^16.10.2:
     prop-types "^15.6.2"
     react-redux "^7.2.0"
     redux "^3.7.2"
+    redux-thunk "^2.3.0"
+    server-destroy "^1.0.1"
+    sift "^6.0.0"
+    url-search-params-polyfill "^7.0.0"
+
+cozy-client@^18.1.2:
+  version "18.1.2"
+  resolved "https://registry.yarnpkg.com/cozy-client/-/cozy-client-18.1.2.tgz#cffb75a1e05fcd844b4d07735b61beb53d0ff960"
+  integrity sha512-68QE1kF26I8IJscH4UqZ2G8AAawfSiqaqFFOgQsXrwivaVTr+ztaswwJv13N44VGHhmFfBCAzKp5nVm50zB3uA==
+  dependencies:
+    "@cozy/minilog" "1.0.0"
+    "@types/jest" "^26.0.20"
+    btoa "^1.2.1"
+    cozy-device-helper "^1.7.3"
+    cozy-logger "^1.6.0"
+    cozy-stack-client "^18.0.0"
+    lodash "^4.17.13"
+    microee "^0.0.6"
+    node-fetch "^2.6.1"
+    open "^7.0.2"
+    prop-types "^15.6.2"
+    react-redux "^7.2.0"
+    redux "3 || 4"
     redux-thunk "^2.3.0"
     server-destroy "^1.0.1"
     sift "^6.0.0"
@@ -4546,6 +4577,13 @@ cozy-doctypes@^1.77.0:
     lodash "4.17.19"
     prop-types "^15.7.2"
 
+cozy-flags@^2.5.0:
+  version "2.5.3"
+  resolved "https://registry.yarnpkg.com/cozy-flags/-/cozy-flags-2.5.3.tgz#5f9748bc6b9d4b378b5cef1b801716f26c0f2cf3"
+  integrity sha512-ZZ2dSUbR+pUOh/vjTk0iJxJ7EKwBDxkSVDFgrQmSuyEw8q3QflqG/SxwElAlwz5IXz/h5hM4eix9ya18MsPMoQ==
+  dependencies:
+    microee "^0.0.6"
+
 cozy-logger@1.6.0, cozy-logger@^1.6.0:
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/cozy-logger/-/cozy-logger-1.6.0.tgz#51675e081e0a40baae6c38c64718cfaee5ee66ff"
@@ -4559,6 +4597,16 @@ cozy-stack-client@^16.8.0:
   resolved "https://registry.yarnpkg.com/cozy-stack-client/-/cozy-stack-client-16.8.0.tgz#091d76ce6368594ab345ab6bb942a105a62c2dd5"
   integrity sha512-7B2j9OMGMv6hnwQ+L6i6gXBOEQJ1QOcoi+x9N4PFhDM0Wy76UaGUwsciKhUiJ3dr34IxhEa/VywK023nybG0rA==
   dependencies:
+    detect-node "^2.0.4"
+    mime "^2.4.0"
+    qs "^6.7.0"
+
+cozy-stack-client@^18.0.0:
+  version "18.0.0"
+  resolved "https://registry.yarnpkg.com/cozy-stack-client/-/cozy-stack-client-18.0.0.tgz#283bf6938d31eabbea9e29cd43b0b0b20f9b6db7"
+  integrity sha512-IPSOgO2t6eHU+zxJ3fvtJ4UYh5ueIuyPcShp9RmxuIzLQLZCU6gO2shHcK1jMi+1dBD48EgO44sEh8g8gU54zg==
+  dependencies:
+    cozy-flags "^2.5.0"
     detect-node "^2.0.4"
     mime "^2.4.0"
     qs "^6.7.0"
@@ -7154,7 +7202,7 @@ jest-config@^26.6.3:
     micromatch "^4.0.2"
     pretty-format "^26.6.2"
 
-jest-diff@^26.6.2:
+jest-diff@^26.0.0, jest-diff@^26.6.2:
   version "26.6.2"
   resolved "https://registry.yarnpkg.com/jest-diff/-/jest-diff-26.6.2.tgz#1aa7468b52c3a68d7d5c5fdcdfcd5e49bd164394"
   integrity sha512-6m+9Z3Gv9wN0WFVasqjCL/06+EFCMTqDEUl/b87HYK2rAPTyfz4ZIuSlPhY51PIQRWx5TaxeF1qmXKe9gfN3sA==
@@ -9587,7 +9635,7 @@ prettier@1.18.2:
   resolved "https://registry.yarnpkg.com/prettier/-/prettier-1.18.2.tgz#6823e7c5900017b4bd3acf46fe9ac4b4d7bda9ea"
   integrity sha512-OeHeMc0JhFE9idD4ZdtNibzY0+TPHSpSSb9h8FqtP+YnoZZ1sl8Vc9b1sasjfymH3SonAF4QcA2+mzHPhMvIiw==
 
-pretty-format@^26.6.2:
+pretty-format@^26.0.0, pretty-format@^26.6.2:
   version "26.6.2"
   resolved "https://registry.yarnpkg.com/pretty-format/-/pretty-format-26.6.2.tgz#e35c2705f14cb7fe2fe94fa078345b444120fc93"
   integrity sha512-7AeGuCYNGmycyQbCqd/3PWH4eOoX/OiCa0uphp57NVTeAGdJGaAliecxwBDHYQCIvrW7aDBZCYeNTP/WX69mkg==
@@ -10045,6 +10093,14 @@ redux-thunk@^2.3.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/redux-thunk/-/redux-thunk-2.3.0.tgz#51c2c19a185ed5187aaa9a2d08b666d0d6467622"
   integrity sha512-km6dclyFnmcvxhAcrQV2AkZmPQjzPDjgVlQtR0EQjxZPyJ0BnMf3in1ryuR8A2qU0HldVRfxYXbFSKlI3N7Slw==
+
+"redux@3 || 4":
+  version "4.0.5"
+  resolved "https://registry.yarnpkg.com/redux/-/redux-4.0.5.tgz#4db5de5816e17891de8a80c424232d06f051d93f"
+  integrity sha512-VSz1uMAH24DM6MF72vcojpYPtrTUu3ByVWfPL1nPfVRb5mZVTve5GnNCUV53QM/BZ66xfWrm0CTWoM+Xlz8V1w==
+  dependencies:
+    loose-envify "^1.4.0"
+    symbol-observable "^1.2.0"
 
 redux@^3.7.2:
   version "3.7.2"
@@ -11121,7 +11177,7 @@ svgo@1.3.2:
     unquote "~1.1.1"
     util.promisify "~1.0.0"
 
-symbol-observable@^1.0.3:
+symbol-observable@^1.0.3, symbol-observable@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/symbol-observable/-/symbol-observable-1.2.0.tgz#c22688aed4eab3cdc2dfeacbb561660560a00804"
   integrity sha512-e900nM8RRtGhlV36KGEU9k65K3mPb1WV70OdjfxlG2EAuM1noi/E/BaW/uMhL7bPEssK8QV57vN3esixjUvcXQ==
