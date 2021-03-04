@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.41.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.40.1...cozy-konnector-libs@4.41.0) (2021-03-04)
+
+
+### Bug Fixes
+
+* update setTwoFAState docstring ([191bbce](https://github.com/cozy/cozy-konnector-libs/commit/191bbce2e017067abba74166f78dfd462b6a1d7b))
+
+
+### Features
+
+* Export cozy-client models ([e6a6dd2](https://github.com/cozy/cozy-konnector-libs/commit/e6a6dd2c5036108a20f4293db0ea007acf52a023))
+* Upgrade cozy-client to get timeseries models ([5359ff0](https://github.com/cozy/cozy-konnector-libs/commit/5359ff02bb4a48a1be411d0bdb7f484261d2a081))
+
+
+
+
+
 ## [4.40.1](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.40.0...cozy-konnector-libs@4.40.1) (2021-02-09)
 
 **Note:** Version bump only for package cozy-konnector-libs
