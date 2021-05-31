@@ -21,7 +21,7 @@
     "@pollyjs/core": "5.1.0",
     "@pollyjs/persister-fs": "5.0.0",
     "babel-runtime": "6.26.0",
-    "cheerio": "1.0.0-rc.5",
+    "cheerio": "1.0.0-rc.9",
     "cli-highlight": "2.1.11",
     "commander": "7.1.0",
     "cozy-client": "19.1.0",
