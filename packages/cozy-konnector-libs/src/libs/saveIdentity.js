@@ -16,9 +16,9 @@ const updateOrCreate = require('./updateOrCreate')
  *
  * Parameters:
  *
- * * `contact` (object): the identity to create/update as an object io.cozy.contacts
- * * `accountIdentifier` (string): a string that represent the account use, if available fields.login
- * * `options` (object): options which will be given to updateOrCreate directly :
+ * `contact` (object): the identity to create/update as an object io.cozy.contacts
+ * `accountIdentifier` (string): a string that represent the account use, if available fields.login
+ * `options` (object): options which will be given to updateOrCreate directly :
  *   + `sourceAccount` (String): id of the source account
  *   + `sourceAccountIdentifier` (String): identifier unique to the account targetted by the connector. It is the login most of the time
  *

@@ -14,7 +14,6 @@ const JAR_ACCOUNT_KEY = 'session'
  * to use the central cookie which can be saved/restored.
  * You need at least the `GET` and `PUT` permissions on `io.cozy.accounts` in your manifest to allow
  * it to save/restore cookies
- *
  * @example
  * ```javascript
  * const { CookieKonnector } = require('cozy-konnector-libs')
@@ -34,7 +33,6 @@ const JAR_ACCOUNT_KEY = 'session'
  * })
  * connector.run()
  * ```
- *
  */
 class CookieKonnector extends BaseKonnector {
   /**

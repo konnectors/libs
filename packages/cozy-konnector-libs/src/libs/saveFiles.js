@@ -50,14 +50,12 @@ const DEFAULT_RETRY = 1 // do not retry by default
  * @param {Array} options.fileIdAttributes - array of strings : Describes which attributes of files will be taken as primary key for files to check if they already exist, even if they are moved. If not given, the file path will used for deduplication as before.
  * @param {string} options.subPath - A subpath to save this file, will be created if needed.
  * @param {Function} options.fetchFile - the connector can give it's own function to fetch the file from the website, which will be run only when necessary (if the corresponding file is missing on the cozy) function returning the stream). This function must return a promise resolved as a stream
- *
  * @example
  * ```javascript
  * await saveFiles([{fileurl: 'https://...', filename: 'bill1.pdf'}], fields, {
  *    fileIdAttributes: ['fileurl']
  * })
  * ```
- *
  * @alias module:saveFiles
  */
 const saveFiles = async (entries, fields, options = {}) => {

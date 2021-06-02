@@ -41,9 +41,9 @@ const suitableCall = (funcOrMethod, ...args) => {
  *
  * Parameters:
  *
- * * `documents`: an array of objects corresponding to the data you want to save in the cozy
- * * `doctype` (string): the doctype where you want to save data (ex: 'io.cozy.bills')
- * * `options` :
+ * `documents`: an array of objects corresponding to the data you want to save in the cozy
+ * `doctype` (string): the doctype where you want to save data (ex: 'io.cozy.bills')
+ * `options` :
  *    - `keys` (array) : List of keys used to check that two items are the same. By default it is set to `['id']'.
  *    - `index` (optionnal) : Return value returned by `cozy.data.defineIndex`, the default will correspond to all documents of the selected doctype.
  *    - `selector` (optionnal object) : Mango request to get records. Default is built from the keys `{selector: {_id: {"$gt": null}}}` to get all the records.

@@ -16,9 +16,9 @@ const { getCozyMetadata } = require('./manifest')
  *
  * Parameters:
  *
- * * `documents`: an array of objects corresponding to the data you want to save in the cozy
- * * `doctype` (string): the doctype where you want to save data (ex: 'io.cozy.bills')
- * * `options` (object): option object
+ * `documents`: an array of objects corresponding to the data you want to save in the cozy
+ * `doctype` (string): the doctype where you want to save data (ex: 'io.cozy.bills')
+ * `options` (object): option object
  *   + `sourceAccount` (String): id of the source account
  *   + `sourceAccountIdentifier` (String): identifier unique to the account targetted by the connector. It is the login most of the time
  *
