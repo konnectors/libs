@@ -220,9 +220,9 @@ use this function.
 
 Parameters:
 
-* `documents`: an array of objects corresponding to the data you want to save in the cozy
-* `doctype` (string): the doctype where you want to save data (ex: 'io.cozy.bills')
-* `options` (object): option object
+`documents`: an array of objects corresponding to the data you want to save in the cozy
+`doctype` (string): the doctype where you want to save data (ex: 'io.cozy.bills')
+`options` (object): option object
   + `sourceAccount` (String): id of the source account
   + `sourceAccountIdentifier` (String): identifier unique to the account targetted by the connector. It is the login most of the time
 
@@ -288,9 +288,9 @@ use this function.
 
 Parameters:
 
-* `documents`: an array of objects corresponding to the data you want to save in the cozy
-* `doctype` (string): the doctype where you want to save data (ex: 'io.cozy.bills')
-* `options` :
+`documents`: an array of objects corresponding to the data you want to save in the cozy
+`doctype` (string): the doctype where you want to save data (ex: 'io.cozy.bills')
+`options` :
    - `keys` (array) : List of keys used to check that two items are the same. By default it is set to `['id']'.
    - `index` (optionnal) : Return value returned by `cozy.data.defineIndex`, the default will correspond to all documents of the selected doctype.
    - `selector` (optionnal object) : Mango request to get records. Default is built from the keys `{selector: {_id: {"$gt": null}}}` to get all the records.
@@ -513,9 +513,9 @@ manifest, to be able to use this function.
 
 Parameters:
 
-* `contact` (object): the identity to create/update as an object io.cozy.contacts
-* `accountIdentifier` (string): a string that represent the account use, if available fields.login
-* `options` (object): options which will be given to updateOrCreate directly :
+`contact` (object): the identity to create/update as an object io.cozy.contacts
+`accountIdentifier` (string): a string that represent the account use, if available fields.login
+`options` (object): options which will be given to updateOrCreate directly :
   + `sourceAccount` (String): id of the source account
   + `sourceAccountIdentifier` (String): identifier unique to the account targetted by the connector. It is the login most of the time
 
@@ -662,10 +662,10 @@ exist in the cozy or not
 You need the full permission for the given doctype in your manifest, to be able to
 use this function.
 
-* `entries` (object array): Documents to save
-* `doctype` (string): Doctype of the documents
-* `matchingAttributes` (string array): attributes in each entry used to check if an entry already exists in the Cozy
-* `options` (object): general option affecting metadata :
+`entries` (object array): Documents to save
+`doctype` (string): Doctype of the documents
+`matchingAttributes` (string array): attributes in each entry used to check if an entry already exists in the Cozy
+`options` (object): general option affecting metadata :
   + `sourceAccount` (String): id of the source account
   + `sourceAccountIdentifier` (String): identifier unique to the account targetted by the connector. It is the login most of the time
 
@@ -694,7 +694,7 @@ deprecated by the findAll method from cozyClient
 
 Parameters:
 
-* `doctype` (string): the doctype from which you want to fetch the data
+`doctype` (string): the doctype from which you want to fetch the data
 
 **Kind**: inner method of [<code>utils</code>](#module_utils)  
 <a name="module_utils..queryAll"></a>
@@ -706,9 +706,9 @@ with a selector and an index
 
 Parameters:
 
-* `doctype` (string): the doctype from which you want to fetch the data
-* `selector` (object): the mango query selector
-* `index` (object): (optional) the query selector index. If not defined, the function will
+`doctype` (string): the doctype from which you want to fetch the data
+`selector` (object): the mango query selector
+`index` (object): (optional) the query selector index. If not defined, the function will
 create it's own index with the keys specified in the selector
 
 
@@ -724,16 +724,16 @@ This function find duplicates in a given doctype, filtered by an optional mango 
 
 Parameters:
 
-* `doctype` (string): the doctype from which you want to fetch the data
-* `selector` (object): (optional) the mango query selector
-* `options` :
+`doctype` (string): the doctype from which you want to fetch the data
+`selector` (object): (optional) the mango query selector
+`options` :
    - `keys` (array) : List of keys used to check that two items are the same.
    - `index` (optionnal) : Return value returned by `cozy.data.defineIndex`, the default will correspond to all documents of the selected doctype.
    - `selector` (optionnal object) : Mango request to get records. Gets all the records by default
 
 Returns an object with the following keys:
-* `toKeep`: this is the list of unique documents that you should keep in db
-* `toRemove`: this is the list of documents that can remove from db. If this is io.cozy.bills
+`toKeep`: this is the list of unique documents that you should keep in db
+`toRemove`: this is the list of documents that can remove from db. If this is io.cozy.bills
 documents, do not forget to clean linked bank operations
 
 ```javascript
@@ -748,10 +748,10 @@ This is a shortcut to update multiple documents in one call
 
 Parameters:
 
-* `doctype` (string): the doctype from which you want to fetch the data
-* `ids` (array): array of ids of documents to update
-* `transformation` (object): attributes to change with their values
-* `options` :
+`doctype` (string): the doctype from which you want to fetch the data
+`ids` (array): array of ids of documents to update
+`transformation` (object): attributes to change with their values
+`options` :
    - `keys` (array) : List of keys used to check that two items are the same.
    - `index` (optionnal) : Return value returned by `cozy.data.defineIndex`, the default will correspond to all documents of the selected doctype.
    - `selector` (optionnal object) : Mango request to get records. Gets all the records by default
@@ -770,10 +770,10 @@ This is a shortcut to delete multiple documents in one call
 
 Parameters:
 
-* `doctype` (string): the doctype from which you want to fetch the data
-* `documents` (array): documents to delete with their ids
-* `transformation` (object): attributes to change with their values
-* `options` :
+`doctype` (string): the doctype from which you want to fetch the data
+`documents` (array): documents to delete with their ids
+`transformation` (object): attributes to change with their values
+`options` :
    - `keys` (array) : List of keys used to check that two items are the same.
    - `index` (optionnal) : Return value returned by `cozy.data.defineIndex`, the default will correspond to all documents of the selected doctype.
    - `selector` (optionnal object) : Mango request to get records. Gets all the records by default
@@ -795,8 +795,8 @@ This function can read the content of a cozy pdf file and output its text
 
 Parameters:
 
-* `fileId` (string): the id of the file in the cozy
-* `options` :
+`fileId` (string): the id of the file in the cozy
+`options` :
    - `pages` (array or number) : The list of page you want to interpret
 
 
@@ -821,7 +821,7 @@ This function convert a Date Object to a ISO date string (2018-07-31)
 
 Parameters:
 
-* `date` (Date): the id of the file in the cozy
+`date` (Date): the id of the file in the cozy
 
 Returns a string
 
@@ -853,8 +853,8 @@ The global model is a model specific to hosted Cozy instances. It is not availab
 The local model is based on the user manual categorizations.
 
 Each model adds two properties to the transactions:
-  * The global model adds `cozyCategoryId` and `cozyCategoryProba`
-  * The local model adds `localCategoryId` and `localCategoryProba`
+  The global model adds `cozyCategoryId` and `cozyCategoryProba`
+  The local model adds `localCategoryId` and `localCategoryProba`
 
 In the end, each transaction can have up to four different categories. An application can use these categories to show the most significant for the user. See https://github.com/cozy/cozy-doctypes/blob/master/docs/io.cozy.bank.md#categories for more informations.
 
