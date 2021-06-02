@@ -20,13 +20,12 @@ const log = logger.namespace('categorization')
  * The local model is based on the user manual categorizations.
  *
  * Each model adds two properties to the transactions:
- *   * The global model adds `cozyCategoryId` and `cozyCategoryProba`
- *   * The local model adds `localCategoryId` and `localCategoryProba`
+ *   The global model adds `cozyCategoryId` and `cozyCategoryProba`
+ *   The local model adds `localCategoryId` and `localCategoryProba`
  *
  * In the end, each transaction can have up to four different categories. An application can use these categories to show the most significant for the user. See https://github.com/cozy/cozy-doctypes/blob/master/docs/io.cozy.bank.md#categories for more informations.
  *
  * @returns {object} an object with a `categorize` method
- *
  * @example
  * const { BaseKonnector, createCategorizer } = require('cozy-konnector-libs')
  *
@@ -76,9 +75,7 @@ async function createCategorizer() {
  * Initialize global and local models and categorize the given array of transactions
  *
  * @see {@link createCategorizer} for more informations about models initialization
- *
  * @returns {object[]} the categorized transactions
- *
  * @example
  * const { BaseKonnector, categorize } = require('cozy-konnector-libs')
  *

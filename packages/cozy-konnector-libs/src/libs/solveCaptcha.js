@@ -44,7 +44,6 @@ const DEFAULT_TIMEOUT = connectorStartTime + 3 * m // 3 minutes by default to le
  * })
  * // now use the solveKey to submit your form
  * ```
- *
  * @alias module:solveCaptcha
  */
 const solveCaptcha = async (params = {}) => {

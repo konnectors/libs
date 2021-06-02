@@ -33,7 +33,6 @@ const Request = require('request')
  *
  * @param  {string} options.userAgent - The user agent string used by the browser
  * @returns {object} Zombie browser extended class
- *
  * @example
  *
  * ```javascript
@@ -41,7 +40,6 @@ const Request = require('request')
  * const browser = new Browser()
  * await browser.visit('http://quotes.toscrape.com/')
  * ```
- *
  * @alias module:CozyBrowser
  */
 const defaultOptions = {

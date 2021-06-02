@@ -62,7 +62,6 @@ const requiredAttributes = {
  *   })
  * })
  * ```
- *
  * @alias module:saveBills
  */
 const saveBills = async (inputEntries, fields, inputOptions = {}) => {

@@ -63,7 +63,6 @@ const cheerio = require('cheerio')
  *  - detect if the credentials work or not -> LOGIN_FAILED
  *  - detect if actions from the user are needed -> USER_ACTION_NEEDED
  *  - detect if the targeted website is out -> VENDOR_DOWN
- *
  * @example
  * ```javascript
  * const $ = signin({
@@ -81,7 +80,6 @@ const cheerio = require('cheerio')
  * Do not forget that the use of the signin function is not mandatory in a connector and won't work
  * if the signin page does not use html forms. Here, a simple POST request may be a lot more
  * simple.
- *
  * @alias module:signin
  */
 function signin({

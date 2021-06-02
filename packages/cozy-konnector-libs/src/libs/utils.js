@@ -17,7 +17,7 @@ const { format } = require('date-fns')
  *
  * Parameters:
  *
- * * `doctype` (string): the doctype from which you want to fetch the data
+ * `doctype` (string): the doctype from which you want to fetch the data
  *
  */
 const fetchAll = async doctype => {
@@ -31,9 +31,9 @@ const fetchAll = async doctype => {
  *
  * Parameters:
  *
- * * `doctype` (string): the doctype from which you want to fetch the data
- * * `selector` (object): the mango query selector
- * * `index` (object): (optional) the query selector index. If not defined, the function will
+ * `doctype` (string): the doctype from which you want to fetch the data
+ * `selector` (object): the mango query selector
+ * `index` (object): (optional) the query selector index. If not defined, the function will
  * create it's own index with the keys specified in the selector
  *
  *
@@ -69,16 +69,16 @@ const queryAll = async (doctype, selector, index) => {
  *
  * Parameters:
  *
- * * `doctype` (string): the doctype from which you want to fetch the data
- * * `selector` (object): (optional) the mango query selector
- * * `options` :
+ * `doctype` (string): the doctype from which you want to fetch the data
+ * `selector` (object): (optional) the mango query selector
+ * `options` :
  *    - `keys` (array) : List of keys used to check that two items are the same.
  *    - `index` (optionnal) : Return value returned by `cozy.data.defineIndex`, the default will correspond to all documents of the selected doctype.
  *    - `selector` (optionnal object) : Mango request to get records. Gets all the records by default
  *
  * Returns an object with the following keys:
- * * `toKeep`: this is the list of unique documents that you should keep in db
- * * `toRemove`: this is the list of documents that can remove from db. If this is io.cozy.bills
+ * `toKeep`: this is the list of unique documents that you should keep in db
+ * `toRemove`: this is the list of documents that can remove from db. If this is io.cozy.bills
  * documents, do not forget to clean linked bank operations
  *
  * ```javascript
@@ -151,10 +151,10 @@ const sortBillsByLinkedOperationNumber = (bills, operations) => {
  *
  * Parameters:
  *
- * * `doctype` (string): the doctype from which you want to fetch the data
- * * `ids` (array): array of ids of documents to update
- * * `transformation` (object): attributes to change with their values
- * * `options` :
+ * `doctype` (string): the doctype from which you want to fetch the data
+ * `ids` (array): array of ids of documents to update
+ * `transformation` (object): attributes to change with their values
+ * `options` :
  *    - `keys` (array) : List of keys used to check that two items are the same.
  *    - `index` (optionnal) : Return value returned by `cozy.data.defineIndex`, the default will correspond to all documents of the selected doctype.
  *    - `selector` (optionnal object) : Mango request to get records. Gets all the records by default
@@ -183,10 +183,10 @@ const batchUpdateAttributes = async (doctype, ids, transformation) => {
  *
  * Parameters:
  *
- * * `doctype` (string): the doctype from which you want to fetch the data
- * * `documents` (array): documents to delete with their ids
- * * `transformation` (object): attributes to change with their values
- * * `options` :
+ * `doctype` (string): the doctype from which you want to fetch the data
+ * `documents` (array): documents to delete with their ids
+ * `transformation` (object): attributes to change with their values
+ * `options` :
  *    - `keys` (array) : List of keys used to check that two items are the same.
  *    - `index` (optionnal) : Return value returned by `cozy.data.defineIndex`, the default will correspond to all documents of the selected doctype.
  *    - `selector` (optionnal object) : Mango request to get records. Gets all the records by default
@@ -214,8 +214,8 @@ const batchDelete = async (doctype, documents) => {
  *
  * Parameters:
  *
- * * `fileId` (string): the id of the file in the cozy
- * * `options` :
+ * `fileId` (string): the id of the file in the cozy
+ * `options` :
  *    - `pages` (array or number) : The list of page you want to interpret
  *
  *
@@ -235,7 +235,7 @@ const batchDelete = async (doctype, documents) => {
 const getPdfText = async (fileId, options = {}) => {
   let pdfjs
   try {
-    pdfjs = require('pdfjs-dist')
+    pdfjs = require('pdfjs-dist/es5/build/pdf')
   } catch (err) {
     throw new Error(
       'pdfjs-dist dependency is missing. Please add it in your package.json'
@@ -276,7 +276,7 @@ module.exports = {
  *
  * Parameters:
  *
- * * `date` (Date): the id of the file in the cozy
+ * `date` (Date): the id of the file in the cozy
  *
  * Returns a string
  *

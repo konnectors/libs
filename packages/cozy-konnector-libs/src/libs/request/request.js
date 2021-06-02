@@ -40,14 +40,14 @@
  * })
  * ```
  * - `debug`: will display request and responses details in error output. Possible values :
- *   * true : display request and response in normal request-debug json format
- *   * 'json' : display request and response in full json format
- *   * 'simple' : display main information about each request and response
+ *   true : display request and response in normal request-debug json format
+ *   'json' : display request and response in full json format
+ *   'simple' : display main information about each request and response
  *   ```
  *   GET -> http://books.toscrape.com/media/cache/26/0c/260c6ae16bce31c8f8c95daddd9f4a1c.jpg
  *   <- 200  Content-Length: 7095
  *   ```
- *   * 'full' : display comple information about each request and response
+ *   'full' : display comple information about each request and response
  *   ```
  *   GET -> http://quotes.toscrape.com/login
  *

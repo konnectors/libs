@@ -66,7 +66,6 @@ const checkTOS = err => {
  *
  * ⚠️  A promise should be returned from the `fetch` function otherwise
  * the konnector cannot know that asynchronous code has been called.
- *
  * @example
  * ```javascript
  * const { BaseKonnector } = require('cozy-konnector-libs')
@@ -303,9 +302,7 @@ class BaseKonnector {
    * @throws Will throw `USER_ACTION_NEEDED.TWOFA_EXPIRED` if the konnector job is not run manually (we assume that
    * not run manually means that we do not have a graphic interface to fill the required information)
    * @throws Will throw `USER_ACTION_NEEDED.TWOFA_EXPIRED` if 2FA is not filled by the user soon enough
-   *
    * @returns {Promise} Contains twoFa code entered by user
-   *
    * @example
    *
    * ```javascript
@@ -476,7 +473,6 @@ class BaseKonnector {
    * connector now
    *
    * @param  {string} err - The error code to be saved as connector result see [docs/ERROR_CODES.md]
-   *
    * @example
    * ```javascript
    * this.terminate('LOGIN_FAILED')

@@ -17,10 +17,10 @@ const { getCozyMetadata } = require('./manifest')
  * You need the full permission for the given doctype in your manifest, to be able to
  * use this function.
  *
- * * `entries` (object array): Documents to save
- * * `doctype` (string): Doctype of the documents
- * * `matchingAttributes` (string array): attributes in each entry used to check if an entry already exists in the Cozy
- * * `options` (object): general option affecting metadata :
+ * `entries` (object array): Documents to save
+ * `doctype` (string): Doctype of the documents
+ * `matchingAttributes` (string array): attributes in each entry used to check if an entry already exists in the Cozy
+ * `options` (object): general option affecting metadata :
  *   + `sourceAccount` (String): id of the source account
  *   + `sourceAccountIdentifier` (String): identifier unique to the account targetted by the connector. It is the login most of the time
  *
