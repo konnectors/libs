@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.42.1](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.42.0...cozy-konnector-libs@4.42.1) (2021-06-02)
+
+
+### Bug Fixes
+
+* lint ([9c166b5](https://github.com/cozy/cozy-konnector-libs/commit/9c166b5ea3b4cddad553bf067c9a45994d71bf55))
+* use es5 build of pdfjs ([3b92323](https://github.com/cozy/cozy-konnector-libs/commit/3b92323d326fca66fc2f1717be2f0b18f6715111))
+
+
+
+
+
 # [4.42.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.41.1-beta.0...cozy-konnector-libs@4.42.0) (2021-03-09)
 
 **Note:** Version bump only for package cozy-konnector-libs
