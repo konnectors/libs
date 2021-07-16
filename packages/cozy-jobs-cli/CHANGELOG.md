@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.16.2](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@1.16.0...cozy-jobs-cli@1.16.2) (2021-07-16)
+
+
+### Bug Fixes
+
+* btoa dependency for konnector-dev command ([bf0db5d](https://github.com/cozy/cozy-konnector-libs/commit/bf0db5d930ae16d8d896f080058ab13790f03875))
+* downgrade lerna to 3 since i cannot publish with 4 ([79bb286](https://github.com/cozy/cozy-konnector-libs/commit/79bb286715e82a7ccf9fe54bc087bb304494c282))
+* **deps:** update dependency cheerio to v1.0.0-rc.9 ([e31b85f](https://github.com/cozy/cozy-konnector-libs/commit/e31b85f42ee8fa76970b6bf1e59c6f24bb3d18b6))
+* **deps:** update dependency cli-highlight to v2.1.11 ([b51e7b0](https://github.com/cozy/cozy-konnector-libs/commit/b51e7b057c067b21182d35098d9929a5c5c4b9cc))
+
+
+
+
+
 ## [1.16.1](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@1.16.0...cozy-jobs-cli@1.16.1) (2021-06-02)
 
 
