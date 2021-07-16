@@ -1,10 +1,13 @@
 #!/usr/bin/env node
 
 /* eslint no-console: off */
+
 const { createClientInteractive } = require('cozy-client/dist/cli')
+const btoa = require('btoa')
 const manifest = require('./manifest')
 
 async function authenticate({ manifestPath, tokenPath }) {
+  global.btoa = btoa
   const scopes = manifest.getScopes(manifestPath)
 
   // add account scope to allow eventual account creation for dev mode
