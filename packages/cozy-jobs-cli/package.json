@@ -22,7 +22,7 @@
     "@pollyjs/persister-fs": "5.0.0",
     "babel-runtime": "6.26.0",
     "btoa": "^1.2.1",
-    "cheerio": "1.0.0-rc.9",
+    "cheerio": "1.0.0-rc.10",
     "cli-highlight": "2.1.11",
     "commander": "7.2.0",
     "cozy-client": "23.4.0",
