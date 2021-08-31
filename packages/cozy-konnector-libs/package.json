@@ -77,7 +77,7 @@
     "husky": "6.0.0",
     "jest": "27.0.6",
     "jsdoc-to-markdown": "6.0.1",
-    "lerna": "^3",
+    "lerna": "3.22.1",
     "lerna-changelog": "1.0.1",
     "pdfjs": "2.4.3",
     "pdfjs-dist": "2.5.207",
