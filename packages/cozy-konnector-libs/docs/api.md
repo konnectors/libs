@@ -473,7 +473,7 @@ You need the full permission on `io.cozy.files` in your manifest to use this fun
 | entries | <code>Array</code> | list of object describing files to save |
 | entries.fileurl | <code>string</code> | The url of the file (can be a function returning the value). Ignored if `filestream` is given |
 | entries.fetchFile | <code>function</code> | the connector can give it's own function to fetch the file from the website, which will be run only when necessary (if the corresponding file is missing on the cozy) function returning the stream). This function must return a promise resolved as a stream |
-| entries.filestream | <code>object</code> | the stream which will be directly passed to cozyClient.files.create (can also be function returning the stream) |
+| entries.filestream | <code>object</code> \| <code>String</code> | the stream which will be directly passed to cozyClient.files.create (can also be function returning the stream) |
 | entries.requestOptions | <code>object</code> | The options passed to request to fetch fileurl (can be a function returning the value) |
 | entries.filename | <code>string</code> | The file name of the item written on disk. This attribute is optional and as default value, the file name will be "smartly" guessed by the function. Use this attribute if the guess is not smart enough for you, or if you use `filestream` (can be a function returning the value). |
 | entries.shouldReplaceName | <code>string</code> | used to migrate filename. If saveFiles finds a file linked to this entry and this file name matches `shouldReplaceName`, the file is renamed to `filename` (can be a function returning the value) |
