@@ -33,7 +33,7 @@ const DEFAULT_RETRY = 1 // do not retry by default
  * @param {Array} entries - list of object describing files to save
  * @param {string} entries.fileurl - The url of the file (can be a function returning the value). Ignored if `filestream` is given
  * @param {Function} entries.fetchFile - the connector can give it's own function to fetch the file from the website, which will be run only when necessary (if the corresponding file is missing on the cozy) function returning the stream). This function must return a promise resolved as a stream
- * @param {object|String} entries.filestream - the stream which will be directly passed to cozyClient.files.create (can also be function returning the stream)
+ * @param {object | string} entries.filestream - the stream which will be directly passed to cozyClient.files.create (can also be function returning the stream)
  * @param {object} entries.requestOptions - The options passed to request to fetch fileurl (can be a function returning the value)
  * @param {string} entries.filename - The file name of the item written on disk. This attribute is optional and as default value, the file name will be "smartly" guessed by the function. Use this attribute if the guess is not smart enough for you, or if you use `filestream` (can be a function returning the value).
  * @param {string} entries.shouldReplaceName - used to migrate filename. If saveFiles finds a file linked to this entry and this file name matches `shouldReplaceName`, the file is renamed to `filename` (can be a function returning the value)
