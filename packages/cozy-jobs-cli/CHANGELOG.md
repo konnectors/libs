@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.16.3](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@1.16.2...cozy-jobs-cli@1.16.3) (2021-10-22)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @pollyjs/adapter-node-http to v5.1.1 ([e88bae7](https://github.com/cozy/cozy-konnector-libs/commit/e88bae75a92e11a74a82db62fd6bf02bde3df006))
+* **deps:** update dependency @pollyjs/core to v5.1.1 ([3c12988](https://github.com/cozy/cozy-konnector-libs/commit/3c129882a49fc843d75473f7958d3ad0f82f70e3))
+* **deps:** update dependency @pollyjs/persister-fs to v5.1.1 ([3eba41f](https://github.com/cozy/cozy-konnector-libs/commit/3eba41f1850bd40be9cb979e8630b550e7304dc7))
+* **deps:** update dependency cheerio to v1.0.0-rc.10 ([7b88058](https://github.com/cozy/cozy-konnector-libs/commit/7b880587be2930b61237ff45d24c1076e95b96a6))
+* **deps:** update dependency open to v8.2.1 ([ea642fb](https://github.com/cozy/cozy-konnector-libs/commit/ea642fb3a684476e512a3fad9d3be924cd67685b))
+
+
+
+
+
 ## [1.16.2](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@1.16.0...cozy-jobs-cli@1.16.2) (2021-07-16)
 
 
