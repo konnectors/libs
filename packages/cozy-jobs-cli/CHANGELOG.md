@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.16.4](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@1.16.3...cozy-jobs-cli@1.16.4) (2021-11-02)
+
+
+### Bug Fixes
+
+* Add argparse as dependency ([9c9b42e](https://github.com/cozy/cozy-konnector-libs/commit/9c9b42e53d3979fc59ee674fa0bffda1c0720c03))
+
+
+
+
+
 ## [1.16.3](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@1.16.2...cozy-jobs-cli@1.16.3) (2021-10-22)
 
 

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.43.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.42.3...cozy-konnector-libs@4.43.0) (2021-11-02)
+
+
+### Features
+
+* Upgrate cozy-client to benefit from saveAll ([c6336de](https://github.com/cozy/cozy-konnector-libs/commit/c6336de20ded4e3cc896eb013129b6377abc9cee))
+
+
+
+
+
 ## [4.42.3](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.42.2...cozy-konnector-libs@4.42.3) (2021-10-22)
 
 
