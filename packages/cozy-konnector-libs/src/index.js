@@ -1,7 +1,7 @@
-const log = require('cozy-logger').namespace('cozy-konnector-libs')
 const requestFactory = require('./libs/request')
 const hydrateAndFilter = require('./libs/hydrateAndFilter')
 const categorization = require('./libs/categorization')
+const log = require('./libs/log')
 
 module.exports = {
   BaseKonnector: require('./libs/BaseKonnector'),
