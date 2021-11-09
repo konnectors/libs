@@ -1,11 +1,21 @@
-const { BankTransaction } = require('cozy-doctypes')
+const cozyClient = require('../../cozyclient')
+const { Q } = require('cozy-client')
 
 async function fetchTransactionsWithManualCat() {
-  const transactionsWithManualCat = await BankTransaction.queryAll({
-    manualCategoryId: { $exists: true }
-  })
+  const client = cozyClient.new
 
-  return transactionsWithManualCat
+  const query = Q('io.cozy.bank.operations')
+    .where({
+      manualCategoryId: { $gt: null }
+    })
+    .partialIndex({
+      manualCategoryId: {
+        $exists: true
+      }
+    })
+    .indexFields(['manualCategoryId'])
+
+  return client.queryAll(query)
 }
 
 module.exports = {
