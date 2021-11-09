@@ -177,7 +177,9 @@ class BaseKonnector {
     this.parameters = cozyParameters
 
     // Set account
-    const account = await this.getAccount(cozyFields.account)
+    const account = cozyFields.account
+      ? await this.getAccount(cozyFields.account)
+      : {}
     if (!account || !account._id) {
       log('warn', 'No account was retrieved from getAccount')
     }
