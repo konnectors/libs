@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.3.0](https://github.com/konnectors/libs/compare/renovate-config-cozy-konnector@1.2.10...renovate-config-cozy-konnector@1.3.0) (2021-11-10)
+
+
+### Features
+
+* Run renovate outside work hours ([e03adba](https://github.com/konnectors/libs/commit/e03adbac6599d32440430c41b6cf97da0458b547))
+
+
+
+
+
 ## [1.2.10](https://github.com/konnectors/libs/compare/renovate-config-cozy-konnector@1.2.8...renovate-config-cozy-konnector@1.2.10) (2020-12-01)
 
 

@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.44.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.43.0...cozy-konnector-libs@4.44.0) (2021-11-10)
+
+
+### Bug Fixes
+
+* Do not query account when no id is given ([080c3d3](https://github.com/cozy/cozy-konnector-libs/commit/080c3d3beb90d515c279384918dce5c7c6400901))
+* Use cozy-client method to query operations with manual category ([bf5bc1e](https://github.com/cozy/cozy-konnector-libs/commit/bf5bc1ebce6fda1fdb12b909b27e59fb5a010f36))
+
+
+### Features
+
+* Export log for tree-shaking ([a4e2ec8](https://github.com/cozy/cozy-konnector-libs/commit/a4e2ec804f41ba419394a6c48aabd5f85247d0c7))
+
+
+
+
+
 # [4.43.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.42.3...cozy-konnector-libs@4.43.0) (2021-11-02)
 
 
