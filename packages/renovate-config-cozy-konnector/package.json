@@ -17,7 +17,12 @@
             "cozy-jobs-cli",
             "cozy-konnector-build"
           ],
-          "schedule": "at any time",
+          "timezone": "Europe/Paris",
+          "schedule": [
+            "after 8pm every weekday",
+            "before 7am every weekday",
+            "every weekend"
+          ],
           "automerge": true,
           "major": {
             "automerge": false
