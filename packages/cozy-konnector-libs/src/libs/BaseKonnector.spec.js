@@ -47,6 +47,7 @@ describe('finding folder path', () => {
 describe('run', () => {
   const envFields = {
     COZY_FIELDS: JSON.stringify({
+      account: 'testaccount',
       COZY_URL: 'http://cozy.tools:8080',
       fields: {
         login: 'mylogin',
