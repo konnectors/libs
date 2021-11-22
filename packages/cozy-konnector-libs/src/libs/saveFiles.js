@@ -515,7 +515,7 @@ const shouldReplaceFile = async function(file, entry, options) {
       (hasSourceAccountIdentifierOption && !fileHasSourceAccountIdentifier) ||
       shouldForceMetadataAttr('carbonCopy') ||
       shouldForceMetadataAttr('electronicSafe') ||
-      shouldForceMetadataAttr('categories')
+      shouldForceMetadataAttr('qualification')
 
     if (result) {
       if (fileHasNoMetadata && entryHasMetadata)
