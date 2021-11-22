@@ -47,6 +47,17 @@
     "pdfjs-dist": "^2.1.266",
     "zombie": "^6.1.4"
   },
+  "peerDependenciesMeta": {
+    "pdfjs": {
+      "optional": true
+    },
+    "pdfjs-dist": {
+      "optional": true
+    },
+    "zombie": {
+      "optional": true
+    }
+  },
   "scripts": {
     "build": "npm run transpile",
     "transpile": "rm -rf dist/* ; babel src --out-dir dist",
