@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.45.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.44.0...cozy-konnector-libs@4.45.0) (2021-11-23)
+
+
+### Bug Fixes
+
+* Regression in BaseKonnector unit test ([bee4889](https://github.com/cozy/cozy-konnector-libs/commit/bee4889a9c92cdaf2516cfb9826119ccc8ff5fbe))
+* Upgrade qualification when metadata already present ([f8cd335](https://github.com/cozy/cozy-konnector-libs/commit/f8cd33594bf18f8ae54e9b218f2398bcf614c3f0))
+
+
+### Features
+
+* Make peer dependencies optional ([6096bde](https://github.com/cozy/cozy-konnector-libs/commit/6096bde8dcd06a3f593f64f94fcfe6501d9c5839))
+
+
+
+
+
 # [4.44.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.43.0...cozy-konnector-libs@4.44.0) (2021-11-10)
 
 
