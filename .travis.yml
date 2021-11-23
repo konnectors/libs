@@ -3,14 +3,23 @@ matrix:
   fast_finish: true
 node_js:
 - '12'
+- '16'
 cache:
   yarn: true
   directories:
   - node_modules
 script:
-    - lerna bootstrap
-    - yarn test
-    - cd packages/cozy-konnector-libs
-    - yarn docs
-    - set +e
-    - (git diff --exit-code -- docs && echo "Docs are up-to-date") || (echo "Docs are not up-to-date, please run yarn docs inside cozy-konnector-libs directory and repush" && false)
+- scripts/travis.sh
+deploy:
+- provider: script
+  skip-cleanup: true
+  script: "./scripts/deploy.sh"
+  on:
+    branch: master
+    repo: konnectors/libs
+env:
+  global:
+    #  travis encrypt NPM_TOKEN=<token>
+  - secure: Vw4Co+RUhnmv39G7oNT2HSrIJYLJn7ulrFRDxQacbcHKOfOTfSr2UuQuFsYYPMK2zY5d5Zdi/hRHGrHgvg84EmGTqQFRahU+DHs7CS2Hdn88+nEmU0lhl2rlkJ+8xQUPVHFes46uiQGr2j9ORrV63J13ZY9p34vqW9QJjlx/2M46u35mrb9An2mc9JGHEmErnL0Mf55p4OluCi4AaBYnoQ7+Yl+WzL4EGp5OKVWddTuGkag9KHCv/2hyFbFv5dy/kU/50XASZ5KZIY8BYgNxqV3XYSp9by13uv4ZJS73KWX4KXvfqJtIqZBvuSbaIu9XIdUsHcs9X5tm9HbYDTomia7ncYHCzD8kksrZCj4kfB44Oua2Jpx3XTf+n6n67P1kaPcqZyNfYPyK2xivwbAQ9InjZtD2/f4zpK6ziyu/Em5lPwLab4m9kZqvAgIm7EtlpSshzchQG4ds7SEL8ldOiUDFmwkZhvGUDJcwpjhNrF7Zog/Dxl92i8wdvLJxoeB9MO0ElAHiIkBIEcmKQVQ3G7gqIzWs6usJQZ5dzIgEFzvjPuncWdio6p+fLWmxs/DzvEoHn4HgdKcjMeNSG22N7jLlAxel+o0yGTiPpaOBeF/WbID2AHoDB5iJurYM3lOn9x8sMsU0r0Et4gQEU0giKMXu5xcZStxdKmhUK1t3t1M=
+    #  travis encrypt GITHUB_TOKEN=<token>
+  - secure: DbbxxTMtiWNjqVNxwcBsfl0Q+dpSXAqIyMgUY9RSUMkQ8+KB/s0Hc+pkXibe1YNw0DMaXylb7SXFZOX2d57/ppPeFH+zSuyMYdqUIMuWBUjpn8t4tEjNcsuIj9MeEi8raFMRNOzLiOG/nwR9yKrm7hWIpWAp2/sJxYTveb5UcWH+GJBCuNTCQq8VoGkFEiNqpTfLtCtc7CRZzWfzHM+0dBlsGdryG5hbs+1+aRBm1eExcysC+9AYMjO4PTZ8uZy+ZSxQ7epBM+pTZmvGZnhQCy4F30FGefXCj2PUYiVV0ZxUoOhx4awVkxW39EuZyqMGXvZVDCza6T1Jf/0Dc+ybGhn/UPwx2XQBYrOMifnfXvWawPTSxdFlS7PwDcK5HYv+kbO6XsHTTywggruAbp2jKvVQ5hS2K03PEthAF70FPpedoi1PgYuTX/R6DAuRtu5V53JCrkH/akoKdoPMIcN+Y3KYkYrnz8oLiv1x56rkSOQs2NPYiwRaWEl3jkCrwKGsmR64DeMsYHsct0Uutko2SaNPwtSGEVqtGMNRGf3Ts3canjd76ltVhRiQ10BkVT45zeAen7KunMjZPzHVn/K1wqYnIE0brE8TUKxZOeppIQijI4ofVSXjNyjGR7c+mGUk5wAQ7EdLS4gHHVzXHjusOEyvc07kATJovOOxEkIgMDw=
