@@ -16,7 +16,7 @@
     "url": "https://github.com/konnectors/libs/issues"
   },
   "dependencies": {
-    "copy-webpack-plugin": "9.0.1",
+    "copy-webpack-plugin": "9.1.0",
     "cozy-app-publish": "0.28.0",
     "eslint-config-cozy-app": "2.1.1",
     "git-directory-deploy": "1.5.1",
