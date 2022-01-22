@@ -34,7 +34,7 @@
     "lodash-id": "^0.14.0",
     "lowdb": "^1.0.0",
     "mime-types": "^2.1.31",
-    "node-fetch": "^2.6.1",
+    "node-fetch": "^3.0.0",
     "raven": "^2.6.4",
     "raw-body": "^2.4.1",
     "request": "^2.88.2",
