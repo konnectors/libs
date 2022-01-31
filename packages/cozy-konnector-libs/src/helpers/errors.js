@@ -106,20 +106,98 @@ const USER_ACTION_NEEDED_CGU_FORM = 'USER_ACTION_NEEDED.CGU_FORM'
  */
 const CAPTCHA_RESOLUTION_FAILED = 'CAPTCHA_RESOLUTION_FAILED'
 
+/**
+ * Additionnal information is needed to check your login details
+ *
+ * @type {string}
+ */
+const LOGIN_FAILED_NEEDS_SECRET = 'LOGIN_FAILED.NEEDS_SECRET'
+
+/**
+ * remote website seems to be unavailable
+ *
+ * @type {string}
+ */
+const MAINTENANCE = 'MAINTENANCE'
+
+/**
+ * User needs to accept new terms
+ *
+ * @type {string}
+ */
+const TERMS_VERSION_MISMATCH = 'TERMS_VERSION_MISMATCH'
+
+/**
+ * unkown error
+ *
+ * @type {string}
+ */
+const UNKNOWN_ERROR = 'UNKNOWN_ERROR'
+
+/**
+ * Renewal of authentication required
+ *
+ * @type {string}
+ */
+const USER_ACTION_NEEDED_SCA_REQUIRED = 'USER_ACTION_NEEDED.SCA_REQUIRED'
+
+/**
+ * Authentication renewal required
+ *
+ * @type {string}
+ */
+const USER_ACTION_NEEDED_TWOFA_EXPIRED = 'USER_ACTION_NEEDED.TWOFA_EXPIRED'
+/**
+ * Authentication on vendor website required
+ *
+ * @type {string}
+ */
+const USER_ACTION_NEEDED_WEBAUTH_REQUIRED =
+  'USER_ACTION_NEEDED.WEBAUTH_REQUIRED'
+/**
+ * Incorrect strong authentication code
+ *
+ * @type {string}
+ */
+const USER_ACTION_NEEDED_WRONG_TWOFA_CODE =
+  'USER_ACTION_NEEDED.WRONG_TWOFA_CODE'
+/**
+ * Unavailable bank website
+ *
+ * @type {string}
+ */
+const VENDOR_DOWN_BANK_DOWN = 'VENDOR_DOWN.BANK_DOWN'
+/**
+ * Unavailable bank website
+ *
+ * @type {string}
+ */
+const VENDOR_DOWN_LINXO_DOWN = 'VENDOR_DOWN.LINXO_DOWN'
+
 module.exports = {
   LOGIN_FAILED,
+  LOGIN_FAILED_NEEDS_SECRET,
+  LOGIN_FAILED_TOO_MANY_ATTEMPTS,
   NOT_EXISTING_DIRECTORY,
-  VENDOR_DOWN,
-  USER_ACTION_NEEDED,
   FILE_DOWNLOAD_FAILED,
   SAVE_FILE_FAILED,
   DISK_QUOTA_EXCEEDED,
   CHALLENGE_ASKED,
-  LOGIN_FAILED_TOO_MANY_ATTEMPTS,
+  USER_ACTION_NEEDED,
   USER_ACTION_NEEDED_OAUTH_OUTDATED,
   USER_ACTION_NEEDED_ACCOUNT_REMOVED,
   USER_ACTION_NEEDED_CHANGE_PASSWORD,
   USER_ACTION_NEEDED_PERMISSIONS_CHANGED,
   USER_ACTION_NEEDED_CGU_FORM,
-  CAPTCHA_RESOLUTION_FAILED
+  USER_ACTION_NEEDED_SCA_REQUIRED,
+  USER_ACTION_NEEDED_TWOFA_EXPIRED,
+  USER_ACTION_NEEDED_WEBAUTH_REQUIRED,
+  USER_ACTION_NEEDED_WRONG_TWOFA_CODE,
+  CAPTCHA_RESOLUTION_FAILED,
+  MAINTENANCE,
+  TERMS_VERSION_MISMATCH,
+  UNKNOWN_ERROR,
+  VENDOR_DOWN,
+  VENDOR_DOWN_BANK_DOWN,
+  VENDOR_DOWN_LINXO_DOWN
 }
