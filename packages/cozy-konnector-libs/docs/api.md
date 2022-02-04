@@ -147,6 +147,36 @@ DefinePlugin</p>
 <dt><a href="#CAPTCHA_RESOLUTION_FAILED">CAPTCHA_RESOLUTION_FAILED</a> : <code>string</code></dt>
 <dd><p>solveCaptcha failed to solve the captcha</p>
 </dd>
+<dt><a href="#LOGIN_FAILED_NEEDS_SECRET">LOGIN_FAILED_NEEDS_SECRET</a> : <code>string</code></dt>
+<dd><p>Additionnal information is needed to check your login details</p>
+</dd>
+<dt><a href="#MAINTENANCE">MAINTENANCE</a> : <code>string</code></dt>
+<dd><p>remote website seems to be unavailable</p>
+</dd>
+<dt><a href="#TERMS_VERSION_MISMATCH">TERMS_VERSION_MISMATCH</a> : <code>string</code></dt>
+<dd><p>User needs to accept new terms</p>
+</dd>
+<dt><a href="#UNKNOWN_ERROR">UNKNOWN_ERROR</a> : <code>string</code></dt>
+<dd><p>unkown error</p>
+</dd>
+<dt><a href="#USER_ACTION_NEEDED_SCA_REQUIRED">USER_ACTION_NEEDED_SCA_REQUIRED</a> : <code>string</code></dt>
+<dd><p>Renewal of authentication required</p>
+</dd>
+<dt><a href="#USER_ACTION_NEEDED_TWOFA_EXPIRED">USER_ACTION_NEEDED_TWOFA_EXPIRED</a> : <code>string</code></dt>
+<dd><p>Authentication renewal required</p>
+</dd>
+<dt><a href="#USER_ACTION_NEEDED_WEBAUTH_REQUIRED">USER_ACTION_NEEDED_WEBAUTH_REQUIRED</a> : <code>string</code></dt>
+<dd><p>Authentication on vendor website required</p>
+</dd>
+<dt><a href="#USER_ACTION_NEEDED_WRONG_TWOFA_CODE">USER_ACTION_NEEDED_WRONG_TWOFA_CODE</a> : <code>string</code></dt>
+<dd><p>Incorrect strong authentication code</p>
+</dd>
+<dt><a href="#VENDOR_DOWN_BANK_DOWN">VENDOR_DOWN_BANK_DOWN</a> : <code>string</code></dt>
+<dd><p>Unavailable bank website</p>
+</dd>
+<dt><a href="#VENDOR_DOWN_LINXO_DOWN">VENDOR_DOWN_LINXO_DOWN</a> : <code>string</code></dt>
+<dd><p>Unavailable bank website</p>
+</dd>
 </dl>
 
 ## Functions
@@ -1433,6 +1463,66 @@ The user needs to accept a CGU form before accessing the rest of the website
 
 ## CAPTCHA\_RESOLUTION\_FAILED : <code>string</code>
 solveCaptcha failed to solve the captcha
+
+**Kind**: global constant  
+<a name="LOGIN_FAILED_NEEDS_SECRET"></a>
+
+## LOGIN\_FAILED\_NEEDS\_SECRET : <code>string</code>
+Additionnal information is needed to check your login details
+
+**Kind**: global constant  
+<a name="MAINTENANCE"></a>
+
+## MAINTENANCE : <code>string</code>
+remote website seems to be unavailable
+
+**Kind**: global constant  
+<a name="TERMS_VERSION_MISMATCH"></a>
+
+## TERMS\_VERSION\_MISMATCH : <code>string</code>
+User needs to accept new terms
+
+**Kind**: global constant  
+<a name="UNKNOWN_ERROR"></a>
+
+## UNKNOWN\_ERROR : <code>string</code>
+unkown error
+
+**Kind**: global constant  
+<a name="USER_ACTION_NEEDED_SCA_REQUIRED"></a>
+
+## USER\_ACTION\_NEEDED\_SCA\_REQUIRED : <code>string</code>
+Renewal of authentication required
+
+**Kind**: global constant  
+<a name="USER_ACTION_NEEDED_TWOFA_EXPIRED"></a>
+
+## USER\_ACTION\_NEEDED\_TWOFA\_EXPIRED : <code>string</code>
+Authentication renewal required
+
+**Kind**: global constant  
+<a name="USER_ACTION_NEEDED_WEBAUTH_REQUIRED"></a>
+
+## USER\_ACTION\_NEEDED\_WEBAUTH\_REQUIRED : <code>string</code>
+Authentication on vendor website required
+
+**Kind**: global constant  
+<a name="USER_ACTION_NEEDED_WRONG_TWOFA_CODE"></a>
+
+## USER\_ACTION\_NEEDED\_WRONG\_TWOFA\_CODE : <code>string</code>
+Incorrect strong authentication code
+
+**Kind**: global constant  
+<a name="VENDOR_DOWN_BANK_DOWN"></a>
+
+## VENDOR\_DOWN\_BANK\_DOWN : <code>string</code>
+Unavailable bank website
+
+**Kind**: global constant  
+<a name="VENDOR_DOWN_LINXO_DOWN"></a>
+
+## VENDOR\_DOWN\_LINXO\_DOWN : <code>string</code>
+Unavailable bank website
 
 **Kind**: global constant  
 <a name="attachProcessEventHandlers"></a>
