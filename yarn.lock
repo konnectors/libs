@@ -6329,12 +6329,11 @@ gauge@~2.7.3:
     strip-ansi "^3.0.1"
     wide-align "^1.1.0"
 
-geco@^0.11.1:
-  version "0.11.1"
-  resolved "https://registry.yarnpkg.com/geco/-/geco-0.11.1.tgz#2dec107202a37bbfbb480892446a94a6ffc41411"
-  integrity sha512-RuZ2QWImhVLwaSCuhS9+iPIEL/kemh2xOa4ovnWXaR86GWWZndMXerMUpAjPyR4WHwnWn8pjY0kmy2iX2a4rwg==
+"geco@git+https://github.com/konnectors/geco.git#0.11.2":
+  version "0.11.2"
+  resolved "git+https://github.com/konnectors/geco.git#fe0da3cdaabd5714a226014efd61c89bc85e7c56"
   dependencies:
-    toni ">=0.6.2"
+    toni "git+https://github.com/konnectors/toni.git#0.6.3"
 
 genfun@^5.0.0:
   version "5.0.0"
@@ -11798,10 +11797,9 @@ token-types@^2.0.0:
     "@tokenizer/token" "^0.1.1"
     ieee754 "^1.2.1"
 
-toni@>=0.6.2:
-  version "0.6.2"
-  resolved "https://registry.yarnpkg.com/toni/-/toni-0.6.2.tgz#a6af3bd70ae64de5ab1856e7036fb3b3e5e73cf8"
-  integrity sha1-pq871wrmTeWrGFbnA2+zs+XnPPg=
+"toni@git+https://github.com/konnectors/toni.git#0.6.3":
+  version "0.6.3"
+  resolved "git+https://github.com/konnectors/toni.git#eb813c9d070b494efd78f788cf627bfc9a1019ec"
   dependencies:
     bolgia ">=2.7.4"
 
