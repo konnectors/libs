@@ -10,6 +10,11 @@ const rawBody = require('raw-body')
 const stripJsonComments = require('strip-json-comments')
 const manifest = require('../libs/manifest')
 const sleep = require('util').promisify(global.setTimeout)
+const { models } = require('cozy-client')
+
+const newCozyClient = {
+  models
+}
 
 const rootPath = JSON.parse(
   process.env.COZY_FIELDS || '{"folder_to_save": "."}'
@@ -26,6 +31,7 @@ function setDefaults(doctype) {
 }
 
 module.exports = {
+  new: newCozyClient,
   _setDb(newDb) {
     db = newDb
   },
