@@ -70,12 +70,12 @@ To store synchronization data, we are using a `sync` attribute in document `meta
       "7ee401e841c94159addb47f190903139": {
         "id": "7ee401e841c94159addb47f190903139",
         "konnector": "trainline",
-        "last_sync": "Mon, 12 Feb 2018 16:25:34 GMT"
+        "last_sync": "2018-10-19T10:58:37.025688+02:00"
       },
       "7ee401e841c94159addb47f1909ZZZZ": {
         "id": "7ee401e841c94159addb47f1909ZZZZZ",
         "konnector": "icloud",
-        "last_sync": "Mon, 18 Feb 2018 16:25:34 GMT"
+        "last_sync": "2018-10-19T10:58:37.025688+02:00"
       },
   }
 }
@@ -88,6 +88,7 @@ The expected information to be save is:
 | konnector | The slug of the konnector (Example: `trainline`, `freemobile`, `cic`). This could be very useful to retrieve data synchronized with this konnector.
 | last_sync | Date of last synchronization, set to `now()` when storage is made.
 
+See 
 
 ### By multiple attributes
 
