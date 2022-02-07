@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.16.7](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@1.16.6...cozy-jobs-cli@1.16.7) (2022-02-07)
+
+
+### Bug Fixes
+
+* **deps:** update dependency cozy-client to v23.22.0 ([446febc](https://github.com/cozy/cozy-konnector-libs/commit/446febc428c994f56ce2cadc7604ecd5eac3f053))
+* **deps:** update dependency jest to v27.4.7 ([7f78a31](https://github.com/cozy/cozy-konnector-libs/commit/7f78a317b0634aa82597964d437cff2e3b79f402))
+* **deps:** update dependency open to v8.4.0 ([769de01](https://github.com/cozy/cozy-konnector-libs/commit/769de01df6fadd7762c1e0c3b3c92202823bd523))
+
+
+
+
+
 ## [1.16.6](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@1.16.5...cozy-jobs-cli@1.16.6) (2021-11-23)
 
 **Note:** Version bump only for package cozy-jobs-cli

@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.46.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.45.0...cozy-konnector-libs@4.46.0) (2022-02-07)
+
+
+### Bug Fixes
+
+* **deps:** update dependency cozy-client-js to ^0.20.0 ([50ac858](https://github.com/cozy/cozy-konnector-libs/commit/50ac858125d0677ffc634954dc11f8f06e807916))
+* **deps:** update dependency jest to v27.4.7 ([7f78a31](https://github.com/cozy/cozy-konnector-libs/commit/7f78a317b0634aa82597964d437cff2e3b79f402))
+* use our own fork of geco ([82433f4](https://github.com/cozy/cozy-konnector-libs/commit/82433f4d1a7da8826d24444a3b6e56b4cb4f3f2a))
+
+
+### Features
+
+* (cozy-konnectors-libs)Upgrade cozy-client ([2e86c89](https://github.com/cozy/cozy-konnector-libs/commit/2e86c890696fc71efdcc24755e5af810f6d21228))
+* Add all supported error code ([6a9fca7](https://github.com/cozy/cozy-konnector-libs/commit/6a9fca73295fbd30e84ee2e08eb6bcdaf3a677d7))
+* Allow file qualification to work in standalone mode ([d89cb3a](https://github.com/cozy/cozy-konnector-libs/commit/d89cb3abbb2a63cdf04fb12cf28672ab452e599c))
+
+
+
+
+
 # [4.45.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.44.0...cozy-konnector-libs@4.45.0) (2021-11-23)
 
 
