@@ -10054,15 +10054,15 @@ path-type@^4.0.0:
   resolved "https://registry.yarnpkg.com/path-type/-/path-type-4.0.0.tgz#84ed01c0a7ba380afe09d90a8c180dcd9d03043b"
   integrity sha512-gDKb8aZMDeD/tZWs9P6+q0J9Mwkdl6xMV8TjnGP3qJVJ06bdMgkbBlLU8IdfOsIsFz2BW1rNVT3XuNEl8zPAvw==
 
-pdfjs-dist@2.5.207:
-  version "2.5.207"
-  resolved "https://registry.yarnpkg.com/pdfjs-dist/-/pdfjs-dist-2.5.207.tgz#b5e8c19627be64269cd3fb6df3eaaf45ddffe7b6"
-  integrity sha512-xGDUhnCYPfHy+unMXCLCJtlpZaaZ17Ew3WIL0tnSgKFUZXHAPD49GO9xScyszSsQMoutNDgRb+rfBXIaX/lJbw==
+pdfjs-dist@2.12.313:
+  version "2.12.313"
+  resolved "https://registry.yarnpkg.com/pdfjs-dist/-/pdfjs-dist-2.12.313.tgz#62f2273737bb956267ae2e02cdfaddcb1099819c"
+  integrity sha512-1x6iXO4Qnv6Eb+YFdN5JdUzt4pAkxSp3aLAYPX93eQCyg/m7QFzXVWJHJVtoW48CI8HCXju4dSkhQZwoheL5mA==
 
-pdfjs@2.4.3:
-  version "2.4.3"
-  resolved "https://registry.yarnpkg.com/pdfjs/-/pdfjs-2.4.3.tgz#2fa76ffe5f179e370b32cde057e24c32b7fd1ddc"
-  integrity sha512-HkLN90aJWKYfrZL+5gTdVgOMQ5KH0FgjOZpoTirOOC0k530C0jQ6ORr1dUF8oBVXYcWjmqo0r/qjJu+uOBY8hg==
+pdfjs@2.4.7:
+  version "2.4.7"
+  resolved "https://registry.yarnpkg.com/pdfjs/-/pdfjs-2.4.7.tgz#966084e63a0283206c1307c3b332f53248917f20"
+  integrity sha512-qGGZiQ7cz7nDgRgNSMm0qsZ4QPlAvZr+kWwB78hZzClojtfqGbGUT/gwzf8S2nniwvLMB56boBTTIppQohTJUA==
   dependencies:
     "@rkusa/linebreak" "^1.0.0"
     opentype.js "^1.3.3"

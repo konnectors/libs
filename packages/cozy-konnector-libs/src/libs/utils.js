@@ -235,7 +235,7 @@ const batchDelete = async (doctype, documents) => {
 const getPdfText = async (fileId, options = {}) => {
   let pdfjs
   try {
-    pdfjs = require('pdfjs-dist/es5/build/pdf')
+    pdfjs = require('pdfjs-dist/legacy/build/pdf')
   } catch (err) {
     throw new Error(
       'pdfjs-dist dependency is missing. Please add it in your package.json'
