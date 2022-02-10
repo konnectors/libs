@@ -13,10 +13,9 @@ const updateOrCreate = require('./updateOrCreate')
  *
  * You need full permission for the doctype io.cozy.identities in your
  * manifest, to be able to use this function.
- *
  * Parameters:
  *
- * `contact` (object): the identity to create/update as an object io.cozy.contacts
+ * `identity` (object): the identity to create/update as an io.cozy.identities object
  * `accountIdentifier` (string): a string that represent the account use, if available fields.login
  * `options` (object): options which will be given to updateOrCreate directly :
  *   + `sourceAccount` (String): id of the source account
@@ -27,8 +26,10 @@ const updateOrCreate = require('./updateOrCreate')
  * const { saveIdentity } = require('cozy-konnector-libs')
  * const identity =
  *   {
- *     name: 'toto',
- *     email: { 'address': 'toto@example.com' }
+ *     contact: {
+ *       name: 'toto',
+ *       email: { 'address': 'toto@example.com' }
+ *     }
  *   }
  *
  * return saveIdentity(identity, fields.login)
@@ -37,27 +38,41 @@ const updateOrCreate = require('./updateOrCreate')
  * @alias module:saveIdentity
  */
 
-const saveIdentity = async (contact, accountIdentifier, options = {}) => {
+const saveIdentity = async (
+  contactOrIdentity,
+  accountIdentifier,
+  options = {}
+) => {
   log('debug', 'saving user identity')
   if (accountIdentifier == null) {
     log('warn', "Can't set identity as no accountIdentifier was provided")
     return
   }
-  if (contact == null) {
-    log('warn', "Can't set identity as no contact was provided")
+
+  if (contactOrIdentity == null) {
+    log('warn', "Can't set identity as no identity was provided")
     return
   }
-  // Format contact if needed
-  if (contact.phone) {
-    contact.phone = formatPhone(contact.phone)
-  }
-  if (contact.address) {
-    contact.address = formatAddress(contact.address)
-  }
 
-  const identity = {
-    identifier: accountIdentifier,
-    contact
+  // we suppose here that an identity always contains at least some contact information
+  const isIdentity = contactOrIdentity.contact
+  if (!isIdentity) {
+    log(
+      'warn',
+      'passing a io.cozy.contacts object is deprected, please pass a full identity object'
+    )
+  }
+  const identity = isIdentity
+    ? contactOrIdentity
+    : { contact: contactOrIdentity }
+  identity.identifier = accountIdentifier
+
+  // Format contact if needed
+  if (identity.contact.phone) {
+    identity.contact.phone = formatPhone(identity.contact.phone)
+  }
+  if (identity.contact.address) {
+    identity.contact.address = formatAddress(identity.contact.address)
   }
 
   await updateOrCreate(
