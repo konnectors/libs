@@ -1,6 +1,6 @@
 const { getDomain, getInstance } = require('./cozy-domain')
 
-describe('getDomain', function() {
+describe('getDomain', function () {
   it('should get the Cozy domain from an url', () => {
     expect(getDomain('https://toto.mycozy.cloud')).toEqual('mycozy.cloud')
     expect(getDomain('http://a.cozy.rocks')).toEqual('cozy.rocks')
@@ -8,7 +8,7 @@ describe('getDomain', function() {
   })
 })
 
-describe('getInstance', function() {
+describe('getInstance', function () {
   it('should get the Cozy instance from an url', () => {
     expect(getInstance('https://toto.mycozy.cloud')).toEqual(
       'toto.mycozy.cloud'

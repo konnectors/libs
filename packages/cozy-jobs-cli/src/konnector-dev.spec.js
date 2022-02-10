@@ -6,8 +6,8 @@ describe('arg parsing', () => {
     expect(args).toEqual({
       createAccount: false,
       file: 'index.js',
-      manifest: '/Users/cozy/code/cozy/konnector-libs/manifest.konnector',
-      token: '/Users/cozy/code/cozy/konnector-libs/.token.json'
+      manifest: expect.stringContaining('/manifest.konnector'),
+      token: expect.stringContaining('/.token.json')
     })
   })
 
@@ -16,8 +16,8 @@ describe('arg parsing', () => {
     expect(args).toEqual({
       createAccount: true,
       file: expect.stringContaining('myScript'),
-      manifest: '/Users/cozy/code/cozy/konnector-libs/manifest.konnector',
-      token: '/Users/cozy/code/cozy/konnector-libs/.token.json'
+      manifest: expect.stringContaining('/manifest.konnector'),
+      token: expect.stringContaining('/.token.json')
     })
   })
 })

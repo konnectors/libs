@@ -11,7 +11,7 @@ const log = require('cozy-logger').namespace('scrape')
  * [artoo]: https://medialab.github.io/artoo/
  */
 
-const mkSpec = function(spec) {
+const mkSpec = function (spec) {
   if (typeof spec === 'string') {
     return { sel: spec }
   } else {

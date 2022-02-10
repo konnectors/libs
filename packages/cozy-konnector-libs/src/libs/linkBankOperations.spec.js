@@ -10,7 +10,7 @@ const { parseTable } = require('./testUtils')
 
 let linker
 
-beforeEach(function() {
+beforeEach(function () {
   // We mock defineIndex/query so that fetchOperations returns the right operations
   const INDEX = 'index'
   cozyClient.data.defineIndex.mockReturnValue(Promise.resolve(INDEX))
@@ -111,7 +111,10 @@ describe('linker', () => {
           bills: ['io.cozy.bills:b3', 'io.cozy.bills:b2', 'io.cozy.bills:b1']
         }
       ]
-      const bills = [{ amount: 110, _id: 'b1' }, { amount: 11, _id: 'b10' }]
+      const bills = [
+        { amount: 110, _id: 'b1' },
+        { amount: 11, _id: 'b10' }
+      ]
 
       await linker.removeBillsFromOperations(bills, operations)
       expect(linker.updateAttributes.mock.calls).toEqual([
@@ -578,7 +581,7 @@ describe('linker', () => {
 
     let operations, operationsById
 
-    beforeEach(function() {
+    beforeEach(function () {
       // reset operations to operationsInit values
       operations = operationsInit.map(op => ({ ...op }))
       operationsById = indexBy(operations, '_id')

@@ -5,7 +5,7 @@ const {
 jest.mock('../../cozyclient')
 const cozyClient = require('../../cozyclient')
 
-beforeEach(function() {
+beforeEach(function () {
   const INDEX = 'index'
   cozyClient.data.defineIndex.mockReturnValue(Promise.resolve(INDEX))
 })
@@ -51,7 +51,7 @@ describe('findByMangoQuerySimple', () => {
 })
 
 xdescribe('findNeighboringOperations', () => {
-  test('when query return length equal to stack limit, fetchAll loop', () => {
+  test('when query return length equal to stack limit, fetchAll loop', async () => {
     const ops1 = new Array(100)
     const ops2 = new Array(100)
     const ops3 = new Array(21)
@@ -60,11 +60,12 @@ xdescribe('findNeighboringOperations', () => {
     cozyClient.data.query.mockReturnValueOnce(asyncResolve(ops3))
     const bill = {}
     const options = {}
-    return findNeighboringOperations(cozyClient, bill, options).then(
-      operations => {
-        expect(cozyClient.data.query.mock.calls.length).toBe(3)
-        expect(operations.length).toBe(ops1.length + ops2.length + ops3.length)
-      }
+    const operations = await findNeighboringOperations(
+      cozyClient,
+      bill,
+      options
     )
+    expect(cozyClient.data.query.mock.calls.length).toBe(3)
+    expect(operations.length).toBe(ops1.length + ops2.length + ops3.length)
   })
 })

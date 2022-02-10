@@ -16,7 +16,7 @@ function formatDate(d) {
 }
 
 const comp = fn => {
-  return function(a, b) {
+  return function (a, b) {
     const resa = fn(a)
     const resb = fn(b)
     if (resa == resb) {
@@ -85,13 +85,13 @@ const renderText = results => {
   )
 }
 
-const renderResults = function(results) {
+const renderResults = function (results) {
   results = JSON.parse(results)
   const node = document.querySelector('#results')
   node.innerHTML = `${renderText(results)}`
 }
 
-document.querySelector('#form').addEventListener('submit', ev => {
+document.querySelector('#form').addEventListener('submit', async ev => {
   ev.preventDefault()
   const form = ev.target
   const submitBtn = form.querySelector('[type="submit"]')
@@ -100,19 +100,19 @@ document.querySelector('#form').addEventListener('submit', ev => {
   const data = serialize(new FormData(form))
   saveFormData(data)
   const sendDate = new Date()
-  fetch('http://localhost:3000/generate', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(data)
-  })
-    .then(res => res.text())
-    .then(res => {
-      console.log(new Date() - sendDate) // eslint-disable-line no-console
-      submitBtn.innerText = txt
-      renderResults(res)
+  const res = (
+    await fetch('http://localhost:3000/generate', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
     })
+  ).text()
+
+  console.log(new Date() - sendDate) // eslint-disable-line no-console
+  submitBtn.innerText = txt
+  renderResults(res)
 })
 
 const saveFormData = data => {

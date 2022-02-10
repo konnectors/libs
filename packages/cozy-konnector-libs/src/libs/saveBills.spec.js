@@ -18,7 +18,7 @@ const asyncResolve = val => {
 
 logger.setLevel('critical')
 
-beforeEach(async function() {
+beforeEach(async function () {
   saveFiles.mockImplementation(entries => {
     return asyncResolve(entries.map(doc => ({ ...doc, fileDocument: true })))
   })
@@ -30,7 +30,7 @@ beforeEach(async function() {
   })
 })
 
-describe('saveBills', function() {
+describe('saveBills', function () {
   it('should check required attributes in bills', async () => {
     expect.assertions(1)
     try {
@@ -78,7 +78,7 @@ describe('saveBills', function() {
   })
 })
 
-describe('manageContractsData', function() {
+describe('manageContractsData', function () {
   it('Append contracts data if contractId present in options', async () => {
     let entries = [
       {

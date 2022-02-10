@@ -70,7 +70,7 @@ const FOLDER_PATH = '/testfolder'
 const options = { folderPath: FOLDER_PATH }
 let bills
 
-beforeEach(async function() {
+beforeEach(async function () {
   const INDEX = 'index'
   bills = getBillFixtures()
   cozyClient.data.defineIndex.mockReturnValue(() => asyncResolve(INDEX))
@@ -87,7 +87,7 @@ beforeEach(async function() {
   )
 })
 
-describe('saveFiles', function() {
+describe('saveFiles', function () {
   const makeFile = (_id, attributes) => ({ _id, attributes })
   const rightMimeFile = makeFile('existingFileId', {
     name: '201701_freemobile.pdf',
@@ -146,7 +146,7 @@ describe('saveFiles', function() {
       // Whether a file should be created or not
       it(`should${
         expectCreation ? ' ' : ' not '
-      }create a file`, async function() {
+      }create a file`, async function () {
         if (expectCreation) {
           expect(cozyClient.files.create).toHaveBeenCalledTimes(bills.length)
         } else {
@@ -158,7 +158,7 @@ describe('saveFiles', function() {
       if (expectUpdate) {
         it(`should${
           expectUpdate ? ' ' : ' not '
-        }update a file`, async function() {
+        }update a file`, async function () {
           if (expectUpdate) {
             expect(cozyClient.files.updateById).toHaveBeenCalledTimes(
               bills.length
@@ -352,7 +352,7 @@ describe('saveFiles', function() {
 })
 
 describe('subPath handling', () => {
-  beforeEach(function() {
+  beforeEach(function () {
     mkdirp.mockReset()
     cozyClient.files.statByPath.mockImplementation(async path => {
       if (path.includes('randomfileurl.txt')) {
@@ -406,9 +406,9 @@ describe('subPath handling', () => {
   })
 })
 
-describe('getFileIfExists', function() {
+describe('getFileIfExists', function () {
   describe('when in filepath mode', () => {
-    beforeEach(function() {
+    beforeEach(function () {
       manifest.data.slug = false
       cozyClient.files.statByPath.mockReset()
     })
@@ -439,7 +439,7 @@ describe('getFileIfExists', function() {
       },
       folderPath: '/test/path'
     }
-    beforeEach(function() {
+    beforeEach(function () {
       manifest.data.slug = 'testconnector'
       cozyClient.data.defineIndex.mockReturnValue(asyncResolve('index'))
       cozyClient.files.statByPath.mockReset()

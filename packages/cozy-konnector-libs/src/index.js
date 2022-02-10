@@ -43,7 +43,7 @@ module.exports = {
 }
 
 function deprecate(wrapped, message) {
-  return function() {
+  return function () {
     log('warn', message)
     return wrapped.apply(this, arguments)
   }

@@ -24,7 +24,7 @@ const DEFAULT_AMOUNT_DELTA = 0.001
 const DEFAULT_PAST_WINDOW = 15
 const DEFAULT_FUTURE_WINDOW = 29
 
-const fmtDate = function(x) {
+const fmtDate = function (x) {
   return new Date(x).toISOString().substr(0, 10)
 }
 
@@ -180,8 +180,9 @@ class Linker {
     if (creditOperation && debitOperation) {
       log(
         'debug',
-        `reimbursement: Matching bill ${bill.subtype ||
-          bill.filename} (${fmtDate(bill.date)}) with credit operation ${
+        `reimbursement: Matching bill ${
+          bill.subtype || bill.filename
+        } (${fmtDate(bill.date)}) with credit operation ${
           creditOperation.label
         } (${fmtDate(creditOperation.date)})`
       )
@@ -196,24 +197,23 @@ class Linker {
   }
 
   async linkBillToDebitOperation(bill, allOperations, options) {
-    return findDebitOperation(
+    const operation = await findDebitOperation(
       this.cozyClient,
       bill,
       options,
       allOperations
-    ).then(operation => {
-      if (operation) {
-        log(
-          'debug',
-          `bills: Matching bill ${bill.subtype || bill.filename} (${fmtDate(
-            bill.date
-          )}) with debit operation ${operation.label} (${fmtDate(
-            operation.date
-          )})`
-        )
-        return this.addBillToOperation(bill, operation).then(() => operation)
-      }
-    })
+    )
+    if (operation) {
+      log(
+        'debug',
+        `bills: Matching bill ${bill.subtype || bill.filename} (${fmtDate(
+          bill.date
+        )}) with debit operation ${operation.label} (${fmtDate(
+          operation.date
+        )})`
+      )
+      return this.addBillToOperation(bill, operation).then(() => operation)
+    }
   }
 
   /**
@@ -397,7 +397,7 @@ const jsonTee = filename => res => {
  *
  * @alias module:linkBankOperations
  */
-const linkBankOperations = (bills, doctype, fields, options = {}) => {
+const linkBankOperations = async (bills, doctype, fields, options = {}) => {
   // Use the custom bank identifier from user if any
   if (fields.bank_identifier && fields.bank_identifier.length) {
     options.identifiers = [fields.bank_identifier]
@@ -405,13 +405,15 @@ const linkBankOperations = (bills, doctype, fields, options = {}) => {
   const cozyClient = require('./cozyclient')
   const linker = new Linker(cozyClient)
 
-  const prom = linker.linkBillsToOperations(bills, options).catch(err => {
+  try {
+    const result = await linker.linkBillsToOperations(bills, options)
+    if (process.env.LINK_RESULTS_FILENAME) {
+      jsonTee(process.env.LINK_RESULTS_FILENAME)
+    }
+    return result
+  } catch (err) {
     log('warn', err, 'Problem when linking operations')
-  })
-  if (process.env.LINK_RESULTS_FILENAME) {
-    prom.then(jsonTee(process.env.LINK_RESULTS_FILENAME))
   }
-  return prom
 }
 
 module.exports = linkBankOperations

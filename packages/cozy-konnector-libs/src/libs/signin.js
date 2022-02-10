@@ -132,7 +132,7 @@ function signin({
       if (!validate(statusCode, parsedBody, fullResponse)) {
         throw new Error(errors.LOGIN_FAILED)
       } else {
-        return Promise.resolve(parsedBody)
+        return parsedBody
       }
     })
 }
