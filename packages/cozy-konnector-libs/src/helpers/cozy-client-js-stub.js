@@ -43,26 +43,18 @@ module.exports = {
   data: {
     create(doctype, item) {
       setDefaults(doctype)
-      const doc = db
-        .get(doctype)
-        .insert(item)
-        .write()
+      const doc = db.get(doctype).insert(item).write()
 
       return Promise.resolve(doc)
     },
     update(doctype, doc, changes) {
       setDefaults(doctype)
-      db.get(doctype)
-        .updateById(doc._id, changes)
-        .write()
+      db.get(doctype).updateById(doc._id, changes).write()
       return Promise.resolve(doc)
     },
     updateAttributes(doctype, id, attrs) {
       setDefaults(doctype)
-      const doc = db
-        .get(doctype)
-        .updateById(id, attrs)
-        .write()
+      const doc = db.get(doctype).updateById(id, attrs).write()
       return Promise.resolve(doc)
     },
     defineIndex(doctype) {
@@ -76,10 +68,7 @@ module.exports = {
       setDefaults(doctype)
       const { selector } = options
 
-      let result = db
-        .get(doctype)
-        .filter(selector)
-        .value()
+      let result = db.get(doctype).filter(selector).value()
 
       if (options.wholeResponse) {
         result = { docs: result }
@@ -92,18 +81,12 @@ module.exports = {
     },
     delete(doctype, doc) {
       setDefaults(doctype)
-      const result = db
-        .get(doctype)
-        .removeById(doc._id)
-        .write()
+      const result = db.get(doctype).removeById(doc._id).write()
       return Promise.resolve(result)
     },
     find(doctype, id) {
       setDefaults(doctype)
-      let result = db
-        .get(doctype)
-        .getById(id)
-        .value()
+      let result = db.get(doctype).getById(id).value()
       const accountExists = Boolean(result)
       if (doctype === 'io.cozy.accounts') {
         const configPath = path.resolve('konnector-dev-config.json')
@@ -164,10 +147,7 @@ module.exports = {
     },
     statById(id) {
       setDefaults()
-      const doc = db
-        .get('io.cozy.files')
-        .getById(id)
-        .value()
+      const doc = db.get('io.cozy.files').getById(id).value()
 
       if (doc) {
         return doc
@@ -183,19 +163,14 @@ module.exports = {
 
     async updateAttributesById(id, attrs) {
       setDefaults()
-      const doc = db
-        .get('io.cozy.files')
-        .getById(id)
-        .value()
+      const doc = db.get('io.cozy.files').getById(id).value()
 
       if (doc) {
         if (attrs.name && attrs.name !== get(doc, 'attributes.name')) {
           await renameFile(id, attrs.name)
         }
         doc.attributes = { ...doc.attributes, ...attrs }
-        db.get('io.cozy.files')
-          .updateById(id, doc)
-          .write()
+        db.get('io.cozy.files').updateById(id, doc).write()
       }
     },
 
@@ -224,10 +199,7 @@ module.exports = {
     },
     downloadById(fileId) {
       setDefaults()
-      const fileInDb = db
-        .get('io.cozy.files')
-        .getById(fileId)
-        .value()
+      const fileInDb = db.get('io.cozy.files').getById(fileId).value()
       let fileName
       if (fileInDb) {
         fileName = fileInDb.attributes.name
@@ -252,22 +224,14 @@ module.exports = {
 }
 
 async function removeFile(fileId) {
-  const file = db
-    .get('io.cozy.files')
-    .getById(fileId)
-    .value()
-  db.get('io.cozy.files')
-    .removeById(fileId)
-    .write()
+  const file = db.get('io.cozy.files').getById(fileId).value()
+  db.get('io.cozy.files').removeById(fileId).write()
   const realpath = path.join(rootPath, file.dir_id, file.attributes.name)
   fs.unlinkSync(realpath)
 }
 
 async function renameFile(fileId, newName) {
-  const doc = db
-    .get('io.cozy.files')
-    .getById(fileId)
-    .write()
+  const doc = db.get('io.cozy.files').getById(fileId).write()
   const oldPath = path.join(rootPath, doc.dir_id, doc.attributes.name)
   const newPath = path.join(rootPath, doc.dir_id, newName)
   fs.renameSync(oldPath, newPath)
@@ -336,9 +300,7 @@ async function createFile(file, options = {}) {
 
 function addFileSizeAndWrite(doc, filePath) {
   doc.attributes.size = fs.statSync(filePath).size
-  db.get('io.cozy.files')
-    .insert(doc)
-    .write()
+  db.get('io.cozy.files').insert(doc).write()
 }
 
 async function waitForFileEnd(file, finalPath, writeStream) {

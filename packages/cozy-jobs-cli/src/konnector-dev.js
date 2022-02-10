@@ -53,30 +53,28 @@ const ensureStackAccount = async config => {
 }
 
 const parseArgs = argv => {
-  const parser = new ArgumentParser({ debug: Boolean(argv) })
-  parser.addArgument(['-t', '--token'], {
+  const parser = new ArgumentParser()
+  parser.add_argument('-t', '--token', {
     type: abspath,
-    defaultValue: DEFAULT_TOKEN_PATH,
+    default: DEFAULT_TOKEN_PATH,
     help: 'Token file location (will be created if does not exist)'
   })
-  parser.addArgument(['-m', '--manifest'], {
+  parser.add_argument('-m', '--manifest', {
     type: abspath,
-    defaultValue: DEFAULT_MANIFEST_PATH,
-    help:
-      'Manifest file for permissions (manifest.webapp or manifest.konnector)'
+    default: DEFAULT_MANIFEST_PATH,
+    help: 'Manifest file for permissions (manifest.webapp or manifest.konnector)'
   })
-  parser.addArgument(['-a', '--create-account'], {
-    action: 'storeTrue',
+  parser.add_argument('-a', '--create-account', {
+    action: 'store_true',
     dest: 'createAccount',
-    help:
-      'Indicates that the account should be created on the stack. By default, getAccount is mocked which breaks updateAccountAttributes and access to the konnector account'
+    help: 'Indicates that the account should be created on the stack. By default, getAccount is mocked which breaks updateAccountAttributes and access to the konnector account'
   })
-  parser.addArgument('file', {
+  parser.add_argument('file', {
     type: abspath,
     nargs: '?',
     help: 'Konnector script'
   })
-  const args = argv ? parser.parseArgs(argv) : parser.parseArgs()
+  const args = argv ? parser.parse_args(argv) : parser.parse_args()
 
   let file = args.file || process.env.npm_package_main || './src/index.js'
   let manifest = args.manifest

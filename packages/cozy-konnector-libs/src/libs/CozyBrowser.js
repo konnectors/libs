@@ -62,13 +62,14 @@ class CozyPipeline extends Browser.Pipeline {
 
     return Bluebird.reduce(
       requestHandlers,
-      function(lastResponse, requestHandler) {
+      function (lastResponse, requestHandler) {
         return lastResponse || requestHandler(browser, request)
       },
       null
-    ).then(function(response) {
+    ).then(function (response) {
       assert(
-        response && response.hasOwnProperty('statusText'),
+        response &&
+          Object.prototype.hasOwnProperty.call(response, 'statusText'),
         'Request handler must return a response'
       )
       return response
@@ -101,7 +102,7 @@ class CozyPipeline extends Browser.Pipeline {
     const consumeBody =
       (/^POST|PUT/.test(request.method) && request._consume()) ||
       Promise.resolve(null)
-    return consumeBody.then(function(body) {
+    return consumeBody.then(function (body) {
       const httpRequest = new Request({
         method: request.method,
         uri: request.url,
@@ -114,7 +115,7 @@ class CozyPipeline extends Browser.Pipeline {
         // localAddress:   browser.localAddress || 0
       })
 
-      return new Promise(function(resolve, reject) {
+      return new Promise(function (resolve, reject) {
         httpRequest
           .on('response', response => {
             // Request returns an object where property name is header name,
@@ -147,7 +148,7 @@ class CozyPipeline extends Browser.Pipeline {
 
 Browser.Pipeline = CozyPipeline
 
-Browser.extend(function(browser) {
+Browser.extend(function (browser) {
   browser.pipeline = new Browser.Pipeline(browser)
   addListeners(browser)
   Object.assign(browser, defaultOptions)

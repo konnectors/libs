@@ -356,7 +356,7 @@ xOrDescribe('Chain of predictions', () => {
     expect(fmtAccuracy(globalAccuracy)).toMatchSnapshot()
   })
 
-  it('Should write the historized CSV/txt onto the disk', () => {
+  it('Should write the historized CSV/txt onto the disk', async () => {
     fs.copyFile(
       path.join(
         __dirname,
@@ -371,13 +371,11 @@ xOrDescribe('Chain of predictions', () => {
       }
     )
     if (!csvWriter) setCsvWriter()
-    csvWriter.writeRecords(fixturesRecords).then(
-      () => {
-        expect(true).toBeTruthy()
-      },
-      () => {
-        expect(false).toBeTruthy()
-      }
-    )
+    try {
+      await csvWriter.writeRecords(fixturesRecords)
+      expect(true).toBeTruthy()
+    } catch (err) {
+      expect(false).toBeTruthy()
+    }
   })
 })

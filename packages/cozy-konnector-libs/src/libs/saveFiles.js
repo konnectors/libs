@@ -189,7 +189,7 @@ const saveFiles = async (entries, fields, options = {}) => {
   return savedEntries
 }
 
-const saveEntry = async function(entry, options) {
+const saveEntry = async function (entry, options) {
   if (options.timeout && Date.now() > options.timeout) {
     const remainingTime = Math.floor((options.timeout - Date.now()) / s)
     log('info', `${remainingTime}s timeout finished for ${options.folderPath}`)
@@ -452,9 +452,10 @@ async function createFile(entry, options, method, fileId) {
 }
 
 function downloadEntry(entry, options) {
-  let filePromise = getRequestInstance(entry, options)(
-    getRequestOptions(entry, options)
-  )
+  let filePromise = getRequestInstance(
+    entry,
+    options
+  )(getRequestOptions(entry, options))
 
   if (options.contentType) {
     // the developper wants to force the contentType of the document
@@ -477,7 +478,7 @@ function downloadEntry(entry, options) {
   return filePromise
 }
 
-const shouldReplaceFile = async function(file, entry, options) {
+const shouldReplaceFile = async function (file, entry, options) {
   const isValid = !options.validateFile || (await options.validateFile(file))
   if (!isValid) {
     log(
@@ -536,7 +537,7 @@ const shouldReplaceFile = async function(file, entry, options) {
   return shouldReplaceFileFn(file, entry)
 }
 
-const removeFile = async function(file) {
+const removeFile = async function (file) {
   await cozy.files.trashById(file._id)
   await cozy.files.destroyById(file._id)
 }

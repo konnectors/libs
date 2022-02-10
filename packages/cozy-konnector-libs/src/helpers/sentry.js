@@ -25,7 +25,7 @@ const getEnvironmentFromDomain = domain => {
 // Example : https://5f94cb7772deadbeef123456:39e4e34fdeadbeef123456a9ae31caba74c@sentry.cozycloud.cc/12
 const SENTRY_DSN = process.env.SENTRY_DSN
 
-const afterFatalError = function(_err, sendErr, eventId) {
+const afterFatalError = function (_err, sendErr, eventId) {
   if (!sendErr) {
     log(
       'debug',
@@ -35,7 +35,7 @@ const afterFatalError = function(_err, sendErr, eventId) {
   process.exit(1)
 }
 
-const afterCaptureException = function(sendErr, eventId) {
+const afterCaptureException = function (sendErr, eventId) {
   if (!sendErr) {
     log(
       'debug',
@@ -45,7 +45,7 @@ const afterCaptureException = function(sendErr, eventId) {
   process.exit(1)
 }
 
-const setupSentry = function() {
+const setupSentry = function () {
   try {
     log('debug', 'process.env.SENTRY_DSN found, setting up Raven')
     const release =
@@ -69,7 +69,7 @@ const setupSentry = function() {
   }
 }
 
-module.exports.captureExceptionAndDie = function(err) {
+module.exports.captureExceptionAndDie = function (err) {
   log('debug', 'Capture exception and die')
   if (!isRavenConfigured) {
     process.exit(1)
@@ -90,7 +90,7 @@ module.exports.captureExceptionAndDie = function(err) {
   }
 }
 
-module.exports.wrapIfSentrySetUp = function(obj, method) {
+module.exports.wrapIfSentrySetUp = function (obj, method) {
   if (SENTRY_DSN && SENTRY_DSN !== 'false') {
     obj[method] = Raven.wrap(obj[method])
   }

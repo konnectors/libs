@@ -49,6 +49,7 @@ authenticate({ tokenPath: token, manifestPath: manifest })
       oauthOptions: client.stackClient.oauthOptions,
       token: client.stackClient.token
     })
+    return
   })
   .then(() => {
     const spawned = spawn(program.args[0], program.args.slice(1), {
@@ -60,6 +61,7 @@ authenticate({ tokenPath: token, manifestPath: manifest })
     spawned.stderr.on('data', data => {
       console.error(`${data}`)
     })
+    return
   })
   .catch(err => {
     console.log(err, 'unexpected error')

@@ -18,31 +18,21 @@ describe('cozy-client-js-stub', () => {
 
   it('should create a doc in a given doctype', async () => {
     await stub.data.create('io.cozy.bills', { toto: 'test' })
-    expect(
-      db
-        .get('io.cozy.bills')
-        .first()
-        .omit('_id')
-        .value()
-    ).toEqual({ toto: 'test' })
+    expect(db.get('io.cozy.bills').first().omit('_id').value()).toEqual({
+      toto: 'test'
+    })
   })
   it('should update attributes of a given document', async () => {
     db.defaults({ 'io.cozy.bills': [] }).write()
-    const doc = db
-      .get('io.cozy.bills')
-      .insert({ test: 'toto' })
-      .write()
+    const doc = db.get('io.cozy.bills').insert({ test: 'toto' }).write()
     await stub.data.updateAttributes('io.cozy.bills', doc._id, {
       test: 'updated',
       newattr: 'value'
     })
-    expect(
-      db
-        .get('io.cozy.bills')
-        .first()
-        .omit('_id')
-        .value()
-    ).toEqual({ test: 'updated', newattr: 'value' })
+    expect(db.get('io.cozy.bills').first().omit('_id').value()).toEqual({
+      test: 'updated',
+      newattr: 'value'
+    })
   })
   it('should query documents with given attributes', async () => {
     db.defaults({ 'io.cozy.bills': [] }).write()

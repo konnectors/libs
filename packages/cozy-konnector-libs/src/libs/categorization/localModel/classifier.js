@@ -134,7 +134,12 @@ const reweightModel = classifier => {
     const categoryWordsFrequencyCounts = wordFrequencyCount[category]
     // and search for tokens to reweight in it
     TOKENS_TO_REWEIGHT.map(wordToReweight => {
-      if (categoryWordsFrequencyCounts.hasOwnProperty(wordToReweight)) {
+      if (
+        Object.prototype.hasOwnProperty.call(
+          categoryWordsFrequencyCounts,
+          wordToReweight
+        )
+      ) {
         // for every tokens to reweight : re-compute frequency count `fc`
         const frequencyCount = categoryWordsFrequencyCounts[wordToReweight]
         if (frequencyCount !== 1) {

@@ -165,14 +165,14 @@ describe('requestFactory', () => {
     test('should not be able to read it correctly if not told how', () => {
       const rq = requestFactory(defaultops)
       return rq(latin1url).then($ => {
-        expect($('.navSecurite').text()).not.toEqual('sécurité')
+        return expect($('.navSecurite').text()).not.toEqual('sécurité')
       })
     })
 
     test('should be able to read it correctly if told how', () => {
       const rq = requestFactory({ ...defaultops, encoding: 'latin1' })
       return rq(latin1url).then($ => {
-        expect($('.navSecurite').text()).toEqual('sécurité')
+        return expect($('.navSecurite').text()).toEqual('sécurité')
       })
     })
   })

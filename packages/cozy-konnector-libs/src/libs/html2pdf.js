@@ -2,10 +2,7 @@ const { URL } = require('url')
 
 const computeWidth = $table => {
   let out = 0
-  const tds = $table
-    .find('tr')
-    .first()
-    .find('td,th')
+  const tds = $table.find('tr').first().find('td,th')
   for (var i = 0; i < tds.length; i++) {
     out += parseInt(tds.eq(i).attr('colspan')) || 1
   }

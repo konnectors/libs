@@ -29,15 +29,11 @@ const cozyRepl = repl.start({
 
 Object.assign(cozyRepl.context, libs)
 
-function writer(output) {
+async function writer(output) {
   if (output && output.constructor && output.constructor.name === 'Request') {
-    output.then(() => {
-      global.response = output.response
-      global.$ = cheerio.load(output.response.body)
-      // console.log(
-      //   `[${global.response.statusCode}] ${global.response.statusMessage}`
-      // )
-    })
+    await output
+    global.response = output.response
+    global.$ = cheerio.load(output.response.body)
     return ''
   }
 
@@ -51,11 +47,7 @@ function writer(output) {
         Array.from(output).map(elem => ({
           type: elem.name,
           html: pretty(global.$(elem).html()),
-          text: global
-            .$(elem)
-            .text()
-            .replace('\n', '')
-            .trim()
+          text: global.$(elem).text().replace('\n', '').trim()
         }))
       )
       return `Cheerio instance ${output.length} elements`
@@ -84,6 +76,6 @@ function loadFile(filepath) {
 
 global.request = libs.requestFactory({ jar: true })
 
-global.debug = function(value = true) {
+global.debug = function (value = true) {
   global.request = libs.requestFactory({ debug: value })
 }
