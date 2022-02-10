@@ -540,10 +540,9 @@ Set or merge a io.cozy.identities
 
 You need full permission for the doctype io.cozy.identities in your
 manifest, to be able to use this function.
-
 Parameters:
 
-`contact` (object): the identity to create/update as an object io.cozy.contacts
+`identity` (object): the identity to create/update as an io.cozy.identities object
 `accountIdentifier` (string): a string that represent the account use, if available fields.login
 `options` (object): options which will be given to updateOrCreate directly :
   + `sourceAccount` (String): id of the source account
@@ -554,8 +553,10 @@ Parameters:
 const { saveIdentity } = require('cozy-konnector-libs')
 const identity =
   {
-    name: 'toto',
-    email: { 'address': 'toto@example.com' }
+    contact: {
+      name: 'toto',
+      email: { 'address': 'toto@example.com' }
+    }
   }
 
 return saveIdentity(identity, fields.login)
