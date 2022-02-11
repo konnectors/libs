@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "copy-webpack-plugin": "9.1.0",
-    "cozy-app-publish": "0.28.0",
+    "cozy-app-publish": "0.29.0",
     "eslint-config-cozy-app": "2.1.1",
     "git-directory-deploy": "1.5.1",
     "husky": "4.3.8",
