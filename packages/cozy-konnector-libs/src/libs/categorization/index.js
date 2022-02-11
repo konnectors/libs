@@ -12,6 +12,12 @@ const logger = require('cozy-logger')
 const log = logger.namespace('categorization')
 
 /**
+ * @typedef CreateCategorizerOptions
+ * @property {boolean} useGlobalModel
+ * @property {Function} fetchTransactions
+ */
+
+/**
  * Initialize global and local models and return an object exposing a
  * `categorize` function that applies both models on an array of transactions
  *
@@ -25,6 +31,7 @@ const log = logger.namespace('categorization')
  *
  * In the end, each transaction can have up to four different categories. An application can use these categories to show the most significant for the user. See https://github.com/cozy/cozy-doctypes/blob/master/docs/io.cozy.bank.md#categories for more informations.
  *
+ * @param {CreateCategorizerOptions} options Options used to build the categorizer
  * @returns {object} an object with a `categorize` method
  * @example
  * const { BaseKonnector, createCategorizer } = require('cozy-konnector-libs')
@@ -39,7 +46,7 @@ const log = logger.namespace('categorization')
  *   }
  * }
  */
-async function createCategorizer() {
+async function createCategorizer({ useGlobalModel = true, fetchTransactions }) {
   const classifierOptions = { tokenizer }
 
   // We can't initialize the model in parallel using `Promise.all` because with
@@ -53,11 +60,16 @@ async function createCategorizer() {
     log('warn', e.message)
   }
 
-  try {
-    localModel = await createLocalModel(classifierOptions)
-  } catch (e) {
-    log('warn', 'Failed to create local model:')
-    log('warn', e.message)
+  if (useGlobalModel) {
+    try {
+      localModel = await createLocalModel({
+        ...classifierOptions,
+        fetchTransactions
+      })
+    } catch (e) {
+      log('warn', 'Failed to create local model:')
+      log('warn', e.message)
+    }
   }
 
   const modelsToApply = [globalModel, localModel].filter(Boolean)
@@ -75,6 +87,7 @@ async function createCategorizer() {
  * Initialize global and local models and categorize the given array of transactions
  *
  * @see {@link createCategorizer} for more informations about models initialization
+ * @param {CreateCategorizerOptions} options Options passed to create the categorizer
  * @returns {object[]} the categorized transactions
  * @example
  * const { BaseKonnector, categorize } = require('cozy-konnector-libs')
@@ -88,8 +101,8 @@ async function createCategorizer() {
  *   }
  * }
  */
-async function categorize(transactions) {
-  const categorizer = await createCategorizer()
+async function categorize(transactions, options = { useGlobalModel: true }) {
+  const categorizer = await createCategorizer(options)
 
   return categorizer.categorize(transactions)
 }
