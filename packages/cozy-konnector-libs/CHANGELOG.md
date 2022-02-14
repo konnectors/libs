@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.50.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.49.0...cozy-konnector-libs@4.50.0) (2022-02-14)
+
+
+### Features
+
+* Allow saveIdentity to handle full identtity and not only contacts ([09bbc70](https://github.com/cozy/cozy-konnector-libs/commit/09bbc702c8490a2f7ea0f75dfb35afa7fe1d17bd))
+
+
+
+
+
 # [4.49.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.48.0...cozy-konnector-libs@4.49.0) (2022-02-14)
 
 
