@@ -2,9 +2,6 @@
 
 set -e
 
-yarn lerna bootstrap
-yarn lint
-yarn test
 cd packages/cozy-konnector-libs
 yarn docs
 
@@ -19,4 +16,3 @@ else
   exit 1
 fi
 set -e
-
