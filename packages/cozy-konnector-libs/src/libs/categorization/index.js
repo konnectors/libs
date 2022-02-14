@@ -13,8 +13,8 @@ const log = logger.namespace('categorization')
 
 /**
  * @typedef CreateCategorizerOptions
- * @property {boolean} useGlobalModel
- * @property {Function} fetchTransactions
+ * @property {boolean} useGlobalModel Whether to use the globally trained model
+ * @property {Function} fetchTransactions A custom training transaction fetcher
  */
 
 /**
@@ -46,7 +46,8 @@ const log = logger.namespace('categorization')
  *   }
  * }
  */
-async function createCategorizer({ useGlobalModel = true, fetchTransactions }) {
+async function createCategorizer(options = {}) {
+  const { useGlobalModel = true, fetchTransactions } = options
   const classifierOptions = { tokenizer }
 
   // We can't initialize the model in parallel using `Promise.all` because with
@@ -87,6 +88,7 @@ async function createCategorizer({ useGlobalModel = true, fetchTransactions }) {
  * Initialize global and local models and categorize the given array of transactions
  *
  * @see {@link createCategorizer} for more informations about models initialization
+ * @param {object[]} transactions The transactions to categorize
  * @param {CreateCategorizerOptions} options Options passed to create the categorizer
  * @returns {object[]} the categorized transactions
  * @example
