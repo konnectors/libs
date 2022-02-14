@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.3.0](https://github.com/konnectors/libs/compare/cozy-konnector-build@1.2.4...cozy-konnector-build@1.3.0) (2022-02-14)
+
+
+### Features
+
+* Upgrade various cozy dependencies ([4005077](https://github.com/konnectors/libs/commit/40050778413d1007d5970c048bdb1e11be713a50))
+
+
+
+
+
 ## [1.2.4](https://github.com/konnectors/libs/compare/cozy-konnector-build@1.2.3...cozy-konnector-build@1.2.4) (2022-02-07)
 
 

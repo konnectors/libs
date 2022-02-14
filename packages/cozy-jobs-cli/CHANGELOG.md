@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.17.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@1.16.9...cozy-jobs-cli@1.17.0) (2022-02-14)
+
+
+### Features
+
+* Upgrade eslint-config-cozy-app ([af30d90](https://github.com/cozy/cozy-konnector-libs/commit/af30d907b1b2dc67379c4c1f0f00849693478ef4))
+* Upgrade various cozy dependencies ([4005077](https://github.com/cozy/cozy-konnector-libs/commit/40050778413d1007d5970c048bdb1e11be713a50))
+
+
+
+
+
 ## [1.16.9](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@1.16.7...cozy-jobs-cli@1.16.9) (2022-02-14)
 
 
