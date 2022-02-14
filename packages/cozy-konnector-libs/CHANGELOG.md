@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.47.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.46.0...cozy-konnector-libs@4.47.0) (2022-02-14)
+
+
+### Features
+
+* upgrade babel dependencies ([e387a9f](https://github.com/cozy/cozy-konnector-libs/commit/e387a9f1fdff34b52088992781523f71d9c0e5ea))
+* Upgrade pdfjs-dist dependency ([cdcff5f](https://github.com/cozy/cozy-konnector-libs/commit/cdcff5f4fd866602244225d1c72e6328585d771f))
+
+
+
+
+
 # [4.46.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.45.0...cozy-konnector-libs@4.46.0) (2022-02-07)
 
 
