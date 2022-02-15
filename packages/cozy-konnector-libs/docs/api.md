@@ -869,13 +869,13 @@ Bank transactions categorization
 
 
 * [categorization](#module_categorization)
-    * [~createCategorizer(options)](#module_categorization..createCategorizer) ⇒ <code>object</code>
+    * [~createCategorizer(options)](#module_categorization..createCategorizer) ⇒ <code>Object</code>
     * [~categorize(transactions, options)](#module_categorization..categorize) ⇒ <code>Array.&lt;object&gt;</code>
     * [~CreateCategorizerOptions](#module_categorization..CreateCategorizerOptions)
 
 <a name="module_categorization..createCategorizer"></a>
 
-### categorization~createCategorizer(options) ⇒ <code>object</code>
+### categorization~createCategorizer(options) ⇒ <code>Object</code>
 Initialize global and local models and return an object exposing a
 `categorize` function that applies both models on an array of transactions
 
@@ -890,7 +890,7 @@ Each model adds two properties to the transactions:
 In the end, each transaction can have up to four different categories. An application can use these categories to show the most significant for the user. See https://github.com/cozy/cozy-doctypes/blob/master/docs/io.cozy.bank.md#categories for more informations.
 
 **Kind**: inner method of [<code>categorization</code>](#module_categorization)  
-**Returns**: <code>object</code> - an object with a `categorize` method  
+**Returns**: <code>Object</code> - A method to categorize transactions and the classifiers it uses.  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -946,7 +946,8 @@ class BankingKonnector extends BaseKonnector {
 | Name | Type | Description |
 | --- | --- | --- |
 | useGlobalModel | <code>boolean</code> | Whether to use the globally trained model |
-| fetchTransactions | <code>function</code> | A custom training transaction fetcher |
+| customTransactionFetcher | <code>function</code> | A custom training transaction fetcher |
+| pretrainedClassifier | <code>object</code> | A pretrained instance of a bayes classifier |
 
 <a name="BaseKonnector"></a>
 

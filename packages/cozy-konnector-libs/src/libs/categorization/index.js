@@ -14,7 +14,8 @@ const log = logger.namespace('categorization')
 /**
  * @typedef CreateCategorizerOptions
  * @property {boolean} useGlobalModel Whether to use the globally trained model
- * @property {Function} fetchTransactions A custom training transaction fetcher
+ * @property {Function} customTransactionFetcher A custom training transaction fetcher
+ * @property {object} pretrainedClassifier A pretrained instance of a bayes classifier
  */
 
 /**
@@ -32,7 +33,7 @@ const log = logger.namespace('categorization')
  * In the end, each transaction can have up to four different categories. An application can use these categories to show the most significant for the user. See https://github.com/cozy/cozy-doctypes/blob/master/docs/io.cozy.bank.md#categories for more informations.
  *
  * @param {CreateCategorizerOptions} options Options used to build the categorizer
- * @returns {object} an object with a `categorize` method
+ * @returns {{categorize: Function, classifiers: object[]}} A method to categorize transactions and the classifiers it uses.
  * @example
  * const { BaseKonnector, createCategorizer } = require('cozy-konnector-libs')
  *
@@ -46,9 +47,13 @@ const log = logger.namespace('categorization')
  *   }
  * }
  */
-async function createCategorizer(options = {}) {
-  const { useGlobalModel = true, fetchTransactions } = options
-  const classifierOptions = { tokenizer }
+async function createCategorizer(options) {
+  const {
+    useGlobalModel = true,
+    customTransactionFetcher,
+    pretrainedClassifier
+  } = options
+  const classifierOptions = { tokenizer, pretrainedClassifier }
 
   // We can't initialize the model in parallel using `Promise.all` because with
   // it is not possible to manage errors separately
@@ -65,7 +70,8 @@ async function createCategorizer(options = {}) {
     try {
       localModel = await createLocalModel({
         ...classifierOptions,
-        fetchTransactions
+        pretrainedClassifier,
+        customTransactionFetcher
       })
     } catch (e) {
       log('warn', 'Failed to create local model:')
@@ -81,7 +87,7 @@ async function createCategorizer(options = {}) {
     return transactions
   }
 
-  return { categorize }
+  return { categorize, classifiers: modelsToApply.map(e => e.classifier) }
 }
 
 /**

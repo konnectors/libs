@@ -146,27 +146,27 @@ const reweightModel = classifier => {
 }
 
 const createClassifier = async options => {
-  const { fetchTransactions, ...remainingOptions } = options
+  const { customTransactionFetcher, ...remainingOptions } = options
 
-  let transactionsWithManualCat = []
-  if (!fetchTransactions) {
+  let transactions = []
+  if (!customTransactionFetcher) {
     log('debug', 'Fetching manually categorized transactions')
-    transactionsWithManualCat = await fetchTransactionsWithManualCat()
+    transactions = await fetchTransactionsWithManualCat()
   } else {
     log('debug', 'Fetching categorized transactions')
-    transactionsWithManualCat = await fetchTransactions()
+    transactions = await customTransactionFetcher()
   }
 
   log(
     'debug',
-    `Fetched ${transactionsWithManualCat.length} manually categorized transactions`
+    `Fetched ${transactions.length} manually categorized transactions`
   )
 
   log('debug', 'Instanciating a new classifier')
 
-  const classifierOptions = getClassifierOptions(transactionsWithManualCat)
+  const classifierOptions = getClassifierOptions(transactions)
   const classifier = createLocalClassifier(
-    transactionsWithManualCat,
+    transactions,
     { ...remainingOptions, ...classifierOptions.initialization },
     classifierOptions.configuration
   )
