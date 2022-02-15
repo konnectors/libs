@@ -19,8 +19,8 @@
           ],
           "timezone": "Europe/Paris",
           "schedule": [
-            "after 8pm every weekday",
-            "before 7am every weekday",
+            "every weekday after 08:00 pm",
+            "every weekday before 07:00 am",
             "every weekend"
           ],
           "automerge": true,
