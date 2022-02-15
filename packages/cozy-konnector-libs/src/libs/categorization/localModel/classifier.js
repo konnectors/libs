@@ -81,13 +81,13 @@ const createLocalClassifier = (
 ) => {
   if (transactionsToLearn.length === 0) {
     throw new Error(
-      'Impossible to instanciate a classifier since there is no manually categorized transactions to learn from'
+      'Impossible to instanciate a classifier since there is no transactions to learn from'
     )
   }
 
   const classifier = bayes(initializationOptions)
 
-  log('debug', 'Learning from manually categorized transactions')
+  log('debug', 'Learning from categorized transactions')
   for (const transaction of transactionsToLearn) {
     classifier.learn(
       getLabelWithTags(transaction),
@@ -157,10 +157,7 @@ const createClassifier = async options => {
     transactions = await customTransactionFetcher()
   }
 
-  log(
-    'debug',
-    `Fetched ${transactions.length} manually categorized transactions`
-  )
+  log('debug', `Fetched ${transactions.length} transactions`)
 
   log('debug', 'Instanciating a new classifier')
 

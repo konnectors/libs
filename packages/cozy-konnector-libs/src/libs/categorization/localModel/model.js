@@ -19,7 +19,7 @@ async function createModel(options) {
     log('debug', 'Using a pretrained classifier')
     classifier = pretrainedClassifier
   } else {
-    log('debug', 'Create a new classifier')
+    log('debug', 'Create a new local classifier')
     classifier = await createClassifier(remainingOptions)
   }
 

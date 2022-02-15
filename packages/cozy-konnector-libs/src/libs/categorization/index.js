@@ -59,24 +59,24 @@ async function createCategorizer(options) {
   // it is not possible to manage errors separately
   let globalModel, localModel
 
-  try {
-    globalModel = await createGlobalModel(classifierOptions)
-  } catch (e) {
-    log('warn', 'Failed to create global model:')
-    log('warn', e.message)
-  }
-
   if (useGlobalModel) {
     try {
-      localModel = await createLocalModel({
-        ...classifierOptions,
-        pretrainedClassifier,
-        customTransactionFetcher
-      })
+      globalModel = await createGlobalModel(classifierOptions)
     } catch (e) {
-      log('warn', 'Failed to create local model:')
+      log('warn', 'Failed to create global model:')
       log('warn', e.message)
     }
+  }
+
+  try {
+    localModel = await createLocalModel({
+      ...classifierOptions,
+      pretrainedClassifier,
+      customTransactionFetcher
+    })
+  } catch (e) {
+    log('warn', 'Failed to create local model:')
+    log('warn', e.message)
   }
 
   const modelsToApply = [globalModel, localModel].filter(Boolean)
