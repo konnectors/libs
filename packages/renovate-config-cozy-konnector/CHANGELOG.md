@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.3.1](https://github.com/konnectors/libs/compare/renovate-config-cozy-konnector@1.3.0...renovate-config-cozy-konnector@1.3.1) (2022-02-15)
+
+
+### Bug Fixes
+
+* Renovate rule for cozy packages ([5ae625a](https://github.com/konnectors/libs/commit/5ae625a8261e0b900cfec0c75f2795e38e7880f6))
+
+
+
+
+
 # [1.3.0](https://github.com/konnectors/libs/compare/renovate-config-cozy-konnector@1.2.10...renovate-config-cozy-konnector@1.3.0) (2021-11-10)
 
 
