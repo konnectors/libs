@@ -870,12 +870,13 @@ Bank transactions categorization
 
 
 * [categorization](#module_categorization)
-    * [~createCategorizer()](#module_categorization..createCategorizer) ⇒ <code>object</code>
-    * [~categorize()](#module_categorization..categorize) ⇒ <code>Array.&lt;object&gt;</code>
+    * [~createCategorizer(options)](#module_categorization..createCategorizer) ⇒ <code>Object</code>
+    * [~categorize(transactions, options)](#module_categorization..categorize) ⇒ <code>Array.&lt;object&gt;</code>
+    * [~CreateCategorizerOptions](#module_categorization..CreateCategorizerOptions)
 
 <a name="module_categorization..createCategorizer"></a>
 
-### categorization~createCategorizer() ⇒ <code>object</code>
+### categorization~createCategorizer(options) ⇒ <code>Object</code>
 Initialize global and local models and return an object exposing a
 `categorize` function that applies both models on an array of transactions
 
@@ -890,7 +891,12 @@ Each model adds two properties to the transactions:
 In the end, each transaction can have up to four different categories. An application can use these categories to show the most significant for the user. See https://github.com/cozy/cozy-doctypes/blob/master/docs/io.cozy.bank.md#categories for more informations.
 
 **Kind**: inner method of [<code>categorization</code>](#module_categorization)  
-**Returns**: <code>object</code> - an object with a `categorize` method  
+**Returns**: <code>Object</code> - A method to categorize transactions and the classifiers it uses.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| options | <code>CreateCategorizerOptions</code> | Options used to build the categorizer |
+
 **Example**  
 ```js
 const { BaseKonnector, createCategorizer } = require('cozy-konnector-libs')
@@ -907,12 +913,18 @@ class BankingKonnector extends BaseKonnector {
 ```
 <a name="module_categorization..categorize"></a>
 
-### categorization~categorize() ⇒ <code>Array.&lt;object&gt;</code>
+### categorization~categorize(transactions, options) ⇒ <code>Array.&lt;object&gt;</code>
 Initialize global and local models and categorize the given array of transactions
 
 **Kind**: inner method of [<code>categorization</code>](#module_categorization)  
 **Returns**: <code>Array.&lt;object&gt;</code> - the categorized transactions  
 **See**: [createCategorizer](createCategorizer) for more informations about models initialization  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| transactions | <code>Array.&lt;object&gt;</code> | The transactions to categorize |
+| options | <code>CreateCategorizerOptions</code> | Options passed to create the categorizer |
+
 **Example**  
 ```js
 const { BaseKonnector, categorize } = require('cozy-konnector-libs')
@@ -926,6 +938,18 @@ class BankingKonnector extends BaseKonnector {
   }
 }
 ```
+<a name="module_categorization..CreateCategorizerOptions"></a>
+
+### categorization~CreateCategorizerOptions
+**Kind**: inner typedef of [<code>categorization</code>](#module_categorization)  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| useGlobalModel | <code>boolean</code> | Whether to use the globally trained model |
+| customTransactionFetcher | <code>function</code> | A custom training transaction fetcher |
+| pretrainedClassifier | <code>object</code> | A pretrained instance of a bayes classifier |
+
 <a name="BaseKonnector"></a>
 
 ## BaseKonnector

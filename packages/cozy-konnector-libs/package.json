@@ -59,7 +59,7 @@
     }
   },
   "scripts": {
-    "build": "npm run transpile",
+    "build": "yarn run transpile",
     "transpile": "rm -rf dist/* ; babel src --out-dir dist",
     "prepublishOnly": "yarn run transpile",
     "test": "cross-env LOG_LEVEL=info jest ./src",

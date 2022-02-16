@@ -81,13 +81,13 @@ const createLocalClassifier = (
 ) => {
   if (transactionsToLearn.length === 0) {
     throw new Error(
-      'Impossible to instanciate a classifier since there is no manually categorized transactions to learn from'
+      'Impossible to instanciate a classifier since there is no transactions to learn from'
     )
   }
 
   const classifier = bayes(initializationOptions)
 
-  log('debug', 'Learning from manually categorized transactions')
+  log('debug', 'Learning from categorized transactions')
   for (const transaction of transactionsToLearn) {
     classifier.learn(
       getLabelWithTags(transaction),
@@ -151,20 +151,25 @@ const reweightModel = classifier => {
 }
 
 const createClassifier = async options => {
-  log('debug', 'Fetching manually categorized transactions')
-  const transactionsWithManualCat = await fetchTransactionsWithManualCat()
+  const { customTransactionFetcher, ...remainingOptions } = options
 
-  log(
-    'debug',
-    `Fetched ${transactionsWithManualCat.length} manually categorized transactions`
-  )
+  let transactions = []
+  if (!customTransactionFetcher) {
+    log('debug', 'Fetching manually categorized transactions')
+    transactions = await fetchTransactionsWithManualCat()
+  } else {
+    log('debug', 'Fetching categorized transactions')
+    transactions = await customTransactionFetcher()
+  }
+
+  log('debug', `Fetched ${transactions.length} transactions`)
 
   log('debug', 'Instanciating a new classifier')
 
-  const classifierOptions = getClassifierOptions(transactionsWithManualCat)
+  const classifierOptions = getClassifierOptions(transactions)
   const classifier = createLocalClassifier(
-    transactionsWithManualCat,
-    { ...options, ...classifierOptions.initialization },
+    transactions,
+    { ...remainingOptions, ...classifierOptions.initialization },
     classifierOptions.configuration
   )
 

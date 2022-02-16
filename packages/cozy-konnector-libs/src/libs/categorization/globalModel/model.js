@@ -35,7 +35,7 @@ async function createModel(options) {
     return transactions
   }
 
-  return { categorize }
+  return { categorize, classifier }
 }
 
 module.exports = {

@@ -12,8 +12,16 @@ const {
 const log = logger.namespace('categorization/localModel/model')
 
 async function createModel(options) {
-  log('debug', 'Create a new classifier')
-  const classifier = await createClassifier(options)
+  const { pretrainedClassifier, ...remainingOptions } = options
+
+  let classifier
+  if (pretrainedClassifier) {
+    log('debug', 'Using a pretrained classifier')
+    classifier = pretrainedClassifier
+  } else {
+    log('debug', 'Create a new local classifier')
+    classifier = await createClassifier(remainingOptions)
+  }
 
   const vocabulary = Object.keys(classifier.vocabulary)
 
@@ -48,7 +56,7 @@ async function createModel(options) {
     }
   }
 
-  return { categorize }
+  return { categorize, classifier }
 }
 
 module.exports = {
