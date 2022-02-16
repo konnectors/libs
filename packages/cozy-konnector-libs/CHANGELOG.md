@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.51.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.50.2...cozy-konnector-libs@4.51.0) (2022-02-16)
+
+
+### Bug Fixes
+
+* Optional global model ([8a38a72](https://github.com/cozy/cozy-konnector-libs/commit/8a38a724fc5b3d1b99e48772b1f4ee55cce3c25a))
+
+
+### Features
+
+* Create categorizer options ([dc71889](https://github.com/cozy/cozy-konnector-libs/commit/dc7188981982c0d9028922d2423528a1d1cf222f))
+* Using pretrained classifier ([4487ef4](https://github.com/cozy/cozy-konnector-libs/commit/4487ef42e7860127a5739f4296567281440806c1))
+
+
+
+
+
 ## [4.50.2](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.50.1...cozy-konnector-libs@4.50.2) (2022-02-15)
 
 
