@@ -15,7 +15,7 @@ global.Headers = globalFetch.Headers
 // fixes an import problem of isomorphic fetch in cozy-client and cozy-client-js
 const manifest = require('./manifest')
 
-const getCozyClient = function (environment = 'production') {
+const getCozyClient = function(environment = 'production') {
   if (environment === 'standalone' || environment === 'test') {
     return require('../helpers/cozy-client-js-stub')
   }
@@ -77,7 +77,7 @@ function cozyClientJsFromEnv(cozyURL) {
   const cozyClient = new Client(options)
 
   if (jsonCredentials) {
-    jsonCredentials.token.toAuthHeader = function () {
+    jsonCredentials.token.toAuthHeader = function() {
       return 'Bearer ' + jsonCredentials.client.registrationAccessToken
     }
     cozyClient.saveCredentials(
@@ -85,6 +85,8 @@ function cozyClientJsFromEnv(cozyURL) {
       jsonCredentials.token
     )
   }
+
+  return cozyClient
 }
 
 module.exports = cozyClient
