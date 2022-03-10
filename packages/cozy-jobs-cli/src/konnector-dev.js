@@ -1,8 +1,6 @@
 #!/usr/bin/env node
 /* eslint no-console: off */
 
-process.env.NODE_ENV = 'development'
-
 const config = require('./init-konnector-config')()
 const injectDevAccount = require('./inject-dev-account')
 const ArgumentParser = require('argparse').ArgumentParser
