@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.52.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.51.0...cozy-konnector-libs@4.52.0) (2022-03-24)
+
+
+### Bug Fixes
+
+* Init cozy-client-js instance from stack env ([92f7c61](https://github.com/cozy/cozy-konnector-libs/commit/92f7c615796a30ce4ccb9bcf82a2f99bc7a7df3b))
+* lint ([07d63ee](https://github.com/cozy/cozy-konnector-libs/commit/07d63ee54a15717b5f918dbfd47133e789a9140e))
+* Return CozyClientJS ([20a51a5](https://github.com/cozy/cozy-konnector-libs/commit/20a51a55c796b04865b8ca17491d9be4e6861dee))
+* Use the right mimeTypes function for content type ([bcb3617](https://github.com/cozy/cozy-konnector-libs/commit/bcb3617efb79b474ac56a66d686fea2a746727ca))
+
+
+### Features
+
+* Upgrade cozy-client in konnector-libs ([8ee5356](https://github.com/cozy/cozy-konnector-libs/commit/8ee53567cbb041f53654c3d16a6b99a799175945))
+
+
+
+
+
 # [4.51.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.50.2...cozy-konnector-libs@4.51.0) (2022-02-16)
 
 

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.17.5](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@1.17.4...cozy-jobs-cli@1.17.5) (2022-03-24)
+
+
+### Bug Fixes
+
+* Init cozy-client-js instance from stack env ([92f7c61](https://github.com/cozy/cozy-konnector-libs/commit/92f7c615796a30ce4ccb9bcf82a2f99bc7a7df3b))
+
+
+
+
+
 ## [1.17.4](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@1.17.3...cozy-jobs-cli@1.17.4) (2022-02-16)
 
 **Note:** Version bump only for package cozy-jobs-cli
