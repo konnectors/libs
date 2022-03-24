@@ -4,7 +4,6 @@
  *
  * @module cozyClient
  */
-
 /* eslint no-console: off */
 
 const { Client, MemoryStorage } = require('cozy-client-js')
@@ -16,7 +15,7 @@ global.Headers = globalFetch.Headers
 // fixes an import problem of isomorphic fetch in cozy-client and cozy-client-js
 const manifest = require('./manifest')
 
-const getCozyClient = function (environment = 'production') {
+const getCozyClient = function(environment = 'production') {
   if (environment === 'standalone' || environment === 'test') {
     return require('../helpers/cozy-client-js-stub')
   }
@@ -31,22 +30,8 @@ const getCozyClient = function (environment = 'production') {
   })
   newCozyClient.models = models
 
-  const options = {
-    cozyURL: newCozyClient.stackClient.uri
-  }
-  if (environment === 'development') {
-    options.oauth = { storage: new MemoryStorage() }
-  } else if (environment === 'production') {
-    options.token = process.env.COZY_CREDENTIALS
-  }
-  const cozyClient = new Client(options)
-  if (environment === 'development') {
-    const credentials = JSON.parse(process.env.COZY_CREDENTIALS)
-    credentials.token.toAuthHeader = function () {
-      return 'Bearer ' + credentials.client.registrationAccessToken
-    }
-    cozyClient.saveCredentials(credentials.oauthOptions, credentials.token)
-  }
+  const cozyClient = cozyClientJsFromEnv(newCozyClient.stackClient.uri)
+
   cozyClient.new = newCozyClient
   return cozyClient
 }
@@ -73,5 +58,35 @@ const cozyClient = getCozyClient(
   // since we do not want to minimize the built file, we recognize the 'none' mode as production mode
   process.env.NODE_ENV === 'none' ? 'production' : process.env.NODE_ENV
 )
+
+function cozyClientJsFromEnv(cozyURL) {
+  const options = { cozyURL }
+  let jsonCredentials = null
+  if (process.env.COZY_CREDENTIALS) {
+    try {
+      jsonCredentials = JSON.parse(process.env.COZY_CREDENTIALS)
+    } catch (err) {
+      options.token = process.env.COZY_CREDENTIALS
+    }
+  }
+
+  if (jsonCredentials) {
+    options.oauth = { storage: new MemoryStorage() }
+  }
+
+  const cozyClient = new Client(options)
+
+  if (jsonCredentials) {
+    jsonCredentials.token.toAuthHeader = function() {
+      return 'Bearer ' + jsonCredentials.client.registrationAccessToken
+    }
+    cozyClient.saveCredentials(
+      jsonCredentials.oauthOptions,
+      jsonCredentials.token
+    )
+  }
+
+  return cozyClient
+}
 
 module.exports = cozyClient

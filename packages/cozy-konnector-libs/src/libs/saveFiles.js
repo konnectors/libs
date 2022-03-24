@@ -389,7 +389,7 @@ async function createFile(entry, options, method, fileId) {
   }
   if (options.contentType) {
     if (options.contentType === true && entry.filename) {
-      createFileOptions.contentType = mimetypes.contentType(entry.filename)
+      createFileOptions.contentType = mimetypes.contentType(path.extname(entry.filename))
     } else {
       createFileOptions.contentType = options.contentType
     }
