@@ -22,7 +22,7 @@
     "prepublish": "npm run lint",
     "publish": "lerna publish",
     "bootstrap": "lerna bootstrap",
-    "lint": "eslint . --fix",
+    "lint": "eslint .",
     "test": "cross-env LOG_LEVEL=info jest"
   },
   "jest": {
