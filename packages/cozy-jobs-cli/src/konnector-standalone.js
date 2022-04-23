@@ -43,7 +43,7 @@ initReplay()
 process.env.SENTRY_DSN = 'false'
 
 if (fs.existsSync(path.resolve(filename))) {
-  require(require('path').resolve(filename))
+  import(require('path').resolve(filename))
 } else {
   console.log(
     `ERROR: File ${path.resolve(
