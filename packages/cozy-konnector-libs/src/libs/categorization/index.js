@@ -47,7 +47,7 @@ const log = logger.namespace('categorization')
  *   }
  * }
  */
-async function createCategorizer(options) {
+async function createCategorizer(options = {}) {
   const {
     useGlobalModel = true,
     customTransactionFetcher,
