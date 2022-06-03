@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.53.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.52.1...cozy-konnector-libs@4.53.0) (2022-06-03)
+
+
+### Bug Fixes
+
+* Add default value to createCategorizer ([5f5e852](https://github.com/cozy/cozy-konnector-libs/commit/5f5e8522a9bf698401b945a511205a966af78774))
+
+
+### Features
+
+* Also add cozy-flags which is needed by cozy-client + other fixes ([53b2064](https://github.com/cozy/cozy-konnector-libs/commit/53b2064a912db0c3985437013ae3f40d1989d70a))
+* Upgrade Cozy-Client & Cozy-Device-Helper ([85e4afb](https://github.com/cozy/cozy-konnector-libs/commit/85e4afb354bc95e5a981eaf8f1e407e24f1ae03e))
+
+
+
+
+
 ## [4.52.1](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.52.0...cozy-konnector-libs@4.52.1) (2022-03-30)
 
 **Note:** Version bump only for package cozy-konnector-libs

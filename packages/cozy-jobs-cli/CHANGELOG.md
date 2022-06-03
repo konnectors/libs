@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.18.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@1.17.6...cozy-jobs-cli@1.18.0) (2022-06-03)
+
+
+### Features
+
+* Also add cozy-flags which is needed by cozy-client + other fixes ([53b2064](https://github.com/cozy/cozy-konnector-libs/commit/53b2064a912db0c3985437013ae3f40d1989d70a))
+
+
+
+
+
 ## [1.17.6](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@1.17.5...cozy-jobs-cli@1.17.6) (2022-03-30)
 
 **Note:** Version bump only for package cozy-jobs-cli
