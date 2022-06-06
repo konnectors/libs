@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.3.2](https://github.com/konnectors/libs/compare/cozy-konnector-build@1.3.1...cozy-konnector-build@1.3.2) (2022-06-06)
+
+
+### Bug Fixes
+
+* **deps:** update dependency webpack-cli to v4.9.2 ([c8e3ed4](https://github.com/konnectors/libs/commit/c8e3ed4185c00fd28be3d923d2b89caef0e312b3))
+
+
+
+
+
 ## [1.3.1](https://github.com/konnectors/libs/compare/cozy-konnector-build@1.3.0...cozy-konnector-build@1.3.1) (2022-02-15)
 
 
