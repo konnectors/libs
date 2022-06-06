@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.53.1](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.53.0...cozy-konnector-libs@4.53.1) (2022-06-06)
+
+
+### Bug Fixes
+
+* **deps:** update babel monorepo to v7.17.10 ([f7170ce](https://github.com/cozy/cozy-konnector-libs/commit/f7170ce425d8f456f044340edb765b7e39c82148))
+
+
+
+
+
 # [4.53.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.52.1...cozy-konnector-libs@4.53.0) (2022-06-03)
 
 
