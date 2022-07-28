@@ -9,6 +9,7 @@ const get = require('lodash/get')
 const omit = require('lodash/omit')
 const updateOrCreate = require('./updateOrCreate')
 const saveIdentity = require('./saveIdentity')
+const fs = require('fs').promises
 const {
   wrapIfSentrySetUp,
   captureExceptionAndDie
@@ -164,6 +165,35 @@ class BaseKonnector {
   }
 
   /**
+   * Read an eventual payload from COZY_PAYLOAD env var, wether it is a JSON string or a reference
+   * to a file containing a JSON string
+   *
+   * @returns Promise<{Object}> result of JSON.parse from the JSON string
+   */
+  async readPayload() {
+    const cozyPayload = process.env.COZY_PAYLOAD
+    const isFileReference = cozyPayload?.[0] === '@'
+
+    if (isFileReference) {
+      const filePath = cozyPayload.substr(1)
+      try {
+        const fileContent = await fs.readFile(filePath)
+        return JSON.parse(fileContent)
+      } catch (err) {
+        throw new Error(
+          `Error while reading file ${filePath} payload: ${err.message}`
+        )
+      }
+    } else {
+      try {
+        return JSON.parse(cozyPayload || '{}')
+      } catch (err) {
+        throw new Error('Could not parse JSON in COZY_PAYLOAD: ' + cozyPayload)
+      }
+    }
+  }
+
+  /**
    * Initializes konnector attributes that will be used during its lifetime
    *
    * - this._account
@@ -311,7 +341,7 @@ class BaseKonnector {
    * const { BaseKonnector } = require('cozy-konnector-libs')
    *
    * module.exports = new BaseKonnector(start)
-   
+
    * async function start() {
    *    // we detect the need of a 2FA code
    *    const code = this.waitForTwoFaCode({

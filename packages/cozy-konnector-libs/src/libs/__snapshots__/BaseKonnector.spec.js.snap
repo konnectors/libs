@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`readPayload should throw on wrong JSON file 1`] = `"Error while reading file test2.json payload: Unexpected token t in JSON at position 2"`;
+
+exports[`readPayload should throw on wrong JSON string 1`] = `"Could not parse JSON in COZY_PAYLOAD: { testPayload: testpayloadvalue}"`;

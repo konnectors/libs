@@ -8,12 +8,20 @@ jest.mock('./cozyclient', () => ({
   }
 }))
 
+jest.mock('fs', () => ({
+  existsSync: jest.fn(),
+  promises: {
+    readFile: jest.fn()
+  }
+}))
+
 const { mockEnvVariables, asyncResolve } = require('./testUtils')
 const client = require('./cozyclient')
 jest.mock('./signin')
 const signin = require('./signin')
 const BaseKonnector = require('./BaseKonnector')
 const logger = require('cozy-logger')
+const fs = require('fs').promises
 
 logger.setLevel('error')
 
@@ -267,5 +275,46 @@ describe('methods', () => {
       expect(konn.notifySuccessfulLogin).toHaveBeenCalledTimes(0)
       expect(result).toEqual('signin output')
     })
+  })
+})
+
+describe('readPayload', () => {
+  afterEach(() => {
+    delete process.env.COZY_PAYLOAD
+    jest.resetAllMocks()
+  })
+  it('should read json string payload', async () => {
+    process.env.COZY_PAYLOAD = `{ "testPayload": "testpayloadvalue"}`
+    const connector = new BaseKonnector()
+    const result = await connector.readPayload()
+    expect(result).toEqual({ testPayload: 'testpayloadvalue' })
+  })
+  it('should read file reference payload', async () => {
+    process.env.COZY_PAYLOAD = `@test.json`
+    fs.readFile.mockResolvedValue(
+      `{ "testfilepayload": "testfilepayloadvalue"}`
+    )
+
+    const connector = new BaseKonnector()
+    const result = await connector.readPayload()
+    expect(fs.readFile).toHaveBeenCalledWith('test.json')
+    expect(result).toEqual({ testfilepayload: 'testfilepayloadvalue' })
+  })
+  it('should throw on wrong JSON string', async () => {
+    process.env.COZY_PAYLOAD = `{ testPayload: testpayloadvalue}`
+    const connector = new BaseKonnector()
+    await expect(() =>
+      connector.readPayload()
+    ).rejects.toThrowErrorMatchingSnapshot()
+  })
+  it('should throw on wrong JSON file', async () => {
+    process.env.COZY_PAYLOAD = `@test2.json`
+    fs.readFile.mockResolvedValue(`{ testfilepayload: testfilepayloadvalue}`)
+
+    const connector = new BaseKonnector()
+    await expect(() =>
+      connector.readPayload()
+    ).rejects.toThrowErrorMatchingSnapshot()
+    expect(fs.readFile).toHaveBeenCalledWith('test2.json')
   })
 })
