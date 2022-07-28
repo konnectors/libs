@@ -168,11 +168,16 @@ class BaseKonnector {
    * Read an eventual payload from COZY_PAYLOAD env var, wether it is a JSON string or a reference
    * to a file containing a JSON string
    *
-   * @returns Promise<{Object}> result of JSON.parse from the JSON string
+   * @returns Promise<{Object|null}> result of JSON.parse from the JSON string or null if no payload
    */
   async readPayload() {
     const cozyPayload = process.env.COZY_PAYLOAD
-    const isFileReference = cozyPayload?.[0] === '@'
+
+    if (cozyPayload == null) {
+      return null
+    }
+
+    const isFileReference = get(cozyPayload, '[0]') === '@'
 
     if (isFileReference) {
       const filePath = cozyPayload.substr(1)
@@ -186,7 +191,7 @@ class BaseKonnector {
       }
     } else {
       try {
-        return JSON.parse(cozyPayload || '{}')
+        return JSON.parse(cozyPayload)
       } catch (err) {
         throw new Error('Could not parse JSON in COZY_PAYLOAD: ' + cozyPayload)
       }
@@ -341,7 +346,7 @@ class BaseKonnector {
    * const { BaseKonnector } = require('cozy-konnector-libs')
    *
    * module.exports = new BaseKonnector(start)
-
+   
    * async function start() {
    *    // we detect the need of a 2FA code
    *    const code = this.waitForTwoFaCode({
