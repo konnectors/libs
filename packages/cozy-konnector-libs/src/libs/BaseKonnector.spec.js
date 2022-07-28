@@ -317,4 +317,15 @@ describe('readPayload', () => {
     ).rejects.toThrowErrorMatchingSnapshot()
     expect(fs.readFile).toHaveBeenCalledWith('test2.json')
   })
+  it('should return null if no payload', async () => {
+    const connector = new BaseKonnector()
+    const result = await connector.readPayload()
+    expect(result).toBe(null)
+  })
+  it('should return null if null payload', async () => {
+    process.env.COZY_PAYLOAD = null
+    const connector = new BaseKonnector()
+    const result = await connector.readPayload()
+    expect(result).toBe(null)
+  })
 })

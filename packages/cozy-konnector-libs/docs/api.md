@@ -974,7 +974,7 @@ the konnector cannot know that asynchronous code has been called.
     * [.main()](#BaseKonnector+main) ⇒ <code>Promise</code>
     * [.end()](#BaseKonnector+end)
     * [.fail()](#BaseKonnector+fail)
-    * [.readPayload()](#BaseKonnector+readPayload) ⇒ <code>Object</code>
+    * [.readPayload()](#BaseKonnector+readPayload) ⇒ <code>Object</code> \| <code>null</code>
     * [.initAttributes()](#BaseKonnector+initAttributes)
     * [.saveAccountData(data, options)](#BaseKonnector+saveAccountData) ⇒ <code>Promise</code>
     * [.getAccountData()](#BaseKonnector+getAccountData) ⇒ <code>object</code>
@@ -1048,12 +1048,12 @@ Hook called when the connector fails
 **Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)  
 <a name="BaseKonnector+readPayload"></a>
 
-### baseKonnector.readPayload() ⇒ <code>Object</code>
+### baseKonnector.readPayload() ⇒ <code>Object</code> \| <code>null</code>
 Read an eventual payload from COZY_PAYLOAD env var, wether it is a JSON string or a reference
 to a file containing a JSON string
 
 **Kind**: instance method of [<code>BaseKonnector</code>](#BaseKonnector)  
-**Returns**: <code>Object</code> - Promise<> result of JSON.parse from the JSON string  
+**Returns**: <code>Object</code> \| <code>null</code> - Promise<> result of JSON.parse from the JSON string or null if no payload  
 <a name="BaseKonnector+initAttributes"></a>
 
 ### baseKonnector.initAttributes()
