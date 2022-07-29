@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.4.0](https://github.com/konnectors/libs/compare/renovate-config-cozy-konnector@1.3.1...renovate-config-cozy-konnector@1.4.0) (2022-07-29)
+
+
+### Features
+
+* Group cozy packages updates in renovate ([ed25c74](https://github.com/konnectors/libs/commit/ed25c74f21a83bbe41d5f5c423979df5c5286173))
+
+
+
+
+
 ## [1.3.1](https://github.com/konnectors/libs/compare/renovate-config-cozy-konnector@1.3.0...renovate-config-cozy-konnector@1.3.1) (2022-02-15)
 
 
