@@ -12,11 +12,12 @@
       "updateNotScheduled": true,
       "packageRules": [
         {
-          "packagePatterns": [
+          "matchPackageNames": [
             "cozy-konnector-libs",
             "cozy-jobs-cli",
             "cozy-konnector-build"
           ],
+          "groupName": "Cozy Konnector Packages",
           "timezone": "Europe/Paris",
           "schedule": [
             "every weekday after 08:00 pm",
