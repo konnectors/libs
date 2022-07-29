@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.18.2](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@1.18.1...cozy-jobs-cli@1.18.2) (2022-07-29)
+
+
+### Bug Fixes
+
+* **deps:** update dependency cheerio to v1.0.0-rc.12 ([41d7225](https://github.com/cozy/cozy-konnector-libs/commit/41d722598076a76774621e4505fba567c7cf2772))
+* **deps:** update dependency cozy-client to v29.2.0 ([bbdf625](https://github.com/cozy/cozy-konnector-libs/commit/bbdf625e4772159f56474f050dab5299087ae9e6))
+* **deps:** update dependency cozy-logger to v1.9.0 ([f84b523](https://github.com/cozy/cozy-konnector-libs/commit/f84b52373dae737bb5795cdd7179a1d4e12b3fdf))
+
+
+
+
+
 ## [1.18.1](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@1.18.0...cozy-jobs-cli@1.18.1) (2022-06-06)
 
 **Note:** Version bump only for package cozy-jobs-cli

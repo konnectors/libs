@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.54.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.53.1...cozy-konnector-libs@4.54.0) (2022-07-29)
+
+
+### Features
+
+* Allow connector to read COZY_PAYLOAD ([4009aae](https://github.com/cozy/cozy-konnector-libs/commit/4009aae1843e78d1c1488ad3c755691dab84566e))
+* readPayload return null if no payload ([68bc4fc](https://github.com/cozy/cozy-konnector-libs/commit/68bc4fca11f61a46298652c5ebd16859299855d7))
+
+
+
+
+
 ## [4.53.1](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.53.0...cozy-konnector-libs@4.53.1) (2022-06-06)
 
 
