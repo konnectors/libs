@@ -89,7 +89,7 @@
     "eslint-plugin-jsdoc": "37.8.2",
     "husky": "6.0.0",
     "jest": "27.4.7",
-    "jsdoc-to-markdown": "6.0.1",
+    "jsdoc-to-markdown": "7.1.1",
     "lerna": "^3",
     "lerna-changelog": "1.0.1",
     "pdfjs": "2.4.7",
