@@ -9,6 +9,9 @@ process.env.COZY_URL = config.COZY_URL
 if (config.COZY_PARAMETERS) {
   process.env.COZY_PARAMETERS = JSON.stringify(config.COZY_PARAMETERS)
 }
+if (config.COZY_FIELDS) {
+  process.env.COZY_FIELDS = JSON.stringify(config.COZY_FIELDS)
+}
 // sentry is not needed in dev mode
 process.env.SENTRY_DSN = 'false'
 
@@ -46,6 +49,7 @@ const ensureStackAccount = async config => {
     fs.writeFileSync(DEFAULT_ACCOUNT_PATH, newAccount._id)
   }
   process.env.COZY_FIELDS = JSON.stringify({
+    ...(process.env.COZY_FIELDS ? JSON.parse(process.env.COZY_FIELDS) : {}),
     account: accountId
   })
 }
