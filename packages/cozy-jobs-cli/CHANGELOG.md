@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.19.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@1.18.2...cozy-jobs-cli@1.19.0) (2022-08-02)
+
+
+### Features
+
+* Allow devs to pass COZY_FIELDS values ([48a1640](https://github.com/cozy/cozy-konnector-libs/commit/48a16405e73a48d9be0fbfbca2fd8ed5b3461759))
+
+
+
+
+
 ## [1.18.2](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@1.18.1...cozy-jobs-cli@1.18.2) (2022-07-29)
 
 
