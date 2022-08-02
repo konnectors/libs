@@ -546,6 +546,7 @@ const removeFile = async function (file) {
 
 module.exports = saveFiles
 module.exports.getFileIfExists = getFileIfExists
+module.exports.sanitizeFileName = sanitizeFileName
 
 function getFileName(entry) {
   let filename
@@ -563,7 +564,14 @@ function getFileName(entry) {
 }
 
 function sanitizeFileName(filename) {
-  return filename.replace(/^\.+$/, '').replace(/[/?<>\\:*|":]/g, '')
+  return (
+    filename
+      .replace(/^\.+$/, '')
+      .replace(/[/?<>\\:*|":]/g, '')
+      // Replace ascii control characters from 00 to 0F
+      // eslint-disable-next-line no-control-regex
+      .replace(/[\x00-\x0F]/g, '')
+  )
 }
 
 function checkFileSize(fileobject) {
