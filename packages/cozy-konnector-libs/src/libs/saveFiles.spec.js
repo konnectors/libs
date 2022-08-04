@@ -8,6 +8,7 @@ const mkdirp = require('./mkdirp')
 const logger = require('cozy-logger')
 const saveFiles = require('./saveFiles')
 const getFileIfExists = saveFiles.getFileIfExists
+const sanitizeFileName = saveFiles.sanitizeFileName
 const asyncResolve = val => {
   return new Promise(resolve => {
     setTimeout(() => {
@@ -529,5 +530,14 @@ describe('getFileIfExists', function () {
         expect(result).toEqual({ filename: 'coucou.txt' })
       })
     })
+  })
+})
+
+describe('filename sanitization', () => {
+  it('should sanitize control characters', async () => {
+    const stg1 = 'AAA\x00BBB\x0ACCC.pdf'
+    expect(sanitizeFileName(stg1)).toEqual('AAABBBCCC.pdf')
+    const stg2 = '\x0FAAA'
+    expect(sanitizeFileName(stg2)).toEqual('AAA')
   })
 })
