@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.55.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.54.0...cozy-konnector-libs@4.55.0) (2022-08-04)
+
+
+### Features
+
+* **cozy-connector-libs:** Remove control character in filename ([eb3287b](https://github.com/cozy/cozy-konnector-libs/commit/eb3287bd066d06ab43dc3f7d3ce6c4acd3bc9831))
+
+
+
+
+
 # [4.54.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.53.1...cozy-konnector-libs@4.54.0) (2022-07-29)
 
 
