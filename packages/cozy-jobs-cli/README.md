@@ -10,7 +10,6 @@ you want a program to connect to a cozy.
 
 <!-- /MarkdownTOC -->
 
-
 ### `cozy-run-dev`
 
 - Provides `COZY_CREDENTIALS` to the underlying process
