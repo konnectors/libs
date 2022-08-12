@@ -19,7 +19,7 @@ async function authenticate({ manifestPath, tokenPath }) {
     {
       uri: process.env.COZY_URL
         ? process.env.COZY_URL
-        : 'http://cozy.tools:8080',
+        : 'http://cozy.localhost:8080',
       scope: scopes,
       oauth: {
         softwareID: 'dev-connector'
