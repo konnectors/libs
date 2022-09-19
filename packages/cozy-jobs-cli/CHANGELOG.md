@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.19.2](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@1.19.1...cozy-jobs-cli@1.19.2) (2022-09-19)
+
+
+### Bug Fixes
+
+* Replace cozy.tools with cozy.localhost ([6f8ae10](https://github.com/cozy/cozy-konnector-libs/commit/6f8ae1062eef3d90dc0200f3198d358331174a35))
+
+
+
+
+
 ## [1.19.1](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@1.19.0...cozy-jobs-cli@1.19.1) (2022-08-04)
 
 **Note:** Version bump only for package cozy-jobs-cli
