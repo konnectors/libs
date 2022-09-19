@@ -41,7 +41,7 @@ const token = program.token || DEFAULT_TOKEN_PATH
 
 process.env.COZY_URL = process.env.COZY_URL
   ? process.env.COZY_URL
-  : 'http://cozy.tools:8080'
+  : 'http://cozy.localhost:8080'
 
 authenticate({ tokenPath: token, manifestPath: manifest })
   .then(client => {
