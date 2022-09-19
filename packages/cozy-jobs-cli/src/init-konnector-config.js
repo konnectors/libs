@@ -16,7 +16,7 @@ function getKonnectorConfig() {
 }
 
 const template = {
-  COZY_URL: 'http://cozy.tools:8080', // this URL resolves to localhost, it works well when you have running local cozy-stack
+  COZY_URL: 'http://cozy.localhost:8080', // this URL resolves to localhost, it works well when you have running local cozy-stack
   fields: {} // TODO read the fields in the manifest and add these fields in the template
 }
 

@@ -28,4 +28,4 @@ You can use `COZY_URL` to connect to another cozy.
 - Provides `COZY_CREDENTIALS` to the locally running connector from `konnector-dev-config.json` (which is created if it does not exist)
 - Does not save the data in a real cozy but instead dumps the data to `importedData.json`
 
-You can use `COZY_URL` to connect to another cozy. The default one is `cozy.tools:8080`.
+You can use `COZY_URL` to connect to another cozy. The default one is `cozy.localhost:8080`.
