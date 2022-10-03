@@ -71,7 +71,7 @@ The lead maintainer for Cozy Konnector Libs is [doubleface](https://github.com/d
 
 You can reach the Cozy Community by:
 
-- Chatting with us on IRC [#cozycloud on Freenode][freenode]
+- Chatting with us on IRC [#cozycloud on Libera.Chat][libera]
 - Posting on our [Forum][forum]
 - Posting issues on the [Github repos][github]
 - Say Hi! on [Twitter][twitter]
@@ -84,7 +84,7 @@ Cozy Konnector Libs is developed by Cozy Cloud and distributed under the [MIT li
 [cozy]: https://cozy.io "Cozy Cloud"
 [mit]: LICENSE.md
 [contribute]: CONTRIBUTING.md
-[freenode]: http://webchat.freenode.net/?randomnick=1&channels=%23cozycloud&uio=d4
+[libera]: https://web.libera.chat/#cozycloud
 [forum]: https://forum.cozy.io/
 [github]: https://github.com/cozy/
 [twitter]: https://twitter.com/cozycloud
