@@ -7,6 +7,10 @@
 
 const log = require('cozy-logger').namespace('saveIdentity')
 const updateOrCreate = require('./updateOrCreate')
+const cozyClient = require('./cozyclient')
+const manifest = require('./manifest')
+// A implicit import of Q cause a weird failing test
+const { Q } = require('cozy-client/dist/queries/dsl')
 
 /**
  * Set or merge a io.cozy.identities
@@ -75,12 +79,48 @@ const saveIdentity = async (
     identity.contact.address = formatAddress(identity.contact.address)
   }
 
-  await updateOrCreate(
-    [identity],
-    'io.cozy.identities',
-    ['identifier', 'cozyMetadata.createdByApp'],
-    { ...options, sourceAccountIdentifier: accountIdentifier }
-  )
+  if (options.merge == false) {
+    // Using cozy client in a none merging strategy here.
+    const newClient = cozyClient.new
+    const { data: existingIdentity } = await newClient.query(
+      Q('io.cozy.identities')
+        .where({
+          cozyMetadata: { createdByApp: manifest.data.slug },
+          identifier: accountIdentifier
+        })
+        .indexFields(['identifier', 'cozyMetadata.createdByApp'])
+    )
+
+    if (existingIdentity.length > 1) {
+      log('warn', 'Multiple identity for same identifier')
+    }
+
+    if (existingIdentity.length >= 1) {
+      log('debug', 'Updating existing identity')
+      let newIdentity = existingIdentity[0]
+      newIdentity.contact = identity.contact
+      await newClient.save({
+        ...newIdentity,
+        _type: 'io.cozy.identities'
+      })
+    } else {
+      try {
+        await newClient.save({
+          ...identity,
+          _type: 'io.cozy.identities'
+        })
+      } catch (e) {
+        log('error', e)
+      }
+    }
+  } else {
+    await updateOrCreate(
+      [identity],
+      'io.cozy.identities',
+      ['identifier', 'cozyMetadata.createdByApp'],
+      { ...options, sourceAccountIdentifier: accountIdentifier }
+    )
+  }
   return
 }
 
