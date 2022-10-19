@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.56.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.55.0...cozy-konnector-libs@4.56.0) (2022-10-19)
+
+
+### Features
+
+* **cozy-konnector-libs:** Add a non merging saveIdentity with cozy-client ([7041229](https://github.com/cozy/cozy-konnector-libs/commit/7041229ebd98f9f046c89bdcec6371cd5959ec50))
+
+
+
+
+
 # [4.55.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.54.0...cozy-konnector-libs@4.55.0) (2022-08-04)
 
 
