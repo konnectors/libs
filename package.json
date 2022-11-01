@@ -11,7 +11,7 @@
     "eslint-config-cozy-app": "4.0.0",
     "eslint-plugin-jsdoc": "37.8.2",
     "eslint-plugin-prettier": "4.0.0",
-    "lerna": "^3",
+    "lerna": "3.22.1",
     "lerna-changelog": "1.0.1"
   },
   "prettier": {
