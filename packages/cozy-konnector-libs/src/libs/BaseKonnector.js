@@ -10,6 +10,7 @@ const omit = require('lodash/omit')
 const updateOrCreate = require('./updateOrCreate')
 const saveIdentity = require('./saveIdentity')
 const fs = require('fs').promises
+const path = require('path')
 const {
   wrapIfSentrySetUp,
   captureExceptionAndDie
@@ -180,7 +181,8 @@ class BaseKonnector {
     const isFileReference = get(cozyPayload, '[0]') === '@'
 
     if (isFileReference) {
-      const filePath = cozyPayload.substr(1)
+      const fileName = cozyPayload.substr(1)
+      const filePath = path.resolve(__dirname, fileName)
       try {
         const fileContent = await fs.readFile(filePath)
         return JSON.parse(fileContent)

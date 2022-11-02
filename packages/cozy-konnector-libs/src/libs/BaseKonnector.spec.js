@@ -22,6 +22,7 @@ const signin = require('./signin')
 const BaseKonnector = require('./BaseKonnector')
 const logger = require('cozy-logger')
 const fs = require('fs').promises
+const path = require('path')
 
 logger.setLevel('error')
 
@@ -297,7 +298,9 @@ describe('readPayload', () => {
 
     const connector = new BaseKonnector()
     const result = await connector.readPayload()
-    expect(fs.readFile).toHaveBeenCalledWith('test.json')
+    expect(fs.readFile).toHaveBeenCalledWith(
+      path.resolve(__dirname, 'test.json')
+    )
     expect(result).toEqual({ testfilepayload: 'testfilepayloadvalue' })
   })
   it('should throw on wrong JSON string', async () => {
@@ -312,10 +315,12 @@ describe('readPayload', () => {
     fs.readFile.mockResolvedValue(`{ testfilepayload: testfilepayloadvalue}`)
 
     const connector = new BaseKonnector()
-    await expect(() =>
-      connector.readPayload()
-    ).rejects.toThrowErrorMatchingSnapshot()
-    expect(fs.readFile).toHaveBeenCalledWith('test2.json')
+    await expect(() => connector.readPayload()).rejects.toThrow(
+      'Error while reading file'
+    )
+    expect(fs.readFile).toHaveBeenCalledWith(
+      path.resolve(__dirname, 'test2.json')
+    )
   })
   it('should return null if no payload', async () => {
     const connector = new BaseKonnector()
