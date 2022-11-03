@@ -55,8 +55,8 @@ module.exports = {
         { from: 'manifest.konnector' },
         { from: 'package.json' },
         { from: 'README.md' },
-        { from: 'assets', transform: optimizeSVGIcon },
-        { from: '.travis.yml' },
+        { from: 'assets', transform: optimizeSVGIcon, noErrorOnMissing: true },
+        { from: '.travis.yml', noErrorOnMissing: true },
         { from: 'LICENSE' }
       ]
     }),
