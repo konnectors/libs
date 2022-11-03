@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.56.2](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.56.1...cozy-konnector-libs@4.56.2) (2022-11-03)
+
+
+### Bug Fixes
+
+* **deps:** pin dependency lerna to v3.22.1 ([b7d2490](https://github.com/cozy/cozy-konnector-libs/commit/b7d24902803908d5f43439e732ed6c8e31147a84))
+
+
+
+
+
 ## [4.56.1](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.56.0...cozy-konnector-libs@4.56.1) (2022-11-03)
 
 
