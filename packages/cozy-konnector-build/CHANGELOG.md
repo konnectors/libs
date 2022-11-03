@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.4.0](https://github.com/konnectors/libs/compare/cozy-konnector-build@1.3.4...cozy-konnector-build@1.4.0) (2022-11-03)
+
+
+### Features
+
+* Allow connectors to use this proposed default webpack configuration ([6c2494f](https://github.com/konnectors/libs/commit/6c2494f10aac9066e484b9cbd1f77a79514f8ed6))
+
+
+
+
+
 ## [1.3.4](https://github.com/konnectors/libs/compare/cozy-konnector-build@1.3.3...cozy-konnector-build@1.3.4) (2022-07-29)
 
 
