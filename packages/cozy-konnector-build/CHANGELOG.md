@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.4.2](https://github.com/konnectors/libs/compare/cozy-konnector-build@1.4.1...cozy-konnector-build@1.4.2) (2022-11-03)
+
+
+### Bug Fixes
+
+* No error when assets and travis conf missing ([e2c4866](https://github.com/konnectors/libs/commit/e2c486628c23145c22a168041f9c781baed00c6a))
+
+
+
+
+
 ## [1.4.1](https://github.com/konnectors/libs/compare/cozy-konnector-build@1.4.0...cozy-konnector-build@1.4.1) (2022-11-03)
 
 
