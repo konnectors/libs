@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.56.1](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.56.0...cozy-konnector-libs@4.56.1) (2022-11-03)
+
+
+### Bug Fixes
+
+* Do not rely on cwd to read a file payload ([558a07c](https://github.com/cozy/cozy-konnector-libs/commit/558a07c81edf451b5830cce86838449f3b9a9044))
+
+
+
+
+
 # [4.56.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.55.0...cozy-konnector-libs@4.56.0) (2022-10-19)
 
 
