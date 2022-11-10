@@ -2,7 +2,6 @@ language: node_js
 matrix:
   fast_finish: true
 node_js:
-- '12'
 - '16'
 cache:
   yarn: true
@@ -20,7 +19,6 @@ deploy:
     && echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc && yarn lerna
     publish --yes -m "[skip ci] Publish"
   on:
-    node: '12'
     branch: master
     repo: konnectors/libs
 env:
