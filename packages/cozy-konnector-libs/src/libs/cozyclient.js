@@ -60,7 +60,11 @@ const cozyClient = getCozyClient(
 )
 
 function cozyClientJsFromEnv(cozyURL) {
-  const options = { cozyURL }
+  // version is hardcoded to 3 here to avoid fetching instance's /status looking for obsolete nodezy
+  const options = {
+    cozyURL,
+    version: 3
+  }
   let jsonCredentials = null
   if (process.env.COZY_CREDENTIALS) {
     try {
