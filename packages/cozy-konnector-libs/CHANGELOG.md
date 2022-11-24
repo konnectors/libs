@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.56.3](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.56.2...cozy-konnector-libs@4.56.3) (2022-11-24)
+
+**Note:** Version bump only for package cozy-konnector-libs
+
+
+
+
+
 ## [4.56.2](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.56.1...cozy-konnector-libs@4.56.2) (2022-11-03)
 
 
