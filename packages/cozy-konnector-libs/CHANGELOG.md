@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.56.4](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.56.3...cozy-konnector-libs@4.56.4) (2022-11-28)
+
+
+### Bug Fixes
+
+* Typo in warning message ([3a862a3](https://github.com/cozy/cozy-konnector-libs/commit/3a862a3707c3100a95dbfd8d652c324cef028c2e))
+
+
+
+
+
 ## [4.56.3](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.56.2...cozy-konnector-libs@4.56.3) (2022-11-24)
 
 **Note:** Version bump only for package cozy-konnector-libs
