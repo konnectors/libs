@@ -63,7 +63,7 @@ const saveIdentity = async (
   if (!isIdentity) {
     log(
       'warn',
-      'passing a io.cozy.contacts object is deprected, please pass a full identity object'
+      'passing a io.cozy.contacts object is deprecated, please pass a full identity object'
     )
   }
   const identity = isIdentity
