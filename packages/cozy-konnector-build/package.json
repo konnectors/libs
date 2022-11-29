@@ -1,6 +1,6 @@
 {
   "name": "cozy-konnector-build",
-  "version": "1.4.3",
+  "version": "1.4.4",
   "description": "All build dependencies for a connector",
   "main": "lib/cozy-konnector-build.js",
   "repository": {
