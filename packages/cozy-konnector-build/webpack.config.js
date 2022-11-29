@@ -6,11 +6,6 @@ const SvgoInstance = require('svgo')
 
 const currentDirectory = process.cwd()
 
-const readPackageJson = () =>
-  JSON.parse(fs.readFileSync(path.join(currentDirectory, './package.json')))
-
-const entry = readPackageJson().main
-
 const readManifest = () =>
   JSON.parse(
     fs.readFileSync(path.join(currentDirectory, './manifest.konnector'))
@@ -37,7 +32,7 @@ try {
 const appIconRX = iconName && new RegExp(`[^/]*/${iconName}`)
 
 module.exports = {
-  entry,
+  entry: './src/index.js',
   target: 'node',
   mode: 'none',
   node: {
