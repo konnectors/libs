@@ -1,7 +1,9 @@
+// @ts-check
 import get from 'lodash/get'
 import uniqBy from 'lodash/uniqBy'
 import { Q } from 'cozy-client'
 import Minilog from '@cozy/minilog'
+import CozyClient from 'cozy-client/types/CozyClient'
 const log = Minilog('hydrateAndFilter')
 
 /**
@@ -32,10 +34,14 @@ const suitableCall = (funcOrMethod, ...args) => {
  * You need at least the `GET` permission for the given doctype in your manifest, to be able to
  * use this function.
  *
- * @param {Array} documents: an array of objects corresponding to the data you want to save in the cozy
- * @param {string} doctype: the doctype where you want to save data (ex: 'io.cozy.bills')
- * @param {Array} options.keys: List of keys used to check that two items are the same. By default it is set to `['id']'.
- * @param {object} options.selector: Mango request to get records. Default is built from the keys `{selector: {_id: {"$gt": null}}}` to get all the records.
+ * @param {Array} documents : an array of objects corresponding to the data you want to save in the cozy
+ * @param {string} doctype : the doctype where you want to save data (ex: 'io.cozy.bills')
+ * @param {object} options : Options object
+ * @param {CozyClient} options.client : CozyClient instance
+ * @param {Array} [options.keys] : List of keys used to check that two items are the same. By default it is set to `['id']'.
+ * @param {object} [options.selector] : Mango request to get records. Default is built from the keys `{selector: {_id: {"$gt": null}}}` to get all the records.
+ * @param {Function} [options.shouldUpdate] : Function which outputs if an entry should be updated or not
+ * @param {Function} [options.shouldSave] : Function which outputs if an entry should be save to cozy stack or not
  *
  * ```javascript
  * const documents = [
@@ -55,14 +61,14 @@ const suitableCall = (funcOrMethod, ...args) => {
  *
  * ```
  */
-export default async (documents = [], doctype, options = {}) => {
-  const client = options.client
+export default async (documents = [], doctype, options) => {
+  const client = options?.client
   log.debug(`${documents.length} items before hydrateAndFilter`)
   if (!doctype) {
     throw new Error('Doctype is mandatory to filter the connector data.')
   }
 
-  const keys = options.keys ? options.keys : ['_id']
+  const keys = options?.keys ? options.keys : ['_id']
   const store = {}
 
   const createHash = item => {
@@ -79,7 +85,7 @@ export default async (documents = [], doctype, options = {}) => {
 
   const getItems = async () => {
     let queryObject = Q(doctype)
-    if (options.selector) {
+    if (options?.selector) {
       queryObject = queryObject.where(options.selector)
     }
 
@@ -123,9 +129,9 @@ export default async (documents = [], doctype, options = {}) => {
     return uniqBy(
       documents.filter(entry => {
         const shouldSave =
-          entry.shouldSave || options.shouldSave || defaultShouldSave
+          entry.shouldSave || options?.shouldSave || defaultShouldSave
         const shouldUpdate =
-          entry.shouldUpdate || options.shouldUpdate || defaultShouldUpdate
+          entry.shouldUpdate || options?.shouldUpdate || defaultShouldUpdate
         const existing = currentStore[createHash(entry)]
         if (existing) {
           return suitableCall(shouldUpdate, entry, existing)

@@ -10,8 +10,8 @@ const kyScraper = ky.create({
 /**
  * Convert a blob object to a base64 uri
  *
- * @param {Blob} blob
- * @returns {string}
+ * @param {Blob} blob : blob object
+ * @returns {Promise.<string>} : base64 form of the blob
  */
 async function blobToBase64(blob) {
   const reader = new window.FileReader()

@@ -19,7 +19,7 @@ export class Bridge {
    * @param  {Array.<string>} options.exposedMethodNames  : The list of method names of the root object, which will be exposed via the post-me interface to the content script
    * @param  {Array.<string>} options.listenedEventsNames : The list of method names of the root object, which will be call on given event name via the post-me interface to the content script
    * @param  {object} options.webViewRef                  : Reference to the webview obect containing the content script
-   * @returns {PostMeConnection} : the resulting post-me connection
+   * @returns {Promise.<PostMeConnection>} : the resulting post-me connection
    */
   async init(options) {}
 
@@ -30,7 +30,7 @@ export class Bridge {
    * @param  {Array} args    : Any number of parameters which will be given to the remote method.
    * It is also possible to pass callback functions (which must support serialization). post-me
    * will wait the the remote method end before resolving the promise
-   * @returns {any} remote method return value
+   * @returns {Promise.<any>} remote method return value
    */
   async call(method, ...args) {
     return this.remoteHandle.call(method, ...args)

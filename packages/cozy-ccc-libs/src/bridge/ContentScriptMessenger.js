@@ -1,3 +1,4 @@
+// @ts-check
 import { MessengerInterface } from './bridgeInterfaces'
 
 /**
@@ -7,6 +8,7 @@ export default class ReactNativeWebviewMessenger extends MessengerInterface {
   /**
    * Init the window which will be used to post messages and listen to messages
    *
+   * @param  {object} options             : options object
    * @param  {object} options.localWindow : The window object
    */
   constructor({ localWindow }) {
