@@ -1,7 +1,7 @@
-import {MessengerInterface} from '../../libs'
+import { MessengerInterface } from './bridgeInterfaces'
 
 /**
- * post-me messenger implementation for a content script imlanted in a react native webview
+ * post-me messenger implementation for a content script implanted in a react native webview
  */
 export default class ReactNativeWebviewMessenger extends MessengerInterface {
   /**

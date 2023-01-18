@@ -20,7 +20,7 @@ const requiredAttributes = {
  *
  * @param {Array} documents: an array of objects corresponding to the data you want to save in the cozy
  */
-const saveBills = async (inputEntries, inputOptions = {}) => {
+export default async (inputEntries, inputOptions = {}) => {
   // Cloning input arguments since both entries and options are expected
   // to be modified by functions called inside saveBills.
   const entries = _.cloneDeepWith(inputEntries, value => {
@@ -142,7 +142,7 @@ function checkRequiredAttributes(entries) {
   }
 }
 
-function manageContractsData(tempEntries, options) {
+export function manageContractsData(tempEntries, options) {
   if (options.contractLabel && options.contractId === undefined) {
     log('warn', 'contractLabel used without contractId, ignoring it.')
     return tempEntries
@@ -210,6 +210,3 @@ function addContractIdToDeduplication(options) {
     options.keys.push('contractId')
   }
 }
-
-module.exports = saveBills
-module.exports.manageContractsData = manageContractsData

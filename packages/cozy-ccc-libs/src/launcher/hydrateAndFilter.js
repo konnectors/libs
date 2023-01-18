@@ -55,7 +55,7 @@ const suitableCall = (funcOrMethod, ...args) => {
  *
  * ```
  */
-const hydrateAndFilter = async (documents = [], doctype, options = {}) => {
+export default async (documents = [], doctype, options = {}) => {
   const client = options.client
   log.debug(`${documents.length} items before hydrateAndFilter`)
   if (!doctype) {
@@ -149,5 +149,3 @@ const hydrateAndFilter = async (documents = [], doctype, options = {}) => {
     .then(entries => entries.filter(Boolean)) // Filter out wrong entries
     .then(formatOutput)
 }
-
-module.exports = hydrateAndFilter

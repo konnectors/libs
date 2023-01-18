@@ -21,7 +21,7 @@ const log = Minilog('saveIdentity')
  * ```
  */
 
-const saveIdentity = async (
+export default async (
   contactOrIdentity,
   accountIdentifier,
   options = {}
@@ -90,5 +90,3 @@ function formatPhone(phone) {
   }
   return phone
 }
-
-module.exports = saveIdentity

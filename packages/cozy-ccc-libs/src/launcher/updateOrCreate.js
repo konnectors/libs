@@ -15,7 +15,7 @@ const log = Minilog('updateOrCreate')
  * @param {Array<String>} matchingAttributes: attributes in each entry used to check if an entry already exists in the Cozy
  * @param {CozyClient} options.client : CozyClient instance
  */
-const updateOrCreate = async (
+export default async (
   entries = [],
   doctype,
   matchingAttributes = [],
@@ -48,4 +48,3 @@ const updateOrCreate = async (
     }
   }
 }
-module.exports = updateOrCreate
