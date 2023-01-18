@@ -33,9 +33,9 @@ const suitableCall = (funcOrMethod, ...args) => {
  * use this function.
  *
  * @param {Array} documents: an array of objects corresponding to the data you want to save in the cozy
- * @param {String} doctype: the doctype where you want to save data (ex: 'io.cozy.bills')
+ * @param {string} doctype: the doctype where you want to save data (ex: 'io.cozy.bills')
  * @param {Array} options.keys: List of keys used to check that two items are the same. By default it is set to `['id']'.
- * @param {Object} options.selector: Mango request to get records. Default is built from the keys `{selector: {_id: {"$gt": null}}}` to get all the records.
+ * @param {object} options.selector: Mango request to get records. Default is built from the keys `{selector: {_id: {"$gt": null}}}` to get all the records.
  *
  * ```javascript
  * const documents = [

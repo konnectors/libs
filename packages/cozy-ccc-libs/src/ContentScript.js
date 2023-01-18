@@ -23,7 +23,7 @@ export default class ContentScript {
    * Init the bridge communication with the launcher.
    * It also exposes the methods which will be callable by the launcher
    *
-   * @param {Array<String>}options.additionalExposedMethodsNames : list of additional method of the
+   * @param {Array<string>}options.additionalExposedMethodsNames : list of additional method of the
    * content script to expose expose. To make it callable via the worker
    */
   async init(options = {}) {
@@ -70,7 +70,7 @@ export default class ContentScript {
   /**
    * Set the ContentScript type. This is usefull to know which webview is the pilot or the worker
    *
-   * @param {String} contentScriptType - ("pilot" | "worker")
+   * @param {string} contentScriptType - ("pilot" | "worker")
    */
   async setContentScriptType(contentScriptType) {
     this.contentScriptType = contentScriptType
@@ -96,7 +96,7 @@ export default class ContentScript {
   /**
    * Run a specified method in the worker webview
    *
-   * @param {String} method : name of the method to run
+   * @param {string} method : name of the method to run
    */
   async runInWorker(method, ...args) {
     this.onlyIn(PILOT_TYPE, 'runInWorker')
@@ -106,11 +106,10 @@ export default class ContentScript {
   /**
    * Wait for a method to resolve as true on worker
    *
-   * @param {String} options.method - name of the method to run
-   * @param {Number} options.timeout - number of miliseconds before the function sends a timeout error. Default Infinity
+   * @param {string} options.method - name of the method to run
+   * @param {number} options.timeout - number of miliseconds before the function sends a timeout error. Default Infinity
    * @param {Array} options.args - array of args to pass to the method
-   *
-   * @return {Promise<Boolean>} - true
+   * @returns {Promise<boolean>} - true
    * @throws {Exception} - if timeout expired
    */
   async runInWorkerUntilTrue({ method, timeout = Infinity, args = [] }) {
@@ -134,7 +133,7 @@ export default class ContentScript {
    * Wait for a dom element to be present on the page, even if there are page redirects or page
    * reloads
    *
-   * @param {String} selector - css selector we are waiting for
+   * @param {string} selector - css selector we are waiting for
    */
   async waitForElementInWorker(selector) {
     this.onlyIn(PILOT_TYPE, 'waitForElementInWorker')
@@ -147,7 +146,7 @@ export default class ContentScript {
   /**
    * Wait for a dom element to be present on the page. This won't resolve if the page reloads
    *
-   * @param {String} selector - css selector we are waiting for
+   * @param {string} selector - css selector we are waiting for
    * @returns Boolean
    */
   async waitForElementNoReload(selector) {
@@ -200,7 +199,7 @@ export default class ContentScript {
    * - converts blob files to base64 uri to be serializable
    *
    * @param {Array} entries : list of file entries to save
-   * @param {Object} options : saveFiles options
+   * @param {object} options : saveFiles options
    */
   async saveFiles(entries, options) {
     this.onlyIn(PILOT_TYPE, 'saveFiles')
@@ -229,7 +228,7 @@ export default class ContentScript {
    * - then saves bills linked to corresponding files
    *
    * @param {Array} entries : list of file entries to save
-   * @param {Object} options : saveFiles options
+   * @param {object} options : saveFiles options
    */
   async saveBills(entries, options) {
     this.onlyIn(PILOT_TYPE, 'saveBills')
@@ -248,7 +247,7 @@ export default class ContentScript {
   /**
    * Bridge to the saveCredentials method from the launcher.
    *
-   * @param {Object} credentials
+   * @param {object} credentials
    */
   async saveCredentials(credentials) {
     this.onlyIn(PILOT_TYPE, 'saveCredentials')
@@ -258,7 +257,7 @@ export default class ContentScript {
   /**
    * Bridge to the saveIdentity method from the launcher.
    *
-   * @param {Object} identity
+   * @param {object} identity
    */
   async saveIdentity(identity) {
     this.onlyIn(PILOT_TYPE, 'saveIdentity')
@@ -268,7 +267,7 @@ export default class ContentScript {
   /**
    * Bridge to the getCookiesByDomain method from the RNlauncher.
    *
-   * @param {String} domain
+   * @param {string} domain
    */
   async getCookiesByDomain(domain) {
     return await this.bridge.call('getCookiesByDomain', domain)
@@ -277,7 +276,7 @@ export default class ContentScript {
   /**
    * Bridge to the getCookieFromKeychainByName method from the RNlauncher.
    *
-   * @param {String} domain
+   * @param {string} domain
    */
   async getCookieFromKeychainByName(cookieName) {
     return await this.bridge.call('getCookieFromKeychainByName', cookieName)
@@ -286,7 +285,7 @@ export default class ContentScript {
   /**
    * Bridge to the saveCookieToKeychain method from the RNlauncher.
    *
-   * @param {String} domain
+   * @param {string} domain
    */
   async saveCookieToKeychain(cookieValue) {
     this.onlyIn(PILOT_TYPE, 'saveCookieToKeychain')
@@ -307,8 +306,8 @@ export default class ContentScript {
    * Do not download files which already exist
    *
    * @param {Array} files
-   * @param {Array<String>} options.fileIdAttributes: list of attributes defining the unicity of the file
-   * @param {Object} options.context: current launcher context
+   * @param {Array<string>} options.fileIdAttributes: list of attributes defining the unicity of the file
+   * @param {object} options.context: current launcher context
    * @returns Array
    */
   filterOutExistingFiles(files, options) {
@@ -331,8 +330,8 @@ export default class ContentScript {
   /**
    * Creates an index of files, indexed by uniq id defined by fileIdAttributes
    *
-   * @param {Object} context
-   * @param {Array<String>} fileIdAttributes: list of attributes defining the unicity of a file
+   * @param {object} context
+   * @param {Array<string>} fileIdAttributes: list of attributes defining the unicity of a file
    * @returns Object
    */
   createContextFilesIndex(context, fileIdAttributes) {
@@ -347,8 +346,8 @@ export default class ContentScript {
   /**
    * Calculates the key defining the uniqueness of a given file
    *
-   * @param {Object} file
-   * @param {Array<String>} fileIdAttributes: list of attributes defining the unicity of a file
+   * @param {object} file
+   * @param {Array<string>} fileIdAttributes: list of attributes defining the unicity of a file
    * @returns String
    */
   calculateFileKey(file, fileIdAttributes) {
@@ -404,14 +403,14 @@ export default class ContentScript {
    * Returns whatever unique information on the authenticated user which will be usefull
    * to identify fetched data : destination folder name, fetched data metadata
    *
-   * @returns {Object}
+   * @returns {object}
    */
   async getUserDataFromWebsite() {}
 
   /**
    * In worker context, send the given data to the pilot to be stored in its own store
    *
-   * @param {Object} : any object with data to store
+   * @param {object} : any object with data to store
    */
   async sendToPilot(obj) {
     this.onlyIn(WORKER_TYPE, 'sendToPilot')
@@ -421,7 +420,7 @@ export default class ContentScript {
   /**
    * Store data sent from worker with sendToPilot method
    *
-   * @param {Object} : any object with data to store
+   * @param {object} : any object with data to store
    */
   async storeFromWorker(obj) {
     Object.assign(this.store, obj)
@@ -436,9 +435,9 @@ export default class ContentScript {
   /**
    * Main function, fetches all connector data and save it to the cozy
    *
-   * @param {Object} options.context : all the data already fetched by the connector in a previous execution. Will be usefull to optimize
+   * @param {object} options.context : all the data already fetched by the connector in a previous execution. Will be usefull to optimize
    * connector execution by not fetching data we already have.
-   * @returns {Object} : Connector execution result. TBD
+   * @returns {object} : Connector execution result. TBD
    */
   async fetch({ context }) {}
 }

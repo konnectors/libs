@@ -8,7 +8,7 @@ const log = Minilog('addData')
  * use this function.
  *
  * @param {Array} entries: an array of objects corresponding to the data you want to save in the cozy
- * @param {String} doctype: the doctype where you want to save data (ex: 'io.cozy.bills')
+ * @param {string} doctype: the doctype where you want to save data (ex: 'io.cozy.bills')
  * @param {CozyClient} options.client
  */
 export default async (entries, doctype, options = {}) => {

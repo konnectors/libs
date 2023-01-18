@@ -3,15 +3,15 @@ import ky from 'ky/umd'
 
 const kyScraper = ky.create({
   hooks: {
-    afterResponse: [addKyScraper],
-  },
+    afterResponse: [addKyScraper]
+  }
 })
 
 /**
  * Convert a blob object to a base64 uri
  *
  * @param {Blob} blob
- * @returns {String}
+ * @returns {string}
  */
 async function blobToBase64(blob) {
   const reader = new window.FileReader()
@@ -23,7 +23,7 @@ async function blobToBase64(blob) {
   return reader.result
 }
 
-export {kyScraper, blobToBase64}
+export { kyScraper, blobToBase64 }
 
 function addKyScraper(_request, _options, response) {
   response.$ = async () => Cheerio.load(await response.text())
@@ -33,7 +33,7 @@ function addKyScraper(_request, _options, response) {
     }
     return scrape(...args)
   }
-  response.getFormData = async (formSelector) =>
+  response.getFormData = async formSelector =>
     parseForm(await response.$(), formSelector)
   return response
 }
@@ -59,20 +59,20 @@ function scrape($, specs, childSelector) {
     typeof specs === 'string' ||
     (specs.sel && typeof specs.sel === 'string')
   ) {
-    const {val} = scrape($, {val: specs})
+    const { val } = scrape($, { val: specs })
     return val
   }
 
   // Several items shorthand
   if (childSelector !== undefined) {
-    return Array.from(($.find || $)(childSelector)).map((e) =>
-      scrape($(e), specs),
+    return Array.from(($.find || $)(childSelector)).map(e =>
+      scrape($(e), specs)
     )
   }
 
   // Several properties "normal" case
   const res = {}
-  Object.keys(specs).forEach((specName) => {
+  Object.keys(specs).forEach(specName => {
     const spec = mkSpec(specs[specName])
     let data = spec.sel ? $.find(spec.sel) : $
     if (spec.index) {
@@ -98,7 +98,7 @@ function scrape($, specs, childSelector) {
 
 function mkSpec(spec) {
   if (typeof spec === 'string') {
-    return {sel: spec}
+    return { sel: spec }
   } else {
     return spec
   }
