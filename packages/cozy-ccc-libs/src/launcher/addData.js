@@ -11,7 +11,7 @@ const log = Minilog('addData')
  * @param {String} doctype: the doctype where you want to save data (ex: 'io.cozy.bills')
  * @param {CozyClient} options.client
  */
-const addData = async (entries, doctype, options = {}) => {
+export default async (entries, doctype, options = {}) => {
   const client = options.client
   const result = []
   for (const entry of entries) {
@@ -23,5 +23,3 @@ const addData = async (entries, doctype, options = {}) => {
   }
   return result
 }
-
-module.exports = addData

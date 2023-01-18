@@ -1,6 +1,6 @@
 import {ChildHandshake} from 'post-me'
 import ReactNativeWebviewMessenger from './ContentScriptMessenger'
-import {Bridge} from '../../libs'
+import { Bridge } from './bridgeInterfaces'
 
 /**
  * Bridge to the Launcher object via post-me
@@ -11,7 +11,7 @@ export default class LauncherBridge extends Bridge {
    *
    * @param {Object} options.localWindow : The window used to communicate with the launcher
    */
-  constructor({localWindow}) {
+  constructor({ localWindow }) {
     super()
     this.localWindow = localWindow
   }
