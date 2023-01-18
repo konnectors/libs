@@ -7,9 +7,9 @@ export default class ReactNativeWebviewMessenger extends MessengerInterface {
   /**
    * Init the window which will be used to post messages and listen to messages
    *
-   * @param  {Object} options.localWindow : The window object
+   * @param  {object} options.localWindow : The window object
    */
-  constructor({localWindow}) {
+  constructor({ localWindow }) {
     super()
     this.localWindow = localWindow
   }
@@ -17,7 +17,7 @@ export default class ReactNativeWebviewMessenger extends MessengerInterface {
     this.localWindow.ReactNativeWebView.postMessage(JSON.stringify(message))
   }
   addMessageListener(listener) {
-    const outerListener = (event) => {
+    const outerListener = event => {
       listener(event)
     }
 

@@ -11,8 +11,8 @@ const log = Minilog('updateOrCreate')
  * use this function.
  *
  * @param {Array} entries: Documents to save
- * @param {String} doctype: Doctype of the documents
- * @param {Array<String>} matchingAttributes: attributes in each entry used to check if an entry already exists in the Cozy
+ * @param {string} doctype: Doctype of the documents
+ * @param {Array<string>} matchingAttributes: attributes in each entry used to check if an entry already exists in the Cozy
  * @param {CozyClient} options.client : CozyClient instance
  */
 export default async (

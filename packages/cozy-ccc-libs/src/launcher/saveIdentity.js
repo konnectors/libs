@@ -8,8 +8,8 @@ const log = Minilog('saveIdentity')
  * You need full permission for the doctype io.cozy.identities in your
  * manifest, to be able to use this function.
  *
- * @param {Object}: the identity to create/update as an object io.cozy.contacts
- * @param {String}: a string that represent the account use
+ * @param {object}: the identity to create/update as an object io.cozy.contacts
+ * @param {string}: a string that represent the account use
  * ```javascript
  * const identity =
  *   {
@@ -21,11 +21,7 @@ const log = Minilog('saveIdentity')
  * ```
  */
 
-export default async (
-  contactOrIdentity,
-  accountIdentifier,
-  options = {}
-) => {
+export default async (contactOrIdentity, accountIdentifier, options = {}) => {
   if (accountIdentifier == null) {
     log.warn("Can't set identity as no accountIdentifier was provided")
     return
