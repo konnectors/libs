@@ -1,3 +1,4 @@
+// @ts-check
 import get from 'lodash/get'
 import waitFor from 'p-wait-for'
 import Minilog from '@cozy/minilog'
@@ -23,7 +24,8 @@ export default class ContentScript {
    * Init the bridge communication with the launcher.
    * It also exposes the methods which will be callable by the launcher
    *
-   * @param {Array<string>}options.additionalExposedMethodsNames : list of additional method of the
+   * @param {object} options : options object
+   * @param {Array<string>} [options.additionalExposedMethodsNames] : list of additional method of the
    * content script to expose expose. To make it callable via the worker
    */
   async init(options = {}) {
@@ -78,11 +80,20 @@ export default class ContentScript {
   }
 
   /**
+   * Check if the user is authenticated or not. This method is made to be overloaded by the child class
+   *
+   * @returns {Promise.<boolean>} : true if authenticated or false in other case
+   */
+  async checkAuthenticated() {
+    return false
+  }
+
+  /**
    * This method is made to run in the worker and will resolve as true when
    * the user is authenticated
    *
-   * @returns Promise.<true> : if authenticated
-   * @throws {Exception}: TimeoutError from p-wait-for package if timeout expired
+   * @returns {Promise.<true>} : if authenticated
+   * @throws {Error}: TimeoutError from p-wait-for package if timeout expired
    */
   async waitForAuthenticated() {
     this.onlyIn(WORKER_TYPE, 'waitForAuthenticated')
@@ -100,17 +111,23 @@ export default class ContentScript {
    */
   async runInWorker(method, ...args) {
     this.onlyIn(PILOT_TYPE, 'runInWorker')
+    if (!this.bridge) {
+      throw new Error(
+        'No bridge is defined, you should call ContentScript.init before using this method'
+      )
+    }
     return this.bridge.call('runInWorker', method, ...args)
   }
 
   /**
    * Wait for a method to resolve as true on worker
    *
+   * @param {object} options        - options object
    * @param {string} options.method - name of the method to run
-   * @param {number} options.timeout - number of miliseconds before the function sends a timeout error. Default Infinity
+   * @param {number} [options.timeout] - number of miliseconds before the function sends a timeout error. Default Infinity
    * @param {Array} options.args - array of args to pass to the method
    * @returns {Promise<boolean>} - true
-   * @throws {Exception} - if timeout expired
+   * @throws {Error} - if timeout expired
    */
   async runInWorkerUntilTrue({ method, timeout = Infinity, args = [] }) {
     this.onlyIn(PILOT_TYPE, 'runInWorkerUntilTrue')
@@ -119,7 +136,7 @@ export default class ContentScript {
     const start = Date.now()
     const isTimeout = () => Date.now() - start >= timeout
     while (!result) {
-      if (isTimeout(timeout)) {
+      if (isTimeout()) {
         throw new Error('Timeout error')
       }
       log.debug('runInWorker call', method)
@@ -147,7 +164,7 @@ export default class ContentScript {
    * Wait for a dom element to be present on the page. This won't resolve if the page reloads
    *
    * @param {string} selector - css selector we are waiting for
-   * @returns Boolean
+   * @returns {Promise.<true>} - Returns true when ready
    */
   async waitForElementNoReload(selector) {
     this.onlyIn(WORKER_TYPE, 'waitForElementNoReload')
@@ -219,6 +236,11 @@ export default class ContentScript {
         delete entry.blob
       }
     }
+    if (!this.bridge) {
+      throw new Error(
+        'No bridge is defined, you should call ContentScript.init before using this method'
+      )
+    }
     return await this.bridge.call('saveFiles', entries, options)
   }
 
@@ -233,6 +255,11 @@ export default class ContentScript {
   async saveBills(entries, options) {
     this.onlyIn(PILOT_TYPE, 'saveBills')
     const files = await this.saveFiles(entries, options)
+    if (!this.bridge) {
+      throw new Error(
+        'No bridge is defined, you should call ContentScript.init before using this method'
+      )
+    }
     return await this.bridge.call('saveBills', files, options)
   }
 
@@ -241,59 +268,94 @@ export default class ContentScript {
    */
   async getCredentials() {
     this.onlyIn(PILOT_TYPE, 'getCredentials')
+    if (!this.bridge) {
+      throw new Error(
+        'No bridge is defined, you should call ContentScript.init before using this method'
+      )
+    }
     return await this.bridge.call('getCredentials')
   }
 
   /**
    * Bridge to the saveCredentials method from the launcher.
    *
-   * @param {object} credentials
+   * @param {object} credentials : object with credentials specific to the current connector
    */
   async saveCredentials(credentials) {
     this.onlyIn(PILOT_TYPE, 'saveCredentials')
+    if (!this.bridge) {
+      throw new Error(
+        'No bridge is defined, you should call ContentScript.init before using this method'
+      )
+    }
     return await this.bridge.call('saveCredentials', credentials)
   }
 
   /**
    * Bridge to the saveIdentity method from the launcher.
    *
-   * @param {object} identity
+   * @param {object} identity : io.cozy.contacts object
    */
   async saveIdentity(identity) {
     this.onlyIn(PILOT_TYPE, 'saveIdentity')
+    if (!this.bridge) {
+      throw new Error(
+        'No bridge is defined, you should call ContentScript.init before using this method'
+      )
+    }
     return await this.bridge.call('saveIdentity', identity)
   }
 
   /**
    * Bridge to the getCookiesByDomain method from the RNlauncher.
    *
-   * @param {string} domain
+   * @param {string} domain : domain name
    */
   async getCookiesByDomain(domain) {
+    if (!this.bridge) {
+      throw new Error(
+        'No bridge is defined, you should call ContentScript.init before using this method'
+      )
+    }
     return await this.bridge.call('getCookiesByDomain', domain)
   }
 
   /**
    * Bridge to the getCookieFromKeychainByName method from the RNlauncher.
    *
-   * @param {string} domain
+   * @param {string} cookieName : cookie name
    */
   async getCookieFromKeychainByName(cookieName) {
+    if (!this.bridge) {
+      throw new Error(
+        'No bridge is defined, you should call ContentScript.init before using this method'
+      )
+    }
     return await this.bridge.call('getCookieFromKeychainByName', cookieName)
   }
 
   /**
    * Bridge to the saveCookieToKeychain method from the RNlauncher.
    *
-   * @param {string} domain
+   * @param {string} cookieValue : cookie value
    */
   async saveCookieToKeychain(cookieValue) {
     this.onlyIn(PILOT_TYPE, 'saveCookieToKeychain')
+    if (!this.bridge) {
+      throw new Error(
+        'No bridge is defined, you should call ContentScript.init before using this method'
+      )
+    }
     return await this.bridge.call('saveCookieToKeychain', cookieValue)
   }
 
   async getCookieByDomainAndName(cookieDomain, cookieName) {
     this.onlyIn(WORKER_TYPE, 'getCookieByDomainAndName')
+    if (!this.bridge) {
+      throw new Error(
+        'No bridge is defined, you should call ContentScript.init before using this method'
+      )
+    }
     const expectedCookie = await this.bridge.call(
       'getCookieByDomainAndName',
       cookieDomain,
@@ -305,10 +367,11 @@ export default class ContentScript {
   /**
    * Do not download files which already exist
    *
-   * @param {Array} files
-   * @param {Array<string>} options.fileIdAttributes: list of attributes defining the unicity of the file
-   * @param {object} options.context: current launcher context
-   * @returns Array
+   * @param {Array} files : array of file objects
+   * @param {object} options : options object
+   * @param {Array.<string>} options.fileIdAttributes : list of attributes defining the unicity of the file
+   * @param {object} options.context : current launcher context
+   * @returns {Array} : filtered array of file objects
    */
   filterOutExistingFiles(files, options) {
     if (options.fileIdAttributes) {
@@ -330,9 +393,9 @@ export default class ContentScript {
   /**
    * Creates an index of files, indexed by uniq id defined by fileIdAttributes
    *
-   * @param {object} context
-   * @param {Array<string>} fileIdAttributes: list of attributes defining the unicity of a file
-   * @returns Object
+   * @param {object} context : current context object
+   * @param {Array.<string>} fileIdAttributes : list of attributes defining the unicity of a file
+   * @returns {object} : context file index
    */
   createContextFilesIndex(context, fileIdAttributes) {
     log.debug('getContextFilesIndex', context, fileIdAttributes)
@@ -346,9 +409,9 @@ export default class ContentScript {
   /**
    * Calculates the key defining the uniqueness of a given file
    *
-   * @param {object} file
-   * @param {Array<string>} fileIdAttributes: list of attributes defining the unicity of a file
-   * @returns String
+   * @param {object} file : file object
+   * @param {Array.<string>} fileIdAttributes : list of attributes defining the unicity of a file
+   * @returns {string} : file key
    */
   calculateFileKey(file, fileIdAttributes) {
     return fileIdAttributes
@@ -360,27 +423,38 @@ export default class ContentScript {
   /**
    * Send log message to the launcher
    *
-   * @param {string} : the log message
+   * @param {string} message : the log message
    * @todo Use cozy-logger to add logging level and other features
    */
   log(message) {
-    this.bridge.emit('log', message)
+    this.bridge?.emit('log', message)
   }
+
+  /**
+   * @typedef SetWorkerStateOptions
+   * @property {string} [url]      : url displayed by the worker webview for the login
+   * @property {boolean} [visible] : will the worker be visible or not
+   */
 
   /**
    * This is a proxy to the "setWorkerState" command in the launcher
    *
-   * @param {SetWorkerStateOptions} options
+   * @param {SetWorkerStateOptions} options : worker state options
    */
   async setWorkerState(options = {}) {
     this.onlyIn(PILOT_TYPE, 'setWorkerState')
+    if (!this.bridge) {
+      throw new Error(
+        'No bridge is defined, you should call ContentScript.init before using this method'
+      )
+    }
     await this.bridge.call('setWorkerState', options)
   }
 
   /**
    * Set the current url of the worker
    *
-   * @param {string} : the url
+   * @param {string} url : the url
    */
   async goto(url) {
     this.onlyIn(PILOT_TYPE, 'goto')
@@ -393,7 +467,7 @@ export default class ContentScript {
    * Resolve the promise when authenticated
    *
    * @throws LOGIN_FAILED
-   * @returns void
+   * @returns {Promise.<boolean>} : true if the user is authenticated
    */
   async ensureAuthenticated() {
     return true
@@ -403,26 +477,32 @@ export default class ContentScript {
    * Returns whatever unique information on the authenticated user which will be usefull
    * to identify fetched data : destination folder name, fetched data metadata
    *
-   * @returns {object}
+   * @returns {Promise.<object>}  : user data object
    */
   async getUserDataFromWebsite() {}
 
   /**
    * In worker context, send the given data to the pilot to be stored in its own store
    *
-   * @param {object} : any object with data to store
+   * @param {object} obj : any object with data to store
    */
   async sendToPilot(obj) {
     this.onlyIn(WORKER_TYPE, 'sendToPilot')
+    if (!this.bridge) {
+      throw new Error(
+        'No bridge is defined, you should call ContentScript.init before using this method'
+      )
+    }
     return this.bridge.call('sendToPilot', obj)
   }
 
   /**
    * Store data sent from worker with sendToPilot method
    *
-   * @param {object} : any object with data to store
+   * @param {object} obj : any object with data to store
    */
   async storeFromWorker(obj) {
+    // @ts-ignore Aucune surcharge ne correspond à cet appel.
     Object.assign(this.store, obj)
   }
 
@@ -435,19 +515,23 @@ export default class ContentScript {
   /**
    * Main function, fetches all connector data and save it to the cozy
    *
+   * @param {object} options : options object
    * @param {object} options.context : all the data already fetched by the connector in a previous execution. Will be usefull to optimize
    * connector execution by not fetching data we already have.
-   * @returns {object} : Connector execution result. TBD
+   * @returns {Promise.<object>} : Connector execution result. TBD
    */
-  async fetch({ context }) {}
+  // eslint-disable-next-line no-unused-vars
+  async fetch(options) {}
 }
 
 function sendContentScriptReadyEvent() {
-  if (get(window, 'ReactNativeWebView.postMessage')) {
-    window.ReactNativeWebView.postMessage(
+  // @ts-ignore La propriété 'ReactNativeWebView' n'existe pas sur le type 'Window & typeof globalThis'.
+  if (window.ReactNativeWebView?.postMessage) {
+    // @ts-ignore La propriété 'ReactNativeWebView' n'existe pas sur le type 'Window & typeof globalThis'.
+    window.ReactNativeWebView?.postMessage(
       JSON.stringify({ message: 'NEW_WORKER_INITIALIZING' })
     )
   } else {
-    console.error('No window.ReactNativeWebView.postMessage available')
+    log.error('No window.ReactNativeWebView.postMessage available')
   }
 }

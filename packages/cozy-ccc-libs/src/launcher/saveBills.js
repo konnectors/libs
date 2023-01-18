@@ -1,12 +1,14 @@
+// @ts-check
 import hydrateAndFilter from './hydrateAndFilter'
 import addData from './addData'
 import Minilog from '@cozy/minilog'
 import _ from 'lodash'
+import CozyClient from 'cozy-client/types/CozyClient'
 const log = Minilog('saveBills')
 const DOCTYPE = 'io.cozy.bills'
 
 const requiredAttributes = {
-  // date: 'isDate',
+  date: 'isDate',
   amount: 'isNumber',
   vendor: 'isString'
 }
@@ -18,9 +20,14 @@ const requiredAttributes = {
  * You need the full permission on `io.cozy.bills`, full permission on `io.cozy.files`
  * in your manifest, to be able to use this function.
  *
- * @param {Array} documents: an array of objects corresponding to the data you want to save in the cozy
+ * @param {Array} inputEntries : an array of objects corresponding to the data you want to save in the cozy
+ * @param {object} inputOptions : options object
+ * @param {Array} [inputOptions.keys] : List of keys used to check that two items are the same. Default value is [date, amount, vendor]
+ * @param {CozyClient} inputOptions.client : CozyClient instance
+ * @param {Function} [inputOptions.shouldUpdate] : Function which outputs if an entry should be updated or not
+ * @param {object} [inputOptions.selector] : Mango selector to get existing entries
  */
-export default async (inputEntries, inputOptions = {}) => {
+export default async (inputEntries, inputOptions) => {
   // Cloning input arguments since both entries and options are expected
   // to be modified by functions called inside saveBills.
   const entries = _.cloneDeepWith(inputEntries, value => {
@@ -45,7 +52,7 @@ export default async (inputEntries, inputOptions = {}) => {
     !dbEntry.cozyMetadata ||
     !dbEntry.matchingCriterias
 
-  if (!options.shouldUpdate) {
+  if (!options?.shouldUpdate) {
     options.shouldUpdate = defaultShouldUpdate
   } else {
     const fn = options.shouldUpdate

@@ -1,6 +1,8 @@
+// @ts-check
 import Minilog from '@cozy/minilog'
 import get from 'lodash/get'
 import { Q } from 'cozy-client'
+import CozyClient from 'cozy-client/types/CozyClient'
 const log = Minilog('updateOrCreate')
 
 /**
@@ -10,18 +12,19 @@ const log = Minilog('updateOrCreate')
  * You need the full permission for the given doctype in your manifest, to be able to
  * use this function.
  *
- * @param {Array} entries: Documents to save
- * @param {string} doctype: Doctype of the documents
- * @param {Array<string>} matchingAttributes: attributes in each entry used to check if an entry already exists in the Cozy
+ * @param {Array} entries : Documents to save
+ * @param {string} doctype : Doctype of the documents
+ * @param {Array<string>} matchingAttributes : attributes in each entry used to check if an entry already exists in the Cozy
+ * @param {object} options : options object
  * @param {CozyClient} options.client : CozyClient instance
  */
 export default async (
   entries = [],
   doctype,
   matchingAttributes = [],
-  options = {}
+  options
 ) => {
-  const client = options.client
+  const client = options?.client
   const existings = await client.queryAll(Q(doctype))
   for (const entry of entries) {
     const toUpdate = existings.find(doc =>

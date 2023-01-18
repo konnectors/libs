@@ -1,3 +1,4 @@
+// @ts-check
 import updateOrCreate from './updateOrCreate'
 import Minilog from '@cozy/minilog'
 const log = Minilog('saveIdentity')
@@ -8,8 +9,9 @@ const log = Minilog('saveIdentity')
  * You need full permission for the doctype io.cozy.identities in your
  * manifest, to be able to use this function.
  *
- * @param {object}: the identity to create/update as an object io.cozy.contacts
- * @param {string}: a string that represent the account use
+ * @param {object} contactOrIdentity : the identity to create/update as an object io.cozy.contacts
+ * @param {string} accountIdentifier : a string that represent the account use
+ * @param {object} options : options object
  * ```javascript
  * const identity =
  *   {

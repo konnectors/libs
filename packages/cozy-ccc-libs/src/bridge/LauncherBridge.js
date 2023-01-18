@@ -9,6 +9,7 @@ export default class LauncherBridge extends Bridge {
   /**
    * Init the window which will be used to communicate with the launcher
    *
+   * @param {object} options             : option object
    * @param {object} options.localWindow : The window used to communicate with the launcher
    */
   constructor({ localWindow }) {
