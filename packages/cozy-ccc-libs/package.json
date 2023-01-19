@@ -2,7 +2,7 @@
   "name": "cozy-ccc-libs",
   "version": "0.1.0",
   "description": "All the libs needed to run a cozy client connector",
-  "main": "src/index.js",
+  "main": "dist/index.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/konnectors/libs.git"
@@ -18,7 +18,8 @@
   "homepage": "https://github.com/konnectors/libs#readme",
   "scripts": {
     "lint": "eslint 'src/**/*.js'",
-    "test": "jest"
+    "build": "babel src/ -d dist/ --copy-files --verbose --ignore '**/*.spec.js','**/*.spec.jsx'",
+    "test": "jest src"
   },
   "devDependencies": {
     "@babel/core": "^7.20.12",
