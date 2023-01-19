@@ -4,7 +4,8 @@ import waitFor from 'p-wait-for'
 import Minilog from '@cozy/minilog'
 
 import LauncherBridge from './bridge/LauncherBridge'
-import { kyScraper as ky, blobToBase64 } from './utils'
+import { blobToBase64 } from './utils'
+import ky from 'ky/umd'
 
 const log = Minilog('ContentScript class')
 
