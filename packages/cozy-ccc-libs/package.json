@@ -2,7 +2,6 @@
   "name": "cozy-ccc-libs",
   "version": "0.1.0",
   "description": "All the libs needed to run a cozy client connector",
-  "main": "dist/index.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/konnectors/libs.git"
