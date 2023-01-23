@@ -3,7 +3,7 @@ import get from 'lodash/get'
 import waitFor from 'p-wait-for'
 import Minilog from '@cozy/minilog'
 
-import LauncherBridge from './bridge/LauncherBridge'
+import LauncherBridge from '../bridge/LauncherBridge'
 import { blobToBase64 } from './utils'
 import ky from 'ky/umd'
 
