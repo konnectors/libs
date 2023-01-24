@@ -127,7 +127,7 @@ export default class ContentScript {
    * @param {object} options        - options object
    * @param {string} options.method - name of the method to run
    * @param {number} [options.timeout] - number of miliseconds before the function sends a timeout error. Default Infinity
-   * @param {Array} options.args - array of args to pass to the method
+   * @param {Array} [options.args] - array of args to pass to the method
    * @returns {Promise<boolean>} - true
    * @throws {Error} - if timeout expired
    */
