@@ -1,16 +1,12 @@
 import Minilog from '@cozy/minilog'
 import get from 'lodash/get'
 import omit from 'lodash/omit'
-import { Client } from 'cozy-client-js'
 import { Q } from 'cozy-client'
 import retry from 'bluebird-retry'
 
-let cozy
-let client
-
 const log = Minilog('saveFiles')
 
-const saveFiles = async (entries, folderPath, options = {}) => {
+const saveFiles = async (client, entries, folderPath, options = {}) => {
   if (!entries || entries.length === 0) {
     log.warn('No file to download')
   }
@@ -20,12 +16,9 @@ const saveFiles = async (entries, folderPath, options = {}) => {
   if (!options.sourceAccountIdentifier) {
     log.warn('There is no sourceAccountIdentifier given to saveFiles')
   }
-  if (!options.client) {
+  if (!client) {
     throw new Error('No cozy-client instance given')
   }
-
-  client = options.client
-  cozy = initCozyClientJs(client)
 
   const saveOptions = {
     folderPath,
@@ -70,7 +63,10 @@ const saveFiles = async (entries, folderPath, options = {}) => {
         entry,
         saveOptions
       )
-      entry = await saveEntry(entry, { ...saveOptions, resultFolderPath })
+      entry = await saveEntry(client, entry, {
+        ...saveOptions,
+        resultFolderPath
+      })
       if (entry && entry._cozy_file_to_create) {
         savedFiles++
         delete entry._cozy_file_to_create
@@ -87,8 +83,8 @@ const saveFiles = async (entries, folderPath, options = {}) => {
   return savedEntries
 }
 
-const saveEntry = async function (entry, options) {
-  let file = await getFileIfExists(entry, options)
+const saveEntry = async function (client, entry, options) {
+  let file = await getFileIfExists(client, entry, options)
   let shouldReplace = false
   if (file) {
     try {
@@ -121,7 +117,7 @@ const saveEntry = async function (entry, options) {
         interval: 1000,
         throw_original: true,
         max_tries: options.retry,
-        args: [entry, options, method, file ? file._id : undefined]
+        args: [client, entry, options, method, file ? file : undefined]
       }).catch(err => {
         if (err.message === 'BAD_DOWNLOADED_FILE') {
           log.warn(
@@ -182,7 +178,7 @@ function noMetadataDeduplicationWarning(options) {
   }
 }
 
-async function getFileIfExists(entry, options) {
+async function getFileIfExists(client, entry, options) {
   const fileIdAttributes = options.fileIdAttributes
   const slug = options.manifest.slug
   const sourceAccountIdentifier = get(
@@ -194,6 +190,7 @@ async function getFileIfExists(entry, options) {
     fileIdAttributes && slug && sourceAccountIdentifier
   if (isReadyForFileMetadata) {
     const file = await getFileFromMetaData(
+      client,
       entry,
       fileIdAttributes,
       sourceAccountIdentifier,
@@ -202,16 +199,17 @@ async function getFileIfExists(entry, options) {
     if (!file) {
       // no file with correct metadata, maybe the corresponding file already exist in the default
       // path from a previous version of the connector
-      return await getFileFromPath(entry, options)
+      return getFileFromPath(client, entry, options)
     } else {
       return file
     }
   } else {
-    return await getFileFromPath(entry, options)
+    return getFileFromPath(client, entry, options)
   }
 }
 
 async function getFileFromMetaData(
+  client,
   entry,
   fileIdAttributes,
   sourceAccountIdentifier,
@@ -256,22 +254,26 @@ async function getFileFromMetaData(
   }
 }
 
-async function getFileFromPath(entry, options) {
+async function getFileFromPath(client, entry, options) {
   try {
     log.debug(`Checking existence of ${getFilePath({ entry, options })}`)
-    const result = await cozy.files.statByPath(getFilePath({ entry, options }))
-    return result
+    const result = await client
+      .collection('io.cozy.files')
+      .statByPath(getFilePath({ entry, options }))
+    return result.data
   } catch (err) {
     log.debug(err.message)
     return false
   }
 }
 
-async function createFile(entry, options, method, fileId) {
-  const folder = await cozy.files.statByPath(options.folderPath)
+async function createFile(client, entry, options, method, file) {
+  const folder = await client
+    .collection('io.cozy.files')
+    .statByPath(options.folderPath)
   let createFileOptions = {
     name: getFileName(entry),
-    dirID: folder._id
+    dirId: folder.data._id
   }
   if (options.contentType) {
     createFileOptions.contentType = options.contentType
@@ -298,19 +300,27 @@ async function createFile(entry, options, method, fileId) {
 
   let fileDocument
   if (method === 'create') {
-    fileDocument = await cozy.files.create(toCreate, createFileOptions)
+    const clientResponse = await client.save({
+      _type: 'io.cozy.files',
+      type: 'file',
+      data: toCreate,
+      ...createFileOptions
+    })
+    fileDocument = clientResponse.data
   } else if (method === 'updateById') {
     log.debug(`replacing file for ${entry.filename}`)
-    fileDocument = await cozy.files.updateById(
-      fileId,
-      toCreate,
-      createFileOptions
-    )
+    const clientResponse = client.save({
+      _id: file._id,
+      _rev: file._rev,
+      _type: 'io.cozy.files',
+      data: toCreate,
+      ...createFileOptions
+    })
+    fileDocument = clientResponse.data
   }
-
   if (options.validateFile) {
     if ((await options.validateFile(fileDocument)) === false) {
-      await removeFile(fileDocument)
+      await removeFile(client, fileDocument)
       throw new Error('BAD_DOWNLOADED_FILE')
     }
 
@@ -318,7 +328,7 @@ async function createFile(entry, options, method, fileId) {
       options.validateFileContent &&
       !(await options.validateFileContent(fileDocument))
     ) {
-      await removeFile(fileDocument)
+      await removeFile(client, fileDocument)
       throw new Error('BAD_DOWNLOADED_FILE')
     }
   }
@@ -385,9 +395,12 @@ const shouldReplaceFile = async function (file, entry, options) {
   return shouldReplaceFileFn(file, entry, options)
 }
 
-const removeFile = async function (file) {
-  await cozy.files.trashById(file._id)
-  await cozy.files.destroyById(file._id)
+const removeFile = async function (client, file) {
+  if (!client) {
+    log.error('No client, impossible to delete file')
+  } else {
+    await client.collection('io.cozy.files').deleteFilePermanently(file._id)
+  }
 }
 
 module.exports = saveFiles
@@ -508,12 +521,4 @@ async function getOrCreateDestinationPath(entry, saveOptions) {
   //   await mkdirp(finalPath)
   // }
   return finalPath
-}
-
-function initCozyClientJs(cozyClient) {
-  const { uri } = cozyClient.stackClient
-  return new Client({
-    cozyURL: uri,
-    token: cozyClient.stackClient.getAccessToken()
-  })
 }
