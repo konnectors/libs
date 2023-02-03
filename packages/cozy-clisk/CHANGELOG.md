@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 0.4.0 (2023-02-03)
+
+
+### Features
+
+* Rename clisk to cozy-clisk ([4bd7edf](https://github.com/konnectors/libs/commit/4bd7edf6462ed759b37ee73a0db6bdf309dbe7b9))
+
+
+
+
+
 # 0.3.0 (2023-02-03)
 
 
