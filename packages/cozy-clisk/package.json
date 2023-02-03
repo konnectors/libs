@@ -1,5 +1,5 @@
 {
-  "name": "clisk",
+  "name": "cozy-clisk",
   "version": "0.3.0",
   "description": "All the libs needed to run a cozy client connector",
   "repository": {
