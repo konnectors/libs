@@ -1,6 +1,6 @@
 {
   "name": "cozy-ccc-libs",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "All the libs needed to run a cozy client connector",
   "repository": {
     "type": "git",
