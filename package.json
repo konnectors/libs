@@ -23,7 +23,7 @@
     "publish": "lerna publish",
     "bootstrap": "lerna bootstrap",
     "lint": "eslint .",
-    "test": "cross-env LOG_LEVEL=info jest"
+    "test": "yarn lerna run test"
   },
   "jest": {
     "testPathIgnorePatterns": [
