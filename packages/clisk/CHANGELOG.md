@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 0.3.0 (2023-02-03)
+
+
+### Features
+
+* Rename cozy-ccc-libs to clisk ([89a724d](https://github.com/konnectors/libs/commit/89a724d27d701ba7fdd320a11794179dd98c869a))
+
+
+
+
+
 ## [0.2.1](https://github.com/konnectors/libs/compare/cozy-ccc-libs@0.2.0...cozy-ccc-libs@0.2.1) (2023-02-03)
 
 **Note:** Version bump only for package cozy-ccc-libs
