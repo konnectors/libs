@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.4.5](https://github.com/konnectors/libs/compare/cozy-konnector-build@1.4.4...cozy-konnector-build@1.4.5) (2023-02-06)
+
+
+### Bug Fixes
+
+* Run test of each package in their own jest environment ([c049ddc](https://github.com/konnectors/libs/commit/c049ddce49410baae0542a101951fdf93810a83e))
+
+
+
+
+
 ## [1.4.4](https://github.com/konnectors/libs/compare/cozy-konnector-build@1.4.3...cozy-konnector-build@1.4.4) (2022-11-29)
 
 **Note:** Version bump only for package cozy-konnector-build

@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 1.4.1 (2023-02-06)
+
+
+### Bug Fixes
+
+* Run test of each package in their own jest environment ([c049ddc](https://github.com/konnectors/libs/commit/c049ddce49410baae0542a101951fdf93810a83e))
+* **deps:** update dependency cozy-app-publish to v0.31.0 ([afa88d9](https://github.com/konnectors/libs/commit/afa88d9bf71df129968f933276ee32da4ac9ad08))
+
+
+
+
+
 # [1.4.0](https://github.com/konnectors/libs/compare/renovate-config-cozy-konnector@1.3.1...renovate-config-cozy-konnector@1.4.0) (2022-07-29)
 
 
