@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.4.1](https://github.com/konnectors/libs/compare/cozy-clisk@0.4.0...cozy-clisk@0.4.1) (2023-02-06)
+
+
+### Bug Fixes
+
+* expose different entry points as documented ([2de975b](https://github.com/konnectors/libs/commit/2de975be091e50e4c3556df58fb3d13dbfcbf180))
+* publish built version of cozy-ccc-libs ([6a93784](https://github.com/konnectors/libs/commit/6a93784c9efc3dc7c5627a032658a7846dfc3392))
+
+
+
+
+
 # 0.4.0 (2023-02-03)
 
 
