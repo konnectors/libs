@@ -25,6 +25,7 @@ const requiredAttributes = {
  * @param {import('cozy-client/types/CozyClient').default} inputOptions.client : CozyClient instance
  * @param {Function} [inputOptions.shouldUpdate] : Function which outputs if an entry should be updated or not
  * @param {object} [inputOptions.selector] : Mango selector to get existing entries
+ * @returns {Promise<any>} The result
  */
 export default async (inputEntries, inputOptions) => {
   // Cloning input arguments since both entries and options are expected

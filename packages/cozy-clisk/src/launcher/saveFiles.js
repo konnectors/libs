@@ -56,7 +56,7 @@ const saveFiles = async (client, entries, folderPath, options = {}) => {
       log.warn(
         'Missing filename property for for filestream entry, entry is ignored'
       )
-      return
+      return undefined
     }
     if (canBeSaved(entry)) {
       const resultFolderPath = await getOrCreateDestinationPath(
@@ -500,6 +500,14 @@ function attachFileToEntry(entry, fileDocument) {
   return entry
 }
 
+/**
+ *
+ * @param {object} args args
+ * @param {object} [args.file]  file
+ * @param {object} [args.entry]  entry
+ * @param {object} args.options  options
+ * @returns {string|null} result
+ */
 function getFilePath({ file, entry, options }) {
   const folderPath = options.folderPath
   if (file) {
@@ -507,6 +515,7 @@ function getFilePath({ file, entry, options }) {
   } else if (entry) {
     return folderPath + '/' + getFileName(entry)
   }
+  return null
 }
 
 function getAttribute(obj, attribute) {

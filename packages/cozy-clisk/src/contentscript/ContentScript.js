@@ -53,7 +53,7 @@ export default class ContentScript {
         options.additionalExposedMethodsNames
       )
     }
-
+    /**  @type {import('post-me').MethodsType} */
     const exposedMethods = {}
     // TODO error handling
     // should catch and call onError on the launcher to let it handle the job update
@@ -426,9 +426,10 @@ export default class ContentScript {
    * Send log message to the launcher
    *
    * @param {"debug"|"info"|"warn"|"error"} level the log level
-   * @param {string} message  the log message
+   * @param {string} message the log message
    */
   log(level, message) {
+    let levelToUse = level
     const allowedLevels = ['debug', 'info', 'warn', 'error']
     if (!message) {
       log.warn(
@@ -437,12 +438,12 @@ export default class ContentScript {
       return
     }
     if (!allowedLevels.includes(level)) {
-      level = 'debug'
+      levelToUse = 'debug'
     }
     const now = new Date()
     this.bridge?.emit('log', {
       timestamp: now,
-      level,
+      level: levelToUse,
       msg: message
     })
   }
