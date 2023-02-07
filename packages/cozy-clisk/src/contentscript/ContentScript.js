@@ -64,7 +64,8 @@ export default class ContentScript {
     await this.bridge.init({ exposedMethods })
     window.onbeforeunload = () =>
       this.log(
-        'window.beforeunload detected with previous url : ' + document.location
+        'debug',
+        `window.beforeunload detected with previous url : ${document.location}`
       )
 
     this.bridge.emit('workerReady')
@@ -424,11 +425,26 @@ export default class ContentScript {
   /**
    * Send log message to the launcher
    *
+   * @param {"debug"|"info"|"warn"|"error"} level: the log level
    * @param {string} message : the log message
-   * @todo Use cozy-logger to add logging level and other features
    */
-  log(message) {
-    this.bridge?.emit('log', message)
+  log(level, message) {
+    const allowedLevels = ['debug', 'info', 'warn', 'error']
+    if (!message) {
+      log.warn(
+        `you are calling log without message, use log(level,message) instead`
+      )
+      return
+    }
+    if (!allowedLevels.includes(level)) {
+      level = 'debug'
+    }
+    const now = new Date()
+    this.bridge?.emit('log', {
+      timestamp: now,
+      level,
+      msg: message
+    })
   }
 
   /**
