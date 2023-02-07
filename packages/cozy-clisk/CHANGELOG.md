@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.5.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.4.1...cozy-clisk@0.5.0) (2023-02-07)
+
+
+### Features
+
+* Adding log level to the log function in ContentScript ([7b59fca](https://github.com/konnectors/libs/commit/7b59fcaf2a9e246ca0a5ab22300006d7a85950ee))
+
+
+### BREAKING CHANGES
+
+* All logs with only one argument in connectors will be silent
+
+
+
+
+
 ## [0.4.1](https://github.com/konnectors/libs/compare/cozy-clisk@0.4.0...cozy-clisk@0.4.1) (2023-02-06)
 
 
