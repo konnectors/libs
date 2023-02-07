@@ -425,8 +425,8 @@ export default class ContentScript {
   /**
    * Send log message to the launcher
    *
-   * @param {"debug"|"info"|"warn"|"error"} level: the log level
-   * @param {string} message : the log message
+   * @param {"debug"|"info"|"warn"|"error"} level the log level
+   * @param {string} message  the log message
    */
   log(level, message) {
     const allowedLevels = ['debug', 'info', 'warn', 'error']
