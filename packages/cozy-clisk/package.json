@@ -23,8 +23,9 @@
   "homepage": "https://github.com/konnectors/libs#readme",
   "scripts": {
     "lint": "eslint 'src/**/*.js'",
+    "build:types" : "yarn tsc -p tsconfig.json",
     "prepublishOnly": "yarn run build",
-    "build": "babel src/ -d dist/ --copy-files --verbose --ignore '**/*.spec.js','**/*.spec.jsx'",
+    "build": "yarn build:types && babel --extensions .ts,.js src/ -d dist/ --copy-files --verbose --ignore '**/*.spec.js','**/*.spec.ts'",
     "test": "jest src"
   },
   "devDependencies": {
