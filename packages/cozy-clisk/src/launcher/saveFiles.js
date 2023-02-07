@@ -178,7 +178,7 @@ function noMetadataDeduplicationWarning(options) {
   }
 }
 
-async function getFileIfExists(client, entry, options) {
+export async function getFileIfExists(client, entry, options) {
   const fileIdAttributes = options.fileIdAttributes
   const slug = options.manifest.slug
   const sourceAccountIdentifier = get(
@@ -403,9 +403,6 @@ const removeFile = async function (client, file) {
   }
 }
 
-module.exports = saveFiles
-module.exports.getFileIfExists = getFileIfExists
-
 function getFileName(entry) {
   let filename
   if (entry.filename) {
@@ -531,3 +528,4 @@ async function getOrCreateDestinationPath(entry, saveOptions) {
   // }
   return finalPath
 }
+export default saveFiles
