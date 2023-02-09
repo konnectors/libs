@@ -1,6 +1,5 @@
 // @ts-check
 import Minilog from '@cozy/minilog'
-import CozyClient from 'cozy-client/types/CozyClient'
 const log = Minilog('addData')
 
 /**
@@ -12,7 +11,7 @@ const log = Minilog('addData')
  * @param {Array} entries : an array of objects corresponding to the data you want to save in the cozy
  * @param {string} doctype : the doctype where you want to save data (ex: 'io.cozy.bills')
  * @param {object} options : options object
- * @param {CozyClient} options.client : CozyClient instance
+ * @param {import('cozy-client/types/CozyClient').default} options.client CozyClient instance
  */
 export default async (entries, doctype, options) => {
   const client = options?.client

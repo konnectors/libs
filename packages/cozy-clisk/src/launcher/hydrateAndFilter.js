@@ -3,7 +3,6 @@ import get from 'lodash/get'
 import uniqBy from 'lodash/uniqBy'
 import { Q } from 'cozy-client'
 import Minilog from '@cozy/minilog'
-import CozyClient from 'cozy-client/types/CozyClient'
 const log = Minilog('hydrateAndFilter')
 
 /**
@@ -37,7 +36,7 @@ const suitableCall = (funcOrMethod, ...args) => {
  * @param {Array} documents : an array of objects corresponding to the data you want to save in the cozy
  * @param {string} doctype : the doctype where you want to save data (ex: 'io.cozy.bills')
  * @param {object} options : Options object
- * @param {CozyClient} options.client : CozyClient instance
+ * @param {import('cozy-client/types/CozyClient').default} options.client CozyClient instance
  * @param {Array} [options.keys] : List of keys used to check that two items are the same. By default it is set to `['id']'.
  * @param {object} [options.selector] : Mango request to get records. Default is built from the keys `{selector: {_id: {"$gt": null}}}` to get all the records.
  * @param {Function} [options.shouldUpdate] : Function which outputs if an entry should be updated or not

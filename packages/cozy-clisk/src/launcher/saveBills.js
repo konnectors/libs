@@ -3,7 +3,6 @@ import hydrateAndFilter from './hydrateAndFilter'
 import addData from './addData'
 import Minilog from '@cozy/minilog'
 import _ from 'lodash'
-import CozyClient from 'cozy-client/types/CozyClient'
 const log = Minilog('saveBills')
 const DOCTYPE = 'io.cozy.bills'
 
@@ -23,7 +22,7 @@ const requiredAttributes = {
  * @param {Array} inputEntries : an array of objects corresponding to the data you want to save in the cozy
  * @param {object} inputOptions : options object
  * @param {Array} [inputOptions.keys] : List of keys used to check that two items are the same. Default value is [date, amount, vendor]
- * @param {CozyClient} inputOptions.client : CozyClient instance
+ * @param {import('cozy-client/types/CozyClient').default} inputOptions.client : CozyClient instance
  * @param {Function} [inputOptions.shouldUpdate] : Function which outputs if an entry should be updated or not
  * @param {object} [inputOptions.selector] : Mango selector to get existing entries
  */
