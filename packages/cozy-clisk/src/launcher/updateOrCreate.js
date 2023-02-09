@@ -2,7 +2,6 @@
 import Minilog from '@cozy/minilog'
 import get from 'lodash/get'
 import { Q } from 'cozy-client'
-import CozyClient from 'cozy-client/types/CozyClient'
 const log = Minilog('updateOrCreate')
 
 /**
@@ -16,7 +15,7 @@ const log = Minilog('updateOrCreate')
  * @param {string} doctype : Doctype of the documents
  * @param {Array<string>} matchingAttributes : attributes in each entry used to check if an entry already exists in the Cozy
  * @param {object} options : options object
- * @param {CozyClient} options.client : CozyClient instance
+ * @param {import('cozy-client/types/CozyClient').default} options.client : CozyClient instance
  */
 export default async (
   entries = [],
