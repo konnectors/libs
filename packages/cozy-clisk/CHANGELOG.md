@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.6.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.5.0...cozy-clisk@0.6.0) (2023-02-10)
+
+
+### Bug Fixes
+
+* Replace import for JSDoc ([97b60d1](https://github.com/konnectors/libs/commit/97b60d1adf5eef38fbbb34a15741272f1125ba61))
+
+
+### Features
+
+* Add typescript to devDep ([78b1a8f](https://github.com/konnectors/libs/commit/78b1a8f5bce297012312bf2ac234e4c2f21ac04b))
+
+
+
+
+
 # [0.5.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.4.1...cozy-clisk@0.5.0) (2023-02-07)
 
 
