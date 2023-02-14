@@ -12,9 +12,7 @@
   "keywords": [
     "konnector"
   ],
-  "exports": {
-    "./*": "./dist/*.js"
-  },
+  "main": "dist/index.js",
   "author": "doubleface <christophe@cozycloud.cc>",
   "license": "MIT",
   "bugs": {
