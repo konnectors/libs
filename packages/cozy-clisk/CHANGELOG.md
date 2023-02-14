@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.7.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.6.0...cozy-clisk@0.7.0) (2023-02-14)
+
+
+### Bug Fixes
+
+* Make option.args optionnal in runInWorkerUntilTrue ([bb9c4cd](https://github.com/konnectors/libs/commit/bb9c4cdf5d2d138ff27ad084a1de946d44b5bd24))
+
+
+### Features
+
+* **cozy-clisk:** Add a single entry point ([ce3c1ad](https://github.com/konnectors/libs/commit/ce3c1ad70ab567fa59c66ea7b105b017bd135c1a))
+
+
+### BREAKING CHANGES
+
+* **cozy-clisk:** In konnector import from 'cozy-clisk/contentscript' should be replace to 'cozy-clisk'
+
+
+
+
+
 # [0.6.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.5.0...cozy-clisk@0.6.0) (2023-02-10)
 
 
