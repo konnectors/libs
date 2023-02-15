@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@1.20.2...cozy-jobs-cli@2.0.0) (2023-02-15)
+
+
+### Features
+
+* Upgrade lerna to version 4 ([d8e4aca](https://github.com/cozy/cozy-konnector-libs/commit/d8e4acabf7b62feb6abfaa7df98d39883d3e69ec))
+
+
+### BREAKING CHANGES
+
+* wording is added in a commit message
+
+
+
+
+
 ## [1.20.2](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@1.20.1...cozy-jobs-cli@1.20.2) (2022-11-28)
 
 **Note:** Version bump only for package cozy-jobs-cli

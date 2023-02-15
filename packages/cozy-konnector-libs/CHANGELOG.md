@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.0.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.56.4...cozy-konnector-libs@5.0.0) (2023-02-15)
+
+
+### Features
+
+* Upgrade lerna to version 4 ([d8e4aca](https://github.com/cozy/cozy-konnector-libs/commit/d8e4acabf7b62feb6abfaa7df98d39883d3e69ec))
+
+
+### BREAKING CHANGES
+
+* wording is added in a commit message
+
+
+
+
+
 ## [4.56.4](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.56.3...cozy-konnector-libs@4.56.4) (2022-11-28)
 
 
