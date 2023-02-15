@@ -3,10 +3,6 @@
   "version": "independent",
   "useWorkspaces": true,
   "npmClient": "yarn",
-  "changelog": {
-    "repo": "konnectors/libs",
-    "cacheDir": ".changelog"
-  },
   "command": {
     "version": {
       "conventionalCommits": true,
