@@ -101,6 +101,8 @@ export default async (inputEntries, inputOptions) => {
     .map(entry => {
       entry.currency = convertCurrency(entry.currency)
       entry.invoice = `io.cozy.files:${entry.fileDocument._id}`
+
+      entry.date = convertDateStringToDateObject(entry.date)
       delete entry.fileDocument
       delete entry.fileAttributes
       return entry
@@ -111,6 +113,11 @@ export default async (inputEntries, inputOptions) => {
   tempEntries = await hydrateAndFilter(tempEntries, DOCTYPE, options)
   tempEntries = await addData(tempEntries, DOCTYPE, options)
   return tempEntries
+}
+
+function convertDateStringToDateObject(dateString) {
+  // since the date has been converted to string with post-me, we convert it back to a real date. If the conversion fails, the isDate check will fail
+  return Date.parse(dateString) ? new Date(dateString) : dateString
 }
 
 function convertCurrency(currency) {
