@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.7.1](https://github.com/konnectors/libs/compare/cozy-clisk@0.7.0...cozy-clisk@0.7.1) (2023-02-23)
+
+
+### Bug Fixes
+
+* convert date string to date object in saveBills ([af08200](https://github.com/konnectors/libs/commit/af0820051a5dddf5ea8d9d26fd5a5345ad61cbad))
+
+
+
+
+
 # [0.7.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.6.0...cozy-clisk@0.7.0) (2023-02-14)
 
 
