@@ -27,7 +27,7 @@ export default class ContentScript {
    *
    * @param {object} options : options object
    * @param {Array<string>} [options.additionalExposedMethodsNames] : list of additional method of the
-   * content script to expose expose. To make it callable via the worker
+   * content script to expose. To make it callable via the worker.
    */
   async init(options = {}) {
     this.bridge = new LauncherBridge({ localWindow: window })
@@ -425,7 +425,7 @@ export default class ContentScript {
   /**
    * Send log message to the launcher
    *
-   * @param {"debug"|"info"|"warn"|"error"} level: the log level
+   * @param {"debug"|"info"|"warn"|"error"} level : the log level
    * @param {string} message : the log message
    */
   log(level, message) {
