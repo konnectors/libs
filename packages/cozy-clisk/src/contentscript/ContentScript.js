@@ -1,5 +1,4 @@
 // @ts-check
-import get from 'lodash/get'
 import waitFor from 'p-wait-for'
 import Minilog from '@cozy/minilog'
 
@@ -44,7 +43,8 @@ export default class ContentScript {
       'storeFromWorker',
       'clickAndWait',
       'getCookiesByDomain',
-      'getCookieByDomainAndName'
+      'getCookieByDomainAndName',
+      'downloadFileInWorker'
     ]
 
     if (options.additionalExposedMethodsNames) {
@@ -212,6 +212,20 @@ export default class ContentScript {
   }
 
   /**
+   * Download the file send by the launcher in the worker context
+   *
+   * @param {object} entry The entry to download with fileurl attribute
+   */
+  async downloadFileInWorker(entry) {
+    this.onlyIn(WORKER_TYPE, 'downloadFileInWorker')
+    this.log('info', 'downloading file in worker')
+    if (entry.fileurl) {
+      entry.blob = await ky.get(entry.fileurl, entry.requestOptions).blob()
+      entry.dataUri = await blobToBase64(entry.blob)
+    }
+    return entry.dataUri
+  }
+  /**
    * Bridge to the saveFiles method from the launcher.
    * - it prefilters files according to the context comming from the launcher
    * - download files when not filtered out
@@ -226,18 +240,6 @@ export default class ContentScript {
     const context = options.context
     log.debug(context, 'saveFiles input context')
 
-    const filteredEntries = this.filterOutExistingFiles(entries, options)
-    for (const entry of filteredEntries) {
-      if (entry.fileurl) {
-        entry.blob = await ky.get(entry.fileurl, entry.requestOptions).blob()
-        delete entry.fileurl
-      }
-      if (entry.blob) {
-        // TODO paralelize
-        entry.dataUri = await blobToBase64(entry.blob)
-        delete entry.blob
-      }
-    }
     if (!this.bridge) {
       throw new Error(
         'No bridge is defined, you should call ContentScript.init before using this method'
@@ -364,62 +366,6 @@ export default class ContentScript {
       cookieName
     )
     return expectedCookie
-  }
-
-  /**
-   * Do not download files which already exist
-   *
-   * @param {Array} files : array of file objects
-   * @param {object} options : options object
-   * @param {Array.<string>} options.fileIdAttributes : list of attributes defining the unicity of the file
-   * @param {object} options.context : current launcher context
-   * @returns {Array} : filtered array of file objects
-   */
-  filterOutExistingFiles(files, options) {
-    if (options.fileIdAttributes) {
-      const contextFilesIndex = this.createContextFilesIndex(
-        options.context,
-        options.fileIdAttributes
-      )
-      return files.filter(
-        file =>
-          contextFilesIndex[
-            this.calculateFileKey(file, options.fileIdAttributes)
-          ] === undefined
-      )
-    } else {
-      return files
-    }
-  }
-
-  /**
-   * Creates an index of files, indexed by uniq id defined by fileIdAttributes
-   *
-   * @param {object} context : current context object
-   * @param {Array.<string>} fileIdAttributes : list of attributes defining the unicity of a file
-   * @returns {object} : context file index
-   */
-  createContextFilesIndex(context, fileIdAttributes) {
-    log.debug('getContextFilesIndex', context, fileIdAttributes)
-    let index = {}
-    for (const entry of context) {
-      index[entry.metadata.fileIdAttributes] = entry
-    }
-    return index
-  }
-
-  /**
-   * Calculates the key defining the uniqueness of a given file
-   *
-   * @param {object} file : file object
-   * @param {Array.<string>} fileIdAttributes : list of attributes defining the unicity of a file
-   * @returns {string} : file key
-   */
-  calculateFileKey(file, fileIdAttributes) {
-    return fileIdAttributes
-      .sort()
-      .map(key => get(file, key))
-      .join('####')
   }
 
   /**
