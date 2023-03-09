@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.8.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.7.1...cozy-clisk@0.8.0) (2023-03-09)
+
+
+### Bug Fixes
+
+* Fix some JSdoc ([319b163](https://github.com/konnectors/libs/commit/319b163daad6cca5a7eba250a799b4c10a25f652))
+
+
+### Features
+
+* Implement downloadFileInWorker and remove filtering logic ([836cdf7](https://github.com/konnectors/libs/commit/836cdf737bf25ab373f283dce3ff6caabe444626))
+
+
+
+
+
 ## [0.7.1](https://github.com/konnectors/libs/compare/cozy-clisk@0.7.0...cozy-clisk@0.7.1) (2023-02-23)
 
 
