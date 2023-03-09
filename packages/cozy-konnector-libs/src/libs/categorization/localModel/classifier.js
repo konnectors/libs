@@ -189,5 +189,6 @@ const createClassifier = async options => {
 }
 
 module.exports = {
-  createClassifier
+  createClassifier,
+  getClassifierOptions
 }
