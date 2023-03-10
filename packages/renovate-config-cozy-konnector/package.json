@@ -15,7 +15,8 @@
           "matchPackageNames": [
             "cozy-konnector-libs",
             "cozy-jobs-cli",
-            "cozy-konnector-build"
+            "cozy-konnector-build",
+            "cozy-clisk"
           ],
           "groupName": "Cozy Konnector Packages",
           "timezone": "Europe/Paris",
