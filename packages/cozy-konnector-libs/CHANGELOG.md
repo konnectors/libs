@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.1.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@5.0.0...cozy-konnector-libs@5.1.0) (2023-03-10)
+
+
+### Features
+
+* Export getClassifierOptions ([9ec1eaf](https://github.com/cozy/cozy-konnector-libs/commit/9ec1eafa461186579e178c3d96df59d522ac998c))
+
+
+
+
+
 # [5.0.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@4.56.4...cozy-konnector-libs@5.0.0) (2023-02-15)
 
 
