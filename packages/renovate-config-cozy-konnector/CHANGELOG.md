@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.5.0](https://github.com/konnectors/libs/compare/renovate-config-cozy-konnector@1.4.1...renovate-config-cozy-konnector@1.5.0) (2023-03-10)
+
+
+### Features
+
+* Auto merging cozy-clisk in konnectors repos ([8128d7b](https://github.com/konnectors/libs/commit/8128d7bb6324d0d552845798632dc6e49fd06e27))
+
+
+
+
+
 ## 1.4.1 (2023-02-06)
 
 
