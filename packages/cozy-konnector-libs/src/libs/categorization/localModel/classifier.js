@@ -36,8 +36,13 @@ const TOKENS_TO_REWEIGHT = [
   'tag_pos tag_activity_income'
 ]
 
-const getClassifierOptions = uniqueCategories => {
-  const nbUniqueCategories = uniqueCategories.length
+/**
+ * Get the classifier options, mainly to get the alpha parameter
+ *
+ * @param {number} nbUniqueCategories - Number of unique categories
+ * @returns {object} the classifier options
+ */
+const getClassifierOptions = nbUniqueCategories => {
   log(
     'debug',
     'Number of unique categories in transactions with manual categories: ' +
@@ -166,7 +171,7 @@ const createClassifier = async options => {
   log('debug', 'Instanciating a new classifier')
 
   const nbUniqueCategories = getUniqueCategories(transactions)
-  const classifierOptions = getClassifierOptions(nbUniqueCategories)
+  const classifierOptions = getClassifierOptions(nbUniqueCategories.length)
   const classifier = createLocalClassifier(
     transactions,
     { ...remainingOptions, ...classifierOptions.initialization },
