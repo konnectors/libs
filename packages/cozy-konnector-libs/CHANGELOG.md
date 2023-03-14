@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.2.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@5.1.0...cozy-konnector-libs@5.2.0) (2023-03-14)
+
+
+### Features
+
+* Classifier parameters update ([d1a2987](https://github.com/cozy/cozy-konnector-libs/commit/d1a29876699a9dbab44bcbfb64f0559c8834f807))
+* Handle undefined categories ([cdf3112](https://github.com/cozy/cozy-konnector-libs/commit/cdf31124eeb71f41a56abce9a440e0d0f7db922d))
+* Pass length directly ([7a4f06e](https://github.com/cozy/cozy-konnector-libs/commit/7a4f06e16dc40979c8065b3c69263dee994a3de1))
+
+
+
+
+
 # [5.1.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@5.0.0...cozy-konnector-libs@5.1.0) (2023-03-10)
 
 
