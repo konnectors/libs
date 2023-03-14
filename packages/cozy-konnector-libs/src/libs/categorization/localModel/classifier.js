@@ -170,8 +170,8 @@ const createClassifier = async options => {
 
   log('debug', 'Instanciating a new classifier')
 
-  const nbUniqueCategories = getUniqueCategories(transactions)
-  const classifierOptions = getClassifierOptions(nbUniqueCategories.length)
+  const uniqueCategories = getUniqueCategories(transactions)
+  const classifierOptions = getClassifierOptions(uniqueCategories?.length || 0)
   const classifier = createLocalClassifier(
     transactions,
     { ...remainingOptions, ...classifierOptions.initialization },
