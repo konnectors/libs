@@ -75,7 +75,7 @@ const saveFiles = async (client, entries, folderPath, options = {}) => {
     savedEntries.push(entry)
   }
 
-  log.info(
+  log.debug(
     `Created ${savedFiles} files for ${
       savedEntries ? savedEntries.length : 'n'
     } entries`
@@ -90,7 +90,7 @@ const saveEntry = async function (client, entry, options) {
     try {
       shouldReplace = await shouldReplaceFile(file, entry, options)
     } catch (err) {
-      log.info(`Error in shouldReplaceFile : ${err.message}`)
+      log.warn(`Error in shouldReplaceFile : ${err.message}`)
       shouldReplace = true
     }
   }
