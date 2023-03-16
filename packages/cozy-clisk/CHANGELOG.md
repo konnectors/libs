@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.8.1](https://github.com/konnectors/libs/compare/cozy-clisk@0.8.0...cozy-clisk@0.8.1) (2023-03-16)
+
+
+### Bug Fixes
+
+* Babel transpilation ([951fcad](https://github.com/konnectors/libs/commit/951fcad16fa81c75ea826ac2171432e340572647))
+
+
+
+
+
 # [0.8.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.7.1...cozy-clisk@0.8.0) (2023-03-09)
 
 
