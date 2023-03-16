@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.9.2](https://github.com/konnectors/libs/compare/cozy-clisk@0.9.1...cozy-clisk@0.9.2) (2023-03-16)
+
+
+### Bug Fixes
+
+* Remove cozy-client-js dependency in cozy-clisk ([cfc9a77](https://github.com/konnectors/libs/commit/cfc9a77072c537b6176ddaa21396dee3b76b48a6))
+
+
+
+
+
 ## [0.9.1](https://github.com/konnectors/libs/compare/cozy-clisk@0.9.0...cozy-clisk@0.9.1) (2023-03-16)
 
 
