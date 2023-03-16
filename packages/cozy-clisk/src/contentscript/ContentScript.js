@@ -19,12 +19,15 @@ export const PILOT_TYPE = 'pilot'
 export const WORKER_TYPE = 'worker'
 
 sendPageMessage('NEW_WORKER_INITIALIZING')
-window.addEventListener('load', () => {
-  sendPageMessage('load')
-})
-window.addEventListener('DOMContentLoaded', () => {
-  sendPageMessage('DOMContentLoaded')
-})
+if (window?.addEventListener) {
+  // allows cozy-clisk to be embedded in other envs (react-native, jest)
+  window.addEventListener('load', () => {
+    sendPageMessage('load')
+  })
+  window.addEventListener('DOMContentLoaded', () => {
+    sendPageMessage('DOMContentLoaded')
+  })
+}
 
 export default class ContentScript {
   constructor() {
