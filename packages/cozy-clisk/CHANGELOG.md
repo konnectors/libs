@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.9.1](https://github.com/konnectors/libs/compare/cozy-clisk@0.9.0...cozy-clisk@0.9.1) (2023-03-16)
+
+
+### Bug Fixes
+
+* Allows cozy-clisk to be embedded in other envs (react-native, jest) ([a22d045](https://github.com/konnectors/libs/commit/a22d045e3e877d0fd840c31041389586dd5c369c))
+
+
+
+
+
 # [0.9.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.8.1...cozy-clisk@0.9.0) (2023-03-16)
 
 
