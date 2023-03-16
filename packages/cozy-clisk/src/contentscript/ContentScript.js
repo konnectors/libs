@@ -18,7 +18,13 @@ const DEFAULT_WAIT_FOR_ELEMENT_TIMEOUT = 30 * s
 export const PILOT_TYPE = 'pilot'
 export const WORKER_TYPE = 'worker'
 
-sendContentScriptReadyEvent()
+sendPageMessage('NEW_WORKER_INITIALIZING')
+window.addEventListener('load', () => {
+  sendPageMessage('load')
+})
+window.addEventListener('DOMContentLoaded', () => {
+  sendPageMessage('DOMContentLoaded')
+})
 
 export default class ContentScript {
   constructor() {
@@ -539,13 +545,11 @@ export default class ContentScript {
   async fetch(options) {}
 }
 
-function sendContentScriptReadyEvent() {
+function sendPageMessage(message) {
   // @ts-ignore La propriété 'ReactNativeWebView' n'existe pas sur le type 'Window & typeof globalThis'.
   if (window.ReactNativeWebView?.postMessage) {
     // @ts-ignore La propriété 'ReactNativeWebView' n'existe pas sur le type 'Window & typeof globalThis'.
-    window.ReactNativeWebView?.postMessage(
-      JSON.stringify({ message: 'NEW_WORKER_INITIALIZING' })
-    )
+    window.ReactNativeWebView?.postMessage(JSON.stringify({ message }))
   } else {
     log.error('No window.ReactNativeWebView.postMessage available')
   }
