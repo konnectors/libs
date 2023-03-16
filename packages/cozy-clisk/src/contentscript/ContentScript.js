@@ -276,7 +276,7 @@ export default class ContentScript {
    */
   async downloadFileInWorker(entry) {
     this.onlyIn(WORKER_TYPE, 'downloadFileInWorker')
-    this.log('info', 'downloading file in worker')
+    this.log('debug', 'downloading file in worker')
     if (entry.fileurl) {
       entry.blob = await ky.get(entry.fileurl, entry.requestOptions).blob()
       entry.dataUri = await blobToBase64(entry.blob)
