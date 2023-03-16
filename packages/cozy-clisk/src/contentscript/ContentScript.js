@@ -4,6 +4,7 @@ import Minilog from '@cozy/minilog'
 
 import LauncherBridge from '../bridge/LauncherBridge'
 import { blobToBase64 } from './utils'
+import { wrapTimerFactory } from '../libs/wrapTimer'
 import ky from 'ky/umd'
 
 const log = Minilog('ContentScript class')
@@ -20,6 +21,57 @@ export const WORKER_TYPE = 'worker'
 sendContentScriptReadyEvent()
 
 export default class ContentScript {
+  constructor() {
+    const logDebug = message => this.log('debug', message)
+    const wrapTimerDebug = wrapTimerFactory({ logFn: logDebug })
+    const logInfo = message => this.log('info', message)
+    const wrapTimerInfo = wrapTimerFactory({ logFn: logInfo })
+    this.ensureAuthenticated = wrapTimerInfo(this, 'ensureAuthenticated')
+    this.getUserDataFromWebsite = wrapTimerInfo(this, 'getUserDataFromWebsite')
+    this.fetch = wrapTimerInfo(this, 'fetch')
+    this.waitForAuthenticated = wrapTimerDebug(this, 'waitForAuthenticated')
+    this.runInWorker = wrapTimerDebug(this, 'runInWorker', {
+      suffixFn: args => args?.[0]
+    })
+    this.runInWorkerUntilTrue = wrapTimerDebug(this, 'runInWorkerUntilTrue', {
+      suffixFn: args => args[0]?.method
+    })
+    this.waitForElementInWorker = wrapTimerDebug(
+      this,
+      'waitForElementInWorker',
+      {
+        suffixFn: args => args?.[0]
+      }
+    )
+    this.clickAndWait = wrapTimerDebug(this, 'clickAndWait', {
+      suffixFn: args => `${args?.[0]} ${args?.[1]}`
+    })
+    this.saveFiles = wrapTimerDebug(this, 'saveFiles')
+    this.saveBills = wrapTimerDebug(this, 'saveBills')
+    this.getCredentials = wrapTimerDebug(this, 'getCredentials')
+    this.saveCredentials = wrapTimerDebug(this, 'saveCredentials')
+    this.saveIdentity = wrapTimerDebug(this, 'saveIdentity')
+    this.getCookiesByDomain = wrapTimerDebug(this, 'getCookiesByDomain', {
+      suffixFn: args => args?.[0]
+    })
+    this.getCookieFromKeychainByName = wrapTimerDebug(
+      this,
+      'getCookieFromKeychainByName',
+      { suffixFn: args => args?.[0] }
+    )
+    this.saveCookieToKeychain = wrapTimerDebug(this, 'saveCookieToKeychain', {
+      suffixFn: args => args?.[0]
+    })
+    this.getCookieByDomainAndName = wrapTimerDebug(
+      this,
+      'getCookieByDomainAndName',
+      { suffixFn: args => `${args?.[0]} ${args?.[1]}` }
+    )
+    this.goto = wrapTimerDebug(this, 'goto', { suffixFn: args => args?.[0] })
+    this.downloadFileInWorker = wrapTimerDebug(this, 'downloadFileInWorker', {
+      suffixFn: args => args?.[0]?.fileurl
+    })
+  }
   /**
    * Init the bridge communication with the launcher.
    * It also exposes the methods which will be callable by the launcher
