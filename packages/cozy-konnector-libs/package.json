@@ -62,7 +62,7 @@
   },
   "scripts": {
     "build": "yarn run transpile",
-    "transpile": "rm -rf dist/* ; babel src --out-dir dist",
+    "transpile": "rm -rf dist/* ; babel --root-mode upward src --out-dir dist",
     "prepublishOnly": "yarn run transpile",
     "test": "cross-env LOG_LEVEL=info jest ./src",
     "docs": "jsdoc2md --template jsdoc2md/README.hbs src/libs/*.js src/helpers/*.js src/libs/categorization/index.js > docs/api.md",
