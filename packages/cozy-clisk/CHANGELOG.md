@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.9.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.8.1...cozy-clisk@0.9.0) (2023-03-16)
+
+
+### Bug Fixes
+
+* Change some logs from info to debug ([920aaed](https://github.com/konnectors/libs/commit/920aaed1620ffff0b1702d186a40ff83e306a61d))
+
+
+### Features
+
+* Add wrapTimer function ([8155ef7](https://github.com/konnectors/libs/commit/8155ef7fcbd6894cf127100ec8a8dc7c21f4f71a))
+* Send more page events to the launcher ([9b4b44c](https://github.com/konnectors/libs/commit/9b4b44cdc5ff6afdea0bde8f9d04a1d1bade5e62))
+* Wrap ContentScript methods with wrapTimer ([3331647](https://github.com/konnectors/libs/commit/33316473f021443ad5564f5db645d625341e02f7))
+
+
+
+
+
 ## [0.8.1](https://github.com/konnectors/libs/compare/cozy-clisk@0.8.0...cozy-clisk@0.8.1) (2023-03-16)
 
 
