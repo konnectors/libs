@@ -1,7 +1,6 @@
 import Minilog from '@cozy/minilog'
 import get from 'lodash/get'
 import omit from 'lodash/omit'
-import { Q } from 'cozy-client'
 import retry from 'bluebird-retry'
 
 const log = Minilog('saveFiles')
@@ -45,7 +44,7 @@ const saveFiles = async (client, entries, folderPath, options = {}) => {
   noMetadataDeduplicationWarning(saveOptions)
 
   const canBeSaved = entry => entry.filestream
-
+  const shouldBeSaved = entry => !entry.fileDocument
   let savedFiles = 0
   const savedEntries = []
   for (let entry of entries) {
@@ -58,7 +57,8 @@ const saveFiles = async (client, entries, folderPath, options = {}) => {
       )
       return
     }
-    if (canBeSaved(entry)) {
+
+    if (canBeSaved(entry) && shouldBeSaved(entry)) {
       const resultFolderPath = await getOrCreateDestinationPath(
         entry,
         saveOptions
@@ -84,11 +84,14 @@ const saveFiles = async (client, entries, folderPath, options = {}) => {
 }
 
 const saveEntry = async function (client, entry, options) {
-  let file = await getFileIfExists(client, entry, options)
   let shouldReplace = false
-  if (file) {
+  if (entry.fileDocument) {
     try {
-      shouldReplace = await shouldReplaceFile(file, entry, options)
+      shouldReplace = await shouldReplaceFile(
+        entry.fileDocument,
+        entry,
+        options
+      )
     } catch (err) {
       log.warn(`Error in shouldReplaceFile : ${err.message}`)
       shouldReplace = true
@@ -97,13 +100,13 @@ const saveEntry = async function (client, entry, options) {
 
   let method = 'create'
 
-  if (shouldReplace && file) {
+  if (shouldReplace && entry.fileDocument) {
     method = 'updateById'
-    log.debug(`Will replace ${getFilePath({ options, file })}...`)
+    log.debug(`Will replace ${getFilePath({ options, entry })}...`)
   }
 
   try {
-    if (!file || method === 'updateById') {
+    if (!entry.fileDocument || method === 'updateById') {
       log.debug(omit(entry, 'filestream'))
       logFileStream(entry.filestream)
       log.debug(
@@ -113,11 +116,17 @@ const saveEntry = async function (client, entry, options) {
         })} does not exist yet or is not valid`
       )
       entry._cozy_file_to_create = true
-      file = await retry(createFile, {
+      entry.fileDocument = await retry(createFile, {
         interval: 1000,
         throw_original: true,
         max_tries: options.retry,
-        args: [client, entry, options, method, file ? file : undefined]
+        args: [
+          client,
+          entry,
+          options,
+          method,
+          entry.fileDocument ? entry.fileDocument : undefined
+        ]
       }).catch(err => {
         if (err.message === 'BAD_DOWNLOADED_FILE') {
           log.warn(
@@ -129,8 +138,6 @@ const saveEntry = async function (client, entry, options) {
         }
       })
     }
-
-    attachFileToEntry(entry, file)
 
     sanitizeEntry(entry)
     if (options.postProcess) {
@@ -175,95 +182,6 @@ function noMetadataDeduplicationWarning(options) {
     log.warn(
       'No sourceAccountIdentifier is defined in options, file deduplication will be based on file path'
     )
-  }
-}
-
-async function getFileIfExists(client, entry, options) {
-  const fileIdAttributes = options.fileIdAttributes
-  const slug = options.manifest.slug
-  const sourceAccountIdentifier = get(
-    options,
-    'sourceAccountOptions.sourceAccountIdentifier'
-  )
-
-  const isReadyForFileMetadata =
-    fileIdAttributes && slug && sourceAccountIdentifier
-  if (isReadyForFileMetadata) {
-    const file = await getFileFromMetaData(
-      client,
-      entry,
-      fileIdAttributes,
-      sourceAccountIdentifier,
-      slug
-    )
-    if (!file) {
-      // no file with correct metadata, maybe the corresponding file already exist in the default
-      // path from a previous version of the connector
-      return getFileFromPath(client, entry, options)
-    } else {
-      return file
-    }
-  } else {
-    return getFileFromPath(client, entry, options)
-  }
-}
-
-async function getFileFromMetaData(
-  client,
-  entry,
-  fileIdAttributes,
-  sourceAccountIdentifier,
-  slug
-) {
-  log.debug(
-    `Checking existence of ${calculateFileKey(entry, fileIdAttributes)}`
-  )
-  const { data: files } = await client.queryAll(
-    Q('io.cozy.files')
-      .where({
-        metadata: {
-          fileIdAttributes: calculateFileKey(entry, fileIdAttributes)
-        },
-        trashed: false,
-        cozyMetadata: {
-          sourceAccountIdentifier,
-          createdByApp: slug
-        }
-      })
-      .indexFields([
-        'metadata.fileIdAttributes',
-        'trashed',
-        'cozyMetadata.sourceAccountIdentifier',
-        'cozyMetadata.createdByApp'
-      ])
-  )
-
-  if (files && files[0]) {
-    if (files.length > 1) {
-      log.warn(
-        `Found ${files.length} files corresponding to ${calculateFileKey(
-          entry,
-          fileIdAttributes
-        )}`
-      )
-    }
-    return files[0]
-  } else {
-    log.debug('not found')
-    return false
-  }
-}
-
-async function getFileFromPath(client, entry, options) {
-  try {
-    log.debug(`Checking existence of ${getFilePath({ entry, options })}`)
-    const result = await client
-      .collection('io.cozy.files')
-      .statByPath(getFilePath({ entry, options }))
-    return result.data
-  } catch (err) {
-    log.debug(err.message)
-    return false
   }
 }
 
@@ -404,7 +322,6 @@ const removeFile = async function (client, file) {
 }
 
 module.exports = saveFiles
-module.exports.getFileIfExists = getFileIfExists
 
 function getFileName(entry) {
   let filename
@@ -492,11 +409,6 @@ function sanitizeEntry(entry) {
   delete entry.requestOptions
   delete entry.filestream
   delete entry.shouldReplaceFile
-  return entry
-}
-
-function attachFileToEntry(entry, fileDocument) {
-  entry.fileDocument = fileDocument
   return entry
 }
 
