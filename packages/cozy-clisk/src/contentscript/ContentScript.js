@@ -6,6 +6,7 @@ import LauncherBridge from '../bridge/LauncherBridge'
 import { blobToBase64 } from './utils'
 import { wrapTimerFactory } from '../libs/wrapTimer'
 import ky from 'ky/umd'
+import cliskPackageJson from '../../package.json'
 
 const log = Minilog('ContentScript class')
 
@@ -107,7 +108,8 @@ export default class ContentScript {
       'clickAndWait',
       'getCookiesByDomain',
       'getCookieByDomainAndName',
-      'downloadFileInWorker'
+      'downloadFileInWorker',
+      'getCliskVersion'
     ]
 
     if (options.additionalExposedMethodsNames) {
@@ -558,6 +560,13 @@ export default class ContentScript {
    */
   // eslint-disable-next-line no-unused-vars
   async fetch(options) {}
+
+  /**
+   * Returns the current clisk version number in package.json file
+   */
+  async getCliskVersion() {
+    return cliskPackageJson.version
+  }
 }
 
 function sendPageMessage(message) {
