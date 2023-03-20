@@ -36,6 +36,7 @@ export default class ContentScript {
     const logInfo = message => this.log('info', message)
     const wrapTimerInfo = wrapTimerFactory({ logFn: logInfo })
     this.ensureAuthenticated = wrapTimerInfo(this, 'ensureAuthenticated')
+    this.ensureNotAuthenticated = wrapTimerInfo(this, 'ensureNotAuthenticated')
     this.getUserDataFromWebsite = wrapTimerInfo(this, 'getUserDataFromWebsite')
     this.fetch = wrapTimerInfo(this, 'fetch')
     this.waitForAuthenticated = wrapTimerDebug(this, 'waitForAuthenticated')
@@ -94,6 +95,7 @@ export default class ContentScript {
     const exposedMethodsNames = [
       'setContentScriptType',
       'ensureAuthenticated',
+      'ensureNotAuthenticated',
       'checkAuthenticated',
       'waitForAuthenticated',
       'waitForElementNoReload',
@@ -487,7 +489,7 @@ export default class ContentScript {
   }
 
   /**
-   * Make sur that the connector is authenticated to the website.
+   * Make sure that the connector is authenticated to the website.
    * If not, show the login webview to the user to let her/him authenticated.
    * Resolve the promise when authenticated
    *
@@ -495,6 +497,15 @@ export default class ContentScript {
    * @returns {Promise.<boolean>} : true if the user is authenticated
    */
   async ensureAuthenticated() {
+    return true
+  }
+
+  /**
+   * Make sure that the connector is not authenticated anymore to the website.
+   *
+   * @returns {Promise.<boolean>} : true if the user is not authenticated
+   */
+  async ensureNotAuthenticated() {
     return true
   }
 
