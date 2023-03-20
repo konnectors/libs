@@ -4,6 +4,7 @@
 
 const { basename, dirname, join } = require('path').posix
 const cozyClient = require('./cozyclient')
+const newClient = cozyClient.new
 
 /**
  * Creates a directory and its missing ancestors as needed.
@@ -45,7 +46,7 @@ function fromCozy(cozy) {
 
     let doc = null
     try {
-      doc = await cozy.files.statByPath(path)
+      doc = await newClient.collection('io.cozy.files').statByPath(path).data
       return doc
     } catch (err) {
       if (![404, 409].includes(err.status)) throw err

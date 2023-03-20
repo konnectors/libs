@@ -13,6 +13,7 @@ const get = require('lodash/get')
 const log = require('cozy-logger').namespace('saveFiles')
 const manifest = require('./manifest')
 const cozy = require('./cozyclient')
+const newClient = cozy.new
 const { queryAll } = require('./utils')
 const mkdirp = require('./mkdirp')
 const errors = require('../helpers/errors')
@@ -24,6 +25,7 @@ const m = 60 * s
 const DEFAULT_TIMEOUT = Date.now() + 4 * m // 4 minutes by default since the stack allows 5 minutes
 const DEFAULT_CONCURRENCY = 1
 const DEFAULT_RETRY = 1 // do not retry by default
+const DOCTYPE_FILES = 'io.cozy.files'
 
 /**
  * Saves the files given in the fileurl attribute of each entries
@@ -373,7 +375,7 @@ async function getFileFromMetaData(
 async function getFileFromPath(entry, options) {
   try {
     log('debug', `Checking existence of ${getFilePath({ entry, options })}`)
-    const result = await cozy.files.statByPath(getFilePath({ entry, options }))
+    const result = await newClient.collection(DOCTYPE_FILE).statByPath(getFilePath({ entry, options })).data
     return result
   } catch (err) {
     log('debug', err.message)
@@ -382,7 +384,7 @@ async function getFileFromPath(entry, options) {
 }
 
 async function createFile(entry, options, method, fileId) {
-  const folder = await cozy.files.statByPath(options.folderPath)
+  const folder = await newClient.collection(DOCTYPE_FILE).statByPath(options.folderPath).data
   let createFileOptions = {
     name: getFileName(entry),
     dirID: folder._id
@@ -611,7 +613,7 @@ function logFileStream(fileStream) {
 }
 
 async function getFiles(folderPath) {
-  const dir = await cozy.files.statByPath(folderPath)
+  const dir = await newClient.collection(DOCTYPE_FILE).statByPath(folderPath).data
   const files = await queryAll('io.cozy.files', { dir_id: dir._id })
   return files
 }
