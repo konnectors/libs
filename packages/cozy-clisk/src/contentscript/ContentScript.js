@@ -436,6 +436,7 @@ export default class ContentScript {
    * @param {string} message : the log message
    */
   log(level, message) {
+    let newLevel = level
     const allowedLevels = ['debug', 'info', 'warn', 'error']
     if (!message) {
       log.warn(
@@ -444,12 +445,12 @@ export default class ContentScript {
       return
     }
     if (!allowedLevels.includes(level)) {
-      level = 'debug'
+      newLevel = 'debug'
     }
     const now = new Date()
     this.bridge?.emit('log', {
       timestamp: now,
-      level,
+      level: newLevel,
       msg: message
     })
   }
