@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.9.3](https://github.com/konnectors/libs/compare/cozy-clisk@0.9.2...cozy-clisk@0.9.3) (2023-03-21)
+
+
+### Bug Fixes
+
+* **clisk:** Fix deduplication on metadata ([f454d26](https://github.com/konnectors/libs/commit/f454d26ec08118f05c3c7088e4788795a5363ea1))
+
+
+
+
+
 ## [0.9.2](https://github.com/konnectors/libs/compare/cozy-clisk@0.9.1...cozy-clisk@0.9.2) (2023-03-16)
 
 
