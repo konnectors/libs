@@ -179,7 +179,7 @@ export default class ContentScript {
         'No bridge is defined, you should call ContentScript.init before using this method'
       )
     }
-    return this.bridge.call('runInWorker', method, ...args)
+    return await this.bridge.call('runInWorker', method, ...args)
   }
 
   /**

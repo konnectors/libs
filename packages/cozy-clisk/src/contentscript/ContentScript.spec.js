@@ -1,11 +1,24 @@
 import ContentScript, { PILOT_TYPE } from './ContentScript'
 
 describe('ContentScript', () => {
-  const contentScript = new ContentScript()
-  contentScript.setContentScriptType(PILOT_TYPE)
+  describe('runInWorker', () => {
+    const contentScript = new ContentScript()
+    contentScript.setContentScriptType(PILOT_TYPE)
+    it('should throw an error met in the worker', async () => {
+      contentScript.bridge = {
+        call: jest.fn().mockRejectedValue(new Error('worker error'))
+      }
+
+      await expect(() => contentScript.runInWorker('test')).rejects.toThrow(
+        'worker error'
+      )
+    })
+  })
 
   describe('runInWorkerUntilTrue', () => {
-    contentScript.runInWorker = jest.fn()
+    const contentScript = new ContentScript()
+    contentScript.setContentScriptType(PILOT_TYPE)
+    jest.spyOn(contentScript, 'runInWorker')
     contentScript.tocall = jest.fn()
 
     it('should resolve with result of the specified method returns truthy value', async () => {
