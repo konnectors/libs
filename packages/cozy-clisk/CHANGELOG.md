@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.9.4](https://github.com/konnectors/libs/compare/cozy-clisk@0.9.3...cozy-clisk@0.9.4) (2023-03-21)
+
+
+### Bug Fixes
+
+* Not intercepted worker errors ([1182a96](https://github.com/konnectors/libs/commit/1182a96bda4bf157a326ea779ff2ab5f8da3c2f5))
+
+
+
+
+
 ## [0.9.3](https://github.com/konnectors/libs/compare/cozy-clisk@0.9.2...cozy-clisk@0.9.3) (2023-03-21)
 
 
