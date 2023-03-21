@@ -189,6 +189,7 @@ async function getFileIfExists(client, entry, options) {
   const isReadyForFileMetadata =
     fileIdAttributes && slug && sourceAccountIdentifier
   if (isReadyForFileMetadata) {
+    log.debug('Deduplicating file with metadata')
     const file = await getFileFromMetaData(
       client,
       entry,
@@ -199,11 +200,13 @@ async function getFileIfExists(client, entry, options) {
     if (!file) {
       // no file with correct metadata, maybe the corresponding file already exist in the default
       // path from a previous version of the connector
+      log.debug('Rolling back on detection by filename')
       return getFileFromPath(client, entry, options)
     } else {
       return file
     }
   } else {
+    log.debug('Not enough metadata, deduplicating by filename')
     return getFileFromPath(client, entry, options)
   }
 }
@@ -218,7 +221,7 @@ async function getFileFromMetaData(
   log.debug(
     `Checking existence of ${calculateFileKey(entry, fileIdAttributes)}`
   )
-  const { data: files } = await client.queryAll(
+  const files = await client.queryAll(
     Q('io.cozy.files')
       .where({
         metadata: {
