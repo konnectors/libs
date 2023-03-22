@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.10.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.9.4...cozy-clisk@0.10.0) (2023-03-22)
+
+
+### Bug Fixes
+
+* Lint warning ([d8db88d](https://github.com/konnectors/libs/commit/d8db88d17c851685ba58a59832df2c3dbf55b3f5))
+
+
+### Features
+
+* Add ensureNotAuthenticated method ([f9ffdd9](https://github.com/konnectors/libs/commit/f9ffdd95d7552d4317f2f147767e6294500d4638))
+
+
+
+
+
 ## [0.9.4](https://github.com/konnectors/libs/compare/cozy-clisk@0.9.3...cozy-clisk@0.9.4) (2023-03-21)
 
 
