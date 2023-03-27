@@ -1,5 +1,5 @@
 // @ts-check
-import waitFor from 'p-wait-for'
+import waitFor, { TimeoutError } from 'p-wait-for'
 import Minilog from '@cozy/minilog'
 
 import LauncherBridge from '../bridge/LauncherBridge'
@@ -158,7 +158,7 @@ export default class ContentScript {
    * the user is authenticated
    *
    * @returns {Promise.<true>} : if authenticated
-   * @throws {Error}: TimeoutError from p-wait-for package if timeout expired
+   * @throws {TimeoutError}: TimeoutError from p-wait-for package if timeout expired
    */
   async waitForAuthenticated() {
     this.onlyIn(WORKER_TYPE, 'waitForAuthenticated')
@@ -192,7 +192,7 @@ export default class ContentScript {
    * @param {number} [options.timeout] - number of miliseconds before the function sends a timeout error. Default Infinity
    * @param {Array} [options.args] - array of args to pass to the method
    * @returns {Promise<boolean>} - true
-   * @throws {Error} - if timeout expired
+   * @throws {TimeoutError} - if timeout expired
    */
   async runInWorkerUntilTrue({ method, timeout = Infinity, args = [] }) {
     this.onlyIn(PILOT_TYPE, 'runInWorkerUntilTrue')
@@ -202,7 +202,9 @@ export default class ContentScript {
     const isTimeout = () => Date.now() - start >= timeout
     while (!result) {
       if (isTimeout()) {
-        throw new Error('Timeout error')
+        throw new TimeoutError(
+          `runInWorkerUntilTrue ${method} Timeout error after ${timeout}`
+        )
       }
       log.debug('runInWorker call', method)
       result = await this.runInWorker(method, ...args)
@@ -235,7 +237,12 @@ export default class ContentScript {
     this.onlyIn(WORKER_TYPE, 'waitForElementNoReload')
     log.debug('waitForElementNoReload', selector)
     await waitFor(() => Boolean(document.querySelector(selector)), {
-      timeout: DEFAULT_WAIT_FOR_ELEMENT_TIMEOUT
+      timeout: {
+        milliseconds: DEFAULT_WAIT_FOR_ELEMENT_TIMEOUT,
+        message: new TimeoutError(
+          `waitForElementNoReload ${selector} timed out after ${DEFAULT_WAIT_FOR_ELEMENT_TIMEOUT}ms`
+        )
+      }
     })
     return true
   }
