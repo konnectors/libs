@@ -216,11 +216,14 @@ export default class ContentScript {
    * reloads
    *
    * @param {string} selector - css selector we are waiting for
+   * @param {object} options - options object
+   * @param {number} [options.timeout] - timeout in ms. Will default to 30s
    */
-  async waitForElementInWorker(selector) {
+  async waitForElementInWorker(selector, options = {}) {
     this.onlyIn(PILOT_TYPE, 'waitForElementInWorker')
     await this.runInWorkerUntilTrue({
       method: 'waitForElementNoReload',
+      timeout: options?.timeout,
       args: [selector]
     })
   }
