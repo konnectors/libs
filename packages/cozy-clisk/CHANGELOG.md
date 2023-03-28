@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.11.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.10.0...cozy-clisk@0.11.0) (2023-03-28)
+
+
+### Features
+
+* Add getCliskVersion method ([5f39898](https://github.com/konnectors/libs/commit/5f398989a487525413659e80807b75f12b6aa4f6))
+
+
+
+
+
 # [0.10.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.9.4...cozy-clisk@0.10.0) (2023-03-22)
 
 
