@@ -37,6 +37,9 @@ export default class ContentScript {
     const logInfo = message => this.log('info', message)
     const wrapTimerInfo = wrapTimerFactory({ logFn: logInfo })
     this.ensureAuthenticated = wrapTimerInfo(this, 'ensureAuthenticated')
+    this.logout = wrapTimerInfo(this, 'logout')
+    this.goToLoginForm = wrapTimerInfo(this, 'goToLoginForm')
+    this.autoLogin = wrapTimerInfo(this, 'autoLogin')
     this.ensureNotAuthenticated = wrapTimerInfo(this, 'ensureNotAuthenticated')
     this.getUserDataFromWebsite = wrapTimerInfo(this, 'getUserDataFromWebsite')
     this.fetch = wrapTimerInfo(this, 'fetch')
@@ -96,6 +99,9 @@ export default class ContentScript {
     const exposedMethodsNames = [
       'setContentScriptType',
       'ensureAuthenticated',
+      'logout',
+      'goToLoginForm',
+      'autoLogin',
       'ensureNotAuthenticated',
       'checkAuthenticated',
       'waitForAuthenticated',
@@ -153,6 +159,18 @@ export default class ContentScript {
    */
   async checkAuthenticated() {
     return false
+  }
+
+  async logout() {
+    return true
+  }
+
+  async goToLoginForm() {
+    return true
+  }
+
+  async autoLogin() {
+    return true
   }
 
   /**
@@ -498,8 +516,33 @@ export default class ContentScript {
    * @throws LOGIN_FAILED
    * @returns {Promise.<boolean>} : true if the user is authenticated
    */
-  async ensureAuthenticated() {
-    return true
+  async ensureAuthenticated(account) {
+    log.debug('ensureAuthenticated starts')
+    // Version schéma Trello
+    if (!account) {
+      log.debug('ensureAuthenticated : no account found')
+      const auth = await this.runInWorker('checkAuthenticated')
+      if (auth) {
+        await this.runInWorker('logout')
+      }
+      await this.runInWorker('goToLoginForm')
+    } else {
+      log.debug('ensureAuthenticated : account found')
+      await this.runInWorker('logout')
+      await this.runInWorker('goToLoginForm')
+      const credentials = await this.getCredentials()
+      if (credentials) {
+        await this.runInWorker('autoLogin')
+      } else {
+        await this.runInWorker('waitForUserAuthentication')
+      }
+      const auth = await this.runInWorker('checkAuthenticated')
+      if (auth) {
+        return true
+      } else {
+        return false
+      }
+    }
   }
 
   /**
