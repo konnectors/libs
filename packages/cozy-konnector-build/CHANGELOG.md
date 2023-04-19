@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 1.5.0 (2023-04-19)
+
+
+### Bug Fixes
+
+* publish built version of cozy-ccc-libs ([6a93784](https://github.com/konnectors/libs/commit/6a93784c9efc3dc7c5627a032658a7846dfc3392))
+
+
+### Features
+
+* Centralize clisk webpack configuration ([1abb798](https://github.com/konnectors/libs/commit/1abb798760796ca07ffee171553040ab0dd5b062))
+
+
+
+
+
 ## [1.4.5](https://github.com/konnectors/libs/compare/cozy-konnector-build@1.4.4...cozy-konnector-build@1.4.5) (2023-02-06)
 
 
