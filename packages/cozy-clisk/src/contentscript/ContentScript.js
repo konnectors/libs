@@ -3,7 +3,7 @@ import waitFor, { TimeoutError } from 'p-wait-for'
 import Minilog from '@cozy/minilog'
 
 import LauncherBridge from '../bridge/LauncherBridge'
-import { blobToBase64 } from './utils'
+import { blobToBase64, callStringFunction } from './utils'
 import { wrapTimerFactory } from '../libs/wrapTimer'
 import ky from 'ky/umd'
 import cliskPackageJson from '../../package.json'
@@ -110,7 +110,8 @@ export default class ContentScript {
       'getCookieByDomainAndName',
       'downloadFileInWorker',
       'getCliskVersion',
-      'checkForElement'
+      'checkForElement',
+      'evaluate'
     ]
 
     if (options.additionalExposedMethodsNames) {
@@ -527,6 +528,30 @@ export default class ContentScript {
   async goto(url) {
     this.onlyIn(PILOT_TYPE, 'goto')
     await this.setWorkerState({ url })
+  }
+
+  /**
+   * Evaluates a given function in worker context
+   *
+   * @param {Function} fn - the function to evaluate
+   *
+   * @returns {Promise<any>} - function evaluation result
+   */
+  async evaluateInWorker(fn, ...args) {
+    this.onlyIn(PILOT_TYPE, 'evaluateInWorker')
+    return await this.runInWorker('evaluate', fn.toString(), ...args)
+  }
+
+  /**
+   * Evaluates a given function string
+   *
+   * @param {String} fnString - the function string to evaluate
+   *
+   * @returns {Promise<any>} - function evaluation result
+   */
+  async evaluate(fnString, ...args) {
+    this.onlyIn(WORKER_TYPE, 'evaluate')
+    return await callStringFunction(fnString, ...args)
   }
 
   /**
