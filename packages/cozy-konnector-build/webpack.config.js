@@ -4,6 +4,8 @@ const webpack = require('webpack')
 const fs = require('fs')
 const SvgoInstance = require('svgo')
 
+const { configureDeployOnLocalStack } = require('./webpack.config.deploy.js')
+
 const currentDirectory = process.cwd()
 
 const readManifest = () =>
@@ -12,6 +14,24 @@ const readManifest = () =>
   )
 
 const manifest = readManifest()
+
+let plugins = [
+  new CopyPlugin({
+    patterns: [
+      { from: 'manifest.konnector' },
+      { from: 'assets', transform: optimizeSVGIcon, noErrorOnMissing: true }
+    ]
+  }),
+  new webpack.DefinePlugin({
+    __WEBPACK_PROVIDED_MANIFEST__: JSON.stringify(manifest)
+  })
+]
+
+plugins = configureDeployOnLocalStack(
+  process.env.UPDATE_ON_LOCAL_COZY_STACK,
+  plugins,
+  manifest.slug
+)
 
 const svgo = new SvgoInstance({
   plugins: [
@@ -44,17 +64,7 @@ module.exports = {
     path: path.join(currentDirectory, 'build'),
     filename: 'index.js'
   },
-  plugins: [
-    new CopyPlugin({
-      patterns: [
-        { from: 'manifest.konnector' },
-        { from: 'assets', transform: optimizeSVGIcon, noErrorOnMissing: true }
-      ]
-    }),
-    new webpack.DefinePlugin({
-      __WEBPACK_PROVIDED_MANIFEST__: JSON.stringify(manifest)
-    })
-  ],
+  plugins,
   module: {
     // to ignore the warnings like :
     // WARNING in ../libs/node_modules/bindings/bindings.js 76:22-40
