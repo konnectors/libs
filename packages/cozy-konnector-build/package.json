@@ -19,7 +19,7 @@
     "@babel/core": "7.17.10",
     "babel-preset-cozy-app": "^2.0.2",
     "copy-webpack-plugin": "9.1.0",
-    "cozy-app-publish": "0.32.1",
+    "cozy-app-publish": "0.33.0",
     "eslint-config-cozy-app": "4.0.0",
     "git-directory-deploy": "1.5.1",
     "husky": "4.3.8",
