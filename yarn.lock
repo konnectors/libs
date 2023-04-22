@@ -5522,10 +5522,10 @@ cosmiconfig@^7.0.0:
     path-type "^4.0.0"
     yaml "^1.10.0"
 
-cozy-app-publish@0.32.1:
-  version "0.32.1"
-  resolved "https://registry.yarnpkg.com/cozy-app-publish/-/cozy-app-publish-0.32.1.tgz#c9b77737a064ee8f864d421ec08032de16e65983"
-  integrity sha512-m0e33hiBVXwdqPZSWp+qGJ+gcDTvNZHYlXqwvwOXF1x0SmFNdeKFd/qjp2UxQ/fJxyONnVxyPUYCx9eDANreJg==
+cozy-app-publish@0.33.0:
+  version "0.33.0"
+  resolved "https://registry.yarnpkg.com/cozy-app-publish/-/cozy-app-publish-0.33.0.tgz#889f68b9fe0b88db01c141c706ba7570e41f373c"
+  integrity sha512-qNl517FBbXznnxrcdSuslt1Gj/E2SzHhxGk6xBOQjoqUbZ7+y460/GrTSi1krsOqxN1ev/aMeDmcTK706OFA2g==
   dependencies:
     argparse "^2.0.1"
     chalk "^2.4.2"
