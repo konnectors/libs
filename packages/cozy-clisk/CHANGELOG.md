@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.12.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.11.0...cozy-clisk@0.12.0) (2023-04-24)
+
+
+### Bug Fixes
+
+* ignore p-timeout and p-wait-for in jest transforms ([4db2b09](https://github.com/konnectors/libs/commit/4db2b091e6f828faf22b59cc6088e0f30e867106))
+
+
+### Features
+
+* Enhance timeout error messages ([00e7b7b](https://github.com/konnectors/libs/commit/00e7b7b76bd7742f742d0dbf0f8e763843479b51))
+
+
+
+
+
 # [0.11.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.10.0...cozy-clisk@0.11.0) (2023-03-28)
 
 
