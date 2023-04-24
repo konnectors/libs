@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.5.1](https://github.com/konnectors/libs/compare/cozy-konnector-build@1.5.0...cozy-konnector-build@1.5.1) (2023-04-24)
+
+
+### Bug Fixes
+
+* **deps:** update dependency cozy-app-publish to v0.33.0 ([5f3eb12](https://github.com/konnectors/libs/commit/5f3eb125a56d231f8b78129b004844261307a2fa))
+* **deps:** update dependency webpack to v5.76.0 [security] ([c9d01ef](https://github.com/konnectors/libs/commit/c9d01ef13dd999238853c8e9881e72272f8805df))
+
+
+
+
+
 # 1.5.0 (2023-04-19)
 
 
