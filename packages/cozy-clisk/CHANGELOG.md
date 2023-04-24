@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.12.1](https://github.com/konnectors/libs/compare/cozy-clisk@0.12.0...cozy-clisk@0.12.1) (2023-04-24)
+
+
+### Bug Fixes
+
+* **deps:** pin dependencies ([dee699e](https://github.com/konnectors/libs/commit/dee699e0b532447c68f986997a6668bdee8be659))
+
+
+
+
+
 # [0.12.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.11.0...cozy-clisk@0.12.0) (2023-04-24)
 
 
