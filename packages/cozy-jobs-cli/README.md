@@ -22,6 +22,7 @@ You can use `COZY_URL` to connect to another cozy.
 - A token will be generated (`.token.json`) the first time to grant access to `cozy-konnector-dev`, and you may need to delete it and regenerate it again if expired.
 - Be aware that if you make a change in the application manifest, you must regenerate the token (deleting it if necessary) ([see the issue](https://github.com/konnectors/libs/issues/701)).
 
+You can use `COZY_URL` to connect to another cozy.
 ### `cozy-konnector-standalone`
 
 - Provides `COZY_CREDENTIALS` to the locally running connector from `konnector-dev-config.json` (which is created if it does not exist)

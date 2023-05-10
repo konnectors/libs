@@ -5,7 +5,7 @@ const config = require('./init-konnector-config')()
 const injectDevAccount = require('./inject-dev-account')
 const ArgumentParser = require('argparse').ArgumentParser
 
-process.env.COZY_URL = config.COZY_URL
+process.env.COZY_URL = process.env.COZY_URL || config.COZY_URL
 if (config.COZY_PARAMETERS) {
   process.env.COZY_PARAMETERS = JSON.stringify(config.COZY_PARAMETERS)
 }
