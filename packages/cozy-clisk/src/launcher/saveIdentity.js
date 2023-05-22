@@ -1,6 +1,6 @@
 // @ts-check
-import updateOrCreate from './updateOrCreate'
 import Minilog from '@cozy/minilog'
+import { Q } from 'cozy-client'
 const log = Minilog('saveIdentity')
 
 /**
@@ -54,12 +54,24 @@ export default async (contactOrIdentity, accountIdentifier, options = {}) => {
     identity.contact.address = formatAddress(identity.contact.address)
   }
 
-  await updateOrCreate(
-    [identity],
-    'io.cozy.identities',
-    ['identifier', 'cozyMetadata.createdByApp'],
-    { ...options, sourceAccountIdentifier: accountIdentifier }
+  const client = options.client
+
+  const { data: existingResult } = await client.query(
+    Q('io.cozy.identities')
+      .where({
+        identifier: accountIdentifier,
+        'cozyMetadata.createdByApp': client.appMetadata.slug
+      })
+      .indexFields(['identifier', 'cozyMetadata.createdByApp'])
   )
+  const existingSameIdentity = existingResult?.[0]
+
+  if (existingSameIdentity) {
+    identity._id = existingSameIdentity._id
+    identity._rev = existingSameIdentity._rev
+  }
+
+  await client.save({ ...identity, _type: 'io.cozy.identities' })
   return
 }
 
