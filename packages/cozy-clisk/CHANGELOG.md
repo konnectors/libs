@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.12.2](https://github.com/konnectors/libs/compare/cozy-clisk@0.12.1...cozy-clisk@0.12.2) (2023-05-23)
+
+
+### Bug Fixes
+
+* Deduplicate identities on createdByApp ([f9d8fbe](https://github.com/konnectors/libs/commit/f9d8fbec5736ae4f14144c2fdb213f6953ecfe63))
+
+
+
+
+
 ## [0.12.1](https://github.com/konnectors/libs/compare/cozy-clisk@0.12.0...cozy-clisk@0.12.1) (2023-04-24)
 
 
