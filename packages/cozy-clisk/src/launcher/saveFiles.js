@@ -22,6 +22,7 @@ const saveFiles = async (client, entries, folderPath, options = {}) => {
 
   const saveOptions = {
     folderPath,
+    subPath: options.subPath,
     fileIdAttributes: options.fileIdAttributes,
     manifest: options.manifest,
     postProcess: options.postProcess,
@@ -59,13 +60,14 @@ const saveFiles = async (client, entries, folderPath, options = {}) => {
       return
     }
     if (canBeSaved(entry)) {
-      const resultFolderPath = await getOrCreateDestinationPath(
+      const folderPath = await getOrCreateDestinationPath(
+        client,
         entry,
         saveOptions
       )
       entry = await saveEntry(client, entry, {
         ...saveOptions,
-        resultFolderPath
+        folderPath
       })
       if (entry && entry._cozy_file_to_create) {
         savedFiles++
@@ -258,11 +260,10 @@ async function getFileFromMetaData(
 }
 
 async function getFileFromPath(client, entry, options) {
+  const filepath = getFilePath({ entry, options })
   try {
-    log.debug(`Checking existence of ${getFilePath({ entry, options })}`)
-    const result = await client
-      .collection('io.cozy.files')
-      .statByPath(getFilePath({ entry, options }))
+    log.debug(`Checking existence of ${filepath}`)
+    const result = await client.collection('io.cozy.files').statByPath(filepath)
     return result.data
   } catch (err) {
     log.debug(err.message)
@@ -516,12 +517,12 @@ function getAttribute(obj, attribute) {
   return get(obj, `attributes.${attribute}`, get(obj, attribute))
 }
 
-async function getOrCreateDestinationPath(entry, saveOptions) {
-  // const subPath = entry.subPath || saveOptions.subPath
+async function getOrCreateDestinationPath(client, entry, saveOptions) {
+  const subPath = entry.subPath || saveOptions.subPath
   let finalPath = saveOptions.folderPath
-  // if (subPath) {
-  //   finalPath += '/' + subPath
-  //   await mkdirp(finalPath)
-  // }
+  if (subPath) {
+    finalPath += '/' + subPath
+    await client.collection('io.cozy.files').createDirectoryByPath(finalPath)
+  }
   return finalPath
 }
