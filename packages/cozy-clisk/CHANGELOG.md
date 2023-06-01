@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.13.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.12.2...cozy-clisk@0.13.0) (2023-06-01)
+
+
+### Features
+
+* Handle sub path in launcher saveFiles ([0b47e17](https://github.com/konnectors/libs/commit/0b47e173544c4c3edb519fa659a78d217a794383))
+
+
+
+
+
 ## [0.12.2](https://github.com/konnectors/libs/compare/cozy-clisk@0.12.1...cozy-clisk@0.12.2) (2023-05-23)
 
 
