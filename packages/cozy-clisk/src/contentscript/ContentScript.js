@@ -230,6 +230,17 @@ export default class ContentScript {
   }
 
   /**
+   * Check if dom element is present on the page.
+   *
+   * @param {string} selector - css selector we are checking for
+   * @returns {Promise<boolean>}  - Returns true or false
+   */
+  async isElementInWorker(selector) {
+    this.onlyIn(PILOT_TYPE, 'isElementInWorker')
+    return await this.runInWorker('checkForElement', selector)
+  }
+
+  /**
    * Wait for a dom element to be present on the page. This won't resolve if the page reloads
    *
    * @param {string} selector - css selector we are waiting for
@@ -247,6 +258,18 @@ export default class ContentScript {
       }
     })
     return true
+  }
+
+  /**
+   * Check if a dom element is present on the page.
+   *
+   * @param {string} selector - css selector we are checking for
+   * @returns {Promise<boolean>} - Returns true or false
+   */
+  async checkForElement(selector) {
+    this.onlyIn(WORKER_TYPE, 'checkForElement')
+    log.debug('checkForElement', selector)
+    return Boolean(document.querySelector(selector))
   }
 
   async click(selector) {
