@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.14.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.13.0...cozy-clisk@0.14.0) (2023-06-09)
+
+
+### Features
+
+* Add a function to check if element is present in the worker ([f90e787](https://github.com/konnectors/libs/commit/f90e78795a7a28244e4ad3b4d7bf5870f642192b))
+
+
+
+
+
 # [0.13.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.12.2...cozy-clisk@0.13.0) (2023-06-01)
 
 
