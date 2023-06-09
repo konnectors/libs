@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.14.1](https://github.com/konnectors/libs/compare/cozy-clisk@0.14.0...cozy-clisk@0.14.1) (2023-06-09)
+
+
+### Bug Fixes
+
+* Add forgotten declaration for checkForElement ([82f92c6](https://github.com/konnectors/libs/commit/82f92c62755753e6de91b9c329b97e1f05137b68))
+
+
+
+
+
 # [0.14.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.13.0...cozy-clisk@0.14.0) (2023-06-09)
 
 
