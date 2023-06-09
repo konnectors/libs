@@ -109,7 +109,8 @@ export default class ContentScript {
       'getCookiesByDomain',
       'getCookieByDomainAndName',
       'downloadFileInWorker',
-      'getCliskVersion'
+      'getCliskVersion',
+      'checkForElement'
     ]
 
     if (options.additionalExposedMethodsNames) {
