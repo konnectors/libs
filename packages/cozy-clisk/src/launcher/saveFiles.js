@@ -7,17 +7,27 @@ import retry from 'bluebird-retry'
 const log = Minilog('saveFiles')
 
 const saveFiles = async (client, entries, folderPath, options = {}) => {
-  if (!entries || entries.length === 0) {
+  if (!entries) {
+    throw new Error('Savefiles : No list of files given')
+  }
+  if (entries.length === 0) {
     log.warn('No file to download')
   }
+  if (!options.manifest) {
+    throw new Error('Savefiles : no manifest')
+  }
   if (!options.sourceAccount) {
-    log.warn('There is no sourceAccount given to saveFiles')
+    throw new Error('Savefiles : no sourceAccount')
   }
   if (!options.sourceAccountIdentifier) {
-    log.warn('There is no sourceAccountIdentifier given to saveFiles')
+    throw new Error('Savefiles : no sourceAccountIdentifier')
   }
   if (!client) {
-    throw new Error('No cozy-client instance given')
+    throw new Error('Savefiles : No cozy-client instance given')
+  }
+
+  if (!options.fileIdAttributes) {
+    throw new Error('Savefiles : No fileIdAttributes')
   }
 
   const saveOptions = {
@@ -43,7 +53,7 @@ const saveFiles = async (client, entries, folderPath, options = {}) => {
     }
   }
 
-  noMetadataDeduplicationWarning(saveOptions)
+  noMetadataDeduplicationErrors(saveOptions)
 
   const canBeSaved = entry => entry.filestream
 
@@ -154,29 +164,17 @@ const saveEntry = async function (client, entry, options) {
   return entry
 }
 
-function noMetadataDeduplicationWarning(options) {
+function noMetadataDeduplicationErrors(options) {
   const fileIdAttributes = options.fileIdAttributes
   if (!fileIdAttributes) {
-    log.warn(
-      'No deduplication key is defined, file deduplication will be based on file path'
+    throw new Error(
+      'Savefiles : No deduplication key is defined, file deduplication will be based on file path'
     )
   }
 
   const slug = get(options, 'manifest.slug')
   if (!slug) {
-    log.warn(
-      'No slug is defined for the current connector, file deduplication will be based on file path'
-    )
-  }
-
-  const sourceAccountIdentifier = get(
-    options,
-    'sourceAccountOptions.sourceAccountIdentifier'
-  )
-  if (!sourceAccountIdentifier) {
-    log.warn(
-      'No sourceAccountIdentifier is defined in options, file deduplication will be based on file path'
-    )
+    throw new Error('Savefiles : No slug is defined for the current connector')
   }
 }
 
