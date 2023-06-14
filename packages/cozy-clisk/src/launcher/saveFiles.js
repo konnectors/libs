@@ -1,11 +1,59 @@
 import Minilog from '@cozy/minilog'
 import get from 'lodash/get'
 import omit from 'lodash/omit'
-import { Q } from 'cozy-client'
 import retry from 'bluebird-retry'
 
 const log = Minilog('saveFiles')
 
+/**
+ * @typedef saveFilesEntry
+ * @property {string} [fileurl] - url where to download the corresponding file
+ * @property {string} [filename] - name of the file
+ * @property {string | ArrayBuffer} [filestream] - name of the file
+ */
+
+/**
+ * @typedef saveFilesOptions
+ * @property {string} sourceAccount - id of the associated cozy account
+ * @property {string} sourceAccountIdentifier - unique identifier of the website account
+ * @property {import('cozy-client/types/types').Manifest} manifest - name of the file
+ * @property {Array<string>} fileIdAttributes - List of entry attributes considered as unique deduplication key
+ * @property {string} [subPath] - subPath of the destination folder path where to put the downloaded file
+ * @property {Function} [postProcess] - callback called after the file is download to further modify it
+ * @property {string} [contentType] - will force the contentType of the file if any
+ * @property {Function} [shouldReplaceFile] - Function which will define if the file should be replaced or not
+ * @property {Function} [validateFile] - this function will check if the downloaded file is correct (by default, error if file size is 0)
+ * @property {Function} [downloadAndFormatFile] - this callback will download the file and format to be useable by cozy-client
+ * @property {string} [qualificationLabel] - qualification label defined in cozy-client which will be used on all given files
+ * @property {number} [retry] - number of retries if the download of a file failes. No retry by default
+ * @property {Map<import('cozy-client/types/types').FileDocument>} existingFilesIndex - index of existing files
+ */
+
+/**
+ * @typedef saveFileOptions
+ * @property {import('cozy-client/types/types').Manifest} manifest - name of the file
+ * @property {Array<string>} fileIdAttributes - List of entry attributes considered as unique deduplication key
+ * @property {string} [subPath] - subPath of the destination folder path where to put the downloaded file
+ * @property {Function} [postProcess] - callback called after the file is download to further modify it
+ * @property {string} [contentType] - will force the contentType of the file if any
+ * @property {Function} [shouldReplaceFile] - Function which will define if the file should be replaced or not
+ * @property {Function} [validateFile] - this function will check if the downloaded file is correct (by default, error if file size is 0)
+ * @property {Function} [downloadAndFormatFile] - this callback will download the file and format to be useable by cozy-client
+ * @property {string} [qualificationLabel] - qualification label defined in cozy-client which will be used on all given files
+ * @property {number} [retry] - number of retries if the download of a file failes. No retry by default
+ * @property {string} [folderPath] - path to the destination folder
+ * @property {Map<import('cozy-client/types/types').FileDocument>} existingFilesIndex - index of existing files
+ */
+
+/**
+ * Saves the given files to the cozy stack
+ *
+ * @param {import('cozy-client/types/CozyClient')} client - CozyClient instance
+ * @param {Array<saveFilesEntry>} entries - file entries
+ * @param {string} folderPath - path to the destination folder
+ * @param {saveFilesOptions} options - saveFiles options
+ * @returns {Array<saveFilesEntry>} - resulting entries
+ */
 const saveFiles = async (client, entries, folderPath, options = {}) => {
   if (!entries) {
     throw new Error('Savefiles : No list of files given')
@@ -30,6 +78,10 @@ const saveFiles = async (client, entries, folderPath, options = {}) => {
     throw new Error('Savefiles : No fileIdAttributes')
   }
 
+  if (!options.existingFilesIndex) {
+    throw new Error('Savefiles : No existingFilesIndex given')
+  }
+
   const saveOptions = {
     folderPath,
     subPath: options.subPath,
@@ -39,10 +91,12 @@ const saveFiles = async (client, entries, folderPath, options = {}) => {
     contentType: options.contentType,
     shouldReplaceFile: options.shouldReplaceFile,
     validateFile: options.validateFile || defaultValidateFile,
+    downloadAndFormatFile: options.downloadAndFormatFile,
     sourceAccountOptions: {
       sourceAccount: options.sourceAccount,
       sourceAccountIdentifier: options.sourceAccountIdentifier
-    }
+    },
+    existingFilesIndex: options.existingFilesIndex
   }
 
   if (options.validateFileContent) {
@@ -55,34 +109,29 @@ const saveFiles = async (client, entries, folderPath, options = {}) => {
 
   noMetadataDeduplicationErrors(saveOptions)
 
-  const canBeSaved = entry => entry.filestream
-
   let savedFiles = 0
   const savedEntries = []
   for (let entry of entries) {
     ;['filename', 'shouldReplaceName'].forEach(key =>
       addValOrFnResult(entry, key, options)
     )
-    if (entry.filestream && !entry.filename) {
-      log.warn(
-        'Missing filename property for for filestream entry, entry is ignored'
-      )
+
+    if (!entry.filename) {
+      log.warn('Missing filename property, entry is ignored')
       return
     }
-    if (canBeSaved(entry)) {
-      const folderPath = await getOrCreateDestinationPath(
-        client,
-        entry,
-        saveOptions
-      )
-      entry = await saveEntry(client, entry, {
-        ...saveOptions,
-        folderPath
-      })
-      if (entry && entry._cozy_file_to_create) {
-        savedFiles++
-        delete entry._cozy_file_to_create
-      }
+    const folderPath = await getOrCreateDestinationPath(
+      client,
+      entry,
+      saveOptions
+    )
+    entry = await saveFile(client, entry, {
+      ...saveOptions,
+      folderPath
+    })
+    if (entry && entry._cozy_file_to_create) {
+      savedFiles++
+      delete entry._cozy_file_to_create
     }
     savedEntries.push(entry)
   }
@@ -95,8 +144,24 @@ const saveFiles = async (client, entries, folderPath, options = {}) => {
   return savedEntries
 }
 
-const saveEntry = async function (client, entry, options) {
-  let file = await getFileIfExists(client, entry, options)
+/**
+ * Saves a single file entry
+ *
+ * @param {import('cozy-client/types/CozyClient')} client - CozyClient instance
+ * @param {saveFilesEntry} entry - file entry
+ * @param {saveFileOptions} options - saveFiles options
+ * @returns {Promise<saveFilesEntry>} - resulting file entry with file document
+ */
+const saveFile = async function (client, entry, options) {
+  let file = options.existingFilesIndex.get(
+    calculateFileKey(entry, options.fileIdAttributes)
+  )
+
+  if (entry.fileurl && !file && options.downloadAndFormatFile) {
+    const downloadedEntry = await options.downloadAndFormatFile(entry)
+    entry.filestream = downloadedEntry.filestream
+    delete entry.fileurl
+  }
   let shouldReplace = false
   if (file) {
     try {
@@ -175,97 +240,6 @@ function noMetadataDeduplicationErrors(options) {
   const slug = get(options, 'manifest.slug')
   if (!slug) {
     throw new Error('Savefiles : No slug is defined for the current connector')
-  }
-}
-
-async function getFileIfExists(client, entry, options) {
-  const fileIdAttributes = options.fileIdAttributes
-  const slug = options.manifest.slug
-  const sourceAccountIdentifier = get(
-    options,
-    'sourceAccountOptions.sourceAccountIdentifier'
-  )
-
-  const isReadyForFileMetadata =
-    fileIdAttributes && slug && sourceAccountIdentifier
-  if (isReadyForFileMetadata) {
-    log.debug('Deduplicating file with metadata')
-    const file = await getFileFromMetaData(
-      client,
-      entry,
-      fileIdAttributes,
-      sourceAccountIdentifier,
-      slug
-    )
-    if (!file) {
-      // no file with correct metadata, maybe the corresponding file already exist in the default
-      // path from a previous version of the connector
-      log.debug('Rolling back on detection by filename')
-      return getFileFromPath(client, entry, options)
-    } else {
-      return file
-    }
-  } else {
-    log.debug('Not enough metadata, deduplicating by filename')
-    return getFileFromPath(client, entry, options)
-  }
-}
-
-async function getFileFromMetaData(
-  client,
-  entry,
-  fileIdAttributes,
-  sourceAccountIdentifier,
-  slug
-) {
-  log.debug(
-    `Checking existence of ${calculateFileKey(entry, fileIdAttributes)}`
-  )
-  const files = await client.queryAll(
-    Q('io.cozy.files')
-      .where({
-        metadata: {
-          fileIdAttributes: calculateFileKey(entry, fileIdAttributes)
-        },
-        trashed: false,
-        cozyMetadata: {
-          sourceAccountIdentifier,
-          createdByApp: slug
-        }
-      })
-      .indexFields([
-        'metadata.fileIdAttributes',
-        'trashed',
-        'cozyMetadata.sourceAccountIdentifier',
-        'cozyMetadata.createdByApp'
-      ])
-  )
-
-  if (files && files[0]) {
-    if (files.length > 1) {
-      log.warn(
-        `Found ${files.length} files corresponding to ${calculateFileKey(
-          entry,
-          fileIdAttributes
-        )}`
-      )
-    }
-    return files[0]
-  } else {
-    log.debug('not found')
-    return false
-  }
-}
-
-async function getFileFromPath(client, entry, options) {
-  const filepath = getFilePath({ entry, options })
-  try {
-    log.debug(`Checking existence of ${filepath}`)
-    const result = await client.collection('io.cozy.files').statByPath(filepath)
-    return result.data
-  } catch (err) {
-    log.debug(err.message)
-    return false
   }
 }
 
@@ -406,7 +380,6 @@ const removeFile = async function (client, file) {
 }
 
 module.exports = saveFiles
-module.exports.getFileIfExists = getFileIfExists
 
 function getFileName(entry) {
   let filename
