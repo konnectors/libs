@@ -10,6 +10,8 @@ const log = Minilog('saveFiles')
  * @property {string} [fileurl] - url where to download the corresponding file
  * @property {string} [filename] - name of the file
  * @property {string | ArrayBuffer} [filestream] - name of the file
+ * @property {boolean} [_cozy_file_to_create] - Internal use to count the number of files to download
+ * @property {object} [fileAttributes] - metadata attributes to add to the resulting file object
  */
 
 /**
@@ -92,6 +94,7 @@ const saveFiles = async (client, entries, folderPath, options = {}) => {
     shouldReplaceFile: options.shouldReplaceFile,
     validateFile: options.validateFile || defaultValidateFile,
     downloadAndFormatFile: options.downloadAndFormatFile,
+    qualificationLabel: options.qualificationLabel,
     sourceAccountOptions: {
       sourceAccount: options.sourceAccount,
       sourceAccountIdentifier: options.sourceAccountIdentifier
@@ -156,6 +159,17 @@ const saveFile = async function (client, entry, options) {
   let file = options.existingFilesIndex.get(
     calculateFileKey(entry, options.fileIdAttributes)
   )
+
+  if (options.qualificationLabel) {
+    if (!entry.fileAttributes) {
+      entry.fileAttributes = {}
+    }
+    if (!entry.fileAttributes.metadata) {
+      entry.fileAttributes.metadata = {}
+    }
+    entry.fileAttributes.metadata.qualification =
+      models.document.Qualification.getByLabel(options.qualificationLabel)
+  }
 
   if (entry.fileurl && !file && options.downloadAndFormatFile) {
     const downloadedEntry = await options.downloadAndFormatFile(entry)
