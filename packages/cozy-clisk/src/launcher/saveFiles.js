@@ -1,7 +1,9 @@
+// @ts-check
 import Minilog from '@cozy/minilog'
 import get from 'lodash/get'
 import omit from 'lodash/omit'
 import retry from 'bluebird-retry'
+import { models } from 'cozy-client'
 
 const log = Minilog('saveFiles')
 
@@ -54,9 +56,9 @@ const log = Minilog('saveFiles')
  * @param {Array<saveFilesEntry>} entries - file entries
  * @param {string} folderPath - path to the destination folder
  * @param {saveFilesOptions} options - saveFiles options
- * @returns {Array<saveFilesEntry>} - resulting entries
+ * @returns {Promise<Array<saveFilesEntry>>} - resulting entries
  */
-const saveFiles = async (client, entries, folderPath, options = {}) => {
+const saveFiles = async (client, entries, folderPath, options) => {
   if (!entries) {
     throw new Error('Savefiles : No list of files given')
   }
@@ -121,7 +123,7 @@ const saveFiles = async (client, entries, folderPath, options = {}) => {
 
     if (!entry.filename) {
       log.warn('Missing filename property, entry is ignored')
-      return
+      continue
     }
     const folderPath = await getOrCreateDestinationPath(
       client,
@@ -489,6 +491,15 @@ function attachFileToEntry(entry, fileDocument) {
   return entry
 }
 
+/**
+ * Get the full path of a given file, from it's folder path and file or entry
+ *
+ * @param {Object} arg - arg option object
+ * @param {import('cozy-client/types/types').FileDocument} [arg.file] - io.cozy.files object
+ * @param {saveFilesEntry} [arg.entry] - saveFiles entry
+ * @param {saveFileOptions} arg.options - io.cozy.files object
+ * @returns {string | undefined} - file full path
+ */
 function getFilePath({ file, entry, options }) {
   const folderPath = options.folderPath
   if (file) {
