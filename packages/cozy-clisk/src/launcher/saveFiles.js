@@ -104,14 +104,6 @@ const saveFiles = async (client, entries, folderPath, options) => {
     existingFilesIndex: options.existingFilesIndex
   }
 
-  if (options.validateFileContent) {
-    if (options.validateFileContent === true) {
-      saveOptions.validateFileContent = defaultValidateFileContent
-    } else if (typeof options.validateFileContent === 'function') {
-      saveOptions.validateFileContent = options.validateFileContent
-    }
-  }
-
   noMetadataDeduplicationErrors(saveOptions)
 
   let savedFiles = 0
@@ -315,14 +307,6 @@ async function createFile(client, entry, options, method, file) {
       await removeFile(client, fileDocument)
       throw new Error('BAD_DOWNLOADED_FILE')
     }
-
-    if (
-      options.validateFileContent &&
-      !(await options.validateFileContent(fileDocument))
-    ) {
-      await removeFile(client, fileDocument)
-      throw new Error('BAD_DOWNLOADED_FILE')
-    }
   }
 
   return fileDocument
@@ -468,14 +452,6 @@ function calculateFileKey(entry, fileIdAttributes) {
 
 function defaultValidateFile(fileDocument) {
   return checkFileSize(fileDocument)
-}
-
-async function defaultValidateFileContent(fileDocument) {
-  if (!defaultValidateFile(fileDocument)) {
-    log.warn('Wrong file type from content')
-    return false
-  }
-  return true
 }
 
 function sanitizeEntry(entry) {
