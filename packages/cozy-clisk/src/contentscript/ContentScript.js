@@ -167,7 +167,12 @@ export default class ContentScript {
     this.onlyIn(WORKER_TYPE, 'waitForAuthenticated')
     await waitFor(this.checkAuthenticated.bind(this), {
       interval: 1000,
-      timeout: DEFAULT_LOGIN_TIMEOUT
+      timeout: {
+        milliseconds: DEFAULT_LOGIN_TIMEOUT,
+        message: new TimeoutError(
+          `waitForAuthenticated timed out after ${DEFAULT_LOGIN_TIMEOUT}ms`
+        )
+      }
     })
     return true
   }
