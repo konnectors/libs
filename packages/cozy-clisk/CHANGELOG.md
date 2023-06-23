@@ -3,6 +3,32 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.15.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.14.1...cozy-clisk@0.15.0) (2023-06-23)
+
+
+### Features
+
+* Add qualification label handling ([90916e3](https://github.com/konnectors/libs/commit/90916e388129d9d2bfcd4548f35e6a500fa09b07))
+* Be more restrictive on mandatory fields ([3a21067](https://github.com/konnectors/libs/commit/3a2106751e84fb03722011aab8350ef09d7c40eb))
+* Download files progressively only when needed ([238b1f0](https://github.com/konnectors/libs/commit/238b1f0f5cc72dc1c4df9e808b99ac4e321447c9))
+
+
+### BREAKING CHANGES
+
+* Metadata attributes are now mandatory
+
+File metadata attributes were not mandatory to allow progressive
+migration to file metadata deduplication for node konnector.
+
+Here all clisk konnectors use metadata deduplication. I think it is
+better to remove this unneeded complexity in the code
+
+Now we throw an error directly if any metadata attributes are missing.
+
+
+
+
+
 ## [0.14.1](https://github.com/konnectors/libs/compare/cozy-clisk@0.14.0...cozy-clisk@0.14.1) (2023-06-09)
 
 
