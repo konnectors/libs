@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.16.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.15.0...cozy-clisk@0.16.0) (2023-06-23)
+
+
+### Features
+
+* Allow waitForElementInWorker to set its own timeout ([0e8fbda](https://github.com/konnectors/libs/commit/0e8fbdaca635c6c33ae9ade6fc4dbbbe07986551))
+
+
+
+
+
 # [0.15.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.14.1...cozy-clisk@0.15.0) (2023-06-23)
 
 
