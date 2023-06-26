@@ -12,13 +12,28 @@ const log = Minilog('addData')
  * @param {string} doctype : the doctype where you want to save data (ex: 'io.cozy.bills')
  * @param {object} options : options object
  * @param {import('cozy-client/types/CozyClient').default} options.client CozyClient instance
+ * @param {string} options.sourceAccountIdentifier : unique identifier of the user website account
  */
 export default async (entries, doctype, options) => {
   const client = options?.client
+  if (!client) {
+    throw new Error('addData: called without any client in options')
+  }
+
+  if (!options?.sourceAccountIdentifier) {
+    throw new Error(
+      'addData: called without any sourceAccountIdentifier in options'
+    )
+  }
+
   const result = []
   for (const entry of entries) {
     log.debug('Adding entry', entry)
-    const doc = await client.save({ ...entry, _type: doctype })
+    const doc = await client.save({
+      ...entry,
+      _type: doctype,
+      sourceAccountIdentifier: options.sourceAccountIdentifier
+    })
     const dbEntry = doc.data
     entry._id = dbEntry._id
     result.push(dbEntry)
