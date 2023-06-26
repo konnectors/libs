@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.16.1](https://github.com/konnectors/libs/compare/cozy-clisk@0.16.0...cozy-clisk@0.16.1) (2023-06-26)
+
+
+### Bug Fixes
+
+* Enhance timeout error message in waitForAuthenticated ([0a96f0b](https://github.com/konnectors/libs/commit/0a96f0bbece6963103b93bc319e6ed52c10566bd))
+
+
+
+
+
 # [0.16.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.15.0...cozy-clisk@0.16.0) (2023-06-23)
 
 
