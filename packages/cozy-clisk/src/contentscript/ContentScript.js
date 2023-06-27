@@ -363,6 +363,29 @@ export default class ContentScript {
   }
 
   /**
+   * Query all the documents corresponding to the given query object. The client with permissions corresponding
+   * to the current konnector manifest will be used.
+   *
+   * @param {import("cozy-client").QueryDefinition} queryDefinition - CozyClient query definition object
+   * @param {import('cozy-client/types/types').QueryOptions} options - CozyClient query options
+   * @returns {Promise<import('cozy-client/types/types').QueryResult>}
+   */
+  async queryAll(queryDefinition, options) {
+    this.onlyIn(PILOT_TYPE, 'queryAll')
+    if (!this.bridge) {
+      throw new Error(
+        'No bridge is defined, you should call ContentScript.init before using this method'
+      )
+    }
+
+    return await this.bridge.call(
+      'queryAll',
+      queryDefinition.toDefinition(),
+      options
+    )
+  }
+
+  /**
    * Bridge to the saveBills method from the launcher.
    * - it first saves the files
    * - then saves bills linked to corresponding files

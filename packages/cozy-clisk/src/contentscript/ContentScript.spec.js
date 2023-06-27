@@ -1,6 +1,37 @@
 import ContentScript, { PILOT_TYPE } from './ContentScript'
+import { Q } from 'cozy-client'
 
 describe('ContentScript', () => {
+  describe('queryAll', () => {
+    it('should convert the given query definition to a serializable object', async () => {
+      const contentScript = new ContentScript()
+      contentScript.setContentScriptType(PILOT_TYPE)
+      contentScript.bridge = {
+        call: jest.fn()
+      }
+      await contentScript.queryAll(
+        Q('io.cozy.files').where({
+          cozyMetadata: {
+            sourceAccountIdentifier: 'testidentifier',
+            createdByApp: 'testslug'
+          }
+        }),
+        { as: 'testfilesrequest' }
+      )
+      expect(contentScript.bridge.call).toHaveBeenCalledWith(
+        'queryAll',
+        expect.objectContaining({
+          selector: {
+            cozyMetadata: {
+              sourceAccountIdentifier: 'testidentifier',
+              createdByApp: 'testslug'
+            }
+          }
+        }),
+        { as: 'testfilesrequest' }
+      )
+    })
+  })
   describe('runInWorker', () => {
     const contentScript = new ContentScript()
     contentScript.setContentScriptType(PILOT_TYPE)
