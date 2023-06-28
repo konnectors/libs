@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.17.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.16.1...cozy-clisk@0.17.0) (2023-06-28)
+
+
+### Features
+
+* Add evaluateInWorker method ([5ce1d6e](https://github.com/konnectors/libs/commit/5ce1d6e9d47f011edd43b5bb9d2f0d362f55b5b6))
+
+
+
+
+
 ## [0.16.1](https://github.com/konnectors/libs/compare/cozy-clisk@0.16.0...cozy-clisk@0.16.1) (2023-06-26)
 
 
