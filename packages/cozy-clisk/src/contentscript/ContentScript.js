@@ -529,6 +529,26 @@ export default class ContentScript {
     await this.setWorkerState({ url })
   }
 
+  async blockWorkerInteractions() {
+    this.onlyIn(PILOT_TYPE, 'blockWorkerInteractions')
+    if (!this.bridge) {
+      throw new Error(
+        'No bridge is defined, you should call ContentScript.init before using this method'
+      )
+    }
+    await this.bridge.call('blockWorkerInteractions')
+  }
+
+  async unblockWorkerInteractions() {
+    this.onlyIn(PILOT_TYPE, 'unblockWorkerInteractions')
+    if (!this.bridge) {
+      throw new Error(
+        'No bridge is defined, you should call ContentScript.init before using this method'
+      )
+    }
+    await this.bridge.call('unblockWorkerInteractions')
+  }
+
   /**
    * Make sure that the connector is authenticated to the website.
    * If not, show the login webview to the user to let her/him authenticated.
