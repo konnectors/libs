@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.18.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.17.0...cozy-clisk@0.18.0) (2023-06-29)
+
+
+### Features
+
+* Add a onWorkerReady callback to the content script ([2d94b0e](https://github.com/konnectors/libs/commit/2d94b0ef7d5a57f98477719e2934d2e6a1c274a9))
+
+
+
+
+
 # [0.17.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.16.1...cozy-clisk@0.17.0) (2023-06-28)
 
 
