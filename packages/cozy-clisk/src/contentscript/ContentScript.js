@@ -134,9 +134,14 @@ export default class ContentScript {
         'debug',
         `window.beforeunload detected with previous url : ${document.location}`
       )
-
-    this.bridge.emit('workerReady')
   }
+
+  /**
+   * This method is called when the worker is ready on the current page. This is a good place to
+   * subscribe to dom events for examples. These subscriptions will be replayed on each worker page
+   * reload
+   */
+  onWorkerReady() {}
 
   /**
    * Set the ContentScript type. This is usefull to know which webview is the pilot or the worker
@@ -146,6 +151,10 @@ export default class ContentScript {
   async setContentScriptType(contentScriptType) {
     this.contentScriptType = contentScriptType
     log.info(`I am the ${contentScriptType}`)
+
+    if (contentScriptType === WORKER_TYPE) {
+      this.onWorkerReady()
+    }
   }
 
   /**
