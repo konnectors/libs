@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.19.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.18.0...cozy-clisk@0.19.0) (2023-06-30)
+
+
+### Features
+
+* Add sourceAccountIdentifer in addData ([6e905c0](https://github.com/konnectors/libs/commit/6e905c049c5c0689d2e3aa870406e68e7a2c533a))
+
+
+
+
+
 # [0.18.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.17.0...cozy-clisk@0.18.0) (2023-06-29)
 
 
