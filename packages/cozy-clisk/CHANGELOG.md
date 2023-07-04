@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.20.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.19.0...cozy-clisk@0.20.0) (2023-07-04)
+
+
+### Features
+
+* Add blockWorkerInteractions command in content script ([b082997](https://github.com/konnectors/libs/commit/b082997b04182a609141285470a6863eba20d311))
+* Add queryAll method to content script ([5436082](https://github.com/konnectors/libs/commit/5436082e18648eac20301ab0c496a173f2a912ed))
+
+
+
+
+
 # [0.19.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.18.0...cozy-clisk@0.19.0) (2023-06-30)
 
 
