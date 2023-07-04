@@ -586,7 +586,6 @@ export default class ContentScript {
    * Evaluates a given function in worker context
    *
    * @param {Function} fn - the function to evaluate
-   *
    * @returns {Promise<any>} - function evaluation result
    */
   async evaluateInWorker(fn, ...args) {
@@ -597,8 +596,7 @@ export default class ContentScript {
   /**
    * Evaluates a given function string
    *
-   * @param {String} fnString - the function string to evaluate
-   *
+   * @param {string} fnString - the function string to evaluate
    * @returns {Promise<any>} - function evaluation result
    */
   async evaluate(fnString, ...args) {

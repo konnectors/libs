@@ -17,8 +17,7 @@ export async function blobToBase64(blob) {
 /**
  * Convert a string function to the corresponding function.
  *
- * @param {String} fnString - function string to convert
- *
+ * @param {string} fnString - function string to convert
  * @returns {Function} - the resulting function
  */
 export function deserializeStringFunction(fnString) {
@@ -28,8 +27,7 @@ export function deserializeStringFunction(fnString) {
 /**
  * Calls and awaits the given string function with given arguments
  *
- * @param {String} fnString - function string to convert
- *
+ * @param {string} fnString - function string to convert
  * @returns {Promise<any>} - the result of the execution of the string function
  */
 export async function callStringFunction(fnString, ...args) {
