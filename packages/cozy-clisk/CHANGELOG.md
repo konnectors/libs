@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.20.1](https://github.com/konnectors/libs/compare/cozy-clisk@0.20.0...cozy-clisk@0.20.1) (2023-07-05)
+
+**Note:** Version bump only for package cozy-clisk
+
+
+
+
+
 # [0.20.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.19.0...cozy-clisk@0.20.0) (2023-07-04)
 
 
