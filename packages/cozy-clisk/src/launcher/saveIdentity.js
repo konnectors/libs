@@ -12,6 +12,8 @@ const log = Minilog('saveIdentity')
  * @param {object} contactOrIdentity : the identity to create/update as an object io.cozy.contacts
  * @param {string} accountIdentifier : a string that represent the account use
  * @param {object} options : options object
+ * @param {import('cozy-client/types/CozyClient')} options.client - CozyClient instance
+ * @param {boolean} [options.merge] - Merge the identity with the previous one (default false)
  * ```javascript
  * const identity =
  *   {
@@ -64,14 +66,31 @@ export default async (contactOrIdentity, accountIdentifier, options = {}) => {
       })
       .indexFields(['identifier', 'cozyMetadata.createdByApp'])
   )
-  const existingSameIdentity = existingResult?.[0]
+  const existingSameIdentity = existingResult?.[0] || {}
 
   if (existingSameIdentity) {
-    identity._id = existingSameIdentity._id
-    identity._rev = existingSameIdentity._rev
+    if (options.merge) {
+      await client.save({
+        ...existingSameIdentity,
+        ...identity,
+        _type: 'io.cozy.identities'
+      })
+    } else {
+      await client.save({
+        ...identity,
+        _id: existingSameIdentity._id,
+        _rev: existingSameIdentity._rev,
+        cozyMetadata: existingSameIdentity.cozyMetadata,
+        _type: 'io.cozy.identities'
+      })
+    }
+  } else {
+    await client.save({
+      ...identity,
+      _type: 'io.cozy.identities'
+    })
   }
 
-  await client.save({ ...identity, _type: 'io.cozy.identities' })
   return
 }
 
