@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.20.3](https://github.com/konnectors/libs/compare/cozy-clisk@0.20.2...cozy-clisk@0.20.3) (2023-07-25)
+
+
+### Bug Fixes
+
+* Do not send page message on ContentScript file import ([dc76c78](https://github.com/konnectors/libs/commit/dc76c7819747f472ae62f7057d51199fa778b6df))
+
+
+
+
+
 ## [0.20.2](https://github.com/konnectors/libs/compare/cozy-clisk@0.20.1...cozy-clisk@0.20.2) (2023-07-05)
 
 
