@@ -19,7 +19,6 @@ const DEFAULT_WAIT_FOR_ELEMENT_TIMEOUT = 30 * s
 export const PILOT_TYPE = 'pilot'
 export const WORKER_TYPE = 'worker'
 
-sendPageMessage('NEW_WORKER_INITIALIZING')
 if (window?.addEventListener) {
   // allows cozy-clisk to be embedded in other envs (react-native, jest)
   window.addEventListener('load', () => {
@@ -32,6 +31,7 @@ if (window?.addEventListener) {
 
 export default class ContentScript {
   constructor() {
+    sendPageMessage('NEW_WORKER_INITIALIZING')
     const logDebug = message => this.log('debug', message)
     const wrapTimerDebug = wrapTimerFactory({ logFn: logDebug })
     const logInfo = message => this.log('info', message)
