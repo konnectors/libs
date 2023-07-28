@@ -170,17 +170,48 @@ export default class ContentScript {
    * This method is made to run in the worker and will resolve as true when
    * the user is authenticated
    *
+   * @param {object} options        - options object
+   * @param {number} [options.timeout] - number of miliseconds before the function sends a timeout error. Default 5m
+   * @param {number} [options.interval] - interval in ms between checkAuthenticated calls. Default 1s
    * @returns {Promise.<true>} : if authenticated
    * @throws {TimeoutError}: TimeoutError from p-wait-for package if timeout expired
    */
-  async waitForAuthenticated() {
+  async waitForAuthenticated(options) {
     this.onlyIn(WORKER_TYPE, 'waitForAuthenticated')
+    const timeout = options.timeout || DEFAULT_LOGIN_TIMEOUT
+    const interval = options.interval || 1000
     await waitFor(this.checkAuthenticated.bind(this), {
-      interval: 1000,
+      interval,
       timeout: {
-        milliseconds: DEFAULT_LOGIN_TIMEOUT,
+        milliseconds: timeout,
         message: new TimeoutError(
-          `waitForAuthenticated timed out after ${DEFAULT_LOGIN_TIMEOUT}ms`
+          `waitForAuthenticated timed out after ${timeout}ms`
+        )
+      }
+    })
+    return true
+  }
+
+  /**
+   * This method is made to run in the worker and will resolve as true when
+   * the user is not authenticated
+   *
+   * @param {object} options        - options object
+   * @param {number} [options.timeout] - number of miliseconds before the function sends a timeout error. Default 30s
+   * @param {number} [options.interval] - interval in ms between checkAuthenticated calls. Default 1s
+   * @returns {Promise.<true>} : if not authenticated
+   * @throws {TimeoutError}: TimeoutError from p-wait-for package if timeout expired
+   */
+  async waitForNotAuthenticated(options) {
+    this.onlyIn(WORKER_TYPE, 'waitForNotAuthenticated')
+    const timeout = options.timeout || DEFAULT_WAIT_FOR_ELEMENT_TIMEOUT
+    const interval = options.interval || 1000
+    await waitFor(() => !this.checkAuthenticated.bind(this)(), {
+      interval,
+      timeout: {
+        milliseconds: timeout,
+        message: new TimeoutError(
+          `waitForNotAuthenticated timed out after ${timeout}ms`
         )
       }
     })
