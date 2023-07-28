@@ -41,6 +41,10 @@ export default class ContentScript {
     this.getUserDataFromWebsite = wrapTimerInfo(this, 'getUserDataFromWebsite')
     this.fetch = wrapTimerInfo(this, 'fetch')
     this.waitForAuthenticated = wrapTimerDebug(this, 'waitForAuthenticated')
+    this.waitForNotAuthenticated = wrapTimerDebug(
+      this,
+      'waitForNotAuthenticated'
+    )
     this.runInWorker = wrapTimerDebug(this, 'runInWorker', {
       suffixFn: args => args?.[0]
     })
@@ -99,6 +103,7 @@ export default class ContentScript {
       'ensureNotAuthenticated',
       'checkAuthenticated',
       'waitForAuthenticated',
+      'waitForNotAuthenticated',
       'waitForElementNoReload',
       'getUserDataFromWebsite',
       'fetch',
