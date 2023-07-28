@@ -523,7 +523,7 @@ export default class ContentScript {
     if (!allowedLevels.includes(level)) {
       newLevel = 'debug'
     }
-    const now = new Date()
+    const now = new Date().toISOString()
     this.bridge?.emit('log', {
       timestamp: now,
       level: newLevel,
