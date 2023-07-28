@@ -181,7 +181,7 @@ export default class ContentScript {
    * @returns {Promise.<true>} : if authenticated
    * @throws {TimeoutError}: TimeoutError from p-wait-for package if timeout expired
    */
-  async waitForAuthenticated(options) {
+  async waitForAuthenticated(options = {}) {
     this.onlyIn(WORKER_TYPE, 'waitForAuthenticated')
     const timeout = options.timeout || DEFAULT_LOGIN_TIMEOUT
     const interval = options.interval || 1000
@@ -207,7 +207,7 @@ export default class ContentScript {
    * @returns {Promise.<true>} : if not authenticated
    * @throws {TimeoutError}: TimeoutError from p-wait-for package if timeout expired
    */
-  async waitForNotAuthenticated(options) {
+  async waitForNotAuthenticated(options = {}) {
     this.onlyIn(WORKER_TYPE, 'waitForNotAuthenticated')
     const timeout = options.timeout || DEFAULT_WAIT_FOR_ELEMENT_TIMEOUT
     const interval = options.interval || 1000
