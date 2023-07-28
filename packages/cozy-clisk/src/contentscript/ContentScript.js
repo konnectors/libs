@@ -211,15 +211,21 @@ export default class ContentScript {
     this.onlyIn(WORKER_TYPE, 'waitForNotAuthenticated')
     const timeout = options.timeout || DEFAULT_WAIT_FOR_ELEMENT_TIMEOUT
     const interval = options.interval || 1000
-    await waitFor(() => !this.checkAuthenticated.bind(this)(), {
-      interval,
-      timeout: {
-        milliseconds: timeout,
-        message: new TimeoutError(
-          `waitForNotAuthenticated timed out after ${timeout}ms`
-        )
+    await waitFor(
+      async () => {
+        const authenticated = await this.checkAuthenticated.bind(this)()
+        return !authenticated
+      },
+      {
+        interval,
+        timeout: {
+          milliseconds: timeout,
+          message: new TimeoutError(
+            `waitForNotAuthenticated timed out after ${timeout}ms`
+          )
+        }
       }
-    })
+    )
     return true
   }
 
