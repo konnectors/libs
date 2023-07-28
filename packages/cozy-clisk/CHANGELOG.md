@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.21.1](https://github.com/konnectors/libs/compare/cozy-clisk@0.21.0...cozy-clisk@0.21.1) (2023-07-28)
+
+
+### Bug Fixes
+
+* Declare waitForNotAuthenticated ([7c035d7](https://github.com/konnectors/libs/commit/7c035d7b670999fcd2a09f25c1ce26664c9dab7e))
+* Default value for waitForAuthenticated* methods ([c85b8ba](https://github.com/konnectors/libs/commit/c85b8bae944876f2f614197a99f1362ced3ea0c4))
+* waitForNotAuthenticated result ([835e139](https://github.com/konnectors/libs/commit/835e139bf02a24be71cb1338735a826f75c87197))
+
+
+
+
+
 # [0.21.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.20.3...cozy-clisk@0.21.0) (2023-07-28)
 
 
