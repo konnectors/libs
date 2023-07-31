@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.22.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.21.1...cozy-clisk@0.22.0) (2023-07-31)
+
+
+### Features
+
+* **clisk:** Force log timestamp to milliseconds ([9bca920](https://github.com/konnectors/libs/commit/9bca9204c1a1a7aec11929a5d866fc2749467ee2))
+
+
+
+
+
 ## [0.21.1](https://github.com/konnectors/libs/compare/cozy-clisk@0.21.0...cozy-clisk@0.21.1) (2023-07-28)
 
 
