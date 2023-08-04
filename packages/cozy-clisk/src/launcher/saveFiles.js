@@ -4,6 +4,7 @@ import get from 'lodash/get'
 import omit from 'lodash/omit'
 import retry from 'bluebird-retry'
 import { models } from 'cozy-client'
+import { dataUriToArrayBuffer } from '../libs/utils'
 
 const log = Minilog('saveFiles')
 
@@ -169,6 +170,16 @@ const saveFile = async function (client, entry, options) {
     const downloadedEntry = await options.downloadAndFormatFile(entry)
     entry.filestream = downloadedEntry.filestream
     delete entry.fileurl
+  }
+
+  if (entry.dataUri) {
+    const { arrayBuffer } = dataUriToArrayBuffer(entry.dataUri)
+    if (arrayBuffer) {
+      entry.filestream = arrayBuffer
+      delete entry.dataUri
+    } else {
+      throw new Error('saveFiles: failed to convert dataUri to filestream')
+    }
   }
   let shouldReplace = false
   if (file) {

@@ -1,5 +1,9 @@
 import saveFiles from './saveFiles'
 
+jest.mock('../libs/utils')
+
+import { dataUriToArrayBuffer } from '../libs/utils'
+
 describe('saveFiles', function () {
   it('should not download a file if the file is already present', async () => {
     const fileDocument = {
@@ -102,6 +106,60 @@ describe('saveFiles', function () {
         fileDocument
       }
     ])
+  })
+  it('should convert a file dataUri to ArrayBuffer', async () => {
+    const client = {
+      save: jest.fn().mockImplementation(doc => ({
+        data: doc
+      })),
+      collection: () => ({
+        statByPath: jest.fn().mockImplementation(path => {
+          return { data: { _id: path } }
+        })
+      })
+    }
+
+    dataUriToArrayBuffer.mockImplementation(dataUri => ({
+      arrayBuffer: dataUri + ' arrayBuffer'
+    }))
+
+    const document = {
+      dataUri: 'dataUri content',
+      filename: 'file name.txt'
+    }
+    const result = await saveFiles(client, [document], '/test/folder/path', {
+      manifest: {
+        slug: 'testslug'
+      },
+      sourceAccount: 'testsourceaccount',
+      sourceAccountIdentifier: 'testsourceaccountidentifier',
+      fileIdAttributes: ['filename'],
+      existingFilesIndex: new Map()
+    })
+
+    const fileDocument = {
+      _type: 'io.cozy.files',
+      type: 'file',
+      data: 'dataUri content arrayBuffer',
+      dirId: '/test/folder/path',
+      name: 'file name.txt',
+      sourceAccount: 'testsourceaccount',
+      sourceAccountIdentifier: 'testsourceaccountidentifier',
+      metadata: {
+        fileIdAttributes: 'file name.txt'
+      }
+    }
+    expect(client.save).toHaveBeenCalledWith({
+      ...fileDocument,
+      data: 'dataUri content arrayBuffer'
+    })
+    expect(result).toStrictEqual([
+      {
+        ...document,
+        fileDocument
+      }
+    ])
+    expect(dataUriToArrayBuffer).toHaveBeenCalledWith('dataUri content')
   })
   it('should save a file with filestream without subPath', async () => {
     const client = {
