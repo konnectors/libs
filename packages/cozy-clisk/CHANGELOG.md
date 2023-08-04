@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.22.1](https://github.com/konnectors/libs/compare/cozy-clisk@0.22.0...cozy-clisk@0.22.1) (2023-08-04)
+
+
+### Bug Fixes
+
+* Add specfic error message when file is empty in saveFiles ([2268e00](https://github.com/konnectors/libs/commit/2268e0069d778e419cf5fd8ebaae819283bf0f00))
+* SaveFiles now converts entries with dataUri to ArrayBuffer ([a261b80](https://github.com/konnectors/libs/commit/a261b80ccd7ee8e6cf506e5a3e6835f86936aac4))
+
+
+
+
+
 # [0.22.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.21.1...cozy-clisk@0.22.0) (2023-07-31)
 
 
