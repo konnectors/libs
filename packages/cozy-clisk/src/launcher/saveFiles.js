@@ -282,6 +282,10 @@ async function createFile(client, entry, options, method, file) {
 
   const toCreate = entry.filestream
 
+  if (toCreate == undefined) {
+    throw new Error('saveFiles got undefined file content (entry.filestream)')
+  }
+
   let fileDocument
   if (method === 'create') {
     const clientResponse = await client.save({
