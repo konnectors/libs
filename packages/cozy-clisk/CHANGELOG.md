@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.22.2](https://github.com/konnectors/libs/compare/cozy-clisk@0.22.1...cozy-clisk@0.22.2) (2023-08-21)
+
+
+### Bug Fixes
+
+* Regression on regular file download ([f4cce5d](https://github.com/konnectors/libs/commit/f4cce5d9a86a907f0c308e9443fe7a8e966820e8))
+
+
+
+
+
 ## [0.22.1](https://github.com/konnectors/libs/compare/cozy-clisk@0.22.0...cozy-clisk@0.22.1) (2023-08-04)
 
 
