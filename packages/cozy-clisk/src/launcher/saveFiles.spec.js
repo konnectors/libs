@@ -68,8 +68,12 @@ describe('saveFiles', function () {
       })
     }
 
+    dataUriToArrayBuffer.mockImplementation(dataUri => ({
+      arrayBuffer: dataUri + ' arrayBuffer'
+    }))
+
     const downloadAndFormatFile = jest.fn().mockResolvedValue({
-      filestream: 'downloaded file content'
+      dataUri: 'downloaded file content'
     })
 
     const document = {
@@ -90,7 +94,7 @@ describe('saveFiles', function () {
     const fileDocument = {
       _type: 'io.cozy.files',
       type: 'file',
-      data: 'downloaded file content',
+      data: 'downloaded file content arrayBuffer',
       dirId: '/test/folder/path',
       name: 'file name.txt',
       sourceAccount: 'testsourceaccount',
