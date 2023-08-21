@@ -168,7 +168,7 @@ const saveFile = async function (client, entry, options) {
 
   if (entry.fileurl && !file && options.downloadAndFormatFile) {
     const downloadedEntry = await options.downloadAndFormatFile(entry)
-    entry.filestream = downloadedEntry.filestream
+    entry.dataUri = downloadedEntry.dataUri
     delete entry.fileurl
   }
 
