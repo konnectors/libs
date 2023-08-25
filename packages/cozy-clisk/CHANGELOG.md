@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.22.3](https://github.com/konnectors/libs/compare/cozy-clisk@0.22.2...cozy-clisk@0.22.3) (2023-08-25)
+
+
+### Bug Fixes
+
+* Remove allowed log level check ([6bc33e6](https://github.com/konnectors/libs/commit/6bc33e61f59198781be82ab840764bfa1639b64b))
+
+
+
+
+
 ## [0.22.2](https://github.com/konnectors/libs/compare/cozy-clisk@0.22.1...cozy-clisk@0.22.2) (2023-08-21)
 
 
