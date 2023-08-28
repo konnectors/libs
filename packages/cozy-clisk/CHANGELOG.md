@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.23.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.22.3...cozy-clisk@0.23.0) (2023-08-28)
+
+
+### Features
+
+* Allow launcher to fetch debug data from the worker ([2675c28](https://github.com/konnectors/libs/commit/2675c289e30ce410917cee39f1344f594a773daf))
+
+
+
+
+
 ## [0.22.3](https://github.com/konnectors/libs/compare/cozy-clisk@0.22.2...cozy-clisk@0.22.3) (2023-08-25)
 
 
