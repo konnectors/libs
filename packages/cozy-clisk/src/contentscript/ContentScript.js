@@ -114,6 +114,7 @@ export default class ContentScript {
       'getCookiesByDomain',
       'getCookieByDomainAndName',
       'downloadFileInWorker',
+      'getDebugData',
       'getCliskVersion',
       'checkForElement',
       'evaluate'
@@ -380,6 +381,13 @@ export default class ContentScript {
       entry.dataUri = await blobToBase64(entry.blob)
     }
     return entry.dataUri
+  }
+
+  async getDebugData() {
+    return {
+      url: window.location.href,
+      html: window.document.documentElement.outerHTML
+    }
   }
   /**
    * Bridge to the saveFiles method from the launcher.
