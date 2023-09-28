@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 2.1.0 (2023-09-28)
+
+
+### Features
+
+* Upgrade cozy-client to v44 ([6514e41](https://github.com/cozy/cozy-konnector-libs/commit/6514e41fd6609548ab0221ed183db6727c1f5e3a))
+
+
+
+
+
 ## [2.0.3](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@2.0.2...cozy-jobs-cli@2.0.3) (2023-03-16)
 
 **Note:** Version bump only for package cozy-jobs-cli

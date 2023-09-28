@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.24.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.23.0...cozy-clisk@0.24.0) (2023-09-28)
+
+
+### Features
+
+* Upgrade cozy-client to v44 ([6514e41](https://github.com/konnectors/libs/commit/6514e41fd6609548ab0221ed183db6727c1f5e3a))
+
+
+
+
+
 # [0.23.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.22.3...cozy-clisk@0.23.0) (2023-08-28)
 
 
