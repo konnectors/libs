@@ -26,7 +26,7 @@
     "cheerio": "1.0.0-rc.12",
     "cli-highlight": "2.1.11",
     "commander": "7.2.0",
-    "cozy-client": "29.2.0",
+    "cozy-client": "41.2.0",
     "cozy-device-helper": "^2.1.0",
     "cozy-flags": "^2.8.7",
     "cozy-konnector-libs": "^5.2.1",

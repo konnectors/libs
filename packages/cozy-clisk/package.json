@@ -36,7 +36,7 @@
   "dependencies": {
     "@cozy/minilog": "^1.0.0",
     "bluebird-retry": "^0.11.0",
-    "cozy-client": "^34.11.0",
+    "cozy-client": "^41.2.0",
     "ky": "^0.25.1",
     "lodash": "^4.17.21",
     "p-wait-for": "^5.0.2",
