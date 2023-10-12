@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.1.1](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@2.1.0...cozy-jobs-cli@2.1.1) (2023-10-12)
+
+
+### Bug Fixes
+
+* Scope issue ([6f9c1bf](https://github.com/cozy/cozy-konnector-libs/commit/6f9c1bf4dce6245ea7baf79a9cccc43545327a60))
+
+
+
+
+
 # 2.1.0 (2023-09-28)
 
 
