@@ -1,0 +1,23 @@
+{
+    "permissions": {
+        "files": {
+            "description": "Required for photo access",
+            "type": "io.cozy.files",
+            "verbs": [
+                "GET",
+                "POST",
+                "PUT",
+                "PATCH"
+            ]
+        },
+        "foo": {
+            "description": "barr",
+            "type": "io.cozy.foo"
+        },
+        "bar": {
+            "description": "a",
+            "type": "io.cozy.bar",
+            "verbs": ["ALL"]
+        }
+    }
+}

@@ -9,8 +9,16 @@ module.exports = {
     // convert the permissions into scopes
     let scopes = []
     for (let key in permissions) {
-      scopes.push(permissions[key].type)
+      let type = permissions[key].type
+      let verbs = permissions[key].verbs
+
+      if (verbs && verbs.length > 0) {
+        scopes.push(type + ':' + verbs.join(','))
+      } else {
+        scopes.push(type)
+      }
     }
+
     log('debug', scopes, 'scopes found')
 
     return scopes
