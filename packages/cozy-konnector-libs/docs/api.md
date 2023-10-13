@@ -662,6 +662,7 @@ Parameters:
   + `type` (String): (default recaptcha) type of captcha to solve. can be "recaptcha" or "image" at the moment
   + `timeout` (Number): (default 3 minutes after now) time when the solver should stop trying to
   solve the captcha
+  + `withFullSolution`(Boolean): (default false) Change the return to an object containing full solution
   + `websiteKey` (String): the key you can find on the targeted website (for recaptcha)
   + `websiteURL` (String): The URL of the page showing the captcha (for recaptcha)
   + `body` (String): The base64 encoded image (for image captcha)

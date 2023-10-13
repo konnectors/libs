@@ -28,6 +28,7 @@ const DEFAULT_TIMEOUT = connectorStartTime + 3 * m // 3 minutes by default to le
  *   + `type` (String): (default recaptcha) type of captcha to solve. can be "recaptcha" or "image" at the moment
  *   + `timeout` (Number): (default 3 minutes after now) time when the solver should stop trying to
  *   solve the captcha
+ *   + `withFullSolution`(Boolean): (default false) Change the return to an object containing full solution
  *   + `websiteKey` (String): the key you can find on the targeted website (for recaptcha)
  *   + `websiteURL` (String): The URL of the page showing the captcha (for recaptcha)
  *   + `body` (String): The base64 encoded image (for image captcha)
@@ -49,8 +50,11 @@ const DEFAULT_TIMEOUT = connectorStartTime + 3 * m // 3 minutes by default to le
 const solveCaptcha = async (params = {}) => {
   const defaultParams = {
     type: 'recaptcha',
-    timeout: DEFAULT_TIMEOUT
+    timeout: DEFAULT_TIMEOUT,
+    withFullSolution: false
   }
+  let solution
+  let resultAttribute = 'gRecaptchaResponse'
 
   params = { ...defaultParams, ...params }
 
@@ -59,11 +63,10 @@ const solveCaptcha = async (params = {}) => {
   if (params.type === 'recaptcha') {
     checkMandatoryParams(params, ['websiteKey', 'websiteURL'])
     const { websiteKey, websiteURL } = params
-    return solveWithAntiCaptcha(
+    solution = await solveWithAntiCaptcha(
       { websiteKey, websiteURL, type: 'NoCaptchaTaskProxyless' },
       params.timeout,
-      secrets,
-      'gRecaptchaResponse'
+      secrets
     )
   } else if (params.type === 'recaptchav3') {
     checkMandatoryParams(params, [
@@ -73,7 +76,7 @@ const solveCaptcha = async (params = {}) => {
       'minScore'
     ])
     const { websiteKey, websiteURL, pageAction, minScore } = params
-    return solveWithAntiCaptcha(
+    solution = await solveWithAntiCaptcha(
       {
         websiteKey,
         websiteURL,
@@ -82,30 +85,34 @@ const solveCaptcha = async (params = {}) => {
         type: 'RecaptchaV3TaskProxyless'
       },
       params.timeout,
-      secrets,
-      'gRecaptchaResponse'
+      secrets
     )
   } else if (params.type === 'hcaptcha') {
     checkMandatoryParams(params, ['websiteKey', 'websiteURL'])
     const { websiteKey, websiteURL } = params
-    return solveWithAntiCaptcha(
+    solution = await solveWithAntiCaptcha(
       {
         websiteKey,
         websiteURL,
         type: 'HCaptchaTaskProxyless'
       },
       params.timeout,
-      secrets,
-      'gRecaptchaResponse'
+      secrets
     )
   } else if (params.type === 'image') {
     checkMandatoryParams(params, ['body'])
-    return solveWithAntiCaptcha(
+    // Specific attribute to solve image, see API doc
+    resultAttribute = 'text'
+    solution = await solveWithAntiCaptcha(
       { body: params.body, type: 'ImageToTextTask' },
       params.timeout,
-      secrets,
-      'text'
+      secrets
     )
+  }
+  if (params.withFullSolution) {
+    return solution
+  } else {
+    return solution[resultAttribute]
   }
 }
 
@@ -122,8 +129,7 @@ function checkMandatoryParams(params = {}, mandatoryParams = []) {
 async function solveWithAntiCaptcha(
   taskParams,
   timeout = DEFAULT_TIMEOUT,
-  secrets,
-  resultAttribute = 'gRecaptchaResponse'
+  secrets
 ) {
   const antiCaptchaApiUrl = 'https://api.anti-captcha.com'
   let gRecaptchaResponse = null
@@ -156,7 +162,7 @@ async function solveWithAntiCaptcha(
             throw new Error(errors.CAPTCHA_RESOLUTION_FAILED)
           }
           log('info', `  Found Recaptcha response : ${JSON.stringify(resp)}`)
-          return resp.solution[resultAttribute]
+          return resp.solution
         } else {
           log('debug', `    ${Math.round((Date.now() - startTime) / 1000)}s...`)
           if (Date.now() > timeout) {
