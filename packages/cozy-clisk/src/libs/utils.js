@@ -11,9 +11,13 @@
  * @returns {ArrayBufferWithContentType} : array buffer with content type
  */
 export const dataUriToArrayBuffer = dataURI => {
-  const [contentType, base64String] = dataURI
-    .match(/^data:(.*);base64,(.*)$/)
-    .slice(1)
+  const parsed = dataURI.match(/^data:(.*);base64,(.*)$/)
+  if (parsed === null) {
+    throw new Error(
+      'dataUriToArrayBuffer: dataURI is malformed. Should be in the form data:...;base64,...'
+    )
+  }
+  const [contentType, base64String] = parsed.slice(1)
   const byteString = global.atob(base64String)
   const arrayBuffer = new ArrayBuffer(byteString.length)
   const ia = new Uint8Array(arrayBuffer)
