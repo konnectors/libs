@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.25.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.24.0...cozy-clisk@0.25.0) (2023-10-13)
+
+
+### Features
+
+* Validate content given as dataURI to saveFiles ([87bd578](https://github.com/konnectors/libs/commit/87bd57831b002d563fc78c1c59b8f64cd7ef973e))
+
+
+
+
+
 # [0.24.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.23.0...cozy-clisk@0.24.0) (2023-09-28)
 
 
