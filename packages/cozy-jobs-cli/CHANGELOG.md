@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.2.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@2.1.1...cozy-jobs-cli@2.2.0) (2023-10-16)
+
+
+### Features
+
+* Be able to pass COZY_URL for konnector-dev ([51848ea](https://github.com/cozy/cozy-konnector-libs/commit/51848ea29921825915212c9abbfa9805cf188a0c))
+
+
+
+
+
 ## [2.1.1](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@2.1.0...cozy-jobs-cli@2.1.1) (2023-10-12)
 
 
