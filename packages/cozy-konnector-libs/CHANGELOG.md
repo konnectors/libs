@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.3.1](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@5.3.0...cozy-konnector-libs@5.3.1) (2023-10-18)
+
+
+### Bug Fixes
+
+* Add full anticaptcha response possibility ([2de2f5a](https://github.com/cozy/cozy-konnector-libs/commit/2de2f5affb3b182a558ed17a8de79d6e82b2941b))
+
+
+
+
+
 # 5.3.0 (2023-09-28)
 
 
