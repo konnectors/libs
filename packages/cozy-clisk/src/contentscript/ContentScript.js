@@ -281,13 +281,14 @@ export default class ContentScript {
    * @param {string} selector - css selector we are waiting for
    * @param {object} options - options object
    * @param {number} [options.timeout] - timeout in ms. Will default to 30s
+   * @param {string} [options.includesText] - only select elements with the given text as innerText
    */
   async waitForElementInWorker(selector, options = {}) {
     this.onlyIn(PILOT_TYPE, 'waitForElementInWorker')
     await this.runInWorkerUntilTrue({
       method: 'waitForElementNoReload',
       timeout: options?.timeout,
-      args: [selector]
+      args: [selector, { includesText: options.includesText }]
     })
   }
 
@@ -297,25 +298,29 @@ export default class ContentScript {
    * @param {string} selector - css selector we are checking for
    * @returns {Promise<boolean>}  - Returns true or false
    */
-  async isElementInWorker(selector) {
+  async isElementInWorker(selector, options = {}) {
     this.onlyIn(PILOT_TYPE, 'isElementInWorker')
-    return await this.runInWorker('checkForElement', selector)
+    return await this.runInWorker('checkForElement', selector, options)
   }
 
   /**
    * Wait for a dom element to be present on the page. This won't resolve if the page reloads
    *
    * @param {string} selector - css selector we are waiting for
+   * @param {object} [options] - options object
+   * @param {string} [options.includesText] - only select elements wich include the given text as innerText
    * @returns {Promise.<true>} - Returns true when ready
    */
-  async waitForElementNoReload(selector) {
+  async waitForElementNoReload(selector, options = {}) {
     this.onlyIn(WORKER_TYPE, 'waitForElementNoReload')
     log.debug('waitForElementNoReload', selector)
-    await waitFor(() => Boolean(document.querySelector(selector)), {
+    await waitFor(() => this.checkForElement(selector, options), {
       timeout: {
         milliseconds: DEFAULT_WAIT_FOR_ELEMENT_TIMEOUT,
         message: new TimeoutError(
-          `waitForElementNoReload ${selector} timed out after ${DEFAULT_WAIT_FOR_ELEMENT_TIMEOUT}ms`
+          `waitForElementNoReload ${selector}${
+            options?.includesText ? ' "' + options.includesText + '"' : ''
+          } timed out after ${DEFAULT_WAIT_FOR_ELEMENT_TIMEOUT}ms`
         )
       }
     })
@@ -326,17 +331,52 @@ export default class ContentScript {
    * Check if a dom element is present on the page.
    *
    * @param {string} selector - css selector we are checking for
+   * @param {object} [options] - options object
+   * @param {string} [options.includesText] - only select elements with the given text as innerText
    * @returns {Promise<boolean>} - Returns true or false
    */
-  async checkForElement(selector) {
+  async checkForElement(selector, options = {}) {
     this.onlyIn(WORKER_TYPE, 'checkForElement')
-    log.debug('checkForElement', selector)
-    return Boolean(document.querySelector(selector))
+
+    return Boolean(this.selectElement(selector, options))
   }
 
-  async click(selector) {
+  /**
+   * Select a dom element with given selector and options
+   *
+   * @param {string} selector - css selector of the element
+   * @param {object} [options] - options object
+   * @param {string} [options.includesText] - only select element with the given text as innerText
+   * @returns {object|null} - Returns the selected dom element or null
+   */
+  selectElement(selector, options = {}) {
+    this.onlyIn(WORKER_TYPE, 'selectElement')
+
+    if (
+      options?.includesText &&
+      typeof options.includesText === 'string' &&
+      options.includesText !== undefined
+    ) {
+      return Array.from(document.querySelectorAll(selector)).find(element =>
+        // @ts-ignore Argument of type 'string | undefined' is not assignable to parameter of type 'string'.  Type 'undefined' is not assignable to type 'string'.ts(2345)
+        element.innerHTML?.includes(options.includesText)
+      )
+    } else {
+      return document.querySelector(selector)
+    }
+  }
+
+  /**
+   * Click on a given element
+   *
+   * @param {string} selector - css selector of the element
+   * @param {object} [options] - options object
+   * @param {string} [options.includesText] - only select element with the given text as innerText
+   * @returns {Promise<void>}
+   */
+  async click(selector, options = {}) {
     this.onlyIn(WORKER_TYPE, 'click')
-    const elem = document.querySelector(selector)
+    const elem = this.selectElement(selector, options)
     if (!elem) {
       throw new Error(
         `click: No DOM element is matched with the ${selector} selector`
@@ -345,6 +385,13 @@ export default class ContentScript {
     elem.click()
   }
 
+  /**
+   * Click on a given element and wait for another given element to be displayed on screen
+   *
+   * @param {string} elementToClick
+   * @param {string} elementToWait
+   * @returns {Promise<void>}
+   */
   async clickAndWait(elementToClick, elementToWait) {
     this.onlyIn(PILOT_TYPE, 'clickAndWait')
     log.debug('clicking ' + elementToClick)
@@ -356,7 +403,7 @@ export default class ContentScript {
 
   async fillText(selector, text) {
     this.onlyIn(WORKER_TYPE, 'fillText')
-    const elem = document.querySelector(selector)
+    const elem = this.selectElement(selector)
     if (!elem) {
       throw new Error(
         `fillText: No DOM element is matched with the ${selector} selector`
@@ -418,7 +465,7 @@ export default class ContentScript {
    *
    * @param {import("cozy-client").QueryDefinition} queryDefinition - CozyClient query definition object
    * @param {import('cozy-client/types/types').QueryOptions} options - CozyClient query options
-   * @returns {Promise<import('cozy-client/types/types').QueryResult>}
+   * @returns {Promise<import('cozy-client/types/types').QueryResult>} Returns the list of documents
    */
   async queryAll(queryDefinition, options) {
     this.onlyIn(PILOT_TYPE, 'queryAll')
