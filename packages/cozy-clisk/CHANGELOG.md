@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.26.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.25.0...cozy-clisk@0.26.0) (2023-10-25)
+
+
+### Features
+
+* Allow to select dom element by their text ([21ce089](https://github.com/konnectors/libs/commit/21ce08910aadef5d971e2b5ab935fb02619bf919))
+
+
+
+
+
 # [0.25.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.24.0...cozy-clisk@0.25.0) (2023-10-13)
 
 
