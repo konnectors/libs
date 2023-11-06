@@ -13,8 +13,8 @@ const get = require('lodash/get')
 const log = require('cozy-logger').namespace('saveFiles')
 const manifest = require('./manifest')
 const cozy = require('./cozyclient')
-const { queryAll } = require('./utils')
-const mkdirp = require('./mkdirp')
+const client = cozy.new
+const { Q } = require('cozy-client/dist/queries/dsl')
 const errors = require('../helpers/errors')
 const stream = require('stream')
 const fileType = require('file-type')
@@ -24,6 +24,7 @@ const m = 60 * s
 const DEFAULT_TIMEOUT = Date.now() + 4 * m // 4 minutes by default since the stack allows 5 minutes
 const DEFAULT_CONCURRENCY = 1
 const DEFAULT_RETRY = 1 // do not retry by default
+const FILES_DOCTYPE = 'io.cozy.files'
 
 /**
  * Saves the files given in the fileurl attribute of each entries
@@ -67,7 +68,7 @@ const saveFiles = async (entries, fields, options = {}) => {
   }
 
   if (!options.sourceAccountIdentifier) {
-    log('warn', 'There is no sourceAccountIdentifier given to saveFIles')
+    log('warn', 'There is no sourceAccountIdentifier given to saveFiles')
   }
   if (typeof fields !== 'object') {
     log(
@@ -230,7 +231,7 @@ const saveEntry = async function (entry, options) {
         interval: 1000,
         throw_original: true,
         max_tries: options.retry,
-        args: [entry, options, method, file ? file._id : undefined]
+        args: [entry, options, method, file]
       }).catch(err => {
         if (err.message === 'BAD_DOWNLOADED_FILE') {
           log(
@@ -328,30 +329,21 @@ async function getFileFromMetaData(
   sourceAccountIdentifier,
   slug
 ) {
-  const index = await cozy.data.defineIndex('io.cozy.files', [
-    'metadata.fileIdAttributes',
-    'trashed',
-    'cozyMetadata.sourceAccountIdentifier',
-    'cozyMetadata.createdByApp'
-  ])
-  log(
-    'debug',
-    `Checking existence of ${calculateFileKey(entry, fileIdAttributes)}`
-  )
-  const files = await queryAll(
-    'io.cozy.files',
-    {
-      metadata: {
-        fileIdAttributes: calculateFileKey(entry, fileIdAttributes)
-      },
-      trashed: false,
-      cozyMetadata: {
-        sourceAccountIdentifier,
-        createdByApp: slug
-      }
-    },
-    index
-  )
+  const queryDef = Q(FILES_DOCTYPE)
+    .where({
+      metadata: { fileIdAttributes: calculateFileKey(entry, fileIdAttributes) },
+      cozyMetadata: { createdByApp: slug, sourceAccountIdentifier }
+    })
+    .indexFields([
+      'cozyMetadata.createdByApp',
+      'cozyMetadata.sourceAccountIdentifier',
+      'metadata.fileIdAttributes'
+    ])
+    .partialIndex({
+      trashed: false
+    })
+    .limitBy(1000)
+  const files = await client.queryAll(queryDef)
 
   if (files && files[0]) {
     if (files.length > 1) {
@@ -373,19 +365,23 @@ async function getFileFromMetaData(
 async function getFileFromPath(entry, options) {
   try {
     log('debug', `Checking existence of ${getFilePath({ entry, options })}`)
-    const result = await cozy.files.statByPath(getFilePath({ entry, options }))
-    return result
+    const result = await client
+      .collection(FILES_DOCTYPE)
+      .statByPath(getFilePath({ entry, options }))
+    return result.data
   } catch (err) {
     log('debug', err.message)
     return false
   }
 }
 
-async function createFile(entry, options, method, fileId) {
-  const folder = await cozy.files.statByPath(options.folderPath)
+async function createFile(entry, options, method, file) {
+  const folder = await client
+    .collection(FILES_DOCTYPE)
+    .statByPath(options.folderPath)
   let createFileOptions = {
     name: getFileName(entry),
-    dirID: folder._id
+    dirId: folder.data._id
   }
   if (options.contentType) {
     if (options.contentType === true && entry.filename) {
@@ -425,14 +421,26 @@ async function createFile(entry, options, method, fileId) {
 
   let fileDocument
   if (method === 'create') {
-    fileDocument = await cozy.files.create(toCreate, createFileOptions)
+    const toSave = {
+      _type: FILES_DOCTYPE,
+      type: 'file',
+      data: toCreate,
+      ...createFileOptions
+    }
+    const clientResponse = await client.save(toSave)
+    fileDocument = clientResponse.data
   } else if (method === 'updateById') {
     log('debug', `replacing file for ${entry.filename}`)
-    fileDocument = await cozy.files.updateById(
-      fileId,
-      toCreate,
-      createFileOptions
-    )
+    const toSave = {
+      _id: file._id,
+      _rev: file._rev,
+      _type: FILES_DOCTYPE,
+      type: 'file',
+      data: toCreate,
+      ...createFileOptions
+    }
+    const clientResponse = await client.save(toSave)
+    fileDocument = clientResponse.data
   }
 
   if (options.validateFile) {
@@ -540,8 +548,7 @@ const shouldReplaceFile = async function (file, entry, options) {
 }
 
 const removeFile = async function (file) {
-  await cozy.files.trashById(file._id)
-  await cozy.files.destroyById(file._id)
+  await client.collection(FILES_DOCTYPE).deleteFilePermanently(file._id)
 }
 
 module.exports = saveFiles
@@ -611,8 +618,12 @@ function logFileStream(fileStream) {
 }
 
 async function getFiles(folderPath) {
-  const dir = await cozy.files.statByPath(folderPath)
-  const files = await queryAll('io.cozy.files', { dir_id: dir._id })
+  const dir = await client.collection(FILES_DOCTYPE).statByPath(folderPath)
+  const queryDef = Q(FILES_DOCTYPE)
+    .where({ dir_id: dir.data._id })
+    .indexFields(['dir_id'])
+    .limitBy(1000)
+  const files = await client.queryAll(queryDef)
   return files
 }
 
@@ -622,7 +633,7 @@ async function renameFile(file, entry) {
   }
   log('debug', `Renaming ${getAttribute(file, 'name')} to ${entry.filename}`)
   try {
-    await cozy.files.updateAttributesById(file._id, { name: entry.filename })
+    await client.save({ ...file, name: entry.filename })
   } catch (err) {
     if (JSON.parse(err.message).errors.shift().status === '409') {
       log(
@@ -632,7 +643,7 @@ async function renameFile(file, entry) {
           'name'
         )}`
       )
-      await cozy.files.trashById(file._id)
+      await client.destroy(file)
     }
   }
 }
@@ -663,7 +674,9 @@ function defaultValidateFile(fileDocument) {
 }
 
 async function defaultValidateFileContent(fileDocument) {
-  const response = await cozy.files.downloadById(fileDocument._id)
+  const response = await client
+    .collection(FILES_DOCTYPE)
+    .fetchFileContentById(fileDocument)
   const mime = getAttribute(fileDocument, 'mime')
   const fileTypeFromContent = await fileType.fromBuffer(await response.buffer())
   if (!fileTypeFromContent) {
@@ -741,7 +754,7 @@ async function getOrCreateDestinationPath(entry, saveOptions) {
   let finalPath = saveOptions.folderPath
   if (subPath) {
     finalPath += '/' + subPath
-    await mkdirp(finalPath)
+    await client.collection(FILES_DOCTYPE).createDirectoryByPath(finalPath)
   }
   return finalPath
 }
