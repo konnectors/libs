@@ -13,6 +13,7 @@ const get = require('lodash/get')
 const log = require('cozy-logger').namespace('saveFiles')
 const manifest = require('./manifest')
 const cozy = require('./cozyclient')
+const client = cozy.new
 const { queryAll } = require('./utils')
 const mkdirp = require('./mkdirp')
 const errors = require('../helpers/errors')
@@ -24,6 +25,7 @@ const m = 60 * s
 const DEFAULT_TIMEOUT = Date.now() + 4 * m // 4 minutes by default since the stack allows 5 minutes
 const DEFAULT_CONCURRENCY = 1
 const DEFAULT_RETRY = 1 // do not retry by default
+const FILES = 'io.cozy.files'
 
 /**
  * Saves the files given in the fileurl attribute of each entries
@@ -230,7 +232,7 @@ const saveEntry = async function (entry, options) {
         interval: 1000,
         throw_original: true,
         max_tries: options.retry,
-        args: [entry, options, method, file ? file._id : undefined]
+        args: [entry, options, method, file]
       }).catch(err => {
         if (err.message === 'BAD_DOWNLOADED_FILE') {
           log(
@@ -373,19 +375,19 @@ async function getFileFromMetaData(
 async function getFileFromPath(entry, options) {
   try {
     log('debug', `Checking existence of ${getFilePath({ entry, options })}`)
-    const result = await cozy.files.statByPath(getFilePath({ entry, options }))
-    return result
+    const result = await client.collection(FILES).statByPath(getFilePath({ entry, options }))
+    return result.data
   } catch (err) {
     log('debug', err.message)
     return false
   }
 }
 
-async function createFile(entry, options, method, fileId) {
-  const folder = await cozy.files.statByPath(options.folderPath)
+async function createFile(entry, options, method, file) {
+  const folder = await client.collection(FILES).statByPath(options.folderPath)
   let createFileOptions = {
     name: getFileName(entry),
-    dirID: folder._id
+    dirId: folder.data._id
   }
   if (options.contentType) {
     if (options.contentType === true && entry.filename) {
@@ -425,14 +427,23 @@ async function createFile(entry, options, method, fileId) {
 
   let fileDocument
   if (method === 'create') {
-    fileDocument = await cozy.files.create(toCreate, createFileOptions)
+    const clientResponse = await client.save({
+      _type: 'io.cozy.files',
+      type: 'file',
+      data: toCreate,
+      ...createFileOptions
+    })
+    fileDocument = clientResponse.data
   } else if (method === 'updateById') {
     log('debug', `replacing file for ${entry.filename}`)
-    fileDocument = await cozy.files.updateById(
-      fileId,
-      toCreate,
-      createFileOptions
-    )
+    const clientResponse = client.save({
+      _id: file._id,
+      _rev: file._rev,
+      _type: 'io.cozy.files',
+      data: toCreate,
+      ...createFileOptions
+    })
+    fileDocument = clientResponse.data
   }
 
   if (options.validateFile) {
@@ -540,8 +551,7 @@ const shouldReplaceFile = async function (file, entry, options) {
 }
 
 const removeFile = async function (file) {
-  await cozy.files.trashById(file._id)
-  await cozy.files.destroyById(file._id)
+  client.collection(FILES).deleteFilePermanently(file._id)
 }
 
 module.exports = saveFiles
@@ -611,8 +621,8 @@ function logFileStream(fileStream) {
 }
 
 async function getFiles(folderPath) {
-  const dir = await cozy.files.statByPath(folderPath)
-  const files = await queryAll('io.cozy.files', { dir_id: dir._id })
+  const dir = await client.collection(FILES).statByPath(folderPath)
+  const files = await queryAll('io.cozy.files', { dir_id: dir.data._id })
   return files
 }
 
@@ -622,7 +632,7 @@ async function renameFile(file, entry) {
   }
   log('debug', `Renaming ${getAttribute(file, 'name')} to ${entry.filename}`)
   try {
-    await cozy.files.updateAttributesById(file._id, { name: entry.filename })
+    await client.save({...file, name: entry.filename})
   } catch (err) {
     if (JSON.parse(err.message).errors.shift().status === '409') {
       log(
@@ -632,7 +642,7 @@ async function renameFile(file, entry) {
           'name'
         )}`
       )
-      await cozy.files.trashById(file._id)
+      await client.destroy(file)
     }
   }
 }
@@ -663,7 +673,9 @@ function defaultValidateFile(fileDocument) {
 }
 
 async function defaultValidateFileContent(fileDocument) {
-  const response = await cozy.files.downloadById(fileDocument._id)
+  //const response = await cozy.files.downloadById(fileDocument._id)
+  console.log('CHECKING CONTENT AND MIME')
+  const response = await client.collection(FILES).fetchFileContentById(fileDocument)
   const mime = getAttribute(fileDocument, 'mime')
   const fileTypeFromContent = await fileType.fromBuffer(await response.buffer())
   if (!fileTypeFromContent) {
