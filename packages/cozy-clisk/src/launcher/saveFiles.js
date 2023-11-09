@@ -1,12 +1,8 @@
 // @ts-check
-import Minilog from '@cozy/minilog'
 import get from 'lodash/get'
-import omit from 'lodash/omit'
 import retry from 'bluebird-retry'
 import { models } from 'cozy-client'
 import { dataUriToArrayBuffer } from '../libs/utils'
-
-const log = Minilog('saveFiles')
 
 /**
  * @typedef saveFilesEntry
@@ -23,6 +19,7 @@ const log = Minilog('saveFiles')
  * @property {string} sourceAccountIdentifier - unique identifier of the website account
  * @property {import('cozy-client/types/types').Manifest} manifest - name of the file
  * @property {Array<string>} fileIdAttributes - List of entry attributes considered as unique deduplication key
+ * @property {Function} log - Logging function coming from the Launcher
  * @property {string} [subPath] - subPath of the destination folder path where to put the downloaded file
  * @property {Function} [postProcess] - callback called after the file is download to further modify it
  * @property {string} [contentType] - will force the contentType of the file if any
@@ -38,6 +35,7 @@ const log = Minilog('saveFiles')
  * @typedef saveFileOptions
  * @property {import('cozy-client/types/types').Manifest} manifest - name of the file
  * @property {Array<string>} fileIdAttributes - List of entry attributes considered as unique deduplication key
+ * @property {Function} log - Logging function coming from the Launcher
  * @property {string} [subPath] - subPath of the destination folder path where to put the downloaded file
  * @property {Function} [postProcess] - callback called after the file is download to further modify it
  * @property {string} [contentType] - will force the contentType of the file if any
@@ -64,7 +62,7 @@ const saveFiles = async (client, entries, folderPath, options) => {
     throw new Error('Savefiles : No list of files given')
   }
   if (entries.length === 0) {
-    log.warn('No file to download')
+    options.log('warning', 'saveFiles', 'No file to download')
   }
   if (!options.manifest) {
     throw new Error('Savefiles : no manifest')
@@ -89,6 +87,19 @@ const saveFiles = async (client, entries, folderPath, options) => {
 
   const saveOptions = {
     folderPath,
+    log: (level, label, msg) => {
+      if (options.log) {
+        options.log({
+          level,
+          namespace: 'saveFiles',
+          label,
+          msg
+        })
+      } else {
+        // eslint-disable-next-line no-console
+        console.log(`${level}: saveFiles: ${label}: ${msg}`)
+      }
+    },
     subPath: options.subPath,
     fileIdAttributes: options.fileIdAttributes,
     manifest: options.manifest,
@@ -110,12 +121,17 @@ const saveFiles = async (client, entries, folderPath, options) => {
   let savedFiles = 0
   const savedEntries = []
   for (let entry of entries) {
+    const start = Date.now()
     ;['filename', 'shouldReplaceName'].forEach(key =>
       addValOrFnResult(entry, key, options)
     )
 
     if (!entry.filename) {
-      log.warn('Missing filename property, entry is ignored')
+      saveOptions.log(
+        'warning',
+        '',
+        'Missing filename property, entry is ignored'
+      )
       continue
     }
     const folderPath = await getOrCreateDestinationPath(
@@ -132,9 +148,17 @@ const saveFiles = async (client, entries, folderPath, options) => {
       delete entry._cozy_file_to_create
     }
     savedEntries.push(entry)
+    const end = Date.now()
+    saveOptions.log(
+      'debug',
+      'saveFile',
+      `⌛ saveFile took ${Math.round((end - start) / 10) / 100}s`
+    )
   }
 
-  log.debug(
+  saveOptions.log(
+    'debug',
+    '',
     `Created ${savedFiles} files for ${
       savedEntries ? savedEntries.length : 'n'
     } entries`
@@ -173,7 +197,14 @@ const saveFile = async function (client, entry, options) {
   }
 
   if (entry.dataUri) {
+    const start = Date.now()
     const { arrayBuffer } = dataUriToArrayBuffer(entry.dataUri)
+    const end = Date.now()
+    options.log(
+      'debug',
+      'saveFile',
+      `⌛ dataUriToArrayBuffer took ${Math.round((end - start) / 10) / 100}s`
+    )
     if (arrayBuffer) {
       entry.filestream = arrayBuffer
       delete entry.dataUri
@@ -186,7 +217,11 @@ const saveFile = async function (client, entry, options) {
     try {
       shouldReplace = await shouldReplaceFile(file, entry, options)
     } catch (err) {
-      log.warn(`Error in shouldReplaceFile : ${err.message}`)
+      options.log(
+        'warn',
+        'saveFile',
+        `Error in shouldReplaceFile : ${err.message}`
+      )
       shouldReplace = true
     }
   }
@@ -195,14 +230,19 @@ const saveFile = async function (client, entry, options) {
 
   if (shouldReplace && file) {
     method = 'updateById'
-    log.debug(`Will replace ${getFilePath({ options, file })}...`)
+    options.log(
+      'debug',
+      'saveFile',
+      `Will replace ${getFilePath({ options, file })}...`
+    )
   }
 
   try {
     if (!file || method === 'updateById') {
-      log.debug(omit(entry, 'filestream'))
-      logFileStream(entry.filestream)
-      log.debug(
+      logFileStream(entry.filestream, options)
+      options.log(
+        'debug',
+        'saveFile',
         `File ${getFilePath({
           options,
           entry
@@ -216,12 +256,18 @@ const saveFile = async function (client, entry, options) {
         args: [client, entry, options, method, file ? file : undefined]
       }).catch(err => {
         if (err.message === 'BAD_DOWNLOADED_FILE') {
-          log.warn(
+          options.log(
+            'warning',
+            'saveFile',
             `Could not download file after ${options.retry} tries removing the file`
           )
         } else {
-          log.warn('unknown file download error: ' + err.message)
-          log.warn(err)
+          options.log(
+            'warning',
+            'saveFile',
+            'unknown file download error: ' + err.message
+          )
+          options.log('warning', 'saveFile', err.message)
         }
       })
     }
@@ -237,9 +283,11 @@ const saveFile = async function (client, entry, options) {
       // the cozy quota is full
       throw new Error('DISK_QUOTA_EXCEEDED')
     }
-    log.warn('SAVE_FILE_FAILED')
-    log.warn(err.message)
-    log.warn(
+    options.log('warning', 'saveFile', 'SAVE_FILE_FAILED')
+    options.log('warning', 'saveFile', err.message)
+    options.log(
+      'warning',
+      'saveFile',
       `Error caught while trying to save the file ${
         entry.fileurl ? entry.fileurl : entry.filename
       }`
@@ -267,7 +315,7 @@ async function createFile(client, entry, options, method, file) {
     .collection('io.cozy.files')
     .statByPath(options.folderPath)
   let createFileOptions = {
-    name: getFileName(entry),
+    name: getFileName(entry, options),
     dirId: folder.data._id
   }
   if (options.contentType) {
@@ -298,6 +346,7 @@ async function createFile(client, entry, options, method, file) {
   }
 
   let fileDocument
+  const start = Date.now()
   if (method === 'create') {
     const clientResponse = await client.save({
       _type: 'io.cozy.files',
@@ -307,7 +356,7 @@ async function createFile(client, entry, options, method, file) {
     })
     fileDocument = clientResponse.data
   } else if (method === 'updateById') {
-    log.debug(`replacing file for ${entry.filename}`)
+    options.log('debug', 'createFile', `replacing file for ${entry.filename}`)
     const clientResponse = client.save({
       _id: file._id,
       _rev: file._rev,
@@ -317,9 +366,15 @@ async function createFile(client, entry, options, method, file) {
     })
     fileDocument = clientResponse.data
   }
+  const end = Date.now()
+  options.log(
+    'debug',
+    'createFile',
+    `⌛ client.save took ${Math.round((end - start) / 10) / 100}s`
+  )
   if (options.validateFile) {
-    if ((await options.validateFile(fileDocument)) === false) {
-      await removeFile(client, fileDocument)
+    if ((await options.validateFile(fileDocument, options)) === false) {
+      await removeFile(client, fileDocument, options)
       throw new Error('BAD_DOWNLOADED_FILE')
     }
   }
@@ -333,7 +388,11 @@ const defaultShouldReplaceFile = (file, entry, options) => {
       !getAttribute(file, `metadata.${attr}`) &&
       get(entry, `fileAttributes.metadata.${attr}`)
     if (result) {
-      log.debug(`filereplacement: adding ${attr} metadata`)
+      options.log(
+        'debug',
+        'defaultShouldReplaceFile',
+        `filereplacement: adding ${attr} metadata`
+      )
     }
     return result
   }
@@ -359,13 +418,25 @@ const defaultShouldReplaceFile = (file, entry, options) => {
 
   if (result) {
     if (fileHasNoMetadata && entryHasMetadata) {
-      log.debug('filereplacement: metadata to add')
+      options.log(
+        'debug',
+        'defaultShouldReplaceFile',
+        'filereplacement: metadata to add'
+      )
     }
     if (fileHasNoId && !!options.fileIdAttributes) {
-      log.debug('filereplacement: adding fileIdAttributes')
+      options.log(
+        'debug',
+        'defaultShouldReplaceFile',
+        'filereplacement: adding fileIdAttributes'
+      )
     }
     if (hasSourceAccountIdentifierOption && !fileHasSourceAccountIdentifier) {
-      log.debug('filereplacement: adding sourceAccountIdentifier')
+      options.log(
+        'debug',
+        'defaultShouldReplaceFile',
+        'filereplacement: adding sourceAccountIdentifier'
+      )
     }
   }
 
@@ -375,7 +446,11 @@ const defaultShouldReplaceFile = (file, entry, options) => {
 const shouldReplaceFile = async function (file, entry, options) {
   const isValid = !options.validateFile || (await options.validateFile(file))
   if (!isValid) {
-    log.warn(`${getFileName({ file, options })} is invalid`)
+    options.log(
+      'warning',
+      'shouldReplaceFile',
+      `${getFileName({ file, options })} is invalid`
+    )
     throw new Error('BAD_DOWNLOADED_FILE')
   }
   const shouldReplaceFileFn =
@@ -386,9 +461,9 @@ const shouldReplaceFile = async function (file, entry, options) {
   return shouldReplaceFileFn(file, entry, options)
 }
 
-const removeFile = async function (client, file) {
+const removeFile = async function (client, file, options) {
   if (!client) {
-    log.error('No client, impossible to delete file')
+    options.log('error', 'removeFile', 'No client, impossible to delete file')
   } else {
     await client.collection('io.cozy.files').deleteFilePermanently(file._id)
   }
@@ -396,12 +471,16 @@ const removeFile = async function (client, file) {
 
 module.exports = saveFiles
 
-function getFileName(entry) {
+function getFileName(entry, options) {
   let filename
   if (entry.filename) {
     filename = entry.filename
   } else {
-    log.error('Could not get a file name for the entry')
+    options.log(
+      'error',
+      'getFileName',
+      'Could not get a file name for the entry'
+    )
     return false
   }
   return sanitizeFileName(filename)
@@ -411,28 +490,34 @@ function sanitizeFileName(filename) {
   return filename.replace(/^\.+$/, '').replace(/[/?<>\\:*|":]/g, '')
 }
 
-function checkFileSize(fileobject) {
+function checkFileSize(fileobject, options) {
   const size = getAttribute(fileobject, 'size')
   const name = getAttribute(fileobject, 'name')
   if (size === 0 || size === '0') {
-    log.warn(`${name} is empty`)
-    log.warn('BAD_FILE_SIZE')
+    options.log('warning', 'checkFileSize', `${name} is empty`)
+    options.log('warning', 'checkFileSize', 'BAD_FILE_SIZE')
     return false
   }
   return true
 }
 
-function logFileStream(fileStream) {
+function logFileStream(fileStream, options) {
   if (!fileStream) {
     return
   }
 
   if (fileStream && fileStream.constructor && fileStream.constructor.name) {
-    log.debug(
+    options.log(
+      'debug',
+      'logFileStream',
       `The fileStream attribute is an instance of ${fileStream.constructor.name}`
     )
   } else {
-    log.debug(`The fileStream attribute is a ${typeof fileStream}`)
+    options.log(
+      'debug',
+      'logFileStream',
+      `The fileStream attribute is a ${typeof fileStream}`
+    )
   }
 }
 
@@ -465,8 +550,8 @@ function calculateFileKey(entry, fileIdAttributes) {
     .join('####')
 }
 
-function defaultValidateFile(fileDocument) {
-  return checkFileSize(fileDocument)
+function defaultValidateFile(fileDocument, options) {
+  return checkFileSize(fileDocument, options)
 }
 
 function sanitizeEntry(entry) {
@@ -496,7 +581,7 @@ function getFilePath({ file, entry, options }) {
   if (file) {
     return folderPath + '/' + getAttribute(file, 'name')
   } else if (entry) {
-    return folderPath + '/' + getFileName(entry)
+    return folderPath + '/' + getFileName(entry, options)
   }
 }
 

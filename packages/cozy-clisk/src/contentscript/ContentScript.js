@@ -61,7 +61,11 @@ export default class ContentScript {
     this.clickAndWait = wrapTimerDebug(this, 'clickAndWait', {
       suffixFn: args => `${args?.[0]} ${args?.[1]}`
     })
-    this.saveFiles = wrapTimerDebug(this, 'saveFiles')
+    this.saveFiles = wrapTimerDebug(this, 'saveFiles', {
+      suffixFn: args => {
+        return `${args?.[0].length} files`
+      }
+    })
     this.saveBills = wrapTimerDebug(this, 'saveBills')
     this.getCredentials = wrapTimerDebug(this, 'getCredentials')
     this.saveCredentials = wrapTimerDebug(this, 'saveCredentials')
@@ -447,7 +451,7 @@ export default class ContentScript {
    */
   async saveFiles(entries, options) {
     this.onlyIn(PILOT_TYPE, 'saveFiles')
-    log.debug(entries, 'saveFiles input entries')
+    this.log('debug', `saveFiles ${entries.length} input entries`)
     const context = options.context
     log.debug(context, 'saveFiles input context')
 
