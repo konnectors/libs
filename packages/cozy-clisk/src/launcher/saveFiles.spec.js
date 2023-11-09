@@ -63,9 +63,9 @@ describe('saveFiles', function () {
         data: doc
       })),
       collection: () => ({
-        statByPath: jest.fn().mockImplementation(path => {
-          return { data: { _id: path } }
-        })
+        statByPath: jest
+          .fn()
+          .mockImplementation(async path => ({ data: { _id: path } }))
       })
     }
 
@@ -108,7 +108,7 @@ describe('saveFiles', function () {
     expect(client.save).toHaveBeenCalledWith(fileDocument)
     expect(result).toStrictEqual([
       {
-        ...document,
+        filename: 'file name.txt',
         fileDocument
       }
     ])
@@ -162,7 +162,7 @@ describe('saveFiles', function () {
     })
     expect(result).toStrictEqual([
       {
-        ...document,
+        filename: 'file name.txt',
         fileDocument
       }
     ])
@@ -208,7 +208,7 @@ describe('saveFiles', function () {
     expect(client.save).toHaveBeenCalledWith(fileDocument)
     expect(result).toStrictEqual([
       {
-        ...document,
+        filename: 'file name.txt',
         fileDocument
       }
     ])
@@ -259,7 +259,7 @@ describe('saveFiles', function () {
     expect(client.save).toHaveBeenCalledWith(fileDocument)
     expect(result).toEqual([
       {
-        ...document,
+        filename: 'file name.txt',
         fileDocument
       }
     ])
@@ -272,7 +272,8 @@ describe('saveFiles', function () {
       collection: () => ({
         statByPath: jest.fn().mockImplementation(path => {
           return { data: { _id: path } }
-        })
+        }),
+        ensureDirectoryExists: jest.fn().mockImplementation(async path => path)
       })
     }
     const document = {
@@ -297,11 +298,100 @@ describe('saveFiles', function () {
     )
     expect(result).toStrictEqual([
       {
-        ...document,
+        filename: 'file name.txt',
         fileDocument: expect.objectContaining({
           dirId: '/test/folder/path/subPath'
         })
       }
     ])
+  })
+  it('should save a file with a subPath even if the subPath directory is removed after start', async () => {
+    let index = 0
+    const client = {
+      save: jest.fn().mockImplementation(async doc => {
+        if (doc.dirId === '/test/folder/path/subPath1') {
+          const err = new Error('directory does not exist')
+          err.response = { status: 404 }
+          throw err
+        }
+        return { data: doc }
+      }),
+      collection: () => ({
+        statByPath: jest.fn().mockImplementation(path => {
+          return { data: { _id: path } }
+        }),
+        ensureDirectoryExists: jest
+          .fn()
+          .mockImplementation(async path => path + index++)
+      })
+    }
+    const document = {
+      filestream: 'filestream content',
+      filename: 'file name.txt'
+    }
+    const result = await saveFiles(client, [document], '/test/folder/path', {
+      manifest: {
+        slug: 'testslug'
+      },
+      subPath: 'subPath',
+      retry: 1,
+      sourceAccount: 'testsourceaccount',
+      sourceAccountIdentifier: 'testsourceaccountidentifier',
+      fileIdAttributes: ['filename'],
+      existingFilesIndex: new Map(),
+      log: jest.fn()
+    })
+    expect(client.save).toHaveBeenCalledTimes(2)
+    expect(client.save).toHaveBeenNthCalledWith(
+      1,
+      expect.objectContaining({
+        dirId: '/test/folder/path/subPath1'
+      })
+    )
+    expect(client.save).toHaveBeenNthCalledWith(
+      2,
+      expect.objectContaining({
+        dirId: '/test/folder/path/subPath2'
+      })
+    )
+    expect(result).toEqual([
+      {
+        filename: 'file name.txt',
+        fileDocument: expect.objectContaining({
+          dirId: '/test/folder/path/subPath2'
+        })
+      }
+    ])
+  })
+  it('should send MAIN_FOLDER_REMOVED error when the main folder has been removed', async () => {
+    const notExistingDirectoryErr = new Error('directory does not exist')
+    notExistingDirectoryErr.response = { status: 404 }
+
+    const client = {
+      save: jest.fn().mockRejectedValueOnce(notExistingDirectoryErr),
+      collection: () => ({
+        statByPath: jest.fn().mockImplementation(path => {
+          return { data: { _id: path } }
+        })
+      })
+    }
+
+    const document = {
+      filestream: 'filestream content',
+      filename: 'file name.txt'
+    }
+    await expect(
+      saveFiles(client, [document], '/test/folder/path', {
+        manifest: {
+          slug: 'testslug'
+        },
+        retry: 1,
+        sourceAccount: 'testsourceaccount',
+        sourceAccountIdentifier: 'testsourceaccountidentifier',
+        fileIdAttributes: ['filename'],
+        existingFilesIndex: new Map(),
+        log: jest.fn()
+      })
+    ).rejects.toThrow('MAIN_FOLDER_REMOVED')
   })
 })
