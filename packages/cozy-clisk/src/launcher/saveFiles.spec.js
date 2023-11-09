@@ -44,7 +44,8 @@ describe('saveFiles', function () {
       sourceAccountIdentifier: 'testsourceaccountidentifier',
       fileIdAttributes: ['filename'],
       existingFilesIndex,
-      downloadAndFormatFile
+      downloadAndFormatFile,
+      log: jest.fn()
     })
 
     expect(downloadAndFormatFile).not.toHaveBeenCalled()
@@ -88,7 +89,8 @@ describe('saveFiles', function () {
       sourceAccountIdentifier: 'testsourceaccountidentifier',
       fileIdAttributes: ['filename'],
       existingFilesIndex: new Map(),
-      downloadAndFormatFile
+      downloadAndFormatFile,
+      log: jest.fn()
     })
 
     const fileDocument = {
@@ -138,7 +140,8 @@ describe('saveFiles', function () {
       sourceAccount: 'testsourceaccount',
       sourceAccountIdentifier: 'testsourceaccountidentifier',
       fileIdAttributes: ['filename'],
-      existingFilesIndex: new Map()
+      existingFilesIndex: new Map(),
+      log: jest.fn()
     })
 
     const fileDocument = {
@@ -187,7 +190,8 @@ describe('saveFiles', function () {
       sourceAccount: 'testsourceaccount',
       sourceAccountIdentifier: 'testsourceaccountidentifier',
       fileIdAttributes: ['filename'],
-      existingFilesIndex: new Map()
+      existingFilesIndex: new Map(),
+      log: jest.fn()
     })
     const fileDocument = {
       _type: 'io.cozy.files',
@@ -232,7 +236,8 @@ describe('saveFiles', function () {
       sourceAccountIdentifier: 'testsourceaccountidentifier',
       fileIdAttributes: ['filename'],
       existingFilesIndex: new Map(),
-      qualificationLabel: 'energy_invoice'
+      qualificationLabel: 'energy_invoice',
+      log: jest.fn()
     })
     const fileDocument = {
       _type: 'io.cozy.files',
@@ -265,7 +270,6 @@ describe('saveFiles', function () {
         data: doc
       })),
       collection: () => ({
-        createDirectoryByPath: jest.fn(),
         statByPath: jest.fn().mockImplementation(path => {
           return { data: { _id: path } }
         })
@@ -283,7 +287,8 @@ describe('saveFiles', function () {
       sourceAccount: 'testsourceaccount',
       sourceAccountIdentifier: 'testsourceaccountidentifier',
       fileIdAttributes: ['filename'],
-      existingFilesIndex: new Map()
+      existingFilesIndex: new Map(),
+      log: jest.fn()
     })
     expect(client.save).toHaveBeenCalledWith(
       expect.objectContaining({
