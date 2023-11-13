@@ -107,6 +107,7 @@ const saveFiles = async (client, entries, folderPath, options) => {
         console.log(`${level}: saveFiles: ${label}: ${msg}`)
       }
     },
+    retry: options.retry,
     subPath: options.subPath,
     fileIdAttributes: options.fileIdAttributes,
     manifest: options.manifest,
