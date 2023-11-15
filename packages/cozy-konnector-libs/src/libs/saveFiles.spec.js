@@ -1,5 +1,30 @@
 jest.mock('./cozyclient')
 const cozyClient = require('./cozyclient')
+//let client = cozyClient.new
+cozyClient.new = {
+  save: jest.fn().mockImplementation(doc => {
+    // If it's a new file
+    if(!doc._id) {
+      return { data: { _id: 'newFileId', ...doc } }
+    // Else it's an update
+    } else {
+      return { data: { ...doc, _id: 'existingFileId' } }
+    }
+  }),
+  destroy: jest.fn(),
+  collection: () => ({
+    statByPath: jest.fn().mockImplementation(path => {
+      if (path === '/failing/test/path') throw err
+      return path === FOLDER_PATH ? asyncResolve({data: { _id: 'folderId' }}) : asyncResolve(existingFile)
+    }),
+    deleteFilePermanently: jest.fn(),
+    fetchFileContentById: jest.fn()
+
+  })
+}
+let client = cozyClient.new
+
+
 const manifest = require('./manifest')
 jest.mock('./utils')
 const { queryAll } = require('./utils')
@@ -75,7 +100,7 @@ beforeEach(async function () {
   const INDEX = 'index'
   bills = getBillFixtures()
   cozyClient.data.defineIndex.mockReturnValue(() => asyncResolve(INDEX))
-  cozyClient.files.create.mockReset()
+  /*cozyClient.files.create.mockReset()
   cozyClient.files.updateById.mockReset()
   cozyClient.files.statByPath.mockReset()
   cozyClient.files.create.mockImplementation((rqPromise, options) => {
@@ -86,6 +111,21 @@ beforeEach(async function () {
       return { _id: fileId, attributes: { ...options } }
     }
   )
+  /*client = {
+    save: jest.fn().mockImplementation(doc => ({
+      data: doc
+    })),
+    destroy: jest.fn(),
+    collection: () => ({
+      statByPath: jest.fn().mockImplementation(path => {
+        return { data: { _id: path } }
+      }),
+      deleteFilePermanently: jest.fn(),
+      fetchFileContentById: jest.fn()
+
+    })
+  }*/
+
 })
 
 describe('saveFiles', function () {
@@ -135,12 +175,9 @@ describe('saveFiles', function () {
     } = test
     describe(name, () => {
       beforeEach(async () => {
-        cozyClient.files.statByPath.mockImplementation(path => {
-          // Must check if we are stating on the folder or on the file
-          return path === FOLDER_PATH
-            ? asyncResolve({ _id: 'folderId' })
-            : asyncResolve(existingFile)
-        })
+        client.collection = () => ({ statByPath: jest.fn().mockImplementation(path => {
+          return path === FOLDER_PATH ? asyncResolve({data: { _id: 'folderId' }}) : asyncResolve(existingFile)
+        })})
         await saveFiles(bills, options)
       })
 
@@ -149,9 +186,9 @@ describe('saveFiles', function () {
         expectCreation ? ' ' : ' not '
       }create a file`, async function () {
         if (expectCreation) {
-          expect(cozyClient.files.create).toHaveBeenCalledTimes(bills.length)
+          expect(client.save).toHaveBeenCalledTimes(bills.length)
         } else {
-          expect(cozyClient.files.create).not.toHaveBeenCalled()
+          expect(client.save).not.toHaveBeenCalled()
         }
       })
 
@@ -313,7 +350,7 @@ describe('saveFiles', function () {
   describe('when new qualification V2 is available', () => {
     it('should update the file', async () => {
       expect.assertions(2)
-      cozyClient.files.statByPath.mockImplementation(path => {
+      client.collection().statByPath.mockImplementation(path => {
         // Must check if we are stating on the folder or on the file
         return path === FOLDER_PATH
           ? asyncResolve({ _id: 'folderId' })
@@ -324,8 +361,9 @@ describe('saveFiles', function () {
                   carbonCopy: true
                 }
               })
-            )
+          ) 
       })
+      
       await saveFiles(
         [
           {
@@ -346,8 +384,7 @@ describe('saveFiles', function () {
           folderPath: 'mainPath'
         }
       )
-      expect(cozyClient.files.create).not.toHaveBeenCalled()
-      expect(cozyClient.files.updateById).toHaveBeenCalled()
+      expect(client.save).toHaveBeenCalled()
     })
   })
 })
@@ -411,13 +448,18 @@ describe('getFileIfExists', function () {
   describe('when in filepath mode', () => {
     beforeEach(function () {
       manifest.data.slug = false
+
       cozyClient.files.statByPath.mockReset()
     })
     it('when the file does not exist, should not return any file', async () => {
-      cozyClient.files.statByPath.mockReturnValue(asyncReject(false))
+      //cozyClient.files.statByPath.mockReturnValue(asyncReject(false))
+      cozyClient.new.collection().statByPath.mockReset()
+      cozyClient.new.collection().statByPath.mockReturnValue(asyncReject(false))
+      //cozyClient.new.collection().statByPath.mockReturnValue(false)
+      client = cozyClient.new
       const result = await getFileIfExists(
         { filename: 'testfile.txt' },
-        { folderPath: '/test/path' }
+        { folderPath: '/failing/test/path' }
       )
       expect(result).toBe(false)
     })
@@ -443,12 +485,12 @@ describe('getFileIfExists', function () {
     beforeEach(function () {
       manifest.data.slug = 'testconnector'
       cozyClient.data.defineIndex.mockReturnValue(asyncResolve('index'))
-      cozyClient.files.statByPath.mockReset()
+      client.collection().statByPath.mockReset()
       queryAll.mockReset()
     })
     it('when the file does not exist, should not return any file', async () => {
       queryAll.mockReturnValue(asyncResolve([]))
-      cozyClient.files.statByPath.mockReturnValue(asyncReject(false))
+      client.collection().statByPath.mockReturnValue(asyncReject(false))
       const result = await getFileIfExists(
         { filename: 'testfile.txt', vendorRef: 'uniquevendorref' },
         options
@@ -467,7 +509,7 @@ describe('getFileIfExists', function () {
         },
         'index'
       )
-      expect(cozyClient.files.statByPath).lastCalledWith(
+      expect(client.collection().statByPath).lastCalledWith(
         '/test/path/testfile.txt'
       )
       expect(result).toBe(false)
