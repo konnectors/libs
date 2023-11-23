@@ -491,6 +491,7 @@ async function createFile({ client, entry, options, method, file, dirId }) {
       _id: file._id,
       _rev: file._rev,
       _type: 'io.cozy.files',
+      type: 'file',
       data: toCreate,
       ...createFileOptions
     })
