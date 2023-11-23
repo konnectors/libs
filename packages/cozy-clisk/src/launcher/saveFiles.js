@@ -25,7 +25,6 @@ import { dataUriToArrayBuffer } from '../libs/utils'
  * @property {Array<string>} fileIdAttributes - List of entry attributes considered as unique deduplication key
  * @property {Function} log - Logging function coming from the Launcher
  * @property {string} [subPath] - subPath of the destination folder path where to put the downloaded file
- * @property {Function} [postProcess] - callback called after the file is download to further modify it
  * @property {string} [contentType] - will force the contentType of the file if any
  * @property {Function} [shouldReplaceFile] - Function which will define if the file should be replaced or not
  * @property {Function} [validateFile] - this function will check if the downloaded file is correct (by default, error if file size is 0)
@@ -41,7 +40,6 @@ import { dataUriToArrayBuffer } from '../libs/utils'
  * @property {Array<string>} fileIdAttributes - List of entry attributes considered as unique deduplication key
  * @property {Function} log - Logging function coming from the Launcher
  * @property {string} [subPath] - subPath of the destination folder path where to put the downloaded file
- * @property {Function} [postProcess] - callback called after the file is download to further modify it
  * @property {string} [contentType] - will force the contentType of the file if any
  * @property {Function} [shouldReplaceFile] - Function which will define if the file should be replaced or not
  * @property {Function} [validateFile] - this function will check if the downloaded file is correct (by default, error if file size is 0)
@@ -111,7 +109,6 @@ const saveFiles = async (client, entries, folderPath, options) => {
     subPath: options.subPath,
     fileIdAttributes: options.fileIdAttributes,
     manifest: options.manifest,
-    postProcess: options.postProcess,
     contentType: options.contentType,
     shouldReplaceFile: options.shouldReplaceFile,
     validateFile: options.validateFile || defaultValidateFile,
@@ -330,9 +327,6 @@ const saveFile = async function (client, entry, options) {
     attachFileToEntry(resultEntry, createdFile)
 
     sanitizeEntry(resultEntry)
-    if (options.postProcess) {
-      await options.postProcess(entry)
-    }
   } catch (err) {
     if (err.message === 'MAIN_FOLDER_REMOVED') {
       throw err
@@ -731,7 +725,6 @@ function defaultValidateFile(fileDocument, options) {
 }
 
 function sanitizeEntry(entry) {
-  delete entry.fetchFile
   delete entry.requestOptions
   delete entry.filestream
   delete entry.shouldReplaceFile
