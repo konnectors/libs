@@ -56,7 +56,7 @@ import { dataUriToArrayBuffer } from '../libs/utils'
 /**
  * Saves the given files to the cozy stack
  *
- * @param {import('cozy-client/types/CozyClient')} client - CozyClient instance
+ * @param {import('cozy-client/types/CozyClient').default} client - CozyClient instance
  * @param {Array<saveFilesEntry>} entries - file entries
  * @param {string} folderPath - path to the destination folder
  * @param {saveFilesOptions} options - saveFiles options
@@ -192,7 +192,7 @@ const saveFiles = async (client, entries, folderPath, options) => {
  * errors.
  *
  * @param {object} options - Options object
- * @param {import('cozy-client/types/CozyClient')} options.client - CozyClient instance
+ * @param {import('cozy-client/types/CozyClient').default} options.client - CozyClient instance
  * @param {Array<saveFilesEntry>} options.entries - file entry
  * @param {saveFileOptions} options.options - saveFiles options
  * @param {string} options.folderPath - path to the destination folder
@@ -204,7 +204,6 @@ async function ensureAllDestinationFolders({
   folderPath,
   options
 }) {
-  // @ts-ignore Property 'collection' does not exist on type 'typeof CozyClient'.ts(2339)
   const fileCollection = client.collection('io.cozy.files')
 
   const pathsList = []
@@ -230,7 +229,7 @@ async function ensureAllDestinationFolders({
 /**
  * Saves a single file entry
  *
- * @param {import('cozy-client/types/CozyClient')} client - CozyClient instance
+ * @param {import('cozy-client/types/CozyClient').default} client - CozyClient instance
  * @param {saveFilesEntry} entry - file entry
  * @param {saveFileOptions} options - saveFiles options
  * @returns {Promise<saveFilesEntry>} - resulting file entry with file document
@@ -436,7 +435,7 @@ async function createFileWithFolderOnError(
 /**
  *
  * @param {object} options - options object
- * @param {import('cozy-client/types/CozyClient')} options.client - CozyClient instance
+ * @param {import('cozy-client/types/CozyClient').default} options.client - CozyClient instance
  * @param {saveFilesEntry} options.entry - saveFiles entry
  * @param {saveFileOptions} options.options - saveFiles options
  * @param {'create'|'updateById'} options.method - file creation method which will be used
@@ -479,7 +478,6 @@ async function createFile({ client, entry, options, method, file, dirId }) {
   let fileDocument
   const start = Date.now()
   if (method === 'create') {
-    // @ts-ignore Property 'save' does not exist on type 'typeof import("/home/doubleface/Workspace/connectors/libs/node_modules/cozy-client/types/CozyClient")'.ts(2339)
     const clientResponse = await client.save({
       _type: 'io.cozy.files',
       type: 'file',
@@ -489,7 +487,6 @@ async function createFile({ client, entry, options, method, file, dirId }) {
     fileDocument = clientResponse.data
   } else if (method === 'updateById') {
     options.log('debug', 'createFile', `replacing file for ${entry.filename}`)
-    // @ts-ignore Property 'save' does not exist on type 'typeof import("/home/doubleface/Workspace/connectors/libs/node_modules/cozy-client/types/CozyClient")'.ts(2339)
     const clientResponse = client.save({
       _id: file._id,
       _rev: file._rev,
@@ -598,7 +595,7 @@ const shouldReplaceFile = function (file, entry, options) {
 /**
  * Remove the given file
  *
- * @param {import('cozy-client/types/CozyClient')} client - CozyClient instance
+ * @param {import('cozy-client/types/CozyClient').default} client - CozyClient instance
  * @param {import('cozy-client/types/types').FileDocument} file - file to remove
  * @param {saveFileOptions} options - options object
  */
@@ -606,7 +603,6 @@ const removeFile = async function (client, file, options) {
   if (!client) {
     options.log('error', 'removeFile', 'No client, impossible to delete file')
   } else {
-    // @ts-ignore Property 'collection' does not exist on type 'CozyClient"
     await client.collection('io.cozy.files').deleteFilePermanently(file._id)
   }
 }
