@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.27.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.26.0...cozy-clisk@0.27.0) (2023-11-24)
+
+
+### Bug Fixes
+
+* Solve some ts-ignore ([b94c1fe](https://github.com/konnectors/libs/commit/b94c1fe5d38ceadbfdeffe1fdf7a7dcdf63f241b))
+* Transmit retry option to saveFile ([602c9db](https://github.com/konnectors/libs/commit/602c9db4f770c9013edb5d84df9c534dd0df6b2b))
+
+
+### Features
+
+* Allow saveFiles logs to display in konnector logs ([3203b6c](https://github.com/konnectors/libs/commit/3203b6c8389aeed8528f3bdd7673fcabefa78da3))
+* Now create destination folders before saving files ([9200bd3](https://github.com/konnectors/libs/commit/9200bd32e98a3a408d33f79b63ec13ca4d79108f))
+* Remove postProcess option in saveFiles and fetchFile in entry ([37eff6a](https://github.com/konnectors/libs/commit/37eff6a971f8ea4e86bc1679e1c74ef2c4ba6ba0))
+
+
+
+
+
 # [0.26.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.25.0...cozy-clisk@0.26.0) (2023-10-25)
 
 
