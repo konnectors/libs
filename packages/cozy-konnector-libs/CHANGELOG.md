@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.4.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@5.3.1...cozy-konnector-libs@5.4.0) (2023-12-04)
+
+
+### Features
+
+* **cozy-konnectors-libs:** Migrating saveFiles to cozy-client ([b6684a9](https://github.com/cozy/cozy-konnector-libs/commit/b6684a9a23179349c95e2cd38e6c048ca2402d15))
+
+
+
+
+
 ## [5.3.1](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@5.3.0...cozy-konnector-libs@5.3.1) (2023-10-18)
 
 
