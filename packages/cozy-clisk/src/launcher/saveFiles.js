@@ -487,7 +487,7 @@ async function createFile({ client, entry, options, method, file, dirId }) {
     fileDocument = clientResponse.data
   } else if (method === 'updateById') {
     options.log('debug', 'createFile', `replacing file for ${entry.filename}`)
-    const clientResponse = client.save({
+    const clientResponse = await client.save({
       _id: file._id,
       _rev: file._rev,
       _type: 'io.cozy.files',
