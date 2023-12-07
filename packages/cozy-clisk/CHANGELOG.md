@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.27.2](https://github.com/konnectors/libs/compare/cozy-clisk@0.27.1...cozy-clisk@0.27.2) (2023-12-07)
+
+
+### Bug Fixes
+
+* Need to await client.save() ([575b97f](https://github.com/konnectors/libs/commit/575b97f2022464ea0a44caaa2cefdd468118a1eb))
+
+
+
+
+
 ## [0.27.1](https://github.com/konnectors/libs/compare/cozy-clisk@0.27.0...cozy-clisk@0.27.1) (2023-12-01)
 
 **Note:** Version bump only for package cozy-clisk
