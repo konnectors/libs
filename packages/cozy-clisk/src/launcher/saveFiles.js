@@ -365,6 +365,12 @@ function noMetadataDeduplicationErrors(options) {
  * If createFile fails for non existing destination folder, create the destrination folder and
  * retry createFile. This is done for the case where the destination folder is removed during the
  * execution of the konnector
+ *
+ * @param {import('cozy-client/types/CozyClient').default} client - CozyClient instance
+ * @param {saveFilesEntry} entry - saveFiles entry
+ * @param {saveFileOptions} options - saveFiles options
+ * @param {'create'|'updateById'} method - file creation method which will be used
+ * @param {import('cozy-client/types/types').IOCozyFile} file - io.cozy.files document
  */
 async function createFileWithFolderOnError(
   client,
