@@ -159,9 +159,7 @@ const saveFiles = async (client, entries, folderPath, options) => {
       )
       continue
     }
-    const savedEntry = await saveFile(client, entry, {
-      ...saveOptions
-    })
+    const savedEntry = await saveFile(client, entry, saveOptions)
     if (savedEntry && savedEntry._cozy_file_to_create) {
       savedFiles++
       delete savedEntry._cozy_file_to_create
