@@ -15,6 +15,7 @@ const m = 60 * s
 
 const DEFAULT_LOGIN_TIMEOUT = 5 * m
 const DEFAULT_WAIT_FOR_ELEMENT_TIMEOUT = 30 * s
+const DEFAULT_WAIT_FOR_ELEMENT_ACCROSS_PAGES_TIMEOUT = 60 * s
 
 export const PILOT_TYPE = 'pilot'
 export const WORKER_TYPE = 'worker'
@@ -291,7 +292,8 @@ export default class ContentScript {
     this.onlyIn(PILOT_TYPE, 'waitForElementInWorker')
     await this.runInWorkerUntilTrue({
       method: 'waitForElementNoReload',
-      timeout: options?.timeout,
+      timeout:
+        options?.timeout ?? DEFAULT_WAIT_FOR_ELEMENT_ACCROSS_PAGES_TIMEOUT,
       args: [selector, { includesText: options.includesText }]
     })
   }
