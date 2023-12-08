@@ -394,8 +394,8 @@ export default class ContentScript {
   /**
    * Click on a given element and wait for another given element to be displayed on screen
    *
-   * @param {string} elementToClick
-   * @param {string} elementToWait
+   * @param {string} elementToClick - css selector of the dom element to click in worker
+   * @param {string} elementToWait - css selector of the dom element to wait in worker
    * @returns {Promise<void>}
    */
   async clickAndWait(elementToClick, elementToWait) {
