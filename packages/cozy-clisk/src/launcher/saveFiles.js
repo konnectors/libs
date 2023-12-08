@@ -63,11 +63,24 @@ import { dataUriToArrayBuffer } from '../libs/utils'
  * @returns {Promise<Array<saveFilesEntry>>} - resulting entries
  */
 const saveFiles = async (client, entries, folderPath, options) => {
+  const log = (level, label, msg) => {
+    if (options.log) {
+      options.log({
+        level,
+        namespace: 'saveFiles',
+        label,
+        msg
+      })
+    } else {
+      // eslint-disable-next-line no-console
+      console.log(`${level}: saveFiles: ${label}: ${msg}`)
+    }
+  }
   if (!entries) {
     throw new Error('Savefiles : No list of files given')
   }
   if (entries.length === 0) {
-    options.log('warning', 'saveFiles', 'No file to download')
+    log('warning', 'saveFiles', 'No file to download')
   }
   if (!options.manifest) {
     throw new Error('Savefiles : no manifest')
@@ -92,19 +105,7 @@ const saveFiles = async (client, entries, folderPath, options) => {
 
   const saveOptions = {
     folderPath,
-    log: (level, label, msg) => {
-      if (options.log) {
-        options.log({
-          level,
-          namespace: 'saveFiles',
-          label,
-          msg
-        })
-      } else {
-        // eslint-disable-next-line no-console
-        console.log(`${level}: saveFiles: ${label}: ${msg}`)
-      }
-    },
+    log,
     retry: options.retry,
     subPath: options.subPath,
     fileIdAttributes: options.fileIdAttributes,

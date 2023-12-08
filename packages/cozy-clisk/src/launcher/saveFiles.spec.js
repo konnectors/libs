@@ -394,4 +394,40 @@ describe('saveFiles', function () {
       })
     ).rejects.toThrow('MAIN_FOLDER_REMOVED')
   })
+
+  it('should work even with an empty array of entries and no logger in options', async () => {
+    const client = {
+      save: jest.fn().mockImplementation(doc => ({
+        data: doc
+      })),
+      collection: () => ({
+        statByPath: jest
+          .fn()
+          .mockImplementation(async path => ({ data: { _id: path } }))
+      })
+    }
+
+    const downloadAndFormatFile = jest.fn().mockResolvedValue({
+      dataUri: 'downloaded file content'
+    })
+
+    let caught = false
+    try {
+      await saveFiles(client, [], '/test/folder/path', {
+        manifest: {
+          slug: 'testslug'
+        },
+        sourceAccount: 'testsourceaccount',
+        sourceAccountIdentifier: 'testsourceaccountidentifier',
+        fileIdAttributes: ['filename'],
+        existingFilesIndex: new Map(),
+        downloadAndFormatFile
+      })
+    } catch (err) {
+      caught = true
+      // eslint-disable-next-line no-console
+      console.error('err', err)
+    }
+    expect(caught).toBe(false)
+  })
 })
