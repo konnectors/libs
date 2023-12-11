@@ -133,7 +133,11 @@ const saveFiles = async (client, entries, folderPath, options) => {
     const existingFile = options.existingFilesIndex.get(
       calculateFileKey(entry, options.fileIdAttributes)
     )
-    const shouldReplace = shouldReplaceFile(existingFile, entry, saveOptions)
+    let shouldReplace = false
+    if (existingFile) {
+      shouldReplace = shouldReplaceFile(existingFile, entry, saveOptions)
+    }
+
     if (!existingFile || shouldReplace) {
       toSaveEntries.push({ ...entry, existingFile, shouldReplace })
     } else {
