@@ -14,7 +14,8 @@ import { dataUriToArrayBuffer } from '../libs/utils'
  * @property {object} [fileAttributes] - metadata attributes to add to the resulting file object
  * @property {string} [subPath] - subPath of the destination folder path where to put the downloaded file
  * @property {import('cozy-client/types/types').IOCozyFile} [existingFile] - already existing file corresponding to the entry
- * @property {boolean} [shouldReplace] - result of the shouldReplaceFile function on the entry
+ * @property {boolean} [shouldReplace] - Internal result of the shouldReplaceFile function on the entry
+ * @property {Function} [shouldReplaceFile] - Function which will define if the file should be replaced or not
  */
 
 /**
@@ -31,7 +32,7 @@ import { dataUriToArrayBuffer } from '../libs/utils'
  * @property {Function} [downloadAndFormatFile] - this callback will download the file and format to be useable by cozy-client
  * @property {string} [qualificationLabel] - qualification label defined in cozy-client which will be used on all given files
  * @property {number} [retry] - number of retries if the download of a file failes. No retry by default
- * @property {Map<import('cozy-client/types/types').FileDocument>} existingFilesIndex - index of existing files
+ * @property {Map<string, import('cozy-client/types/types').IOCozyFile>} existingFilesIndex - index of existing files
  */
 
 /**
@@ -47,7 +48,7 @@ import { dataUriToArrayBuffer } from '../libs/utils'
  * @property {string} [qualificationLabel] - qualification label defined in cozy-client which will be used on all given files
  * @property {number} [retry] - number of retries if the download of a file failes. No retry by default
  * @property {string} [folderPath] - path to the destination folder
- * @property {Map<import('cozy-client/types/types').FileDocument>} existingFilesIndex - index of existing files
+ * @property {Map<string, import('cozy-client/types/types').IOCozyFile>} existingFilesIndex - index of existing files
  * @property {object} sourceAccountOptions - source account options
  * @property {object} sourceAccountOptions.sourceAccount - source account object _id
  * @property {object} sourceAccountOptions.sourceAccountIdentifier - source account unique identifier (mostly user login)
@@ -517,7 +518,13 @@ async function createFile({ client, entry, options, method, file, dirId }) {
 
   return fileDocument
 }
-
+/**
+ *
+ * @param {import('cozy-client/types/types').IOCozyFile} file
+ * @param {saveFilesEntry} entry
+ * @param {saveFileOptions} options
+ * @returns boolean
+ */
 const defaultShouldReplaceFile = (file, entry, options) => {
   if (!file) return false
   const shouldForceMetadataAttr = attr => {
@@ -579,7 +586,13 @@ const defaultShouldReplaceFile = (file, entry, options) => {
 
   return result
 }
-
+/**
+ *
+ * @param {import('cozy-client/types/types').IOCozyFile} file - io.cozy.files document
+ * @param {saveFilesEntry} entry - saveFiles entry
+ * @param {saveFileOptions} options - saveFiles options
+ * @returns boolean
+ */
 const shouldReplaceFile = function (file, entry, options) {
   const isValid = !options.validateFile || options.validateFile(file)
   if (!isValid) {
@@ -616,9 +629,15 @@ const removeFile = async function (client, file, options) {
 module.exports = saveFiles
 
 /**
+ * @typedef {Object} FileWithName
+ * @property {string} [filename] - The file name.
+ * @property {string} [name] - The file name.
+ */
+/**
  * Get the name of a the file corresponding to the given entry en options
  *
- * @param {saveFilesEntry} entry - saveFiles entry
+ * @template T
+ * @param {T & FileWithName} entry - An object that extends FileWithName.
  * @param {saveFileOptions} options - options object
  * @returns {false|string} - restulting file name
  */
@@ -745,7 +764,7 @@ function attachFileToEntry(entry, fileDocument) {
  * Get the full path of a given file, from it's folder path and file or entry
  *
  * @param {Object} arg - arg option object
- * @param {import('cozy-client/types/types').FileDocument} [arg.file] - io.cozy.files object
+ * @param {import('cozy-client/types/types').IOCozyFile} [arg.file] - io.cozy.files object
  * @param {saveFilesEntry} [arg.entry] - saveFiles entry
  * @param {saveFileOptions} arg.options - io.cozy.files object
  * @returns {string | undefined} - file full path
