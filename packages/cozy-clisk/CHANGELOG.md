@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.28.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.27.3...cozy-clisk@0.28.0) (2023-12-11)
+
+
+### Bug Fixes
+
+* No more undefined in not a function when saveFiles with empty array ([58ebcaf](https://github.com/konnectors/libs/commit/58ebcafcc2e0905b282b57a99c2c7105628fb465))
+
+
+### Features
+
+* Set a default timeout to waitForElementInWorker ([ef074ca](https://github.com/konnectors/libs/commit/ef074ca62bc6f6b08dbef5f687c56e1dbbfd684c))
+
+
+
+
+
 ## [0.27.3](https://github.com/konnectors/libs/compare/cozy-clisk@0.27.2...cozy-clisk@0.27.3) (2023-12-09)
 
 
