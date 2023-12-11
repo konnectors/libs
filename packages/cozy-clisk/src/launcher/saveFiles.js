@@ -645,6 +645,8 @@ function getFileName(entry, options) {
   let filename
   if (entry.filename) {
     filename = entry.filename
+  } else if (entry.name) {
+    filename = entry.name
   } else {
     options.log(
       'error',
