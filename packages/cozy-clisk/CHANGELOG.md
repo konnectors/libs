@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.28.1](https://github.com/konnectors/libs/compare/cozy-clisk@0.28.0...cozy-clisk@0.28.1) (2023-12-11)
+
+
+### Bug Fixes
+
+* Don't call shouldReplaceFile if no existing file ([ee07f33](https://github.com/konnectors/libs/commit/ee07f33e70fb69bc223601775d68d550646fea12))
+* Entry can be an IOCozyFile, so no filename ([578ab95](https://github.com/konnectors/libs/commit/578ab95aaf7aa24ae9089860d9309d474cf04344))
+
+
+
+
+
 # [0.28.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.27.3...cozy-clisk@0.28.0) (2023-12-11)
 
 
