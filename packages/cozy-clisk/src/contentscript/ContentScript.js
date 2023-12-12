@@ -1,5 +1,6 @@
 // @ts-check
 import waitFor, { TimeoutError } from 'p-wait-for'
+import pTimeout from 'p-timeout'
 import Minilog from '@cozy/minilog'
 
 import LauncherBridge from '../bridge/LauncherBridge'
@@ -201,6 +202,36 @@ export default class ContentScript {
       }
     })
     return true
+  }
+
+  /**
+   * Resolves when the dom is ready (DOMContentLoaded event)
+   *
+   * @returns {Promise<void>}
+   */
+  async waitForDomReady() {
+    const self = this
+    const domReadyPromise = new Promise(resolve => {
+      // first check if the DOMContentLoad has already been called
+      if (
+        document.readyState === 'complete' ||
+        document.readyState === 'loaded'
+      ) {
+        resolve()
+      } else {
+        window.addEventListener('DOMContentLoaded', () => {
+          resolve()
+        })
+      }
+    })
+    return pTimeout(domReadyPromise, {
+      milliseconds: 10000,
+      fallback: () =>
+        self.log(
+          'warning',
+          'waitForDomReady timed out after 10s, we may have missed the DOMContentLoad event'
+        )
+    })
   }
 
   /**
