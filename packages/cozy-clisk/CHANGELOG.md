@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.29.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.28.1...cozy-clisk@0.29.0) (2023-12-13)
+
+
+### Features
+
+* Add waitForDomReady method to ContentScript ([14d71a3](https://github.com/konnectors/libs/commit/14d71a3565af2f58b87459c310c02221def3bfe9))
+
+
+
+
+
 ## [0.28.1](https://github.com/konnectors/libs/compare/cozy-clisk@0.28.0...cozy-clisk@0.28.1) (2023-12-11)
 
 
