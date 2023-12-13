@@ -81,7 +81,7 @@ const saveFiles = async (client, entries, folderPath, options) => {
     throw new Error('Savefiles : No list of files given')
   }
   if (entries.length === 0) {
-    log('warning', 'saveFiles', 'No file to download')
+    log('warn', 'saveFiles', 'No file to download')
   }
   if (!options.manifest) {
     throw new Error('Savefiles : no manifest')
@@ -158,11 +158,7 @@ const saveFiles = async (client, entries, folderPath, options) => {
     ;['filename'].forEach(key => addValOrFnResult(entry, key, options))
 
     if (!entry.filename) {
-      saveOptions.log(
-        'warning',
-        '',
-        'Missing filename property, entry is ignored'
-      )
+      saveOptions.log('warn', '', 'Missing filename property, entry is ignored')
       continue
     }
     const savedEntry = await saveFile(client, entry, saveOptions)
@@ -312,17 +308,17 @@ const saveFile = async function (client, entry, options) {
         }
         if (err.message === 'BAD_DOWNLOADED_FILE') {
           options.log(
-            'warning',
+            'warn',
             'saveFile',
             `Could not download file after ${options.retry} tries removing the file`
           )
         } else {
           options.log(
-            'warning',
+            'warn',
             'saveFile',
             'unknown file download error: ' + err.message
           )
-          options.log('warning', 'saveFile', err.message)
+          options.log('warn', 'saveFile', err.message)
         }
       })
     }
@@ -338,10 +334,10 @@ const saveFile = async function (client, entry, options) {
       // the cozy quota is full
       throw new Error('DISK_QUOTA_EXCEEDED')
     }
-    options.log('warning', 'saveFile', 'SAVE_FILE_FAILED')
-    options.log('warning', 'saveFile', err.message)
+    options.log('warn', 'saveFile', 'SAVE_FILE_FAILED')
+    options.log('warn', 'saveFile', err.message)
     options.log(
-      'warning',
+      'warn',
       'saveFile',
       `Error caught while trying to save the file ${
         resultEntry.fileurl || resultEntry.filename
@@ -601,7 +597,7 @@ const shouldReplaceFile = function (file, entry, options) {
   const isValid = !options.validateFile || options.validateFile(file)
   if (!isValid) {
     options.log(
-      'warning',
+      'warn',
       'shouldReplaceFile',
       `${getFileName(file, options)} is invalid`
     )
@@ -677,8 +673,8 @@ function checkFileSize(fileobject, options) {
   const size = getAttribute(fileobject, 'size')
   const name = getAttribute(fileobject, 'name')
   if (size === 0 || size === '0') {
-    options.log('warning', 'checkFileSize', `${name} is empty`)
-    options.log('warning', 'checkFileSize', 'BAD_FILE_SIZE')
+    options.log('warn', 'checkFileSize', `${name} is empty`)
+    options.log('warn', 'checkFileSize', 'BAD_FILE_SIZE')
     return false
   }
   return true
