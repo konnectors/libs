@@ -228,7 +228,7 @@ export default class ContentScript {
       milliseconds: 10000,
       fallback: () =>
         self.log(
-          'warning',
+          'warn',
           'waitForDomReady timed out after 10s, we may have missed the DOMContentLoad event'
         )
     })
