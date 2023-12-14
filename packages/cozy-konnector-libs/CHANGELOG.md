@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.5.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@5.4.0...cozy-konnector-libs@5.5.0) (2023-12-14)
+
+
+### Features
+
+* Update files with qualification if not present ([36bd51a](https://github.com/cozy/cozy-konnector-libs/commit/36bd51a0b872e7ae46886d262eb9e14e90a5a49c))
+
+
+
+
+
 # [5.4.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@5.3.1...cozy-konnector-libs@5.4.0) (2023-12-04)
 
 
