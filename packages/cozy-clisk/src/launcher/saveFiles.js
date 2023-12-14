@@ -27,8 +27,6 @@ import { dataUriToArrayBuffer } from '../libs/utils'
  * @property {Function} log - Logging function coming from the Launcher
  * @property {string} [subPath] - subPath of the destination folder path where to put the downloaded file
  * @property {string} [contentType] - will force the contentType of the file if any
- * @property {Function} [shouldReplaceFile] - Function which will define if the file should be replaced or not
- * @property {Function} [validateFile] - this function will check if the downloaded file is correct (by default, error if file size is 0)
  * @property {Function} [downloadAndFormatFile] - this callback will download the file and format to be useable by cozy-client
  * @property {string} [qualificationLabel] - qualification label defined in cozy-client which will be used on all given files
  * @property {number} [retry] - number of retries if the download of a file failes. No retry by default
@@ -42,8 +40,6 @@ import { dataUriToArrayBuffer } from '../libs/utils'
  * @property {Function} log - Logging function coming from the Launcher
  * @property {string} [subPath] - subPath of the destination folder path where to put the downloaded file
  * @property {string} [contentType] - will force the contentType of the file if any
- * @property {Function} [shouldReplaceFile] - Function which will define if the file should be replaced or not
- * @property {Function} [validateFile] - this function will check if the downloaded file is correct (by default, error if file size is 0)
  * @property {Function} [downloadAndFormatFile] - this callback will download the file and format to be useable by cozy-client
  * @property {string} [qualificationLabel] - qualification label defined in cozy-client which will be used on all given files
  * @property {number} [retry] - number of retries if the download of a file failes. No retry by default
@@ -112,8 +108,7 @@ const saveFiles = async (client, entries, folderPath, options) => {
     fileIdAttributes: options.fileIdAttributes,
     manifest: options.manifest,
     contentType: options.contentType,
-    shouldReplaceFile: options.shouldReplaceFile,
-    validateFile: options.validateFile || defaultValidateFile,
+    validateFile: defaultValidateFile,
     downloadAndFormatFile: options.downloadAndFormatFile,
     qualificationLabel: options.qualificationLabel,
     sourceAccountOptions: {
@@ -527,11 +522,12 @@ async function createFile({ client, entry, options, method, file, dirId }) {
   return fileDocument
 }
 /**
+ * Default function to determine if we should replace a file
  *
- * @param {import('cozy-client/types/types').IOCozyFile} file
- * @param {saveFilesEntry} entry
- * @param {saveFileOptions} options
- * @returns boolean
+ * @param {import('cozy-client/types/types').IOCozyFile} file - the existing file if any
+ * @param {saveFilesEntry} entry - the current entry
+ * @param {saveFileOptions} options - saveFile options
+ * @returns {boolean} - should we replace the current file
  */
 const defaultShouldReplaceFile = (file, entry, options) => {
   if (!file) return false
@@ -603,7 +599,7 @@ const defaultShouldReplaceFile = (file, entry, options) => {
  * @returns {boolean} - should we replace the current file
  */
 const shouldReplaceFile = function (file, entry, options) {
-  const isValid = !options.validateFile || options.validateFile(file)
+  const isValid = options.validateFile(file)
   if (!isValid) {
     options.log(
       'warning',
