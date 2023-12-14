@@ -252,7 +252,11 @@ const saveFile = async function (client, entry, options) {
     }
   }
 
-  if (entry.fileurl && !entry.existingFile && options.downloadAndFormatFile) {
+  if (
+    entry.fileurl &&
+    (!entry.existingFile || entry.shouldReplace) &&
+    options.downloadAndFormatFile
+  ) {
     const downloadedEntry = await options.downloadAndFormatFile(entry)
     resultEntry.dataUri = downloadedEntry.dataUri
     delete resultEntry.fileurl
