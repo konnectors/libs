@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.30.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.29.0...cozy-clisk@0.30.0) (2023-12-14)
+
+
+### Bug Fixes
+
+* Remove the use of unexpected 'warning' log level ([0544a5b](https://github.com/konnectors/libs/commit/0544a5b5e7ea046c22f2e1c723a749a83fe1b49d)), closes [/github.com/cozy/cozy-flagship-app/blob/c6d28d88db3a1d6714431ea81258994d694d2c20/src/libs/ReactNativeLauncher.js#L114](https://github.com//github.com/cozy/cozy-flagship-app/blob/c6d28d88db3a1d6714431ea81258994d694d2c20/src/libs/ReactNativeLauncher.js/issues/L114)
+* Remove validateFile and shouldReplaceFile options from saveFiles ([a2ee549](https://github.com/konnectors/libs/commit/a2ee5493195815f613a07a4300b769c2da717445))
+* Use the shouldReplace attribute to download the file from the worker ([9ec0736](https://github.com/konnectors/libs/commit/9ec073666ceeca3bbbdc5ef1aa24043173368dac))
+
+
+### Features
+
+* Add forceReplaceFile entry attribute to saveFiles ([830906a](https://github.com/konnectors/libs/commit/830906a31e9fc7eee1bf5649d9f982a85580cba3))
+
+
+
+
+
 # [0.29.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.28.1...cozy-clisk@0.29.0) (2023-12-13)
 
 
