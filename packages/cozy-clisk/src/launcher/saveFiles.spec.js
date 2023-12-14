@@ -57,6 +57,87 @@ describe('saveFiles', function () {
       }
     ])
   })
+  it('should download a file if the file is already present and has option forceReplaceFile', async () => {
+    const fileDocument = {
+      _id: 'existingid',
+      _rev: 'existingrev',
+      _type: 'io.cozy.files',
+      type: 'file',
+      data: 'already present file content',
+      dirId: '/test/folder/path',
+      name: 'file name.txt',
+      cozyMetadata: {
+        sourceAccount: 'testsourceaccount',
+        sourceAccountIdentifier: 'testsourceaccountidentifier'
+      },
+      metadata: {
+        fileIdAttributes: 'file name.txt'
+      }
+    }
+    const existingFilesIndex = new Map([['file name.txt', fileDocument]])
+    const client = {
+      save: jest.fn().mockImplementation(doc => ({
+        data: { ...doc, _rev: 'newrev' }
+      })),
+      collection: () => ({
+        statByPath: jest.fn().mockImplementation(path => {
+          return { data: { _id: path } }
+        })
+      })
+    }
+
+    const downloadAndFormatFile = jest.fn().mockResolvedValue({
+      dataUri: 'downloaded file content'
+    })
+    dataUriToArrayBuffer.mockImplementation(dataUri => ({
+      arrayBuffer: dataUri + ' arrayBuffer'
+    }))
+
+    const document = {
+      forceReplaceFile: true,
+      fileurl: 'https://myfile.txt',
+      filename: 'file name.txt'
+    }
+    const result = await saveFiles(client, [document], '/test/folder/path', {
+      manifest: {
+        slug: 'testslug'
+      },
+      sourceAccount: 'testsourceaccount',
+      sourceAccountIdentifier: 'testsourceaccountidentifier',
+      fileIdAttributes: ['filename'],
+      existingFilesIndex,
+      downloadAndFormatFile,
+      log: jest.fn()
+    })
+
+    expect(downloadAndFormatFile).toHaveBeenCalledWith(
+      expect.objectContaining({
+        fileurl: 'https://myfile.txt',
+        filename: 'file name.txt'
+      })
+    )
+
+    const newFileDocument = {
+      _id: 'existingid',
+      _rev: 'newrev',
+      _type: 'io.cozy.files',
+      type: 'file',
+      data: 'downloaded file content arrayBuffer',
+      dirId: '/test/folder/path',
+      name: 'file name.txt',
+      sourceAccount: 'testsourceaccount',
+      sourceAccountIdentifier: 'testsourceaccountidentifier',
+      metadata: {
+        fileIdAttributes: 'file name.txt'
+      }
+    }
+    expect(result).toStrictEqual([
+      {
+        filename: 'file name.txt',
+        fileDocument: newFileDocument
+      }
+    ])
+  })
   it('should download a file with fileurl and without filestream', async () => {
     const client = {
       save: jest.fn().mockImplementation(doc => ({

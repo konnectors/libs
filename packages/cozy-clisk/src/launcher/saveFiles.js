@@ -15,7 +15,7 @@ import { dataUriToArrayBuffer } from '../libs/utils'
  * @property {string} [subPath] - subPath of the destination folder path where to put the downloaded file
  * @property {import('cozy-client/types/types').IOCozyFile} [existingFile] - already existing file corresponding to the entry
  * @property {boolean} [shouldReplace] - Internal result of the shouldReplaceFile function on the entry
- * @property {Function} [shouldReplaceFile] - Function which will define if the file should be replaced or not
+ * @property {boolean} [forceReplaceFile] - should the konnector force the replace of the current file
  */
 
 /**
@@ -591,11 +591,12 @@ const defaultShouldReplaceFile = (file, entry, options) => {
   return result
 }
 /**
+ * Determine if we should replace the current file if any
  *
  * @param {import('cozy-client/types/types').IOCozyFile} file - io.cozy.files document
  * @param {saveFilesEntry} entry - saveFiles entry
  * @param {saveFileOptions} options - saveFiles options
- * @returns boolean
+ * @returns {boolean} - should we replace the current file
  */
 const shouldReplaceFile = function (file, entry, options) {
   const isValid = !options.validateFile || options.validateFile(file)
@@ -607,12 +608,11 @@ const shouldReplaceFile = function (file, entry, options) {
     )
     throw new Error('BAD_DOWNLOADED_FILE')
   }
-  const shouldReplaceFileFn =
-    entry.shouldReplaceFile ||
-    options.shouldReplaceFile ||
-    defaultShouldReplaceFile
 
-  return shouldReplaceFileFn(file, entry, options)
+  const result =
+    entry.forceReplaceFile ?? defaultShouldReplaceFile(file, entry, options)
+
+  return result
 }
 
 /**
@@ -757,6 +757,7 @@ function sanitizeEntry(entry) {
   delete entry.shouldReplaceFile
   delete entry.existingFile
   delete entry.shouldReplace
+  delete entry.forceReplaceFile
   delete entry.fileAttributes
   return entry
 }
