@@ -22,7 +22,7 @@ const getEnvironmentFromDomain = domain => {
 }
 
 // Available in Projet > Settings > Client Keys
-// Example : https://5f94cb7772deadbeef123456:39e4e34fdeadbeef123456a9ae31caba74c@sentry.cozycloud.cc/12
+// Example : https://5f94cb7772deadbeef123456:39e4e34fdeadbeef123456a9ae31caba74c@errors.cozycloud.cc/12
 const SENTRY_DSN = process.env.SENTRY_DSN
 
 const afterFatalError = function (_err, sendErr, eventId) {
