@@ -8,6 +8,7 @@ import { blobToBase64, callStringFunction } from './utils'
 import { wrapTimerFactory } from '../libs/wrapTimer'
 import ky from 'ky/umd'
 import cliskPackageJson from '../../package.json'
+import { calculateFileKey } from '../libs/utils'
 
 const log = Minilog('ContentScript class')
 
@@ -479,8 +480,8 @@ export default class ContentScript {
    * - download files when not filtered out
    * - converts blob files to base64 uri to be serializable
    *
-   * @param {Array} entries : list of file entries to save
-   * @param {object} options : saveFiles options
+   * @param {Array<import('../launcher/saveFiles').saveFilesEntry & {shouldReplaceFile: Function}>} entries : list of file entries to save
+   * @param {import('../launcher/saveFiles').saveFileOptions & {context: object, shouldReplaceFile: Function}} options : saveFiles options
    */
   async saveFiles(entries, options) {
     this.onlyIn(PILOT_TYPE, 'saveFiles')
@@ -493,7 +494,42 @@ export default class ContentScript {
         'No bridge is defined, you should call ContentScript.init before using this method'
       )
     }
-    return await this.bridge.call('saveFiles', entries, options)
+
+    const updatedEntries = this.prepareSaveFileEntries(entries, options)
+
+    return await this.bridge.call('saveFiles', updatedEntries, options)
+  }
+
+  /**
+   * Prepare entries to be given to launcher saveFiles. Especially function attributes which will not be serialized to the launcher
+   *
+   * @param {Array<import('../launcher/saveFiles').saveFilesEntry & {shouldReplaceFile?: Function}>} entries
+   * @param {import('../launcher/saveFiles').saveFileOptions & {context: object, shouldReplaceFile?: Function}} options
+   */
+  prepareSaveFileEntries(entries, options) {
+    const existingFilesIndex = options?.context?.existingFilesIndex || {}
+
+    const updatedEntries = [...entries]
+    for (const entry of updatedEntries) {
+      if (entry.forceReplaceFile === true || entry.forceReplaceFile === false) {
+        // entry.forceReplaceFile has priority over shouldReplaceFile function
+        continue
+      }
+      const shouldReplaceFileFn =
+        entry.shouldReplaceFile || options.shouldReplaceFile
+      if (shouldReplaceFileFn) {
+        const existingFile =
+          existingFilesIndex[calculateFileKey(entry, options.fileIdAttributes)]
+        entry.forceReplaceFile = shouldReplaceFileFn(
+          existingFile,
+          entry,
+          options
+        )
+        delete entry?.shouldReplaceFile
+      }
+    }
+    delete options?.shouldReplaceFile
+    return updatedEntries
   }
 
   /**

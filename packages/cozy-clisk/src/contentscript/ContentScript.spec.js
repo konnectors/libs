@@ -2,6 +2,128 @@ import ContentScript, { PILOT_TYPE } from './ContentScript'
 import { Q } from 'cozy-client'
 
 describe('ContentScript', () => {
+  describe('saveFiles', () => {
+    it('should call launcher saveFiles with given nominal options', async () => {
+      const contentScript = new ContentScript()
+      contentScript.setContentScriptType(PILOT_TYPE)
+      contentScript.bridge = {
+        call: jest.fn(),
+        emit: jest.fn()
+      }
+      await contentScript.saveFiles(
+        [
+          {
+            filename: 'testfile.pdf',
+            fileurl: 'https://filedownload.com/file1'
+          }
+        ],
+        { context: {} }
+      )
+      expect(contentScript.bridge.call).toHaveBeenCalledTimes(1)
+      expect(contentScript.bridge.call).toHaveBeenCalledWith(
+        'saveFiles',
+        [
+          {
+            filename: 'testfile.pdf',
+            fileurl: 'https://filedownload.com/file1'
+          }
+        ],
+        { context: {} }
+      )
+    })
+    it('should force file replace when shouldReplace file in options returns true', async () => {
+      const contentScript = new ContentScript()
+      contentScript.setContentScriptType(PILOT_TYPE)
+      contentScript.bridge = {
+        call: jest.fn(),
+        emit: jest.fn()
+      }
+      await contentScript.saveFiles(
+        [
+          {
+            filename: 'testfile.pdf',
+            fileurl: 'https://filedownload.com/file1'
+          },
+          {
+            filename: 'testfile2.pdf',
+            fileurl: 'https://filedownload.com/file2'
+          }
+        ],
+        {
+          context: {},
+          shouldReplaceFile: (file, entry) => {
+            const result = entry.filename === 'testfile2.pdf'
+            return result
+          },
+          fileIdAttributes: ['filename']
+        }
+      )
+      expect(contentScript.bridge.call).toHaveBeenCalledTimes(1)
+      expect(contentScript.bridge.call).toHaveBeenCalledWith(
+        'saveFiles',
+        [
+          {
+            filename: 'testfile.pdf',
+            fileurl: 'https://filedownload.com/file1',
+            forceReplaceFile: false
+          },
+          {
+            filename: 'testfile2.pdf',
+            fileurl: 'https://filedownload.com/file2',
+            forceReplaceFile: true
+          }
+        ],
+        {
+          context: {},
+          fileIdAttributes: ['filename']
+        }
+      )
+    })
+    it('should force file replace when shouldReplace file in entry returns true', async () => {
+      const contentScript = new ContentScript()
+      contentScript.setContentScriptType(PILOT_TYPE)
+      contentScript.bridge = {
+        call: jest.fn(),
+        emit: jest.fn()
+      }
+      await contentScript.saveFiles(
+        [
+          {
+            filename: 'testfile.pdf',
+            fileurl: 'https://filedownload.com/file1',
+            shouldReplaceFile: () => true
+          },
+          {
+            filename: 'testfile2.pdf',
+            fileurl: 'https://filedownload.com/file2'
+          }
+        ],
+        {
+          context: {},
+          fileIdAttributes: ['filename']
+        }
+      )
+      expect(contentScript.bridge.call).toHaveBeenCalledTimes(1)
+      expect(contentScript.bridge.call).toHaveBeenCalledWith(
+        'saveFiles',
+        [
+          {
+            filename: 'testfile.pdf',
+            fileurl: 'https://filedownload.com/file1',
+            forceReplaceFile: true
+          },
+          {
+            filename: 'testfile2.pdf',
+            fileurl: 'https://filedownload.com/file2'
+          }
+        ],
+        {
+          context: {},
+          fileIdAttributes: ['filename']
+        }
+      )
+    })
+  })
   describe('queryAll', () => {
     it('should convert the given query definition to a serializable object', async () => {
       const contentScript = new ContentScript()

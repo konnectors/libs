@@ -26,3 +26,16 @@ export const dataUriToArrayBuffer = dataURI => {
   }
   return { contentType, arrayBuffer }
 }
+
+/**
+ * Calculate the file key from an entry given to saveFiles
+ *
+ * @param {import('../launcher/saveFiles').saveFilesEntry} entry - a savefiles entry
+ * @param {Array<string>} fileIdAttributes - list of entry attributes which will be used to identify the entry in a unique way
+ * @returns {string} - The resulting file key
+ */
+export const calculateFileKey = (entry, fileIdAttributes) =>
+  fileIdAttributes
+    .sort()
+    .map(key => entry?.[key])
+    .join('####')
