@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.31.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.30.0...cozy-clisk@0.31.0) (2023-12-21)
+
+
+### Features
+
+* Handle shouldReplaceFile at the ContentScript level ([7fa3e2e](https://github.com/konnectors/libs/commit/7fa3e2e915d7c0fc3c232429c956a5d0bd75f694))
+
+
+
+
+
 # [0.30.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.29.0...cozy-clisk@0.30.0) (2023-12-14)
 
 
