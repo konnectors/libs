@@ -153,7 +153,7 @@ describe('requestFactory', () => {
 
     test('Self-signed cert should be refused', async () => {
       return expect(rq('https://self-signed.badssl.com')).rejects.toEqual(
-        new Error('Error: self signed certificate')
+        new Error('Error: self-signed certificate')
       )
     })
   })
