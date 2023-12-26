@@ -139,14 +139,13 @@ describe('requestFactory', () => {
       }
     })
 
-    // The following test is flaky
-    xit('Untrust Root cert should be refused', async () => {
+    it('Untrust Root cert should be refused', async () => {
       expect.assertions(1)
       try {
         await rq('https://untrusted-root.badssl.com')
       } catch (err) {
         expect(err.message).toEqual(
-          'Error: self signed certificate in certificate chain'
+          'Error: self-signed certificate in certificate chain'
         )
       }
     })
