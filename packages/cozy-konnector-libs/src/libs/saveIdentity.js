@@ -71,14 +71,7 @@ const saveIdentity = async (
     : { contact: contactOrIdentity }
   identity.identifier = accountIdentifier
 
-  // Format contact if needed
-  if (identity.contact.phone) {
-    identity.contact.phone = formatPhone(identity.contact.phone)
-  }
-  if (identity.contact.address) {
-    identity.contact.address = formatAddress(identity.contact.address)
-  }
-
+  identity.contact = formatIdentityContact(identity.contact)
   if (options.merge == false) {
     // Using cozy client in a none merging strategy here.
     const newClient = cozyClient.new
@@ -133,6 +126,8 @@ function formatAddress(address) {
         .replace(/<[^>]*>/g, '') // Remove all html Tag
         .replace(/\r\n|[\n\r]/g, ' ') // Remove all kind of return character
       address[address.indexOf(element)] = element
+    } else {
+      log('warn', 'There is no formattedAddress in address object')
     }
   }
   return address
@@ -145,9 +140,57 @@ function formatPhone(phone) {
     if (element.number) {
       element.number = element.number.replace(/[^\d.+]/g, '')
       phone[phone.indexOf(element)] = element
+    } else {
+      log('warn', 'There is no number in phone object')
     }
   }
   return phone
 }
 
-module.exports = saveIdentity
+function formatIdentityContact(contactToFormat) {
+  const contact = { ...contactToFormat }
+  if (contact.phone) {
+    if (!Array.isArray(contact.phone)) {
+      log(
+        'warn',
+        'formatIdentityContact Phone is not an array, you should fix it'
+      )
+      contact.phone = [
+        {
+          number: contact.phone
+        }
+      ]
+    }
+    contact.phone = formatPhone(contact.phone)
+  }
+
+  if (contact.address) {
+    if (!Array.isArray(contact.address)) {
+      log(
+        'warn',
+        'formatIdentityContact Address is not an array, you should fix it'
+      )
+      contact.address = [
+        {
+          formattedAddress: contact.address
+        }
+      ]
+    }
+    contact.address = formatAddress(contact.address)
+  }
+  if (contact.email) {
+    if (!Array.isArray(contact.email)) {
+      log(
+        'warn',
+        'formatIdentityContact Email is not an array, you should fix it'
+      )
+      contact.email = [
+        {
+          address: contact.email
+        }
+      ]
+    }
+  }
+  return contact
+}
+module.exports = { saveIdentity, formatIdentityContact }

@@ -8,7 +8,7 @@ const signin = require('./signin')
 const get = require('lodash/get')
 const omit = require('lodash/omit')
 const updateOrCreate = require('./updateOrCreate')
-const saveIdentity = require('./saveIdentity')
+const saveIdentity = require('./saveIdentity').saveIdentity
 const fs = require('fs').promises
 const path = require('path')
 const {

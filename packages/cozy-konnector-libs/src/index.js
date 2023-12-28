@@ -11,7 +11,7 @@ module.exports = {
   log,
   saveFiles: require('./libs/saveFiles'),
   saveBills: require('./libs/saveBills'),
-  saveIdentity: require('./libs/saveIdentity'),
+  saveIdentity: require('./libs/saveIdentity').saveIdentity,
   linkBankOperations: require('./libs/linkBankOperations'),
   addData: require('./libs/addData'),
   hydrateAndFilter,
