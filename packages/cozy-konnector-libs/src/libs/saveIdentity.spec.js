@@ -7,7 +7,8 @@ jest.mock('./cozyclient', () => ({
 }))
 
 const updateOrCreate = require('./updateOrCreate')
-const saveIdentity = require('./saveIdentity')
+const saveIdentity = require('./saveIdentity').saveIdentity
+const formatIdentityContact = require('./saveIdentity').formatIdentityContact
 const cozyClient = require('./cozyclient')
 
 describe('saveIdentity', () => {
@@ -94,5 +95,40 @@ describe('saveIdentity', () => {
       contact: { name: 'test2' },
       identifier: 'myidentifier'
     })
+  })
+})
+
+describe('formatIdentityContact', () => {
+  fit('should format (create the array) phone, address & mail if only strings', () => {
+    const contact = {
+      phone: '0601020304',
+      address: '1 rue de la paix',
+      email: 'foo@cozycloud.cc'
+    }
+    const formattedContact = formatIdentityContact(contact)
+
+    const expectedContact = {
+      phone: [{ number: contact.phone }],
+      address: [{ formattedAddress: contact.address }],
+      email: [{ address: contact.email }]
+    }
+
+    expect(formattedContact).toEqual(expectedContact)
+  })
+  fit('should format (create the array) phone, address & mail if string or array', () => {
+    const contact = {
+      phone: [{ number: '0601020304' }],
+      address: '1 rue de la paix',
+      email: 'foo@cozycloud.cc'
+    }
+    const formattedContact = formatIdentityContact(contact)
+
+    const expectedContact = {
+      phone: contact.phone,
+      address: [{ formattedAddress: contact.address }],
+      email: [{ address: contact.email }]
+    }
+
+    expect(formattedContact).toEqual(expectedContact)
   })
 })
