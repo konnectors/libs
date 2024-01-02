@@ -272,20 +272,20 @@ module.exports = {
 }
 
 /**
- * This function convert a Date Object to a ISO date string (2018-07-31)
+ * This function converts a Date Object to its ISO format string ("YYYY-MM-DD")
  *
  * Parameters:
  *
- * `date` (Date): the id of the file in the cozy
+ * `date` (Date): a Date Object
  *
  * Returns a string
  *
  * Example:
  *
  * ```javascript
- * const date = formatFrenchDate(New Date.now())
+ * const date = formatDate(New Date.now())
  * ```
  */
 function formatDate(date) {
-  return format(new Date(date), 'yyyy-MM-dd')
+  return format(new Date(date), 'YYYY-MM-DD')
 }
