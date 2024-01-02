@@ -9,6 +9,7 @@ jest.mock('./cozyclient', () => ({
 const updateOrCreate = require('./updateOrCreate')
 const saveIdentity = require('./saveIdentity').saveIdentity
 const formatIdentityContact = require('./saveIdentity').formatIdentityContact
+const trimProperties = require('./saveIdentity').trimProperties
 const cozyClient = require('./cozyclient')
 
 describe('saveIdentity', () => {
@@ -130,5 +131,65 @@ describe('formatIdentityContact', () => {
     }
 
     expect(formattedContact).toEqual(expectedContact)
+  })
+})
+
+describe('trimProperties', () => {
+  it('should trim all properties', () => {
+    const contact = {
+      address: [
+        {
+          city: ' CITY',
+          formattedAddress: '86 CHEMIN DES DAMES 01001 CITY ',
+          postCode: '01001',
+          street: {
+            streetName: ' DES DAMES',
+            streetNumber: 86,
+            streetType: 'CHEMIN'
+          }
+        }
+      ],
+      email: ' foo.bar@cozycloud.cc ',
+      name: {
+        firstName: 'Chris',
+        fullName: 'Chris A',
+        lastName: 'A'
+      },
+      phoneNumber: [
+        {
+          number: ' 060606060606',
+          type: 'mobile'
+        }
+      ]
+    }
+
+    const expectedContact = {
+      address: [
+        {
+          city: 'CITY',
+          formattedAddress: '86 CHEMIN DES DAMES 01001 CITY',
+          postCode: '01001',
+          street: {
+            streetName: 'DES DAMES',
+            streetNumber: 86,
+            streetType: 'CHEMIN'
+          }
+        }
+      ],
+      email: 'foo.bar@cozycloud.cc',
+      name: {
+        firstName: 'Chris',
+        fullName: 'Chris A',
+        lastName: 'A'
+      },
+      phoneNumber: [
+        {
+          number: '060606060606',
+          type: 'mobile'
+        }
+      ]
+    }
+
+    expect(trimProperties(contact)).toEqual(expectedContact)
   })
 })
