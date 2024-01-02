@@ -12,7 +12,7 @@ const log = Minilog('saveIdentity')
  * @param {object} contactOrIdentity : the identity to create/update as an object io.cozy.contacts
  * @param {string} accountIdentifier : a string that represent the account use
  * @param {object} options : options object
- * @param {import('cozy-client/types/CozyClient')} options.client - CozyClient instance
+ * @param {import('cozy-client/types/CozyClient').default} options.client - CozyClient instance
  * @param {boolean} [options.merge] - Merge the identity with the previous one (default false)
  * ```javascript
  * const identity =
@@ -25,7 +25,11 @@ const log = Minilog('saveIdentity')
  * ```
  */
 
-export default async (contactOrIdentity, accountIdentifier, options = {}) => {
+export default async (contactOrIdentity, accountIdentifier, options) => {
+  if (!options) {
+    log.error('saveIdentity: options is required')
+    return
+  }
   if (accountIdentifier == null) {
     log.warn("Can't set identity as no accountIdentifier was provided")
     return
