@@ -99,7 +99,7 @@ describe('saveIdentity', () => {
 })
 
 describe('formatIdentityContact', () => {
-  fit('should format (create the array) phone, address & mail if only strings', () => {
+  it('should format (create the array) phone, address & mail if only strings', () => {
     const contact = {
       phone: '0601020304',
       address: '1 rue de la paix',
@@ -115,7 +115,7 @@ describe('formatIdentityContact', () => {
 
     expect(formattedContact).toEqual(expectedContact)
   })
-  fit('should format (create the array) phone, address & mail if string or array', () => {
+  it('should format (create the array) phone, address & mail if string or array', () => {
     const contact = {
       phone: [{ number: '0601020304' }],
       address: '1 rue de la paix',
