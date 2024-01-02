@@ -52,7 +52,7 @@ export default async (contactOrIdentity, accountIdentifier, options) => {
     : { contact: contactOrIdentity }
   identity.identifier = accountIdentifier
 
-  identity.contact = formatIdentityContact(identity.contact)
+  identity.contact = trimProperties(formatIdentityContact(identity.contact))
 
   // Format contact if needed
   if (identity.contact.phone) {
@@ -171,4 +171,15 @@ export function formatIdentityContact(contactToFormat) {
     }
   }
   return contact
+}
+
+export function trimProperties(obj) {
+  for (let key in obj) {
+    if (typeof obj[key] === 'string') {
+      obj[key] = obj[key].trim()
+    } else if (typeof obj[key] === 'object' && obj[key] !== null) {
+      trimProperties(obj[key])
+    }
+  }
+  return obj
 }

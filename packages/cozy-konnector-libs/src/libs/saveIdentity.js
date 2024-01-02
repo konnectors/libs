@@ -71,7 +71,7 @@ const saveIdentity = async (
     : { contact: contactOrIdentity }
   identity.identifier = accountIdentifier
 
-  identity.contact = formatIdentityContact(identity.contact)
+  identity.contact = trimProperties(formatIdentityContact(identity.contact))
   if (options.merge == false) {
     // Using cozy client in a none merging strategy here.
     const newClient = cozyClient.new
@@ -193,4 +193,16 @@ function formatIdentityContact(contactToFormat) {
   }
   return contact
 }
-module.exports = { saveIdentity, formatIdentityContact }
+
+function trimProperties(obj) {
+  for (let key in obj) {
+    if (typeof obj[key] === 'string') {
+      obj[key] = obj[key].trim()
+    } else if (typeof obj[key] === 'object' && obj[key] !== null) {
+      trimProperties(obj[key])
+    }
+  }
+  return obj
+}
+
+module.exports = { saveIdentity, formatIdentityContact, trimProperties }
