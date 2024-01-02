@@ -48,6 +48,8 @@ export default async (contactOrIdentity, accountIdentifier, options = {}) => {
     : { contact: contactOrIdentity }
   identity.identifier = accountIdentifier
 
+  identity.contact = formatIdentityContact(identity.contact)
+
   // Format contact if needed
   if (identity.contact.phone) {
     identity.contact.phone = formatPhone(identity.contact.phone)
@@ -118,4 +120,51 @@ function formatPhone(phone) {
     }
   }
   return phone
+}
+
+export function formatIdentityContact(contactToFormat) {
+  const contact = { ...contactToFormat }
+  if (contact.phone) {
+    if (!Array.isArray(contact.phone)) {
+      log(
+        'warn',
+        'formatIdentityContact Phone is not an array, you should fix it'
+      )
+      contact.phone = [
+        {
+          number: contact.phone
+        }
+      ]
+    }
+    contact.phone = formatPhone(contact.phone)
+  }
+
+  if (contact.address) {
+    if (!Array.isArray(contact.address)) {
+      log(
+        'warn',
+        'formatIdentityContact Address is not an array, you should fix it'
+      )
+      contact.address = [
+        {
+          formattedAddress: contact.address
+        }
+      ]
+    }
+    contact.address = formatAddress(contact.address)
+  }
+  if (contact.email) {
+    if (!Array.isArray(contact.email)) {
+      log(
+        'warn',
+        'formatIdentityContact Email is not an array, you should fix it'
+      )
+      contact.email = [
+        {
+          address: contact.email
+        }
+      ]
+    }
+  }
+  return contact
 }
