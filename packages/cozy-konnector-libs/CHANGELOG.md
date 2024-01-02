@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.5.2](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@5.5.1...cozy-konnector-libs@5.5.2) (2024-01-02)
+
+
+### Bug Fixes
+
+* saveIdentity tries to take care of malformed data ([f0e5b84](https://github.com/cozy/cozy-konnector-libs/commit/f0e5b84845b95696a51cd19a7c9c6ac78fe97807))
+
+
+
+
+
 ## [5.5.1](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@5.5.0...cozy-konnector-libs@5.5.1) (2023-12-18)
 
 **Note:** Version bump only for package cozy-konnector-libs
