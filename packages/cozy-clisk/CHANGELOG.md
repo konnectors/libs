@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.32.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.31.0...cozy-clisk@0.32.0) (2024-01-03)
+
+
+### Bug Fixes
+
+* saveIdentity tries to take care of malformed data ([1236334](https://github.com/konnectors/libs/commit/123633438d565b036ac8647470126d62dc077ffc))
+* Types ([0362c24](https://github.com/konnectors/libs/commit/0362c241b9107fd67dff16dfe5947de4d0a1871c))
+
+
+### Features
+
+* Add trim for all properties of the identify ([5ea3922](https://github.com/konnectors/libs/commit/5ea3922857246656626fc10cc4d60e1e10d1e650))
+
+
+
+
+
 # [0.31.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.30.0...cozy-clisk@0.31.0) (2023-12-21)
 
 

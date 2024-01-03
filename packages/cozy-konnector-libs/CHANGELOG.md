@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.6.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@5.5.2...cozy-konnector-libs@5.6.0) (2024-01-03)
+
+
+### Bug Fixes
+
+* Remove "fit" ([e738575](https://github.com/cozy/cozy-konnector-libs/commit/e73857520fcd3059cfe4e09ab378667d2e47c82b))
+
+
+### Features
+
+* Add trim for all properties of the identify ([5ea3922](https://github.com/cozy/cozy-konnector-libs/commit/5ea3922857246656626fc10cc4d60e1e10d1e650))
+
+
+
+
+
 ## [5.5.2](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@5.5.1...cozy-konnector-libs@5.5.2) (2024-01-02)
 
 
