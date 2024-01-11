@@ -215,8 +215,9 @@ export default class ContentScript {
     const domReadyPromise = new Promise(resolve => {
       // first check if the DOMContentLoad has already been called
       if (
-        document.readyState === 'complete' ||
-        document.readyState === 'loaded'
+        document?.readyState === 'complete' ||
+        document?.readyState === 'loaded' ||
+        document?.readyState === 'interactive'
       ) {
         resolve()
       } else {
