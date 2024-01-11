@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.32.1](https://github.com/konnectors/libs/compare/cozy-clisk@0.32.0...cozy-clisk@0.32.1) (2024-01-11)
+
+
+### Bug Fixes
+
+* ContentScript.waitForDomReady on android ([6a2cf4b](https://github.com/konnectors/libs/commit/6a2cf4b1cc14bc787a6d23e8d337f7bbc6787834))
+
+
+
+
+
 # [0.32.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.31.0...cozy-clisk@0.32.0) (2024-01-03)
 
 
