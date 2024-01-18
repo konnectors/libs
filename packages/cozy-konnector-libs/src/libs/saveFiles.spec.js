@@ -19,6 +19,8 @@ cozyClient.new = {
   })
 }
 const client = cozyClient.new
+const { models } = require('cozy-client')
+client.models = models
 
 const manifest = require('./manifest')
 const logger = require('cozy-logger')
@@ -377,7 +379,6 @@ describe('saveFiles', function () {
               data: makeFile('existingFileId', {
                 name: 'bill.pdf',
                 metadata: {
-                  carbonCopy: true,
                   qualification: {
                     item1: true,
                     item2: 'toto'
@@ -394,7 +395,6 @@ describe('saveFiles', function () {
             filename: 'bill.pdf',
             fileAttributes: {
               metadata: {
-                carbonCopy: true,
                 qualification: {
                   item1: true,
                   item2: 'tata'
@@ -410,7 +410,6 @@ describe('saveFiles', function () {
       expect(client.save).toHaveBeenCalledWith(
         expect.objectContaining({
           metadata: {
-            carbonCopy: true,
             qualification: {
               item1: true,
               item2: 'tata'
@@ -418,6 +417,93 @@ describe('saveFiles', function () {
           }
         })
       )
+    })
+  })
+
+  describe('when a qualification V2 do not need to be updated', () => {
+    it('should not update the file', async () => {
+      expect.assertions(1)
+      statByPath.mockImplementation(async path => {
+        // Must check if we are stating on the folder or on the file
+        return path === FOLDER_PATH
+          ? { data: { _id: 'folderId' } }
+          : {
+              data: makeFile('existingFileId', {
+                name: 'bill.pdf',
+                metadata: {
+                  qualification: {
+                    item1: true,
+                    item2: 'tata'
+                  }
+                }
+              })
+            }
+      })
+
+      await saveFiles(
+        [
+          {
+            fileurl: 'https://coucou.com/filetodownload.pdf',
+            filename: 'bill.pdf',
+            fileAttributes: {
+              metadata: {
+                qualification: {
+                  item1: true,
+                  item2: 'tata'
+                }
+              }
+            }
+          }
+        ],
+        {
+          folderPath: 'mainPath'
+        }
+      )
+      expect(client.save).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('when a qualification is received', () => {
+    it('should convert qualification to a json', async () => {
+      expect.assertions(1)
+      const qualif = models.document.Qualification.getByLabel('tax_return')
+      statByPath.mockImplementation(async path => {
+        // Must check if we are stating on the folder or on the file
+        return path === FOLDER_PATH
+          ? { data: { _id: 'folderId' } }
+          : {
+              data: makeFile('existingFileId', {
+                name: 'bill.pdf',
+                metadata: {
+                  qualification: {
+                    label: 'tax_return',
+                    purpose: 'report',
+                    sourceCategory: 'gov',
+                    sourceSubCategory: 'tax',
+                    subjects: ['tax']
+                  }
+                }
+              })
+            }
+      })
+
+      await saveFiles(
+        [
+          {
+            fileurl: 'https://coucou.com/filetodownload.pdf',
+            filename: 'bill.pdf',
+            fileAttributes: {
+              metadata: {
+                qualification: qualif
+              }
+            }
+          }
+        ],
+        {
+          folderPath: 'mainPath'
+        }
+      )
+      expect(client.save).not.toHaveBeenCalled()
     })
   })
 })
