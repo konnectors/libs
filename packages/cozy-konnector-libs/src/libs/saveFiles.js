@@ -202,6 +202,7 @@ const saveEntry = async function (entry, options) {
   if (file) {
     try {
       shouldReplace = await shouldReplaceFile(file, entry, options)
+      log('warn', `shouldReplace at toplevel ${shouldReplace}`)
     } catch (err) {
       log('info', `Error in shouldReplaceFile : ${err.message}`)
       shouldReplace = true
@@ -505,7 +506,11 @@ const shouldReplaceFile = async function (file, entry, options) {
       const result =
         getAttribute(file, `metadata.${attr}`) !==
         get(entry, `fileAttributes.metadata.${attr}`)
+
       if (result) log('debug', `filereplacement: adding ${attr} metadata`)
+      log('warn', `For ${attr} Result is ${result}`)
+      log('warn', 'file' + JSON.stringify(getAttribute(file, `metadata.${attr}`)))
+      log('warn', 'entry' + JSON.stringify(get(entry, `fileAttributes.metadata.${attr}`)))
       return result
     }
     // replace all files with meta if there is file metadata to add
@@ -536,7 +541,7 @@ const shouldReplaceFile = async function (file, entry, options) {
       if (hasSourceAccountIdentifierOption && !fileHasSourceAccountIdentifier)
         log('debug', 'filereplacement: adding sourceAccountIdentifier')
     }
-
+    log('warn', `Result in shouldReplace ${result}`)
     return result
   }
   const shouldReplaceFileFn =
