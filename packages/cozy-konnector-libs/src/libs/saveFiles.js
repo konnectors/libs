@@ -10,11 +10,14 @@ const path = require('path')
 const requestFactory = require('./request')
 const omit = require('lodash/omit')
 const get = require('lodash/get')
+const isEqual = require('lodash/isEqual')
 const log = require('cozy-logger').namespace('saveFiles')
 const manifest = require('./manifest')
 const cozy = require('./cozyclient')
 const client = cozy.new
 const { Q } = require('cozy-client/dist/queries/dsl')
+const { models } = require('cozy-client')
+const { Qualification } = models.document
 const errors = require('../helpers/errors')
 const stream = require('stream')
 const fileType = require('file-type')
@@ -502,9 +505,18 @@ const shouldReplaceFile = async function (file, entry, options) {
   }
   const defaultShouldReplaceFile = (file, entry) => {
     const shouldForceMetadataAttr = attr => {
-      const result =
-        getAttribute(file, `metadata.${attr}`) !==
-        get(entry, `fileAttributes.metadata.${attr}`)
+      let entryMetadataAttribute = get(entry, `fileAttributes.metadata.${attr}`)
+      if (
+        attr === 'qualification' &&
+        entryMetadataAttribute instanceof Qualification
+      ) {
+        // If the entry come with a qualification type object we convert it before compare
+        entryMetadataAttribute = entryMetadataAttribute.toQualification()
+      }
+      const result = !isEqual(
+        getAttribute(file, `metadata.${attr}`),
+        entryMetadataAttribute
+      )
       if (result) log('debug', `filereplacement: adding ${attr} metadata`)
       return result
     }
