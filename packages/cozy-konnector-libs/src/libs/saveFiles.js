@@ -10,6 +10,7 @@ const path = require('path')
 const requestFactory = require('./request')
 const omit = require('lodash/omit')
 const get = require('lodash/get')
+const isEqual = require('lodash/isEqual')
 const log = require('cozy-logger').namespace('saveFiles')
 const manifest = require('./manifest')
 const cozy = require('./cozyclient')
@@ -502,9 +503,10 @@ const shouldReplaceFile = async function (file, entry, options) {
   }
   const defaultShouldReplaceFile = (file, entry) => {
     const shouldForceMetadataAttr = attr => {
-      const result =
-        getAttribute(file, `metadata.${attr}`) !==
+      const result = !isEqual(
+        getAttribute(file, `metadata.${attr}`),
         get(entry, `fileAttributes.metadata.${attr}`)
+      )
       if (result) log('debug', `filereplacement: adding ${attr} metadata`)
       return result
     }
