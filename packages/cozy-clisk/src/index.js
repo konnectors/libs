@@ -3,6 +3,7 @@ export { default as ContentScriptMessenger } from './bridge/ContentScriptMesseng
 export { Bridge } from './bridge/bridgeInterfaces'
 export { MessengerInterface } from './bridge/bridgeInterfaces'
 export { default as ContentScript } from './contentscript/ContentScript'
+export { default as RequestInterceptor } from './contentscript/RequestInterceptor'
 export { default as addData } from './launcher/addData'
 export { default as hydrateAndFilter } from './launcher/hydrateAndFilter'
 export { default as saveFiles } from './launcher/saveFiles'

@@ -5,11 +5,11 @@ describe('ContentScript', () => {
   describe('saveFiles', () => {
     it('should call launcher saveFiles with given nominal options', async () => {
       const contentScript = new ContentScript()
-      contentScript.setContentScriptType(PILOT_TYPE)
       contentScript.bridge = {
         call: jest.fn(),
         emit: jest.fn()
       }
+      contentScript.contentScriptType = PILOT_TYPE
       await contentScript.saveFiles(
         [
           {
@@ -33,7 +33,7 @@ describe('ContentScript', () => {
     })
     it('should force file replace when shouldReplace file in options returns true', async () => {
       const contentScript = new ContentScript()
-      contentScript.setContentScriptType(PILOT_TYPE)
+      contentScript.contentScriptType = PILOT_TYPE
       contentScript.bridge = {
         call: jest.fn(),
         emit: jest.fn()
@@ -81,7 +81,7 @@ describe('ContentScript', () => {
     })
     it('should force file replace when shouldReplace file in entry returns true', async () => {
       const contentScript = new ContentScript()
-      contentScript.setContentScriptType(PILOT_TYPE)
+      contentScript.contentScriptType = PILOT_TYPE
       contentScript.bridge = {
         call: jest.fn(),
         emit: jest.fn()
@@ -127,7 +127,7 @@ describe('ContentScript', () => {
   describe('queryAll', () => {
     it('should convert the given query definition to a serializable object', async () => {
       const contentScript = new ContentScript()
-      contentScript.setContentScriptType(PILOT_TYPE)
+      contentScript.contentScriptType = PILOT_TYPE
       contentScript.bridge = {
         call: jest.fn()
       }
@@ -156,7 +156,7 @@ describe('ContentScript', () => {
   })
   describe('runInWorker', () => {
     const contentScript = new ContentScript()
-    contentScript.setContentScriptType(PILOT_TYPE)
+    contentScript.contentScriptType = PILOT_TYPE
     it('should throw an error met in the worker', async () => {
       contentScript.bridge = {
         call: jest.fn().mockRejectedValue(new Error('worker error'))
@@ -170,7 +170,7 @@ describe('ContentScript', () => {
 
   describe('runInWorkerUntilTrue', () => {
     const contentScript = new ContentScript()
-    contentScript.setContentScriptType(PILOT_TYPE)
+    contentScript.contentScriptType = PILOT_TYPE
     jest.spyOn(contentScript, 'runInWorker')
     contentScript.tocall = jest.fn()
 

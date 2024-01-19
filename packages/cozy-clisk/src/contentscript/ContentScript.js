@@ -33,7 +33,7 @@ if (window?.addEventListener) {
 }
 
 export default class ContentScript {
-  constructor() {
+  constructor(options = {}) {
     sendPageMessage('NEW_WORKER_INITIALIZING')
     const logDebug = message => this.log('debug', message)
     const wrapTimerDebug = wrapTimerFactory({ logFn: logDebug })
@@ -93,6 +93,18 @@ export default class ContentScript {
     this.downloadFileInWorker = wrapTimerDebug(this, 'downloadFileInWorker', {
       suffixFn: args => args?.[0]?.fileurl
     })
+    this.waitForRequestInterception = wrapTimerDebug(
+      this,
+      'waitForRequestInterception',
+      {
+        suffixFn: args => args?.[0]
+      }
+    )
+
+    if (options.requestInterceptor) {
+      this.requestInterceptor = options.requestInterceptor
+      this.requestInterceptor.setLogger(this.log.bind(this))
+    }
   }
   /**
    * Init the bridge communication with the launcher.
@@ -157,6 +169,11 @@ export default class ContentScript {
   onWorkerReady() {}
 
   /**
+   * This method is called fon the pilot when the worker sends workerEvent events to the bridge
+   */
+  onWorkerEvent() {}
+
+  /**
    * Set the ContentScript type. This is usefull to know which webview is the pilot or the worker
    *
    * @param {string} contentScriptType - ("pilot" | "worker")
@@ -165,8 +182,22 @@ export default class ContentScript {
     this.contentScriptType = contentScriptType
     log.info(`I am the ${contentScriptType}`)
 
+    if (!this.bridge) {
+      throw new Error(
+        'No bridge is defined, you should call ContentScript.init before using this method'
+      )
+    }
+
     if (contentScriptType === WORKER_TYPE) {
+      this.requestInterceptor?.on('response', response => {
+        this.bridge?.emit('workerEvent', {
+          event: 'requestResponse',
+          payload: response
+        })
+      })
       this.onWorkerReady()
+    } else if (contentScriptType === PILOT_TYPE) {
+      this.bridge.addEventListener('workerEvent', this.onWorkerEvent.bind(this))
     }
   }
 
@@ -266,6 +297,44 @@ export default class ContentScript {
       }
     )
     return true
+  }
+
+  /**
+   * Wait for the given labelled request to be intercepted. The labeled request must be defined and
+   * sent to the ContentScript constructor
+   *
+   * @param {string} label - any label string defined in the RequestInterceptor
+   * @param {object} [options] - options object
+   * @param {number} [options.timeout] - number of miliseconds before the function sends a timeout error. Default 60000ms
+   */
+  waitForRequestInterception(label, options = {}) {
+    this.onlyIn(PILOT_TYPE, 'waitForRequestInterception')
+    const timeout = options?.timeout ?? 60000
+
+    const interceptionPromise = new Promise(resolve => {
+      const listener = ({ event, payload }) => {
+        if (event === 'requestResponse' && payload.label === label) {
+          if (!this.bridge) {
+            throw new Error(
+              'No bridge is defined, you should call ContentScript.init before using this method'
+            )
+          }
+          this.bridge.removeEventListener('workerEvent', listener)
+          resolve(payload)
+        }
+      }
+      if (!this.bridge) {
+        throw new Error(
+          'No bridge is defined, you should call ContentScript.init before using this method'
+        )
+      }
+      this.bridge.addEventListener('workerEvent', listener)
+    })
+
+    return pTimeout(interceptionPromise, {
+      milliseconds: timeout,
+      message: `Timed out after waiting ${timeout}ms for interception of ${label}`
+    })
   }
 
   /**
