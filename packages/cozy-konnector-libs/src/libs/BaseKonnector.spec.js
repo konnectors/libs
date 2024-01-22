@@ -10,6 +10,8 @@ jest.mock('./cozyclient', () => ({
 
 jest.mock('fs', () => ({
   existsSync: jest.fn(),
+  access: jest.fn(),
+  readFile: jest.fn(),
   promises: {
     readFile: jest.fn()
   }
