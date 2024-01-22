@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.33.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.32.1...cozy-clisk@0.33.0) (2024-01-22)
+
+
+### Features
+
+* Add RequestInterceptor ([e0d265d](https://github.com/konnectors/libs/commit/e0d265d8cda31885bf94f46b74cc1d2c7db1711e))
+
+
+
+
+
 ## [0.32.1](https://github.com/konnectors/libs/compare/cozy-clisk@0.32.0...cozy-clisk@0.32.1) (2024-01-11)
 
 
