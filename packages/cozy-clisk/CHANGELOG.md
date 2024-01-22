@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.33.1](https://github.com/konnectors/libs/compare/cozy-clisk@0.33.0...cozy-clisk@0.33.1) (2024-01-22)
+
+
+### Bug Fixes
+
+* use cozy-client as peerDep in cozy-clisk ([b387000](https://github.com/konnectors/libs/commit/b387000d9c3ca5aa4509186370a56b3c58bfc112))
+
+
+
+
+
 # [0.33.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.32.1...cozy-clisk@0.33.0) (2024-01-22)
 
 
