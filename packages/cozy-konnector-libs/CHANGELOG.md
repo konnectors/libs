@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.6.1](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@5.6.0...cozy-konnector-libs@5.6.1) (2024-01-22)
+
+
+### Bug Fixes
+
+* Fix force qualification update ([bdcf406](https://github.com/cozy/cozy-konnector-libs/commit/bdcf40682901ec9eb6c2135996dc17662feb9a84))
+
+
+
+
+
 # [5.6.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@5.5.2...cozy-konnector-libs@5.6.0) (2024-01-03)
 
 
