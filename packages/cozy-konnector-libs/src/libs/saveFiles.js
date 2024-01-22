@@ -16,6 +16,9 @@ const manifest = require('./manifest')
 const cozy = require('./cozyclient')
 const client = cozy.new
 const { Q } = require('cozy-client/dist/queries/dsl')
+const { models } = require('cozy-client')
+//const  models = cozy.new.models
+const { Qualification } = models.document
 const errors = require('../helpers/errors')
 const stream = require('stream')
 const fileType = require('file-type')
@@ -503,11 +506,45 @@ const shouldReplaceFile = async function (file, entry, options) {
   }
   const defaultShouldReplaceFile = (file, entry) => {
     const shouldForceMetadataAttr = attr => {
+      let entryQualif = get(entry, `fileAttributes.metadata.${attr}`)
+      if (attr === 'qualification' && (entryQualif instanceof Qualification)) {
+        // If the entry come with a qualification type object we convert it before compare
+        entryQualif = entryQualif.toQualification()
+      }
       const result = !isEqual(
         getAttribute(file, `metadata.${attr}`),
-        get(entry, `fileAttributes.metadata.${attr}`)
+        entryQualif
       )
-      if (result) log('debug', `filereplacement: adding ${attr} metadata`)
+      log('warn', `Result for ${attr} is ${result}`)
+      console.log('warn', `Result for ${attr} is ${result}`)
+      
+      if (result) {
+        log('debug', `filereplacement: adding ${attr} metadata`)
+      log('warn',  'isequal ' + isEqual(
+        getAttribute(file, `metadata.${attr}`),
+        get(entry,`fileAttributes.metadata.${attr}`)))
+      log('warn', 'not isEqual(should be false) ' + !isEqual(
+        getAttribute(file, `metadata.${attr}`),
+        get(entry, `fileAttributes.metadata.${attr}`)))
+        log('warn', 'Stringify equal(should be True) ' + `${JSON.stringify(getAttribute(file, `metadata.${attr}`))==JSON.stringify(get(entry, `fileAttributes.metadata.${attr}`))}`)
+        log('warn', 'file ' + JSON.stringify(getAttribute(file, `metadata.${attr}`)))
+        log('warn', 'entry ' + JSON.stringify(get(entry, `fileAttributes.metadata.${attr}`)))
+        log('warn', 'file ' + typeof(JSON.stringify(getAttribute(file, `metadata.${attr}`))))
+        log('warn', 'entry ' + typeof(JSON.stringify(get(entry, `fileAttributes.metadata.${attr}`))))
+        log('warn', 'file ' + typeof(getAttribute(file, `metadata.${attr}`)))
+        log('warn', 'entry ' + typeof(get(entry, `fileAttributes.metadata.${attr}`)))
+        log('warn', 'file ' + Object.getOwnPropertyNames(getAttribute(file, `metadata.${attr}`)))
+        log('warn', 'entry ' + Object.getOwnPropertyNames(get(entry, `fileAttributes.metadata.${attr}`)))
+        console.log('AA')
+        console.dir(getAttribute(file, `metadata.${attr}`))
+        console.dir(get(entry,`fileAttributes.metadata.${attr}`))
+        console.log(result)
+        console.log('BBB')
+        const D = get(entry,`fileAttributes.metadata.${attr}`)
+        console.dir(D)
+        console.dir(D instanceof Qualification)
+
+      }
       return result
     }
     // replace all files with meta if there is file metadata to add

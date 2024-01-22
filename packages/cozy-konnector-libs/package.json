@@ -33,6 +33,7 @@
     "date-fns": "^2.22.1",
     "file-type": "^16.5.0",
     "geco": "git+https://github.com/konnectors/geco.git#0.11.2",
+    "lodash": "^4.17.21",
     "lodash-id": "^0.14.0",
     "lowdb": "^1.0.0",
     "mime-types": "^2.1.31",

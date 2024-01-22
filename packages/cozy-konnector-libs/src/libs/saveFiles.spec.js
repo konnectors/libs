@@ -19,6 +19,8 @@ cozyClient.new = {
   })
 }
 const client = cozyClient.new
+const { models } = require('cozy-client')
+client.models = models
 
 const manifest = require('./manifest')
 const logger = require('cozy-logger')
@@ -449,6 +451,51 @@ describe('saveFiles', function () {
                   item1: true,
                   item2: 'tata'
                 }
+              }
+            }
+          }
+        ],
+        {
+          folderPath: 'mainPath'
+        }
+      )
+      expect(client.save).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('when a qualification is received', () => {
+    it('should convert qualification to a json', async () => {
+      expect.assertions(1)
+      
+      const qualif = models.document.Qualification.getByLabel('tax_return')
+      statByPath.mockImplementation(async path => {
+        // Must check if we are stating on the folder or on the file
+        return path === FOLDER_PATH
+          ? { data: { _id: 'folderId' } }
+          : {
+              data: makeFile('existingFileId', {
+                name: 'bill.pdf',
+                metadata: {
+                  qualification: {
+                    label: 'tax_return',
+                    purpose: 'report',
+                    sourceCategory: 'gov',
+                    sourceSubCategory: 'tax',
+                    subjects: [ 'tax' ]
+                  }
+                }
+              })
+            }
+      })
+
+      await saveFiles(
+        [
+          {
+            fileurl: 'https://coucou.com/filetodownload.pdf',
+            filename: 'bill.pdf',
+            fileAttributes: {
+              metadata: {
+                qualification: qualif
               }
             }
           }
