@@ -506,6 +506,49 @@ describe('saveFiles', function () {
       expect(client.save).not.toHaveBeenCalled()
     })
   })
+
+  describe('when a qualification is received with undefined attribut', () => {
+    it('should convert and remove undefined attribut', async () => {
+      expect.assertions(1)
+      // This qualification contains undefined attributs
+      const qualif =
+        models.document.Qualification.getByLabel('other_tax_document')
+      statByPath.mockImplementation(async path => {
+        // Must check if we are stating on the folder or on the file
+        return path === FOLDER_PATH
+          ? { data: { _id: 'folderId' } }
+          : {
+              data: makeFile('existingFileId', {
+                name: 'bill.pdf',
+                metadata: {
+                  qualification: {
+                    label: 'other_tax_document',
+                    subjects: ['tax']
+                  }
+                }
+              })
+            }
+      })
+
+      await saveFiles(
+        [
+          {
+            fileurl: 'https://coucou.com/filetodownload.pdf',
+            filename: 'bill.pdf',
+            fileAttributes: {
+              metadata: {
+                qualification: qualif
+              }
+            }
+          }
+        ],
+        {
+          folderPath: 'mainPath'
+        }
+      )
+      expect(client.save).not.toHaveBeenCalled()
+    })
+  })
 })
 
 describe('subPath handling', () => {
