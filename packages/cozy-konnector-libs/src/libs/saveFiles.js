@@ -511,7 +511,10 @@ const shouldReplaceFile = async function (file, entry, options) {
         entryMetadataAttribute instanceof Qualification
       ) {
         // If the entry come with a qualification type object we convert it before compare
-        entryMetadataAttribute = entryMetadataAttribute.toQualification()
+        // By re-parsing to JSON we remove undefined attributs
+        entryMetadataAttribute = JSON.parse(
+          JSON.stringify(entryMetadataAttribute.toQualification())
+        )
       }
       const result = !isEqual(
         getAttribute(file, `metadata.${attr}`),
