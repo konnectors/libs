@@ -189,13 +189,13 @@ export default class ContentScript {
     }
 
     if (contentScriptType === WORKER_TYPE) {
+      this.onWorkerReady()
       this.requestInterceptor?.on('response', response => {
         this.bridge?.emit('workerEvent', {
           event: 'requestResponse',
           payload: response
         })
       })
-      this.onWorkerReady()
     } else if (contentScriptType === PILOT_TYPE) {
       this.bridge.addEventListener('workerEvent', this.onWorkerEvent.bind(this))
     }
