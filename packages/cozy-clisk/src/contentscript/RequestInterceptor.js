@@ -122,7 +122,13 @@ class RequestInterceptor {
     )
     if (!interception) return
 
-    resp.label = interception.label
+    if (interception.label) {
+      this.log(
+        'warn',
+        `RequestInterceptor: interception.label is deprecated, you should use interception.identifier`
+      )
+    }
+    resp.identifier = interception.identifier || interception.label
 
     // response serialization, to be able to transfer to the pilot
     if (interception.serialization === 'json') {
@@ -167,7 +173,8 @@ export default RequestInterceptor
 
 /**
  * @typedef EmittedResponse
- * @property {string} label - a name given to the interception
+ * @property {string} [label] - a name given to the interception (deprecated in favor of identifier)
+ * @property {string} identifier - an identifier given to the interception
  * @property {'GET'|'POST'|'PUT'|'DELETE'} method - the method of the intercepted request
  * @property {string} url - the url intercepted request url
  * @property {Response} response - raw response of the intercepted request
@@ -177,7 +184,8 @@ export default RequestInterceptor
 
 /**
  * @typedef InterceptionDocument
- * @property {string} label - a name given to the interception, will be found in the response later
+ * @property {string} [label] - a name given to the interception, will be found in the response later (deprecated in favor of identifier)
+ * @property {string} identifier - an identifier given to the interception
  * @property {string} url - the url to intercept
  * @property {'GET'|'POST'|'PUT'|'DELETE'} method - the method of the url to intercept
  * @property {boolean} exact - true if the intercepted url must exactly correspond to the given url
