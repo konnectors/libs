@@ -12,7 +12,7 @@ import {
 
 const requestInterceptor = new RequestInterceptor([
   {
-    label: 'testRequest',
+    identifier: 'testRequest',
     method: 'GET',
     url: 'test/api',
     serialization: 'json'
@@ -34,7 +34,7 @@ listening to requestInterceptor events.
 
 ### waitForRequestInterception
 
-Once you have defined an interception with a given `testRequest` label, you can wait for it to
+Once you have defined an interception with a given `testRequest` identifier, you can wait for it to
 happen using the following from the pilot:
 
 ```javascript
@@ -48,7 +48,7 @@ received. Or else you won't get anything and the promise will reject with a Time
 
 ```javascript
 {
-  label: 'testRequest',
+  identifier: 'testRequest',
   url: '...', // the real intercepted url
   method: 'GET',
   response : {}, // a javascript object in our case
