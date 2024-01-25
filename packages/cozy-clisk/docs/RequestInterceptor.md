@@ -28,7 +28,7 @@ response  of these requests will be serialized to a json object.
 
 ## Fetching the response
 
-You can fetch the intercepted responses in two ways : `waitForRequestInterception` or directly
+You can fetch the intercepted response in two ways : `waitForRequestInterception` or directly
 listening to requestInterceptor events.
 
 
@@ -65,7 +65,7 @@ instanciation, it will emit an event that you can intercept in onWorkerEvent met
 
  ```javascript
  onWorkerEvent({ event, payload }) {
-  if (event === 'requestResponse') {
+  if (event === 'requestResponse' && payload.label === 'testRequest') {
     // the payload contains the whole response like defined in the previous section
   }
 }
