@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.33.2](https://github.com/konnectors/libs/compare/cozy-clisk@0.33.1...cozy-clisk@0.33.2) (2024-01-25)
+
+
+### Bug Fixes
+
+* Send request interception events after onWorkerReady ([c229dcf](https://github.com/konnectors/libs/commit/c229dcffa5c834edc8e3f74688cc7531d993d9e7))
+
+
+
+
+
 ## [0.33.1](https://github.com/konnectors/libs/compare/cozy-clisk@0.33.0...cozy-clisk@0.33.1) (2024-01-22)
 
 
