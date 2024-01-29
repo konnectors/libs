@@ -159,6 +159,9 @@ DefinePlugin</p>
 <dt><a href="#UNKNOWN_ERROR">UNKNOWN_ERROR</a> : <code>string</code></dt>
 <dd><p>unkown error</p>
 </dd>
+<dt><a href="#UNKNOWN_ERROR_PARTIAL_SYNC">UNKNOWN_ERROR_PARTIAL_SYNC</a> : <code>string</code></dt>
+<dd><p>The synchronization is complete but some elements may be missing</p>
+</dd>
 <dt><a href="#USER_ACTION_NEEDED_SCA_REQUIRED">USER_ACTION_NEEDED_SCA_REQUIRED</a> : <code>string</code></dt>
 <dd><p>Renewal of authentication required</p>
 </dd>
@@ -1522,6 +1525,12 @@ User needs to accept new terms
 
 ## UNKNOWN\_ERROR : <code>string</code>
 unkown error
+
+**Kind**: global constant  
+<a name="UNKNOWN_ERROR_PARTIAL_SYNC"></a>
+
+## UNKNOWN\_ERROR\_PARTIAL\_SYNC : <code>string</code>
+The synchronization is complete but some elements may be missing
 
 **Kind**: global constant  
 <a name="USER_ACTION_NEEDED_SCA_REQUIRED"></a>
