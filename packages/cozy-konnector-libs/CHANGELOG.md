@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.7.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@5.6.2...cozy-konnector-libs@5.7.0) (2024-01-29)
+
+
+### Features
+
+* Add partial sync error ([62f9d9b](https://github.com/cozy/cozy-konnector-libs/commit/62f9d9bd05b278c16923c9d47bd97fd1dadbecef))
+
+
+
+
+
 ## [5.6.2](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@5.6.1...cozy-konnector-libs@5.6.2) (2024-01-24)
 
 
