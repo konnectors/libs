@@ -135,6 +135,13 @@ const TERMS_VERSION_MISMATCH = 'TERMS_VERSION_MISMATCH'
 const UNKNOWN_ERROR = 'UNKNOWN_ERROR'
 
 /**
+ * The synchronization is complete but some elements may be missing
+ *
+ * @type {string}
+ */
+const UNKNOWN_ERROR_PARTIAL_SYNC = 'UNKNOWN_ERROR.PARTIAL_SYNC'
+
+/**
  * Renewal of authentication required
  *
  * @type {string}
@@ -197,6 +204,7 @@ module.exports = {
   MAINTENANCE,
   TERMS_VERSION_MISMATCH,
   UNKNOWN_ERROR,
+  UNKNOWN_ERROR_PARTIAL_SYNC,
   VENDOR_DOWN,
   VENDOR_DOWN_BANK_DOWN,
   VENDOR_DOWN_LINXO_DOWN
