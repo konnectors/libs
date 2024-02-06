@@ -1,16 +1,5 @@
 {
   "extends": [
-    "cozy-app",
-    "plugin:jsdoc/recommended"
-  ],
-  "rules": {
-    "jsdoc/require-jsdoc": 0, // --fix adds empty jsdocs 
-    "jsdoc/require-param": 0, // --fix breaks docstrings without params
-    "jsdoc/require-returns": 0 // too much warnings for now
-  },
-  "settings": {
-    "jsdoc": {
-      "mode": "typescript"
-    }
-  }
+    "cozy-app"
+    ]
 }

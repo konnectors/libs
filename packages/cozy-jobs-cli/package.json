@@ -41,7 +41,6 @@
   },
   "devDependencies": {
     "eslint-config-cozy-app": "4.0.0",
-    "eslint-plugin-jsdoc": "48.0.2",
     "jest": "27.4.7"
   },
   "eslintConfig": {
