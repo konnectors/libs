@@ -9,7 +9,6 @@
     "babel-preset-env": "1.7.0",
     "cross-env": "7.0.3",
     "eslint-config-cozy-app": "4.0.0",
-    "eslint-plugin-jsdoc": "48.0.2",
     "eslint-plugin-prettier": "4.0.0",
     "lerna": "4.0.0"
   },
