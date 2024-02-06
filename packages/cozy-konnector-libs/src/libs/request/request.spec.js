@@ -144,16 +144,28 @@ describe('requestFactory', () => {
       try {
         await rq('https://untrusted-root.badssl.com')
       } catch (err) {
-        expect(err.message).toEqual(
-          'Error: self-signed certificate in certificate chain'
+        /* Second string matching is for node 16 retro compatibility
+           In node 16, error does not contain an hyphen
+        */
+        expect(err.message).toMatch(
+          /Error: self-signed certificate in certificate chain|Error: self signed certificate in certificate chain/
         )
       }
     })
 
     test('Self-signed cert should be refused', async () => {
-      return expect(rq('https://self-signed.badssl.com')).rejects.toEqual(
-        new Error('Error: self-signed certificate')
-      )
+      if (process.version.startsWith('v16')) {
+        /*  Error matching the msg of error object in node 16
+            Note the hyphen missing
+        */
+        await expect(rq('https://self-signed.badssl.com')).rejects.toEqual(
+          new Error('Error: self signed certificate')
+        )
+      } else {
+        await expect(rq('https://self-signed.badssl.com')).rejects.toEqual(
+          new Error('Error: self-signed certificate')
+        )
+      }
     })
   })
 
