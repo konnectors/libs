@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.3.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@2.2.9...cozy-jobs-cli@2.3.0) (2024-02-08)
+
+
+### Bug Fixes
+
+* Remove eslint-plugin-jsdoc because node 16 incompatibility ([4bfadae](https://github.com/cozy/cozy-konnector-libs/commit/4bfadae93f67a81f91ccb54e9f5795114cf246a2))
+
+
+### Features
+
+* Migrate travis to node 20.10.0 in monorepo root ([4b4b129](https://github.com/cozy/cozy-konnector-libs/commit/4b4b12982fed0e8d8ede9df1766bf4804c0e01b4))
+
+
+
+
+
 ## [2.2.9](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@2.2.8...cozy-jobs-cli@2.2.9) (2024-01-29)
 
 **Note:** Version bump only for package cozy-jobs-cli

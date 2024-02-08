@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.8.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@5.7.0...cozy-konnector-libs@5.8.0) (2024-02-08)
+
+
+### Bug Fixes
+
+* **cozy-konnector-libs:** Fix cert tests for dual node build ([8c23639](https://github.com/cozy/cozy-konnector-libs/commit/8c236397916f593cab07533863975af010870d83))
+* **cozy-konnector-libs:** Reactivating test about certs ([0c800c7](https://github.com/cozy/cozy-konnector-libs/commit/0c800c7d8f8aeefcc2dd89b12c3842d025b238b2))
+* **cozy-konnectors-libs:** Fix certs test in node 20 ([9cc47da](https://github.com/cozy/cozy-konnector-libs/commit/9cc47da10e885c3539df6ba44279b6cfb38e4da4))
+* Remove eslint-plugin-jsdoc because node 16 incompatibility ([4bfadae](https://github.com/cozy/cozy-konnector-libs/commit/4bfadae93f67a81f91ccb54e9f5795114cf246a2))
+
+
+### Features
+
+* Migrate travis to node 20.10.0 in monorepo root ([4b4b129](https://github.com/cozy/cozy-konnector-libs/commit/4b4b12982fed0e8d8ede9df1766bf4804c0e01b4))
+
+
+
+
+
 # [5.7.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@5.6.2...cozy-konnector-libs@5.7.0) (2024-01-29)
 
 
