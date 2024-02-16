@@ -523,6 +523,7 @@ You need the full permission on `io.cozy.files` in your manifest to use this fun
 | options.fileIdAttributes | <code>Array</code> | array of strings : Describes which attributes of files will be taken as primary key for files to check if they already exist, even if they are moved. If not given, the file path will used for deduplication as before. |
 | options.subPath | <code>string</code> | A subpath to save this file, will be created if needed. |
 | options.fetchFile | <code>function</code> | the connector can give it's own function to fetch the file from the website, which will be run only when necessary (if the corresponding file is missing on the cozy) function returning the stream). This function must return a promise resolved as a stream |
+| options.verboseFilesLog | <code>boolean</code> | the connector will send saveFiles result as a warning |
 
 **Example**  
 ```javascript
