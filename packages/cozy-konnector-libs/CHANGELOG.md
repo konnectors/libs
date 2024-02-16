@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.9.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@5.8.0...cozy-konnector-libs@5.9.0) (2024-02-16)
+
+
+### Features
+
+* **cozy-konnector-libs:** Add more verbose option for saveFiles results ([23dc2d7](https://github.com/cozy/cozy-konnector-libs/commit/23dc2d78f38248a7fb62474cc0d6e10e294181cd))
+
+
+
+
+
 # [5.8.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@5.7.0...cozy-konnector-libs@5.8.0) (2024-02-08)
 
 
