@@ -86,7 +86,10 @@ export default async (contactOrIdentity, accountIdentifier, options) => {
         ...identity,
         _id: existingSameIdentity._id,
         _rev: existingSameIdentity._rev,
-        cozyMetadata: existingSameIdentity.cozyMetadata,
+        cozyMetadata: {
+          ...existingSameIdentity.cozyMetadata,
+          sourceAccountIdentifier: accountIdentifier
+        },
         _type: 'io.cozy.identities'
       })
     }

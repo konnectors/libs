@@ -32,7 +32,10 @@ export default async (entries, doctype, options) => {
     const doc = await client.save({
       ...entry,
       _type: doctype,
-      sourceAccountIdentifier: options.sourceAccountIdentifier
+      cozyMetadata: {
+        ...entry.cozyMetadata,
+        sourceAccountIdentifier: options.sourceAccountIdentifier
+      }
     })
     const dbEntry = doc.data
     entry._id = dbEntry._id

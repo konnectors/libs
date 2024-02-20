@@ -18,13 +18,17 @@ describe('addData', function () {
     })
     expect(client.save).toHaveBeenCalledWith({
       amount: 12,
-      sourceAccountIdentifier: 'test@login',
+      cozyMetadata: {
+        sourceAccountIdentifier: 'test@login'
+      },
       _type: 'io.cozy.bills'
     })
     expect(result).toStrictEqual([
       {
         amount: 12,
-        sourceAccountIdentifier: 'test@login',
+        cozyMetadata: {
+          sourceAccountIdentifier: 'test@login'
+        },
         _type: 'io.cozy.bills',
         _id: 'testid',
         _rev: 'testrev'
