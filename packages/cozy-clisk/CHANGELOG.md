@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.34.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.33.2...cozy-clisk@0.34.0) (2024-02-20)
+
+
+### Features
+
+* Add sourceAccontIdentifier in cozyMetadadata for bills and identities ([fe83921](https://github.com/konnectors/libs/commit/fe83921bcd0003279c80cee20a2947973e873662))
+
+
+
+
+
 ## [0.33.2](https://github.com/konnectors/libs/compare/cozy-clisk@0.33.1...cozy-clisk@0.33.2) (2024-01-25)
 
 
