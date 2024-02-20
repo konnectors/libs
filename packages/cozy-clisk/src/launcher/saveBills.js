@@ -49,6 +49,7 @@ export default async (inputEntries, inputOptions) => {
   const defaultShouldUpdate = (entry, dbEntry) =>
     entry.invoice !== dbEntry.invoice ||
     !dbEntry.cozyMetadata ||
+    !dbEntry.cozyMetadata?.sourceAccountIdentifier ||
     !dbEntry.matchingCriterias
 
   if (!options?.shouldUpdate) {

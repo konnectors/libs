@@ -34,6 +34,9 @@ describe('saveIdentity', function () {
     expect(client.save).toHaveBeenCalledWith({
       contact: identity,
       identifier: 'testSourceAccountIdentifier',
+      cozyMetadata: {
+        sourceAccountIdentifier: 'testSourceAccountIdentifier'
+      },
       _type: 'io.cozy.identities'
     })
   })
@@ -70,6 +73,9 @@ describe('saveIdentity', function () {
     expect(client.save).toHaveBeenCalledWith({
       contact: identity,
       identifier: 'testSourceAccountIdentifier',
+      cozyMetadata: {
+        sourceAccountIdentifier: 'testSourceAccountIdentifier'
+      },
       _type: 'io.cozy.identities',
       _id: 'testid',
       _rev: 'testrev'
@@ -77,6 +83,51 @@ describe('saveIdentity', function () {
   })
 
   it('should update identity with previous identity metadata', async () => {
+    const identity = {
+      email: [
+        {
+          address: 'test2@mail.com'
+        }
+      ]
+    }
+
+    client.query.mockResolvedValue({
+      data: [
+        {
+          _id: 'testid',
+          _rev: 'testrev',
+          _type: 'io.cozy.identities',
+          contact: {
+            email: [
+              {
+                address: 'testprevious@mail.com'
+              }
+            ]
+          },
+          cozyMetadata: {
+            createdByApp: 'testslug',
+            sourceAccountIdentifier: 'testSourceAccountIdentifier'
+          },
+          identifier: 'testSourceAccountIdentifier'
+        }
+      ]
+    })
+
+    await saveIdentity(identity, 'testSourceAccountIdentifier', { client })
+
+    expect(client.save).toHaveBeenCalledWith({
+      contact: identity,
+      identifier: 'testSourceAccountIdentifier',
+      cozyMetadata: {
+        createdByApp: 'testslug',
+        sourceAccountIdentifier: 'testSourceAccountIdentifier'
+      },
+      _type: 'io.cozy.identities',
+      _id: 'testid',
+      _rev: 'testrev'
+    })
+  })
+  it('should update identity when no sourceAccountIdentifier is found in CozyMetadata.sourceAccountIdentifier', async () => {
     const identity = {
       email: [
         {
@@ -112,7 +163,8 @@ describe('saveIdentity', function () {
       contact: identity,
       identifier: 'testSourceAccountIdentifier',
       cozyMetadata: {
-        createdByApp: 'testslug'
+        createdByApp: 'testslug',
+        sourceAccountIdentifier: 'testSourceAccountIdentifier'
       },
       _type: 'io.cozy.identities',
       _id: 'testid',
