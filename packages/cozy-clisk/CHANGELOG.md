@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.34.1](https://github.com/konnectors/libs/compare/cozy-clisk@0.34.0...cozy-clisk@0.34.1) (2024-02-21)
+
+
+### Bug Fixes
+
+* replace 'label' by 'identifier' for requestInterception ([b406393](https://github.com/konnectors/libs/commit/b406393ee0786191a9e4f3a5971847dda8d63c0e))
+
+
+
+
+
 # [0.34.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.33.2...cozy-clisk@0.34.0) (2024-02-20)
 
 
