@@ -300,20 +300,20 @@ export default class ContentScript {
   }
 
   /**
-   * Wait for the given labelled request to be intercepted. The labeled request must be defined and
+   * Wait for the given identified request to be intercepted. The identified request must be defined and
    * sent to the ContentScript constructor
    *
-   * @param {string} label - any label string defined in the RequestInterceptor
+   * @param {string} identifier - any identifier string defined in the RequestInterceptor
    * @param {object} [options] - options object
    * @param {number} [options.timeout] - number of miliseconds before the function sends a timeout error. Default 60000ms
    */
-  waitForRequestInterception(label, options = {}) {
+  waitForRequestInterception(identifier, options = {}) {
     this.onlyIn(PILOT_TYPE, 'waitForRequestInterception')
     const timeout = options?.timeout ?? 60000
 
     const interceptionPromise = new Promise(resolve => {
       const listener = ({ event, payload }) => {
-        if (event === 'requestResponse' && payload.label === label) {
+        if (event === 'requestResponse' && payload.identifier === identifier) {
           if (!this.bridge) {
             throw new Error(
               'No bridge is defined, you should call ContentScript.init before using this method'
@@ -333,7 +333,7 @@ export default class ContentScript {
 
     return pTimeout(interceptionPromise, {
       milliseconds: timeout,
-      message: `Timed out after waiting ${timeout}ms for interception of ${label}`
+      message: `Timed out after waiting ${timeout}ms for interception of ${identifier}`
     })
   }
 
