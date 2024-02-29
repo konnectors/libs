@@ -31,7 +31,7 @@
     "cozy-flags": "^2.8.7",
     "cozy-konnector-libs": "^5.9.0",
     "cozy-logger": "1.9.0",
-    "open": "8.4.0",
+    "open": "8.4.2",
     "pretty": "2.0.0",
     "strip-json-comments": "3.1.1"
   },
