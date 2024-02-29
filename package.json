@@ -8,7 +8,7 @@
   "devDependencies": {
     "babel-preset-env": "1.7.0",
     "cross-env": "7.0.3",
-    "eslint-config-cozy-app": "4.0.0",
+    "eslint-config-cozy-app": "4.2.1",
     "eslint-plugin-prettier": "4.0.0",
     "lerna": "4.0.0"
   },

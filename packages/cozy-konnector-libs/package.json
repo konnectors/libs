@@ -85,7 +85,7 @@
     "btoa": "1.2.1",
     "cross-env": "7.0.3",
     "csv-writer": "1.6.0",
-    "eslint-config-cozy-app": "4.0.0",
+    "eslint-config-cozy-app": "4.2.1",
     "husky": "6.0.0",
     "jest": "27.4.7",
     "jsdoc-to-markdown": "6.0.1",

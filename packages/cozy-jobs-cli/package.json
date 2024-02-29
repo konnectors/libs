@@ -40,7 +40,7 @@
     "test": "jest"
   },
   "devDependencies": {
-    "eslint-config-cozy-app": "4.0.0",
+    "eslint-config-cozy-app": "4.2.1",
     "jest": "27.4.7"
   },
   "eslintConfig": {
