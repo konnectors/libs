@@ -532,8 +532,25 @@ export default class ContentScript {
     this.onlyIn(WORKER_TYPE, 'downloadFileInWorker')
     this.log('debug', 'downloading file in worker')
     if (entry.fileurl) {
-      entry.blob = await ky.get(entry.fileurl, entry.requestOptions).blob()
-      entry.dataUri = await blobToBase64(entry.blob)
+      try {
+        entry.blob = await ky.get(entry.fileurl, entry.requestOptions).blob()
+        entry.dataUri = await blobToBase64(entry.blob)
+      } catch (error) {
+        this.log('debug', `Full error : ${JSON.stringify(error)}`)
+        const errorMessage = error.message
+        let errorToLog = ''
+        if (errorMessage.includes(/404|403|500|502|503/g)) {
+          if (errorMessage.includes('404'))
+            errorToLog = 'Website cannot find the wanted url'
+          else if (errorMessage.includes('403'))
+            errorToLog = 'User is not allowed to access the wanted URL'
+          else errorToLog = 'Website server error accessing the wanted URL'
+          this.log('error', errorToLog)
+          throw new Error('VENDOR_DOWN')
+        } else {
+          throw new Error('UNKNOWN_ERROR')
+        }
+      }
     }
     return entry.dataUri
   }
