@@ -16,7 +16,7 @@
     "url": "https://github.com/konnectors/libs/issues"
   },
   "dependencies": {
-    "@babel/core": "7.17.10",
+    "@babel/core": "7.24.0",
     "babel-preset-cozy-app": "^2.0.2",
     "copy-webpack-plugin": "9.1.0",
     "cozy-app-publish": "0.33.0",
