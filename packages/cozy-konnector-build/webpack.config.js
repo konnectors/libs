@@ -42,7 +42,8 @@ module.exports = {
   },
   output: {
     path: path.join(currentDirectory, 'build'),
-    filename: 'index.js'
+    filename: 'index.js',
+    clean: true
   },
   plugins: [
     new CopyPlugin({
