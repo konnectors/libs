@@ -5,7 +5,8 @@ module.exports = {
   mode: 'none',
   output: {
     path: path.join(process.cwd(), 'build'),
-    filename: 'main.js'
+    filename: 'main.js',
+    clean: true
   },
   plugins: [
     new CopyPlugin({
