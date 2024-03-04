@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.35.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.34.1...cozy-clisk@0.35.0) (2024-03-04)
+
+
+### Features
+
+* Catch errors in downloadFileInWorker ([49a3eb8](https://github.com/konnectors/libs/commit/49a3eb81395d4b7d65353f33cff22d5b3c522f24))
+
+
+
+
+
 ## [0.34.1](https://github.com/konnectors/libs/compare/cozy-clisk@0.34.0...cozy-clisk@0.34.1) (2024-02-21)
 
 

@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 1.6.0 (2024-03-04)
+
+
+### Features
+
+* Add forceReplaceFile entry attribute to saveFiles ([830906a](https://github.com/konnectors/libs/commit/830906a31e9fc7eee1bf5649d9f982a85580cba3))
+* **cozy-konnector-build:** Clean build each time ([dd7795d](https://github.com/konnectors/libs/commit/dd7795d2662ed1a5cb3ab6a8b3aeec65c59911f6))
+
+
+
+
+
 ## [1.5.1](https://github.com/konnectors/libs/compare/cozy-konnector-build@1.5.0...cozy-konnector-build@1.5.1) (2023-04-24)
 
 
