@@ -1,8 +1,7 @@
 import saveFiles from './saveFiles'
+import { dataUriToArrayBuffer } from '../libs/utils'
 
 jest.mock('../libs/utils')
-
-import { dataUriToArrayBuffer } from '../libs/utils'
 
 describe('saveFiles', function () {
   it('should not download a file if the file is already present', async () => {

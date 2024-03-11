@@ -51,7 +51,7 @@ describe('operations filters', () => {
   const HEALTH_INSURANCE_CAT = '400620'
 
   describe('filtering by category', () => {
-    fit('should only match bills with the right categoryId when the vendor is known to be a health insurance provider', () => {
+    it('should only match bills with the right categoryId when the vendor is known to be a health insurance provider', () => {
       const fByCategory = filterByCategory({ vendor: 'Ameli' })
       expect(fByCategory({ manualCategoryId: HEALTH_EXPENSE_CAT })).toBeTruthy()
       expect(

@@ -5,7 +5,9 @@
  */
 const bluebird = require('bluebird')
 const omit = require('lodash/omit')
+
 const log = require('cozy-logger').namespace('addData')
+
 const { getCozyMetadata } = require('./manifest')
 
 /**

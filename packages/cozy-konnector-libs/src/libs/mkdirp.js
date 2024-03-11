@@ -3,6 +3,7 @@
  */
 
 const { basename, dirname, join } = require('path').posix
+
 const cozyClient = require('./cozyclient')
 
 /**

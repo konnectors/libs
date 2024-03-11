@@ -1,3 +1,9 @@
+const cozyClient = require('./cozyclient')
+const saveIdentity = require('./saveIdentity').saveIdentity
+const formatIdentityContact = require('./saveIdentity').formatIdentityContact
+const trimProperties = require('./saveIdentity').trimProperties
+const updateOrCreate = require('./updateOrCreate')
+
 jest.mock('./updateOrCreate')
 jest.mock('./cozyclient', () => ({
   new: {
@@ -5,12 +11,6 @@ jest.mock('./cozyclient', () => ({
     save: jest.fn()
   }
 }))
-
-const updateOrCreate = require('./updateOrCreate')
-const saveIdentity = require('./saveIdentity').saveIdentity
-const formatIdentityContact = require('./saveIdentity').formatIdentityContact
-const trimProperties = require('./saveIdentity').trimProperties
-const cozyClient = require('./cozyclient')
 
 describe('saveIdentity', () => {
   beforeEach(() => {

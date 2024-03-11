@@ -1,6 +1,6 @@
-const { operationsFilters } = require('./operationsFilters')
 const { findNeighboringOperations } = require('./findNeighboringOperations')
 const { sortedOperations } = require('./helpers')
+const { operationsFilters } = require('./operationsFilters')
 
 const findOperation = (cozyClient, bill, options, allOperations) => {
   // By default, a bill is an expense. If it is not, it should be

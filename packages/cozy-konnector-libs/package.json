@@ -21,6 +21,7 @@
     "babel-runtime": "^6.26.0",
     "bluebird": "^3.7.2",
     "bluebird-retry": "^0.11.0",
+    "body-parser": "1.19.0",
     "btoa": "1.2.1",
     "cheerio": "^1.0.0-rc.9",
     "classificator": "^0.3.3",
@@ -33,6 +34,7 @@
     "date-fns": "^2.22.1",
     "file-type": "^16.5.0",
     "geco": "git+https://github.com/konnectors/geco.git#0.11.2",
+    "lodash": "^4.17.21",
     "lodash-id": "^0.14.0",
     "lowdb": "^1.0.0",
     "mime-types": "^2.1.31",
@@ -42,7 +44,8 @@
     "request": "^2.88.2",
     "request-debug": "^0.2.0",
     "request-promise": "^4.2.6",
-    "strip-json-comments": "^3.1.1"
+    "strip-json-comments": "^3.1.1",
+    "tough-cookie": "^2.5.0"
   },
   "peerDependencies": {
     "pdfjs": "^2.3.0",
@@ -62,6 +65,7 @@
   },
   "scripts": {
     "build": "yarn run transpile",
+    "lint": "eslint src",
     "transpile": "rm -rf dist/* ; babel --root-mode upward src --out-dir dist",
     "prepublishOnly": "yarn run transpile",
     "test": "cross-env LOG_LEVEL=info jest ./src",

@@ -72,8 +72,8 @@
  * @module requestFactory
  */
 
-let request = require('request-promise')
 const requestdebug = require('request-debug')
+let request = require('request-promise')
 // Quickly found more UserAgent here
 // https://www.whatismybrowser.com/guides/the-latest-user-agent/
 const AGENTS_LIST = [

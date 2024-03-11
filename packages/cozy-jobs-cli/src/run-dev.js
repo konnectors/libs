@@ -3,10 +3,12 @@
 
 process.env.NODE_ENV = 'development'
 
-const program = require('commander')
-const path = require('path')
-const fs = require('fs')
 const { spawn } = require('child_process')
+const fs = require('fs')
+const path = require('path')
+
+const program = require('commander')
+
 const authenticate = require('./cozy-authenticate')
 
 let file, manifest

@@ -6,9 +6,11 @@
  */
 
 const bluebird = require('bluebird')
-const log = require('cozy-logger').namespace('hydrateAndFilter')
 const get = require('lodash/get')
 const uniqBy = require('lodash/uniqBy')
+
+const log = require('cozy-logger').namespace('hydrateAndFilter')
+
 const { queryAll } = require('./utils')
 
 /**

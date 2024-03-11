@@ -1,14 +1,14 @@
 // @ts-check
-import waitFor, { TimeoutError } from 'p-wait-for'
-import pTimeout from 'p-timeout'
 import Minilog from '@cozy/minilog'
-
-import LauncherBridge from '../bridge/LauncherBridge'
-import { blobToBase64, callStringFunction } from './utils'
-import { wrapTimerFactory } from '../libs/wrapTimer'
 import ky from 'ky/umd'
+import pTimeout from 'p-timeout'
+import waitFor, { TimeoutError } from 'p-wait-for'
+
+import { blobToBase64, callStringFunction } from './utils'
 import cliskPackageJson from '../../package.json'
+import LauncherBridge from '../bridge/LauncherBridge'
 import { calculateFileKey } from '../libs/utils'
+import { wrapTimerFactory } from '../libs/wrapTimer'
 
 const log = Minilog('ContentScript class')
 

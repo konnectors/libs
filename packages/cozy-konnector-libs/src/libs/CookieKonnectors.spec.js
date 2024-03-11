@@ -1,5 +1,6 @@
-const CookieKonnector = require('./CookieKonnector')
 const logger = require('cozy-logger')
+
+const CookieKonnector = require('./CookieKonnector')
 
 logger.setLevel('error')
 

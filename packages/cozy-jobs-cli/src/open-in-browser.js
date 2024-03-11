@@ -1,9 +1,10 @@
 /* eslint no-console: off */
 
-const open = require('open')
-const os = require('os')
 const fs = require('fs')
+const os = require('os')
 const path = require('path')
+
+const open = require('open')
 
 /**
  * Save the given html or cheerio object in tmp file and open it in the browser

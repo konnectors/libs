@@ -4,10 +4,11 @@
  * @module categorization
  */
 
-const { tokenizer } = require('./helpers')
-const { createModel: createGlobalModel } = require('./globalModel')
-const { createModel: createLocalModel } = require('./localModel')
 const logger = require('cozy-logger')
+
+const { createModel: createGlobalModel } = require('./globalModel')
+const { tokenizer } = require('./helpers')
+const { createModel: createLocalModel } = require('./localModel')
 
 const log = logger.namespace('categorization')
 

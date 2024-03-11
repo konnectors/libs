@@ -1,4 +1,5 @@
 import { ChildHandshake } from 'post-me'
+
 import ReactNativeWebviewMessenger from './ContentScriptMessenger'
 import { Bridge } from './bridgeInterfaces'
 

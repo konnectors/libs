@@ -1,8 +1,10 @@
-const { fetchParameters } = require('./parameters')
-const { createClassifier } = require('./classifier')
-const { getLabelWithTags } = require('../helpers')
 const maxBy = require('lodash/maxBy')
+
 const logger = require('cozy-logger')
+
+const { createClassifier } = require('./classifier')
+const { fetchParameters } = require('./parameters')
+const { getLabelWithTags } = require('../helpers')
 
 const log = logger.namespace('categorization/globalModel')
 

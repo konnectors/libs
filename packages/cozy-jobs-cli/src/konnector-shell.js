@@ -1,13 +1,14 @@
 #!/usr/bin/env node
 /* eslint no-console: off */
 
-const repl = require('repl')
-const util = require('util')
-const cheerio = require('cheerio')
 const fs = require('fs')
 const path = require('path')
-const pretty = require('pretty')
+const repl = require('repl')
+const util = require('util')
+
+const cheerio = require('cheerio')
 const highlight = require('cli-highlight').highlight
+const pretty = require('pretty')
 require('./open-in-browser')
 
 process.env.NODE_ENV = 'standalone'

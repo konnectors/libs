@@ -6,10 +6,12 @@
  */
 /* eslint no-console: off */
 
-const { Client, MemoryStorage } = require('cozy-client-js')
+const globalFetch = require('node-fetch').default
+
 const NewCozyClient = require('cozy-client').default
 const { models } = require('cozy-client')
-const globalFetch = require('node-fetch').default
+const { Client, MemoryStorage } = require('cozy-client-js')
+
 global.fetch = globalFetch
 global.Headers = globalFetch.Headers
 // fixes an import problem of isomorphic fetch in cozy-client and cozy-client-js

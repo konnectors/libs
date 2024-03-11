@@ -5,10 +5,11 @@ jest.mock('./cozyclient', () => ({
   }
 }))
 
-const cozy = require('./cozyclient')
-const hydrateAndFilter = require('./hydrateAndFilter')
-const Document = require('./document')
 const logger = require('cozy-logger')
+
+const cozy = require('./cozyclient')
+const Document = require('./document')
+const hydrateAndFilter = require('./hydrateAndFilter')
 
 logger.setLevel('error')
 

@@ -1,8 +1,9 @@
 // @ts-check
-import hydrateAndFilter from './hydrateAndFilter'
-import addData from './addData'
 import Minilog from '@cozy/minilog'
 import _ from 'lodash'
+
+import addData from './addData'
+import hydrateAndFilter from './hydrateAndFilter'
 const log = Minilog('saveBills')
 const DOCTYPE = 'io.cozy.bills'
 

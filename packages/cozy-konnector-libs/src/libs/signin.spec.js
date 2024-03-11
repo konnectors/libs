@@ -1,4 +1,3 @@
-const signin = require('./signin')
 const cheerio = require('cheerio')
 
 const logger = require('cozy-logger')
@@ -6,6 +5,7 @@ logger.setLevel('critical')
 
 jest.mock('./request')
 const requestFactory = require('./request')
+const signin = require('./signin')
 
 const form = `
   <span id="im-no-form" />

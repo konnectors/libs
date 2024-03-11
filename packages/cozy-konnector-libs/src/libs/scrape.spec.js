@@ -22,6 +22,7 @@ const html = `
 `
 
 const cheerio = require('cheerio')
+
 const scrape = require('./scrape')
 
 describe('scrape', () => {

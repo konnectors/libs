@@ -4,10 +4,13 @@
  *
  * @module solveCaptcha
  */
-const log = require('cozy-logger').namespace('solveCaptcha')
-const errors = require('../helpers/errors')
-const request = require('request-promise')
 const sleep = require('util').promisify(global.setTimeout)
+
+const request = require('request-promise')
+
+const log = require('cozy-logger').namespace('solveCaptcha')
+
+const errors = require('../helpers/errors')
 
 const connectorStartTime = Date.now()
 const ms = 1

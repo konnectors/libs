@@ -14,6 +14,8 @@ const db = [
   { name: 'Spawn' }
 ]
 
+const sortBy = require('lodash/sortBy')
+
 const cozy = require('./cozyclient')
 const {
   queryAll,
@@ -21,8 +23,6 @@ const {
   sortBillsByLinkedOperationNumber,
   formatDate
 } = require('./utils')
-
-const sortBy = require('lodash/sortBy')
 
 const asyncResolve = data =>
   new Promise(resolve => setImmediate(() => resolve(data)))

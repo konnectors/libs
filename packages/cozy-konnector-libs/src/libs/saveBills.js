@@ -4,16 +4,18 @@
  *
  * @module saveBills
  */
-
-const utils = require('./utils')
-const saveFiles = require('./saveFiles')
-const hydrateAndFilter = require('./hydrateAndFilter')
-const addData = require('./addData')
-const log = require('cozy-logger').namespace('saveBills')
-const linkBankOperations = require('./linkBankOperations')
-const DOCTYPE = 'io.cozy.bills'
 const _ = require('lodash')
+
+const log = require('cozy-logger').namespace('saveBills')
+
+const addData = require('./addData')
+const hydrateAndFilter = require('./hydrateAndFilter')
+const linkBankOperations = require('./linkBankOperations')
 const manifest = require('./manifest')
+const saveFiles = require('./saveFiles')
+const utils = require('./utils')
+
+const DOCTYPE = 'io.cozy.bills'
 
 const requiredAttributes = {
   date: 'isDate',
