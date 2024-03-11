@@ -1,7 +1,9 @@
 // @ts-check
-import get from 'lodash/get'
 import retry from 'bluebird-retry'
-import { models } from 'cozy-client'
+import get from 'lodash/get'
+
+import { Q, models } from 'cozy-client'
+
 import { dataUriToArrayBuffer } from '../libs/utils'
 
 /**

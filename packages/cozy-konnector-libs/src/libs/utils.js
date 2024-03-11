@@ -3,12 +3,13 @@
  *
  * @module utils
  */
-const cozyClient = require('./cozyclient')
+const { format } = require('date-fns')
 const groupBy = require('lodash/groupBy')
 const keyBy = require('lodash/keyBy')
-const sortBy = require('lodash/sortBy')
 const range = require('lodash/range')
-const { format } = require('date-fns')
+const sortBy = require('lodash/sortBy')
+
+const cozyClient = require('./cozyclient')
 
 /**
  * This function allows to fetch all documents for a given doctype. It is the fastest to get all

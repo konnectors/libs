@@ -1,13 +1,15 @@
-const { createClassifier } = require('./classifier')
-const { getLabelWithTags, tokenizer } = require('../helpers')
-const { pctOfTokensInVoc } = require('./helpers')
 const maxBy = require('lodash/maxBy')
+
 const logger = require('cozy-logger')
+
+const { createClassifier } = require('./classifier')
 const {
   LOCAL_MODEL_CATEG_FALLBACK,
   LOCAL_MODEL_PROBA_FALLBACK,
   LOCAL_MODEL_PCT_TOKENS_IN_VOC_THRESHOLD
 } = require('./constants')
+const { pctOfTokensInVoc } = require('./helpers')
+const { getLabelWithTags, tokenizer } = require('../helpers')
 
 const log = logger.namespace('categorization/localModel/model')
 

@@ -1,7 +1,7 @@
+const { isWithinInterval } = require('date-fns')
 const includes = require('lodash/includes')
 const some = require('lodash/some')
 const sumBy = require('lodash/sumBy')
-const { isWithinInterval } = require('date-fns')
 
 const {
   getIdentifiers,

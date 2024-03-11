@@ -1,25 +1,28 @@
-const cozy = require('./cozyclient')
+const fs = require('fs').promises
+const path = require('path')
+const sleep = require('util').promisify(global.setTimeout)
+
+const get = require('lodash/get')
+const omit = require('lodash/omit')
+const once = require('lodash/once')
+
 const log = require('cozy-logger').namespace('BaseKonnector')
 const { Secret } = require('cozy-logger')
+
+const cozy = require('./cozyclient')
+const errors = require('./error')
 const manifest = require('./manifest')
 const saveBills = require('./saveBills')
 const saveFiles = require('./saveFiles')
-const signin = require('./signin')
-const get = require('lodash/get')
-const omit = require('lodash/omit')
-const updateOrCreate = require('./updateOrCreate')
 const saveIdentity = require('./saveIdentity').saveIdentity
-const fs = require('fs').promises
-const path = require('path')
+const signin = require('./signin')
+const updateOrCreate = require('./updateOrCreate')
 const {
   wrapIfSentrySetUp,
   captureExceptionAndDie
 } = require('../helpers/sentry')
-const sleep = require('util').promisify(global.setTimeout)
-const LOG_ERROR_MSG_LIMIT = 32 * 1024 - 1 // to avoid to cut the json long and make it unreadable by the stack
-const once = require('lodash/once')
 
-const errors = require('./error')
+const LOG_ERROR_MSG_LIMIT = 32 * 1024 - 1 // to avoid to cut the json long and make it unreadable by the stack
 
 const findFolderPath = async (cozyFields, account) => {
   // folderId will be stored in cozyFields.folder_to_save on first run
@@ -348,7 +351,7 @@ class BaseKonnector {
    * const { BaseKonnector } = require('cozy-konnector-libs')
    *
    * module.exports = new BaseKonnector(start)
-   
+
    * async function start() {
    *    // we detect the need of a 2FA code
    *    const code = this.waitForTwoFaCode({

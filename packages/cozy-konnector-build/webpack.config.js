@@ -1,8 +1,9 @@
-var path = require('path')
-const CopyPlugin = require('copy-webpack-plugin')
-const webpack = require('webpack')
 const fs = require('fs')
+var path = require('path')
+
+const CopyPlugin = require('copy-webpack-plugin')
 const SvgoInstance = require('svgo')
+const webpack = require('webpack')
 
 const currentDirectory = process.cwd()
 

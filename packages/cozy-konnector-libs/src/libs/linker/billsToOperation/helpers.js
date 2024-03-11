@@ -1,5 +1,5 @@
-const sortBy = require('lodash/sortBy')
 const { addDays, subDays, differenceInDays } = require('date-fns')
+const sortBy = require('lodash/sortBy')
 
 const getOperationAmountFromBill = (bill, options) => {
   const searchingCredit = options && options.credit

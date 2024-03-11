@@ -1,7 +1,8 @@
 /* eslint no-console: off */
 
 import MicroEE from 'microee'
-import { blobToBase64 } from 'cozy-clisk/dist/contentscript/utils'
+
+import { blobToBase64 } from './utils'
 
 /**
  * Intercept any xhr or fetch request corresponding to the given interception list

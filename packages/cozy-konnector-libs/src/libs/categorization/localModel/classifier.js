@@ -1,8 +1,10 @@
-const { fetchTransactionsWithManualCat } = require('./parameters')
-const { getUniqueCategories, getAlphaParameter } = require('./helpers')
 const bayes = require('classificator')
-const { getLabelWithTags } = require('../helpers')
+
 const logger = require('cozy-logger')
+
+const { getUniqueCategories, getAlphaParameter } = require('./helpers')
+const { fetchTransactionsWithManualCat } = require('./parameters')
+const { getLabelWithTags } = require('../helpers')
 
 const log = logger.namespace('categorization/localModel/classifier')
 

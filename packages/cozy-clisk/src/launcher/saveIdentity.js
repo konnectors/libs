@@ -1,5 +1,6 @@
 // @ts-check
 import Minilog from '@cozy/minilog'
+
 import { Q } from 'cozy-client'
 const log = Minilog('saveIdentity')
 

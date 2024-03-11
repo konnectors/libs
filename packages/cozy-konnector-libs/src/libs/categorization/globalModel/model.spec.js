@@ -1,9 +1,10 @@
+const logger = require('cozy-logger')
+
+const expectedResults = require('./__mocks__/expectedResults.json')
+const { createClassifier } = require('./classifier')
 const { createModel } = require('./model')
 const { fetchParameters } = require('./parameters')
-const { createClassifier } = require('./classifier')
-const expectedResults = require('./__mocks__/expectedResults.json')
 const { tokenizer } = require('../helpers')
-const logger = require('cozy-logger')
 
 logger.setLevel('error')
 

@@ -2,8 +2,10 @@
 
 /* eslint no-console: off */
 
-const { createClientInteractive } = require('cozy-client/dist/cli')
 const btoa = require('btoa')
+
+const { createClientInteractive } = require('cozy-client/dist/cli')
+
 const manifest = require('./manifest')
 
 async function authenticate({ manifestPath, tokenPath }) {

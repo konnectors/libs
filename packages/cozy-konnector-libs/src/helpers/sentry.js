@@ -1,7 +1,9 @@
 /* global __APP_VERSION__ */
 
-const log = require('cozy-logger')
 const Raven = require('raven')
+
+const log = require('cozy-logger')
+
 const { getDomain, getInstance } = require('./cozy-domain')
 
 let isRavenConfigured = false

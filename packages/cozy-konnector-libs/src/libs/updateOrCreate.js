@@ -5,9 +5,11 @@
  * @module updateOrCreate
  */
 const bluebird = require('bluebird')
-const log = require('cozy-logger').namespace('updateOrCreate')
-const cozy = require('./cozyclient')
 const get = require('lodash/get')
+
+const log = require('cozy-logger').namespace('updateOrCreate')
+
+const cozy = require('./cozyclient')
 const { getCozyMetadata } = require('./manifest')
 
 /**

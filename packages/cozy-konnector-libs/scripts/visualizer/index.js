@@ -3,10 +3,15 @@
  *
  * Launch with `cozy-run-dev visualizer/index.js`
  */
-const { Linker } = require('../../src/libs/linkBankOperations')
-const { cozyClient } = require('../../src')
-const { fetchAll } = require('../../src/libs/utils')
 const path = require('path')
+
+const bodyParser = require('body-parser')
+const cors = require('cors')
+const express = require('express')
+
+const { cozyClient } = require('../../src')
+const { Linker } = require('../../src/libs/linkBankOperations')
+const { fetchAll } = require('../../src/libs/utils')
 
 class DryLinker extends Linker {
   commitChanges() {
@@ -27,9 +32,6 @@ process.on('unhandledRejection', x => {
   console.warn(x)
 })
 
-const express = require('express')
-const bodyParser = require('body-parser')
-const cors = require('cors')
 const app = express()
 
 app.use(bodyParser.json())

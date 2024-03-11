@@ -4,20 +4,23 @@
  * @module linkBankOperations
  */
 
+const fs = require('fs')
+
 const bluebird = require('bluebird')
+const { format } = require('date-fns')
+const geco = require('geco')
+const defaults = require('lodash/defaults')
+const flatten = require('lodash/flatten')
+const groupBy = require('lodash/groupBy')
+const sumBy = require('lodash/sumBy')
+
 const log = require('cozy-logger').namespace('linkBankOperations')
+
+const cozyClient = require('./cozyclient')
 const {
   findDebitOperation,
   findCreditOperation
 } = require('./linker/billsToOperation')
-const fs = require('fs')
-const defaults = require('lodash/defaults')
-const groupBy = require('lodash/groupBy')
-const flatten = require('lodash/flatten')
-const sumBy = require('lodash/sumBy')
-const geco = require('geco')
-const { format } = require('date-fns')
-const cozyClient = require('./cozyclient')
 
 const DOCTYPE_OPERATIONS = 'io.cozy.bank.operations'
 const DEFAULT_AMOUNT_DELTA = 0.001

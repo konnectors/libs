@@ -3,24 +3,30 @@
  *
  * @module saveFiles
  */
+const path = require('path')
+const stream = require('stream')
+
 const bluebird = require('bluebird')
 const retry = require('bluebird-retry')
-const mimetypes = require('mime-types')
-const path = require('path')
-const requestFactory = require('./request')
-const omit = require('lodash/omit')
+const fileType = require('file-type')
 const get = require('lodash/get')
 const isEqual = require('lodash/isEqual')
-const log = require('cozy-logger').namespace('saveFiles')
-const manifest = require('./manifest')
-const cozy = require('./cozyclient')
-const client = cozy.new
-const { Q } = require('cozy-client/dist/queries/dsl')
+const omit = require('lodash/omit')
+const mimetypes = require('mime-types')
+
 const { models } = require('cozy-client')
-const { Qualification } = models.document
+const { Q } = require('cozy-client/dist/queries/dsl')
+const log = require('cozy-logger').namespace('saveFiles')
+
+const cozy = require('./cozyclient')
+const manifest = require('./manifest')
+const requestFactory = require('./request')
 const errors = require('../helpers/errors')
-const stream = require('stream')
-const fileType = require('file-type')
+
+const client = cozy.new
+
+const { Qualification } = models.document
+
 const ms = 1
 const s = 1000 * ms
 const m = 60 * s

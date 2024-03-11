@@ -1,11 +1,13 @@
 const fs = require('fs')
-const stub = require('./cozy-client-js-stub')
-fs.unlinkSync('importedData.json')
 
-const low = require('lowdb')
-const lodashId = require('lodash-id')
-const Memory = require('lowdb/adapters/Memory')
 const omit = require('lodash/omit')
+const lodashId = require('lodash-id')
+const low = require('lowdb')
+const Memory = require('lowdb/adapters/Memory')
+
+const stub = require('./cozy-client-js-stub')
+
+fs.unlinkSync('importedData.json')
 
 describe('cozy-client-js-stub', () => {
   const db = low(new Memory())

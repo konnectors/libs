@@ -1,8 +1,10 @@
+const { CookieJar } = require('tough-cookie')
+
 const log = require('cozy-logger').namespace('CookieKonnector')
+
 const BaseKonnector = require('./BaseKonnector')
 const requestFactory = require('./request')
 
-const { CookieJar } = require('tough-cookie')
 const JAR_ACCOUNT_KEY = 'session'
 
 /**

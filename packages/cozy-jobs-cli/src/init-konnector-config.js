@@ -2,8 +2,10 @@
 
 const fs = require('fs')
 const path = require('path')
-const log = require('cozy-logger')
+
 const stripJsonComments = require('strip-json-comments')
+
+const log = require('cozy-logger')
 
 module.exports = getKonnectorConfig
 

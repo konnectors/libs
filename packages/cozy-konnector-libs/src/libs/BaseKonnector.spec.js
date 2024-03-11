@@ -17,14 +17,16 @@ jest.mock('fs', () => ({
   }
 }))
 
-const { mockEnvVariables, asyncResolve } = require('./testUtils')
+const fs = require('fs').promises
+const path = require('path')
+
+const logger = require('cozy-logger')
+
+const BaseKonnector = require('./BaseKonnector')
 const client = require('./cozyclient')
 jest.mock('./signin')
 const signin = require('./signin')
-const BaseKonnector = require('./BaseKonnector')
-const logger = require('cozy-logger')
-const fs = require('fs').promises
-const path = require('path')
+const { mockEnvVariables, asyncResolve } = require('./testUtils')
 
 logger.setLevel('error')
 

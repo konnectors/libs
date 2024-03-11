@@ -1,12 +1,13 @@
+const indexBy = require('lodash/keyBy')
+
+const cozyClient = require('./cozyclient')
 const { Linker } = require('./linkBankOperations')
+const { parseTable } = require('./testUtils')
 
 jest.mock('./cozyclient')
 jest.mock('cozy-logger', () => ({
   namespace: () => () => ({})
 }))
-const cozyClient = require('./cozyclient')
-const indexBy = require('lodash/keyBy')
-const { parseTable } = require('./testUtils')
 
 let linker
 

@@ -1,9 +1,16 @@
 #!/usr/bin/env node
 /* eslint no-console: off */
 
+const fs = require('fs')
+const path = require('path')
+
+const ArgumentParser = require('argparse').ArgumentParser
+
+const CozyClient = require('cozy-client').default
+
+const authenticate = require('./cozy-authenticate')
 const config = require('./init-konnector-config')()
 const injectDevAccount = require('./inject-dev-account')
-const ArgumentParser = require('argparse').ArgumentParser
 
 process.env.COZY_URL = process.env.COZY_URL || config.COZY_URL
 if (config.COZY_PARAMETERS) {
@@ -15,12 +22,7 @@ if (config.COZY_FIELDS) {
 // sentry is not needed in dev mode
 process.env.SENTRY_DSN = 'false'
 
-const path = require('path')
-const fs = require('fs')
 require('./open-in-browser')
-
-const authenticate = require('./cozy-authenticate')
-const CozyClient = require('cozy-client').default
 
 const DEFAULT_MANIFEST_PATH = path.resolve('manifest.konnector')
 const DEFAULT_TOKEN_PATH = path.resolve('.token.json')

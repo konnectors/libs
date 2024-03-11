@@ -1,5 +1,6 @@
-import ContentScript, { PILOT_TYPE } from './ContentScript'
 import { Q } from 'cozy-client'
+
+import ContentScript, { PILOT_TYPE } from './ContentScript'
 
 describe('ContentScript', () => {
   describe('saveFiles', () => {

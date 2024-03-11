@@ -1,4 +1,5 @@
 const { join } = require('path').posix
+
 const mkdirpFromCozy = require('./mkdirp').fromCozy
 
 describe('mkdirp', () => {

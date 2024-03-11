@@ -1,4 +1,5 @@
 const bayes = require('classificator')
+
 const toLearn = require('./set_label_cat.json')
 
 const globalModel = jest.fn()

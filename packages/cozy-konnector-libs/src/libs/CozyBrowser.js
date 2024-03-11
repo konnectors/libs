@@ -4,8 +4,6 @@
  * @module CozyBrowser
  */
 
-const { CookieJar } = require('tough-cookie')
-const log = require('cozy-logger').namespace('zombie')
 const DEFAULT_USER_AGENT =
   'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:62.0) Gecko/20100101 Firefox/62.0'
 
@@ -17,14 +15,18 @@ try {
     'zombie dependency is missing. Please add it in your package.json'
   )
 }
-const Fetch = require('zombie/lib/fetch')
-const Path = require('path')
-const _ = require('lodash')
-const { isArray } = require('util')
-const Bluebird = require('bluebird')
 const assert = require('assert')
+const Path = require('path')
 const URL = require('url')
+const { isArray } = require('util')
+
+const Bluebird = require('bluebird')
+const _ = require('lodash')
 const Request = require('request')
+const { CookieJar } = require('tough-cookie')
+const Fetch = require('zombie/lib/fetch')
+
+const log = require('cozy-logger').namespace('zombie')
 
 /**
  * Get a preconfigured jsdom browser simulator using the zombie npm package

@@ -1,7 +1,8 @@
+const logger = require('cozy-logger')
+
+const { LOCAL_MODEL_PROBA_FALLBACK } = require('./constants')
 const { createModel } = require('./model')
 const { tokenizer } = require('../helpers')
-const { LOCAL_MODEL_PROBA_FALLBACK } = require('./constants')
-const logger = require('cozy-logger')
 
 logger.setLevel('error')
 

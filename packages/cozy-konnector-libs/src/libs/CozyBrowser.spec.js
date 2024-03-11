@@ -1,5 +1,6 @@
-const CozyBrowser = require('./CozyBrowser')
 const Zombie = require('zombie')
+
+const CozyBrowser = require('./CozyBrowser')
 
 describe('CozyBrowser', () => {
   const browser = new CozyBrowser()

@@ -4,11 +4,13 @@
  *
  * @module signin
  */
-const errors = require('../helpers/errors')
-const rerrors = require('request-promise/errors')
-const log = require('cozy-logger').namespace('cozy-konnector-libs')
-const requestFactory = require('./request')
 const cheerio = require('cheerio')
+const rerrors = require('request-promise/errors')
+
+const log = require('cozy-logger').namespace('cozy-konnector-libs')
+
+const requestFactory = require('./request')
+const errors = require('../helpers/errors')
 
 /**
  * Provides an handy method to log the user in,

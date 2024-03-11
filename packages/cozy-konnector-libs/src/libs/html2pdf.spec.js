@@ -1,5 +1,6 @@
-const { htmlToPDF, createCozyPDFDocument } = require('./html2pdf')
 const cheerio = require('cheerio')
+
+const { htmlToPDF, createCozyPDFDocument } = require('./html2pdf')
 
 describe('htmlToPDF', () => {
   let pdf

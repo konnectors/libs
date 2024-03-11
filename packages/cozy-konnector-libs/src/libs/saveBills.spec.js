@@ -1,13 +1,16 @@
+const logger = require('cozy-logger')
+
+const addData = require('./addData')
+const hydrateAndFilter = require('./hydrateAndFilter')
+const manifest = require('./manifest')
+const saveBills = require('./saveBills')
+const saveFiles = require('./saveFiles')
+
 jest.mock('./saveFiles')
 jest.mock('./hydrateAndFilter')
 jest.mock('./addData')
-const addData = require('./addData')
-const hydrateAndFilter = require('./hydrateAndFilter')
-const saveFiles = require('./saveFiles')
-const saveBills = require('./saveBills')
 const manageContractsData = saveBills.manageContractsData
-const manifest = require('./manifest')
-const logger = require('cozy-logger')
+
 const asyncResolve = val => {
   return new Promise(resolve => {
     setTimeout(() => {

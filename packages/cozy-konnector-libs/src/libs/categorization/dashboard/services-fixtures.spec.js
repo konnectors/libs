@@ -1,15 +1,16 @@
-const { categorize } = require('../index')
-const path = require('path')
 const fs = require('fs')
-const cat2name = require('./tree.json')
+const path = require('path')
+
 const allowedFallbackCategories = require('./allowed_wrong_categories.json')
-const { fetchTransactionsWithManualCat } = require('../localModel/parameters')
-const { fetchParameters } = require('../globalModel/parameters')
 const {
   softRequire,
   fmtManualCategorizations,
   fmtResultsCSV
 } = require('./helpers')
+const cat2name = require('./tree.json')
+const { fetchParameters } = require('../globalModel/parameters')
+const { categorize } = require('../index')
+const { fetchTransactionsWithManualCat } = require('../localModel/parameters')
 
 jest.mock('../localModel/parameters')
 jest.mock('../globalModel/parameters')

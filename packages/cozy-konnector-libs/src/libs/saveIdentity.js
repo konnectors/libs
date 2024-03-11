@@ -5,12 +5,13 @@
  * @module saveIdentity
  */
 
+const { Q } = require('cozy-client/dist/queries/dsl')
 const log = require('cozy-logger').namespace('saveIdentity')
-const updateOrCreate = require('./updateOrCreate')
+
 const cozyClient = require('./cozyclient')
 const manifest = require('./manifest')
+const updateOrCreate = require('./updateOrCreate')
 // A implicit import of Q cause a weird failing test
-const { Q } = require('cozy-client/dist/queries/dsl')
 
 /**
  * Set or merge a io.cozy.identities

@@ -1,16 +1,19 @@
 const fs = require('fs')
 const path = require('path')
-const log = require('cozy-logger').namespace('cozy-client-js-stub')
-const mimetypes = require('mime-types')
-const low = require('lowdb')
-const lodashId = require('lodash-id')
+const sleep = require('util').promisify(global.setTimeout)
+
 const get = require('lodash/get')
+const lodashId = require('lodash-id')
+const low = require('lowdb')
 const FileSync = require('lowdb/adapters/FileSync')
+const mimetypes = require('mime-types')
 const rawBody = require('raw-body')
 const stripJsonComments = require('strip-json-comments')
-const manifest = require('../libs/manifest')
-const sleep = require('util').promisify(global.setTimeout)
+
 const { models } = require('cozy-client')
+const log = require('cozy-logger').namespace('cozy-client-js-stub')
+
+const manifest = require('../libs/manifest')
 
 const newCozyClient = {
   models

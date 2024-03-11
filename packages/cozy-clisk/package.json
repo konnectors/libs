@@ -42,6 +42,7 @@
     "bluebird-retry": "^0.11.0",
     "ky": "^0.25.1",
     "lodash": "^4.17.21",
+    "microee": "^0.0.6",
     "p-timeout": "^6.0.0",
     "p-wait-for": "^5.0.2",
     "post-me": "^0.4.5"
