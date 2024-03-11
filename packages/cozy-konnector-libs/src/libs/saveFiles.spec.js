@@ -1,21 +1,28 @@
 jest.mock('./cozyclient')
 const cozyClient = require('./cozyclient')
+
 const save = jest.fn()
+const query = jest.fn().mockResolvedValue({ included: [], data: null })
 const destroy = jest.fn()
 const queryAll = jest.fn()
 const statByPath = jest.fn()
 const deleteFilePermanently = jest.fn()
 const fetchFileContentById = jest.fn()
-const createDirectoryByPath = jest.fn()
+const createDirectoryByPath = jest
+  .fn()
+  .mockImplementation(path => ({ data: { _id: 'subpathid', path } }))
+const addReferencesTo = jest.fn()
 cozyClient.new = {
   save,
+  query,
   destroy,
   queryAll,
   collection: () => ({
     statByPath,
     deleteFilePermanently,
     fetchFileContentById,
-    createDirectoryByPath
+    createDirectoryByPath,
+    addReferencesTo
   })
 }
 const client = cozyClient.new
@@ -23,7 +30,9 @@ const { models } = require('cozy-client')
 client.models = models
 
 const manifest = require('./manifest')
+
 const logger = require('cozy-logger')
+
 const saveFiles = require('./saveFiles')
 const getFileIfExists = saveFiles.getFileIfExists
 const sanitizeFileName = saveFiles.sanitizeFileName
@@ -134,6 +143,7 @@ describe('saveFiles', function () {
     } = test
     describe(name, () => {
       beforeEach(async () => {
+        query.mockResolvedValue({ included: [] })
         statByPath.mockImplementation(async path => {
           if (path === FOLDER_PATH) {
             return { data: { _id: 'folderId' } }
@@ -189,17 +199,21 @@ describe('saveFiles', function () {
   // Renaming Test, not working due to not sucessfully mock updateAttributesById
   describe('when entry have shouldReplaceName', () => {
     beforeEach(async () => {
-      /* cozyClient.files.statByPath.mockImplementation(() => {
-         return asyncResolve({ _id: 'folderId' })
-       })*/
+      statByPath.mockImplementation(async path => {
+        // Must check if we are stating on the folder or on the file
+        return path === FOLDER_PATH
+          ? { data: { _id: 'folderId' } }
+          : {
+              data: makeFile('existingFileId', {
+                name: 'bill.pdf'
+              })
+            }
+      })
+      query.mockResolvedValue({ included: [] })
       queryAll.mockImplementation(() => {
         // Watch out, not the same format as cozyClient.files
         return [{ name: '201712_freemobile.pdf', _id: 'idToRename' }]
       })
-      /* cozyClient.files.updateAttributesById.mockReset()
-       cozyClient.files.updateAttributesById.mockImplementation(() => {
-         return
-       })*/
     })
     const billWithShouldReplaceName = [
       {
@@ -553,6 +567,13 @@ describe('saveFiles', function () {
 
 describe('subPath handling', () => {
   beforeEach(function () {
+    createDirectoryByPath.mockImplementation(path => ({
+      data: {
+        _id: 'subpathid',
+        path
+      }
+    }))
+    query.mockResolvedValue({ included: [] })
     statByPath.mockImplementation(async path => {
       if (path.includes('randomfileurl.txt')) {
         throw new Error('Anything')
@@ -575,15 +596,21 @@ describe('subPath handling', () => {
     expect(client.collection().createDirectoryByPath.mock.calls.length).toBe(0)
   })
   it('should change the folderPath for entries with subPath', async () => {
-    await saveFiles([{ fileurl: 'randomfileurl.txt', subPath: 'mySubPath' }], {
-      folderPath: 'mainPath'
-    })
+    await saveFiles(
+      [{ fileurl: 'randomfileurl.txt', subPath: 'mySubPath' }],
+      {
+        folderPath: 'mainPath'
+      },
+      {
+        sourceAccountIdentifier: 'accountidentifier'
+      }
+    )
 
     expect(client.collection().createDirectoryByPath).toHaveBeenCalledWith(
       'mainPath/mySubPath'
     )
 
-    expect(client.save).toHaveBeenCalledWith(
+    expect(save).toHaveBeenCalledWith(
       expect.objectContaining({
         name: 'randomfileurl.txt',
         dirId: 'mainPath/mySubPath'
@@ -596,7 +623,7 @@ describe('subPath handling', () => {
       {
         folderPath: 'mainPath'
       },
-      { subPath: 'mySubPath' }
+      { subPath: 'mySubPath', sourceAccountIdentifier: 'accountidentifier' }
     )
 
     expect(client.collection().createDirectoryByPath).toHaveBeenCalledWith(
@@ -612,11 +639,142 @@ describe('subPath handling', () => {
   })
 })
 
+describe('contract handling', () => {
+  beforeEach(function () {
+    createDirectoryByPath.mockImplementation(path => ({
+      data: {
+        _id: 'subpathid',
+        path
+      }
+    }))
+    query.mockResolvedValue({ included: [] })
+    statByPath.mockImplementation(async path => {
+      if (path.includes('randomfileurl.txt')) {
+        throw new Error('Anything')
+      } else {
+        return { data: { _id: path } }
+      }
+    })
+  })
+  it('should not create subPath if no contract specified', async () => {
+    await saveFiles([{ fileurl: 'randomfileurl.txt' }], {
+      folderPath: 'mainPath'
+    })
+
+    expect(client.save).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: 'randomfileurl.txt',
+        dirId: 'mainPath'
+      })
+    )
+    expect(client.collection().createDirectoryByPath.mock.calls.length).toBe(0)
+    expect(addReferencesTo).not.toHaveBeenCalled()
+  })
+  it('should change the folderPath for entries with contract', async () => {
+    manifest.data.slug = 'testslug'
+    await saveFiles(
+      [
+        {
+          fileurl: 'randomfileurl.txt',
+          contract: { id: 'testContractId', name: 'contractPath' }
+        }
+      ],
+      {
+        folderPath: 'mainPath'
+      },
+      {
+        sourceAccountIdentifier: 'testSourceAccountIdentifier'
+      }
+    )
+
+    expect(client.collection().createDirectoryByPath).toHaveBeenCalledWith(
+      'mainPath/contractPath'
+    )
+
+    expect(save).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: 'randomfileurl.txt',
+        dirId: 'mainPath/contractPath'
+      })
+    )
+
+    expect(addReferencesTo).toHaveBeenCalledTimes(3)
+    expect(addReferencesTo).toHaveBeenNthCalledWith(
+      1,
+      { _id: 'io.cozy.konnectors/testslug', _type: 'io.cozy.konnectors' },
+      [{ _id: 'subpathid', path: 'mainPath/contractPath' }]
+    )
+    expect(addReferencesTo).toHaveBeenNthCalledWith(
+      2,
+      {
+        _id: 'testSourceAccountIdentifier',
+        _type: 'io.cozy.accounts.sourceAccountIdentifier'
+      },
+      [{ _id: 'subpathid', path: 'mainPath/contractPath' }]
+    )
+    expect(addReferencesTo).toHaveBeenNthCalledWith(
+      3,
+      {
+        _id: 'testContractId',
+        _type: 'io.cozy.accounts.contracts'
+      },
+      [{ _id: 'subpathid', path: 'mainPath/contractPath' }]
+    )
+  })
+  it('should change the folderPath with contract main option', async () => {
+    manifest.data.slug = 'testslug2'
+    await saveFiles(
+      [{ fileurl: 'randomfileurl.txt' }],
+      {
+        folderPath: 'mainPath'
+      },
+      {
+        contract: { id: 'testContractId', name: 'contractPath' },
+        sourceAccountIdentifier: 'testSourceAccountIdentifier'
+      }
+    )
+
+    expect(client.collection().createDirectoryByPath).toHaveBeenCalledWith(
+      'mainPath/contractPath'
+    )
+
+    expect(client.save).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: 'randomfileurl.txt',
+        dirId: 'mainPath/contractPath'
+      })
+    )
+    expect(addReferencesTo).toHaveBeenCalledTimes(3)
+    expect(addReferencesTo).toHaveBeenNthCalledWith(
+      1,
+      { _id: 'io.cozy.konnectors/testslug2', _type: 'io.cozy.konnectors' },
+      [{ _id: 'subpathid', path: 'mainPath/contractPath' }]
+    )
+    expect(addReferencesTo).toHaveBeenNthCalledWith(
+      2,
+      {
+        _id: 'testSourceAccountIdentifier',
+        _type: 'io.cozy.accounts.sourceAccountIdentifier'
+      },
+      [{ _id: 'subpathid', path: 'mainPath/contractPath' }]
+    )
+    expect(addReferencesTo).toHaveBeenNthCalledWith(
+      3,
+      {
+        _id: 'testContractId',
+        _type: 'io.cozy.accounts.contracts'
+      },
+      [{ _id: 'subpathid', path: 'mainPath/contractPath' }]
+    )
+  })
+})
+
 describe('getFileIfExists', function () {
   jest.resetAllMocks()
   statByPath.mockReset()
   describe('when in filepath mode', () => {
     beforeEach(function () {
+      query.mockResolvedValue({ included: [] })
       manifest.data.slug = false // Without slug, force filepath mode
     })
     it('when the file does not exist, should not return any file', async () => {

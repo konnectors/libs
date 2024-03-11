@@ -15,6 +15,9 @@ import { dataUriToArrayBuffer } from '../libs/utils'
  * @property {boolean} [_cozy_file_to_create] - Internal use to count the number of files to download
  * @property {object} [fileAttributes] - metadata attributes to add to the resulting file object
  * @property {string} [subPath] - subPath of the destination folder path where to put the downloaded file
+ * @property {object} [contract] - contract object associated to the file
+ * @property {string} [contract.id] - id of the contract
+ * @property {string} [contract.name] - name of the contract
  * @property {import('cozy-client/types/types').IOCozyFile} [existingFile] - already existing file corresponding to the entry
  * @property {boolean} [shouldReplace] - Internal result of the shouldReplaceFile function on the entry
  * @property {boolean} [forceReplaceFile] - should the konnector force the replace of the current file
@@ -28,6 +31,9 @@ import { dataUriToArrayBuffer } from '../libs/utils'
  * @property {Array<string>} fileIdAttributes - List of entry attributes considered as unique deduplication key
  * @property {Function} log - Logging function coming from the Launcher
  * @property {string} [subPath] - subPath of the destination folder path where to put the downloaded file
+ * @property {object} [contract] - contract object associated to the files
+ * @property {string} [contract.id] - id of the contract
+ * @property {string} [contract.name] - name of the contract
  * @property {string} [contentType] - will force the contentType of the file if any
  * @property {Function} [downloadAndFormatFile] - this callback will download the file and format to be useable by cozy-client
  * @property {string} [qualificationLabel] - qualification label defined in cozy-client which will be used on all given files
@@ -41,6 +47,9 @@ import { dataUriToArrayBuffer } from '../libs/utils'
  * @property {Array<string>} fileIdAttributes - List of entry attributes considered as unique deduplication key
  * @property {Function} log - Logging function coming from the Launcher
  * @property {string} [subPath] - subPath of the destination folder path where to put the downloaded file
+ * @property {object} [contract] - contract object associated to the file
+ * @property {string} [contract.id] - id of the contract
+ * @property {string} [contract.name] - name of the contract
  * @property {string} [contentType] - will force the contentType of the file if any
  * @property {Function} [downloadAndFormatFile] - this callback will download the file and format to be useable by cozy-client
  * @property {string} [qualificationLabel] - qualification label defined in cozy-client which will be used on all given files
@@ -107,6 +116,7 @@ const saveFiles = async (client, entries, folderPath, options) => {
     log,
     retry: options.retry,
     subPath: options.subPath,
+    contract: options.contract,
     fileIdAttributes: options.fileIdAttributes,
     manifest: options.manifest,
     contentType: options.contentType,
@@ -184,7 +194,7 @@ const saveFiles = async (client, entries, folderPath, options) => {
 
 /**
  * Ensure the existence of all destination folders : folderPath, options.subPath and all subPaths
- * which may be present in each entries.
+ * which may be present in each entries + contracts.
  * If the user changes some folders during the execution of saveFile, we will catch and fix the
  * errors.
  *
@@ -201,26 +211,110 @@ async function ensureAllDestinationFolders({
   folderPath,
   options
 }) {
-  const fileCollection = client.collection('io.cozy.files')
+  try {
+    const fileCollection = client.collection('io.cozy.files')
 
-  const pathsList = []
+    const pathsList = []
 
-  // construct an Array with all the paths to ensure the existence of
-  if (options.subPath) {
-    pathsList.push(folderPath + '/' + options.subPath)
+    // construct an Array with all the paths to ensure the existence of
+    if (options.subPath) {
+      pathsList.push(folderPath + '/' + options.subPath)
+    }
+    const notFilteredEntriesPathList = entries.map(entry =>
+      entry.subPath ? folderPath + '/' + entry.subPath : false
+    )
+    const entriesPathList = Array.from(
+      new Set(notFilteredEntriesPathList)
+    ).filter(Boolean)
+    // @ts-ignore Argument of type 'string | false' is not assignable to parameter of type 'string'.  Type 'boolean' is not assignable to type 'string'.ts(2345)
+    pathsList.push(...entriesPathList)
+
+    for (const path of pathsList) {
+      await fileCollection.ensureDirectoryExists(path)
+    }
+
+    const slug = options?.manifest?.slug
+    const { included: existingKonnectorFolders } = await client.query(
+      Q('io.cozy.files')
+        .where({})
+        .partialIndex({ type: 'directory', trashed: false })
+        .referencedBy({
+          _type: 'io.cozy.konnectors',
+          _id: `io.cozy.konnectors/${slug}`
+        })
+    )
+
+    const sourceAccountIdentifier =
+      options.sourceAccountOptions?.sourceAccountIdentifier
+    const existingAccountFolders = existingKonnectorFolders.filter(folder =>
+      Boolean(
+        folder.referenced_by?.find(
+          ref =>
+            ref.type === 'io.cozy.accounts.sourceAccountIdentifier' &&
+            (sourceAccountIdentifier
+              ? ref.id === sourceAccountIdentifier
+              : true)
+        )
+      )
+    )
+
+    const contractsList = Array.from(
+      new Set(entries.map(entry => entry.contract))
+    ).filter(Boolean)
+    if (options.contract) {
+      contractsList.unshift(options.contract)
+    }
+
+    for (const contract of contractsList) {
+      if (
+        !contract ||
+        existingAccountFolders.find(folder =>
+          hasContractReference(folder, contract.id)
+        )
+      ) {
+        continue
+      }
+
+      const { data: folder } = await fileCollection.createDirectoryByPath(
+        folderPath + '/' + contract.name
+      )
+      await Promise.all([
+        fileCollection.addReferencesTo(
+          {
+            _id: `io.cozy.konnectors/${slug}`,
+            _type: 'io.cozy.konnector'
+          },
+          [folder]
+        ),
+        fileCollection.addReferencesTo(
+          {
+            _id: sourceAccountIdentifier,
+            _type: 'io.cozy.accounts.sourceAccountIdentifier'
+          },
+          [folder]
+        ),
+        fileCollection.addReferencesTo(
+          {
+            _id: contract.id,
+            _type: 'io.cozy.accounts.contracts'
+          },
+          [folder]
+        )
+      ])
+    }
+  } catch (err) {
+    throw new Error(
+      `cozy-clisk::saveFiles Error in ensureAllDestinationFolders. Cannot save files: ${err.message}`
+    )
   }
-  const notFilteredEntriesPathList = entries.map(entry =>
-    entry.subPath ? folderPath + '/' + entry.subPath : false
+}
+
+function hasContractReference(folder, contractId) {
+  return Boolean(
+    folder.referenced_by?.find(
+      ref => ref.type === 'io.cozy.accounts.contracts' && ref.id === contractId
+    )
   )
-  const entriesPathList = Array.from(
-    new Set(notFilteredEntriesPathList)
-  ).filter(Boolean)
-  // @ts-ignore Argument of type 'string | false' is not assignable to parameter of type 'string'.  Type 'boolean' is not assignable to type 'string'.ts(2345)
-  pathsList.push(...entriesPathList)
-
-  for (const path of pathsList) {
-    await fileCollection.ensureDirectoryExists(path)
-  }
 }
 
 /**
@@ -380,7 +474,11 @@ async function createFileWithFolderOnError(
   method,
   file
 ) {
-  const subPath = entry.subPath || options.subPath
+  const subPath =
+    entry.contract?.name ||
+    options.contract?.name ||
+    entry.subPath ||
+    options.subPath
   const finalPath = subPath
     ? options.folderPath + '/' + subPath
     : options.folderPath

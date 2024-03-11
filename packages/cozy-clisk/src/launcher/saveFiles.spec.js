@@ -22,6 +22,7 @@ describe('saveFiles', function () {
     const existingFilesIndex = new Map([['old file name.txt', fileDocument]])
     const client = {
       save: jest.fn(),
+      query: jest.fn().mockResolvedValue({ included: [], data: null }),
       collection: () => ({
         statByPath: jest.fn().mockImplementation(path => {
           return { data: { _id: path } }
@@ -78,6 +79,7 @@ describe('saveFiles', function () {
       save: jest.fn().mockImplementation(doc => ({
         data: { ...doc, _rev: 'newrev' }
       })),
+      query: jest.fn().mockResolvedValue({ included: [], data: null }),
       collection: () => ({
         statByPath: jest.fn().mockImplementation(path => {
           return { data: { _id: path } }
@@ -142,6 +144,7 @@ describe('saveFiles', function () {
       save: jest.fn().mockImplementation(doc => ({
         data: doc
       })),
+      query: jest.fn().mockResolvedValue({ included: [], data: null }),
       collection: () => ({
         statByPath: jest
           .fn()
@@ -198,6 +201,7 @@ describe('saveFiles', function () {
       save: jest.fn().mockImplementation(doc => ({
         data: doc
       })),
+      query: jest.fn().mockResolvedValue({ included: [], data: null }),
       collection: () => ({
         statByPath: jest.fn().mockImplementation(path => {
           return { data: { _id: path } }
@@ -253,6 +257,7 @@ describe('saveFiles', function () {
       save: jest.fn().mockImplementation(doc => ({
         data: doc
       })),
+      query: jest.fn().mockResolvedValue({ included: [], data: null }),
       collection: () => ({
         statByPath: jest.fn().mockImplementation(path => {
           return { data: { _id: path } }
@@ -298,6 +303,7 @@ describe('saveFiles', function () {
       save: jest.fn().mockImplementation(doc => ({
         data: doc
       })),
+      query: jest.fn().mockResolvedValue({ included: [], data: null }),
       collection: () => ({
         statByPath: jest.fn().mockImplementation(path => {
           return { data: { _id: path } }
@@ -349,6 +355,7 @@ describe('saveFiles', function () {
       save: jest.fn().mockImplementation(doc => ({
         data: doc
       })),
+      query: jest.fn().mockResolvedValue({ included: [], data: null }),
       collection: () => ({
         statByPath: jest.fn().mockImplementation(path => {
           return { data: { _id: path } }
@@ -396,6 +403,7 @@ describe('saveFiles', function () {
         }
         return { data: doc }
       }),
+      query: jest.fn().mockResolvedValue({ included: [], data: null }),
       collection: () => ({
         statByPath: jest.fn().mockImplementation(path => {
           return { data: { _id: path } }
@@ -449,6 +457,7 @@ describe('saveFiles', function () {
 
     const client = {
       save: jest.fn().mockRejectedValueOnce(notExistingDirectoryErr),
+      query: jest.fn().mockResolvedValue({ included: [], data: null }),
       collection: () => ({
         statByPath: jest.fn().mockImplementation(path => {
           return { data: { _id: path } }
@@ -480,6 +489,7 @@ describe('saveFiles', function () {
       save: jest.fn().mockImplementation(doc => ({
         data: doc
       })),
+      query: jest.fn().mockResolvedValue({ included: [], data: null }),
       collection: () => ({
         statByPath: jest
           .fn()
@@ -509,5 +519,61 @@ describe('saveFiles', function () {
       console.error('err', err)
     }
     expect(caught).toBe(false)
+  })
+  it('should save a file with a contract', async () => {
+    const ensureDirectoryExists = jest
+      .fn()
+      .mockImplementation(async path => path)
+    const createDirectoryByPath = jest
+      .fn()
+      .mockImplementation(async path => ({ data: { path } }))
+    const client = {
+      save: jest.fn().mockImplementation(doc => ({
+        data: doc
+      })),
+      query: jest.fn().mockResolvedValue({ included: [], data: null }),
+      collection: () => ({
+        statByPath: jest.fn().mockImplementation(path => {
+          return { data: { _id: path } }
+        }),
+        ensureDirectoryExists,
+        createDirectoryByPath,
+        addReferencesTo: jest.fn()
+      })
+    }
+    const document = {
+      filestream: 'filestream content',
+      filename: 'file name.txt'
+    }
+    const result = await saveFiles(client, [document], '/test/folder/path', {
+      manifest: {
+        slug: 'testslug'
+      },
+      contract: {
+        id: 'testContractId',
+        name: 'testContractName'
+      },
+      sourceAccount: 'testsourceaccount',
+      sourceAccountIdentifier: 'testsourceaccountidentifier',
+      fileIdAttributes: ['filename'],
+      existingFilesIndex: new Map(),
+      log: jest.fn()
+    })
+    expect(createDirectoryByPath).toHaveBeenCalledWith(
+      '/test/folder/path/testContractName'
+    )
+    expect(client.save).toHaveBeenCalledWith(
+      expect.objectContaining({
+        dirId: '/test/folder/path/testContractName'
+      })
+    )
+    expect(result).toStrictEqual([
+      {
+        filename: 'file name.txt',
+        fileDocument: expect.objectContaining({
+          dirId: '/test/folder/path/testContractName'
+        })
+      }
+    ])
   })
 })
