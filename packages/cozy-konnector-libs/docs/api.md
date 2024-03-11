@@ -494,7 +494,7 @@ Saves the given files in the given folder via the Cozy API.
 
 <a name="exp_module_saveFiles--saveFiles"></a>
 
-### saveFiles(entries, fields, options) ⏏
+### saveFiles(entries, fields, options, [contract]) ⏏
 Saves the files given in the fileurl attribute of each entries
 
 You need the full permission on `io.cozy.files` in your manifest to use this function.
@@ -513,6 +513,9 @@ You need the full permission on `io.cozy.files` in your manifest to use this fun
 | entries.shouldReplaceFile | <code>function</code> | use this function to state if the current entry should be forced to be redownloaded and replaced. Usefull if we know the file content can change and we always want the last version. |
 | entries.fileAttributes | <code>object</code> | ex: `{created_at: new Date()}` sets some additionnal file attributes passed to cozyClient.file.create |
 | entries.subPath | <code>string</code> | A subpath to save all files, will be created if needed. |
+| entries.contract | <code>object</code> | contract object associated to the files |
+| entries.contract.id | <code>string</code> | id of the contract |
+| entries.contract.name | <code>string</code> | name of the contract |
 | fields | <code>object</code> | is the argument given to the main function of your connector by the BaseKonnector.  It especially contains a `folderPath` which is the string path configured by the user in collect/home |
 | options | <code>object</code> | global options |
 | options.timeout | <code>number</code> | timestamp which can be used if your connector needs to fetch a lot of files and if the stack does not give enough time to your connector to fetch it all. It could happen that the connector is stopped right in the middle of the download of the file and the file will be broken. With the `timeout` option, the `saveFiles` function will check if the timeout has passed right after downloading each file and then will be sure to be stopped cleanly if the timeout is not too long. And since it is really fast to check that a file has already been downloaded, on the next run of the connector, it will be able to download some more files, and so on. If you want the timeout to be in 10s, do `Date.now() + 10*1000`.  You can try it in the previous code. |
@@ -522,6 +525,9 @@ You need the full permission on `io.cozy.files` in your manifest to use this fun
 | options.validateFileContent | <code>boolean</code> \| <code>function</code> | default false. Also check the content of the file to recognize the mime type |
 | options.fileIdAttributes | <code>Array</code> | array of strings : Describes which attributes of files will be taken as primary key for files to check if they already exist, even if they are moved. If not given, the file path will used for deduplication as before. |
 | options.subPath | <code>string</code> | A subpath to save this file, will be created if needed. |
+| [contract] | <code>object</code> | contract object associated to the file |
+| [contract.id] | <code>string</code> | id of the contract |
+| [contract.name] | <code>string</code> | name of the contract |
 | options.fetchFile | <code>function</code> | the connector can give it's own function to fetch the file from the website, which will be run only when necessary (if the corresponding file is missing on the cozy) function returning the stream). This function must return a promise resolved as a stream |
 | options.verboseFilesLog | <code>boolean</code> | the connector will send saveFiles result as a warning |
 

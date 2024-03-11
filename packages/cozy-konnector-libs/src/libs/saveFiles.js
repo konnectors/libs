@@ -50,6 +50,9 @@ const FILES_DOCTYPE = 'io.cozy.files'
  * @param {Function} entries.shouldReplaceFile - use this function to state if the current entry should be forced to be redownloaded and replaced. Usefull if we know the file content can change and we always want the last version.
  * @param {object} entries.fileAttributes - ex: `{created_at: new Date()}` sets some additionnal file attributes passed to cozyClient.file.create
  * @param {string} entries.subPath - A subpath to save all files, will be created if needed.
+ * @param {object} entries.contract - contract object associated to the files
+ * @param {string} entries.contract.id - id of the contract
+ * @param {string} entries.contract.name - name of the contract
  * @param {object} fields - is the argument given to the main function of your connector by the BaseKonnector.  It especially contains a `folderPath` which is the string path configured by the user in collect/home
  * @param {object} options - global options
  * @param {number} options.timeout - timestamp which can be used if your connector needs to fetch a lot of files and if the stack does not give enough time to your connector to fetch it all. It could happen that the connector is stopped right in the middle of the download of the file and the file will be broken. With the `timeout` option, the `saveFiles` function will check if the timeout has passed right after downloading each file and then will be sure to be stopped cleanly if the timeout is not too long. And since it is really fast to check that a file has already been downloaded, on the next run of the connector, it will be able to download some more files, and so on. If you want the timeout to be in 10s, do `Date.now() + 10*1000`.  You can try it in the previous code.
@@ -59,6 +62,10 @@ const FILES_DOCTYPE = 'io.cozy.files'
  * @param {boolean|Function} options.validateFileContent - default false. Also check the content of the file to recognize the mime type
  * @param {Array} options.fileIdAttributes - array of strings : Describes which attributes of files will be taken as primary key for files to check if they already exist, even if they are moved. If not given, the file path will used for deduplication as before.
  * @param {string} options.subPath - A subpath to save this file, will be created if needed.
+ * @param {object} [contract] - contract object associated to the file
+ * @param {string} [contract.id] - id of the contract
+ * @param {string} [contract.name] - name of the contract
+
  * @param {Function} options.fetchFile - the connector can give it's own function to fetch the file from the website, which will be run only when necessary (if the corresponding file is missing on the cozy) function returning the stream). This function must return a promise resolved as a stream
  * @param {boolean} options.verboseFilesLog - the connector will send saveFiles result as a warning
  * @example
@@ -102,6 +109,7 @@ const saveFiles = async (entries, fields, options = {}) => {
     shouldReplaceFile: options.shouldReplaceFile,
     validateFile: options.validateFile || defaultValidateFile,
     subPath: options.subPath,
+    contract: options.contract,
     sourceAccountOptions: {
       sourceAccount: options.sourceAccount,
       sourceAccountIdentifier: options.sourceAccountIdentifier
@@ -120,6 +128,29 @@ const saveFiles = async (entries, fields, options = {}) => {
 
   const canBeSaved = entry =>
     entry.fetchFile || entry.fileurl || entry.requestOptions || entry.filestream
+
+  // get all konnector folders
+  const slug = manifest.data.slug
+  const { included: existingKonnectorFolders } = await client.query(
+    Q('io.cozy.files')
+      .where({})
+      .partialIndex({ type: 'directory', trashed: false })
+      .referencedBy({
+        _type: 'io.cozy.konnectors',
+        _id: `io.cozy.konnectors/${slug}`
+      })
+  )
+  const sourceAccountIdentifier = options.sourceAccountIdentifier
+
+  const existingAccountFolders = existingKonnectorFolders.filter(folder =>
+    Boolean(
+      folder.referenced_by?.find(
+        ref =>
+          ref.type === 'io.cozy.accounts.sourceAccountIdentifier' &&
+          (sourceAccountIdentifier ? ref.id === sourceAccountIdentifier : true)
+      )
+    )
+  )
 
   let filesArray = undefined
   let savedFiles = 0
@@ -162,19 +193,23 @@ const saveFiles = async (entries, fields, options = {}) => {
 
           delete entry.shouldReplaceName
         }
-
+        let newEntry = { ...entry }
         if (canBeSaved(entry)) {
           const folderPath = await getOrCreateDestinationPath(
             entry,
-            saveOptions
+            saveOptions,
+            existingAccountFolders
           )
-          entry = await saveEntry(entry, { ...saveOptions, folderPath })
+          newEntry = await saveEntry(entry, {
+            ...saveOptions,
+            folderPath
+          })
           if (entry && entry._cozy_file_to_create) {
             savedFiles++
             delete entry._cozy_file_to_create
           }
         }
-        savedEntries.push(entry)
+        savedEntries.push(newEntry)
       },
       { concurrency: saveOptions.concurrency }
     )
@@ -384,10 +419,11 @@ async function getFileFromMetaData(
 async function getFileFromPath(entry, options) {
   try {
     log('debug', `Checking existence of ${getFilePath({ entry, options })}`)
-    const result = await client
-      .collection(FILES_DOCTYPE)
-      .statByPath(getFilePath({ entry, options }))
-    return result.data
+    return (
+      await client
+        .collection(FILES_DOCTYPE)
+        .statByPath(getFilePath({ entry, options }))
+    ).data
   } catch (err) {
     log('debug', err.message)
     return false
@@ -780,12 +816,78 @@ function getAttribute(obj, attribute) {
   return get(obj, `attributes.${attribute}`, get(obj, attribute))
 }
 
-async function getOrCreateDestinationPath(entry, saveOptions) {
-  const subPath = entry.subPath || saveOptions.subPath
-  let finalPath = saveOptions.folderPath
-  if (subPath) {
-    finalPath += '/' + subPath
-    await client.collection(FILES_DOCTYPE).createDirectoryByPath(finalPath)
+async function getOrCreateDestinationPath(
+  entry,
+  saveOptions,
+  existingAccountFolders
+) {
+  try {
+    const subPath =
+      entry.contract?.name ||
+      saveOptions.contract?.name ||
+      entry.subPath ||
+      saveOptions.subPath
+    const contractId = entry.contract?.id || saveOptions.contract?.id
+
+    let finalPath = saveOptions.folderPath
+    if (subPath) {
+      // first try to find dirctory by
+      finalPath += '/' + subPath
+      if (
+        contractId &&
+        existingAccountFolders.find(folder =>
+          hasContractReference(folder, contractId)
+        )
+      ) {
+        return finalPath
+      }
+
+      const sourceAccountIdentifier =
+        saveOptions.sourceAccountOptions?.sourceAccountIdentifier
+
+      if (sourceAccountIdentifier) {
+        const slug = manifest.data.slug
+        const fileCollection = client.collection(FILES_DOCTYPE)
+        const { data: folder } = await fileCollection.createDirectoryByPath(
+          finalPath
+        )
+        await Promise.all([
+          fileCollection.addReferencesTo(
+            {
+              _id: `io.cozy.konnectors/${slug}`,
+              _type: 'io.cozy.konnectors'
+            },
+            [folder]
+          ),
+          fileCollection.addReferencesTo(
+            {
+              _id: sourceAccountIdentifier,
+              _type: 'io.cozy.accounts.sourceAccountIdentifier'
+            },
+            [folder]
+          ),
+          fileCollection.addReferencesTo(
+            {
+              _id: contractId,
+              _type: 'io.cozy.accounts.contracts'
+            },
+            [folder]
+          )
+        ])
+      }
+    }
+    return finalPath
+  } catch (err) {
+    throw new Error(
+      `cozy-konnector-libs::saveFiles Error in getOrCreateDestinationPath. Cannot save files: ${err.message}`
+    )
   }
-  return finalPath
+}
+
+function hasContractReference(folder, contractId) {
+  return Boolean(
+    folder.referenced_by?.find(
+      ref => ref.type === 'io.cozy.accounts.contracts' && ref.id === contractId
+    )
+  )
 }
