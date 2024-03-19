@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.36.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.35.0...cozy-clisk@0.36.0) (2024-03-19)
+
+
+### Features
+
+* Add contract option to saveFiles ([f695ff0](https://github.com/konnectors/libs/commit/f695ff068fae1460c6d509dad4758772ffd8454e))
+* Upgrade eslint, babel and cozy dependencies ([48031fc](https://github.com/konnectors/libs/commit/48031fcc44e14d989aa45694b4f215fb9ecb5eda))
+
+
+
+
+
 # [0.35.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.34.1...cozy-clisk@0.35.0) (2024-03-04)
 
 

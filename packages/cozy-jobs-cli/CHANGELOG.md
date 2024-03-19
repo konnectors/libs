@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.4.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@2.3.2...cozy-jobs-cli@2.4.0) (2024-03-19)
+
+
+### Features
+
+* Upgrade eslint, babel and cozy dependencies ([48031fc](https://github.com/cozy/cozy-konnector-libs/commit/48031fcc44e14d989aa45694b4f215fb9ecb5eda))
+
+
+
+
+
 ## [2.3.2](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@2.3.1...cozy-jobs-cli@2.3.2) (2024-03-06)
 
 **Note:** Version bump only for package cozy-jobs-cli

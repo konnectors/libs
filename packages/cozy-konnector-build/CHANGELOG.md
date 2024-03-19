@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.7.0](https://github.com/konnectors/libs/compare/cozy-konnector-build@1.6.0...cozy-konnector-build@1.7.0) (2024-03-19)
+
+
+### Features
+
+* Upgrade eslint, babel and cozy dependencies ([48031fc](https://github.com/konnectors/libs/commit/48031fcc44e14d989aa45694b4f215fb9ecb5eda))
+
+
+
+
+
 # 1.6.0 (2024-03-04)
 
 
