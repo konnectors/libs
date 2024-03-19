@@ -292,6 +292,8 @@ const saveEntry = async function (entry, options) {
             'warn',
             `Could not download file after ${options.retry} tries removing the file`
           )
+        } else if (getErrorStatus(err) === 413) {
+          throw err
         } else {
           log('warn', 'unknown file download error: ' + err.message)
         }

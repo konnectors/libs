@@ -398,7 +398,10 @@ const saveFile = async function (client, entry, options) {
         max_tries: options.retry,
         args: [client, resultEntry, options, method, resultEntry.existingFile]
       }).catch(err => {
-        if (err.message === 'MAIN_FOLDER_REMOVED') {
+        if (
+          err.message === 'MAIN_FOLDER_REMOVED' ||
+          getErrorStatus(err) === 413
+        ) {
           throw err
         }
         if (err.message === 'BAD_DOWNLOADED_FILE') {
