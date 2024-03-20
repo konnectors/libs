@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.10.1](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@5.10.0...cozy-konnector-libs@5.10.1) (2024-03-20)
+
+
+### Bug Fixes
+
+* All disk quota error message to konnector status ([c87ff74](https://github.com/cozy/cozy-konnector-libs/commit/c87ff74dbf1acd6696fd9f40b6f96531b43c30cf))
+
+
+
+
+
 # [5.10.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@5.9.1...cozy-konnector-libs@5.10.0) (2024-03-19)
 
 
