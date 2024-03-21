@@ -119,7 +119,7 @@ tools available and some enhancements.
 
 ```javascript
   scripts: {
-    dev: "cozy-run-shell"
+    shell: "cozy-run-shell"
   }
 ```
 
