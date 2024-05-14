@@ -56,17 +56,19 @@ const solveCaptcha = async (params = {}) => {
     timeout: DEFAULT_TIMEOUT,
     withFullSolution: false
   }
-  let solution
+  let solutionResp
   let resultAttribute = 'gRecaptchaResponse'
 
   params = { ...defaultParams, ...params }
+
+  log('info', `🏮️ - params : ${JSON.stringify(params)}`)
 
   const secrets = JSON.parse(process.env.COZY_PARAMETERS || '{}').secret
 
   if (params.type === 'recaptcha') {
     checkMandatoryParams(params, ['websiteKey', 'websiteURL'])
     const { websiteKey, websiteURL } = params
-    solution = await solveWithAntiCaptcha(
+    solutionResp = await solveWithAntiCaptcha(
       { websiteKey, websiteURL, type: 'NoCaptchaTaskProxyless' },
       params.timeout,
       secrets
@@ -79,7 +81,7 @@ const solveCaptcha = async (params = {}) => {
       'minScore'
     ])
     const { websiteKey, websiteURL, pageAction, minScore } = params
-    solution = await solveWithAntiCaptcha(
+    solutionResp = await solveWithAntiCaptcha(
       {
         websiteKey,
         websiteURL,
@@ -93,12 +95,22 @@ const solveCaptcha = async (params = {}) => {
   } else if (params.type === 'hcaptcha') {
     checkMandatoryParams(params, ['websiteKey', 'websiteURL'])
     const { websiteKey, websiteURL } = params
-    solution = await solveWithAntiCaptcha(
-      {
-        websiteKey,
-        websiteURL,
-        type: 'HCaptchaTaskProxyless'
-      },
+    const wantedParams = {
+      websiteKey,
+      websiteURL,
+      type: 'HCaptchaTaskProxyless'
+    }
+    if(params.isInvisible){
+      wantedParams.isInvisible = params.isInvisible
+    }
+    if(params.isEnterprise){
+      wantedParams.isEnterprise = params.isEnterprise
+    }
+    if(params.enterprisePayload){
+      wantedParams.enterprisePayload = params.enterprisePayload
+    }
+    solutionResp = await solveWithAntiCaptcha(
+      wantedParams,
       params.timeout,
       secrets
     )
@@ -106,16 +118,16 @@ const solveCaptcha = async (params = {}) => {
     checkMandatoryParams(params, ['body'])
     // Specific attribute to solve image, see API doc
     resultAttribute = 'text'
-    solution = await solveWithAntiCaptcha(
+    solutionResp = await solveWithAntiCaptcha(
       { body: params.body, type: 'ImageToTextTask' },
       params.timeout,
       secrets
     )
   }
   if (params.withFullSolution) {
-    return solution
+    return solutionResp.solution
   } else {
-    return solution[resultAttribute]
+    return solutionResp.solution[resultAttribute]
   }
 }
 
@@ -165,7 +177,8 @@ async function solveWithAntiCaptcha(
             throw new Error(errors.CAPTCHA_RESOLUTION_FAILED)
           }
           log('info', `  Found Recaptcha response : ${JSON.stringify(resp)}`)
-          return resp.solution
+          // return resp.solution
+          return resp
         } else {
           log('debug', `    ${Math.round((Date.now() - startTime) / 1000)}s...`)
           if (Date.now() > timeout) {
