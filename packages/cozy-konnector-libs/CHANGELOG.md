@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.11.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@5.10.1...cozy-konnector-libs@5.11.0) (2024-05-23)
+
+
+### Bug Fixes
+
+* Lint error Assignment to function parameter 'params' ([916f926](https://github.com/cozy/cozy-konnector-libs/commit/916f92632be28de1bcb51c6bd105fe3c513363ca))
+
+
+### Features
+
+* Allow to use a custom requestInstance in solveCaptcha ([df699bc](https://github.com/cozy/cozy-konnector-libs/commit/df699bc8a4831ebcf41275952eea8f6db3b646d3))
+
+
+
+
+
 ## [5.10.1](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@5.10.0...cozy-konnector-libs@5.10.1) (2024-03-20)
 
 
