@@ -50,7 +50,7 @@ const DEFAULT_TIMEOUT = connectorStartTime + 3 * m // 3 minutes by default to le
  * ```
  * @alias module:solveCaptcha
  */
-const solveCaptcha = async (params = {}) => {
+const solveCaptcha = async (userParams = {}) => {
   const defaultParams = {
     type: 'recaptcha',
     timeout: DEFAULT_TIMEOUT,
@@ -60,7 +60,7 @@ const solveCaptcha = async (params = {}) => {
   let solution
   let resultAttribute = 'gRecaptchaResponse'
 
-  params = { ...defaultParams, ...params }
+  const params = { ...defaultParams, ...userParams }
 
   const secrets = JSON.parse(process.env.COZY_PARAMETERS || '{}').secret
 
