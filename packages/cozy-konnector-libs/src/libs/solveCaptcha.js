@@ -54,7 +54,8 @@ const solveCaptcha = async (params = {}) => {
   const defaultParams = {
     type: 'recaptcha',
     timeout: DEFAULT_TIMEOUT,
-    withFullSolution: false
+    withFullSolution: false,
+    requestInstance: request
   }
   let solution
   let resultAttribute = 'gRecaptchaResponse'
@@ -69,7 +70,8 @@ const solveCaptcha = async (params = {}) => {
     solution = await solveWithAntiCaptcha(
       { websiteKey, websiteURL, type: 'NoCaptchaTaskProxyless' },
       params.timeout,
-      secrets
+      secrets,
+      params
     )
   } else if (params.type === 'recaptchav3') {
     checkMandatoryParams(params, [
@@ -88,7 +90,8 @@ const solveCaptcha = async (params = {}) => {
         type: 'RecaptchaV3TaskProxyless'
       },
       params.timeout,
-      secrets
+      secrets,
+      params
     )
   } else if (params.type === 'hcaptcha') {
     checkMandatoryParams(params, ['websiteKey', 'websiteURL'])
@@ -100,7 +103,8 @@ const solveCaptcha = async (params = {}) => {
         type: 'HCaptchaTaskProxyless'
       },
       params.timeout,
-      secrets
+      secrets,
+      params
     )
   } else if (params.type === 'image') {
     checkMandatoryParams(params, ['body'])
@@ -109,7 +113,8 @@ const solveCaptcha = async (params = {}) => {
     solution = await solveWithAntiCaptcha(
       { body: params.body, type: 'ImageToTextTask' },
       params.timeout,
-      secrets
+      secrets,
+      params
     )
   }
   if (params.withFullSolution) {
@@ -132,7 +137,8 @@ function checkMandatoryParams(params = {}, mandatoryParams = []) {
 async function solveWithAntiCaptcha(
   taskParams,
   timeout = DEFAULT_TIMEOUT,
-  secrets
+  secrets,
+  params
 ) {
   const antiCaptchaApiUrl = 'https://api.anti-captcha.com'
   let gRecaptchaResponse = null
@@ -142,23 +148,29 @@ async function solveWithAntiCaptcha(
   const clientKey = secrets.antiCaptchaClientKey
   if (clientKey) {
     log('debug', '  Creating captcha resolution task...')
-    const task = await request.post(`${antiCaptchaApiUrl}/createTask`, {
-      body: {
-        clientKey,
-        task: taskParams
-      },
-      json: true
-    })
+    const task = await params.requestInstance.post(
+      `${antiCaptchaApiUrl}/createTask`,
+      {
+        body: {
+          clientKey,
+          task: taskParams
+        },
+        json: true
+      }
+    )
     if (task && task.taskId) {
       log('debug', `    Task id : ${task.taskId}`)
       while (!gRecaptchaResponse) {
-        const resp = await request.post(`${antiCaptchaApiUrl}/getTaskResult`, {
-          body: {
-            clientKey,
-            taskId: task.taskId
-          },
-          json: true
-        })
+        const resp = await params.requestInstance.post(
+          `${antiCaptchaApiUrl}/getTaskResult`,
+          {
+            body: {
+              clientKey,
+              taskId: task.taskId
+            },
+            json: true
+          }
+        )
         if (resp.status === 'ready') {
           if (resp.errorId) {
             log('error', `Anticaptcha error: ${JSON.stringify(resp)}`)
