@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.37.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.36.1...cozy-clisk@0.37.0) (2024-06-17)
+
+
+### Features
+
+* Add optionnal suffix property to runInWorkerUntilTrue ([a841c4e](https://github.com/konnectors/libs/commit/a841c4eb82849cf625a527446f34cfd77ab6dfeb))
+
+
+
+
+
 ## [0.36.1](https://github.com/konnectors/libs/compare/cozy-clisk@0.36.0...cozy-clisk@0.36.1) (2024-03-20)
 
 
