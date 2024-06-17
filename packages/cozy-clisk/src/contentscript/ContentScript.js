@@ -358,11 +358,17 @@ export default class ContentScript {
    * @param {object} options        - options object
    * @param {string} options.method - name of the method to run
    * @param {number} [options.timeout] - number of miliseconds before the function sends a timeout error. Default Infinity
+   * @param {string} [options.suffix] - suffix used in timeout error message, to better identify error source
    * @param {Array} [options.args] - array of args to pass to the method
    * @returns {Promise<boolean>} - true
    * @throws {TimeoutError} - if timeout expired
    */
-  async runInWorkerUntilTrue({ method, timeout = Infinity, args = [] }) {
+  async runInWorkerUntilTrue({
+    method,
+    timeout = Infinity,
+    suffix = '',
+    args = []
+  }) {
     this.onlyIn(PILOT_TYPE, 'runInWorkerUntilTrue')
     log.debug('runInWorkerUntilTrue', method)
     let result = false
@@ -371,7 +377,7 @@ export default class ContentScript {
     while (!result) {
       if (isTimeout()) {
         throw new TimeoutError(
-          `runInWorkerUntilTrue ${method} Timeout error after ${timeout}`
+          `runInWorkerUntilTrue ${method}${suffix} Timeout error after ${timeout}`
         )
       }
       log.debug('runInWorker call', method)
@@ -394,6 +400,7 @@ export default class ContentScript {
     this.onlyIn(PILOT_TYPE, 'waitForElementInWorker')
     await this.runInWorkerUntilTrue({
       method: 'waitForElementNoReload',
+      suffix: selector,
       timeout:
         options?.timeout ?? DEFAULT_WAIT_FOR_ELEMENT_ACCROSS_PAGES_TIMEOUT,
       args: [selector, { includesText: options.includesText }]
