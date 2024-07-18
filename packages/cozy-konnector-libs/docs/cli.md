@@ -2,63 +2,10 @@
 
 `cozy-jobs-cli` is a npm package providing CLI tools allowing to run your connector in different modes.
 
-- standalone
 - development
 - or in dedicated REPL
 
 You can install it in your connector as a dev dependency.
-
-#### cozy-run-standalone
-
-It can be handy to run a konnector without inserting the data in a cozy. This mode is called "standalone".
-You can run your connector in standalone mode with :
-
-```sh
-$ cozy-run-standalone
-```
-
-If you want, you can add the following code in the `scripts` section of your package.json file:
-
-```json
-  "scripts": {
-    "standalone": "cozy-run-standalone"
-  }
-```
-
-It will then possible to do:
-
-```sh
-yarn standalone
-```
-
-The requests to the cozy-stack will be stubbed using the [./fixture.json] file as source of data
-and when cozy-client-js is asked to create or update data, the data will be output to the console.
-The bills (or any file) will be saved in the ./data directory.
-
-It is possible to add an argument to this command which tells which file to run. Default is
-defined in `package.json` `main` section or ./src/index.js
-
-It is possible to record and replay the requests done by the standalone command using the
-[replay](https://github.com/assaf/node-replay) module.
-
-When your connector is run with this command, a global function is available in your connector :
-`global.openInBrowser`, which can take an html string or a cheerio object as input and will show
-the corresponding html page in your default browser.
-
-##### Arguments
-
-```
-Usage: cozy-run-standalone [options] <file>
-
-
-Options:
-
-  --record  Record all the requests in the ./fixtures directory using the replay module
-  --replay  Replay all the recorded requests
-  --persist Do not empty ./data/importedData.json at each run
-  -h, --help  output usage information
-```
-
 
 #### cozy-run-dev
 
