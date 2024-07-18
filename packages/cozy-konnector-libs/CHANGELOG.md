@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.12.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@5.11.0...cozy-konnector-libs@5.12.0) (2024-07-18)
+
+
+### Features
+
+* Remove standalone mode from the public doc ([1b3e9e9](https://github.com/cozy/cozy-konnector-libs/commit/1b3e9e9d9902a5527e81aaea40e391479420bd60))
+
+
+
+
+
 # [5.11.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@5.10.1...cozy-konnector-libs@5.11.0) (2024-05-23)
 
 
