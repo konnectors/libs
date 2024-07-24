@@ -100,6 +100,7 @@ export default class ContentScript {
         suffixFn: args => args?.[0]
       }
     )
+    this.shouldFullSync = wrapTimerDebug(this, 'shouldFullSync')
 
     if (options.requestInterceptor) {
       this.requestInterceptor = options.requestInterceptor
@@ -136,7 +137,8 @@ export default class ContentScript {
       'getDebugData',
       'getCliskVersion',
       'checkForElement',
-      'evaluate'
+      'evaluate',
+      'shouldFullSync'
     ]
 
     if (options.additionalExposedMethodsNames) {
@@ -924,6 +926,57 @@ export default class ContentScript {
   }
 
   /**
+   * Determine if the konnector must fetch all or parts of the data.
+   *
+   * @param {object} options - All the data already fetched by the connector in a previous execution.
+   *                                   Useful to optimize connector execution by not fetching data we already have.
+   * @returns {Promise<object>} - Promise that resolves to an object with the following properties:
+   * @property {boolean} shouldFullSync - Indicates if a full synchronization is needed.
+   * @property {number|NaN} distanceInDays - The number of days since the last sync, or NaN if not applicable.
+   */
+
+  async shouldFullSync(options) {
+    this.onlyIn(PILOT_TYPE, 'shouldFullSync')
+    const { trigger, flags } = options
+    let forceFullSync = false
+    let userFullSync = false
+    if (flags['clisk.force-full-sync'] === true) {
+      this.log('info', 'User forces full sync')
+      userFullSync = true
+    }
+    const isFirstJob =
+      !trigger.current_state?.last_failure &&
+      !trigger.current_state?.last_success
+    const isLastJobError =
+      !isFirstJob &&
+      trigger.current_state?.last_failure > trigger.current_state?.last_success
+    const hasLastExecution = Boolean(trigger.current_state?.last_execution)
+    let distanceInDays = 0
+    if (hasLastExecution) {
+      distanceInDays = getDateDistanceInDays(
+        trigger.current_state?.last_execution
+      )
+    }
+    this.log('debug', `distanceInDays: ${distanceInDays}`)
+    if (
+      userFullSync ||
+      !hasLastExecution ||
+      isLastJobError ||
+      distanceInDays >= 30
+    ) {
+      this.log('info', '🐢️ Long execution')
+      this.log(
+        'debug',
+        `isLastJobError: ${isLastJobError} | hasLastExecution: ${hasLastExecution}`
+      )
+      forceFullSync = true
+    } else {
+      this.log('info', '🐇️ Quick execution')
+    }
+    return { forceFullSync, distanceInDays }
+  }
+
+  /**
    * Main function, fetches all connector data and save it to the cozy
    *
    * @param {object} options : options object
@@ -950,4 +1003,11 @@ function sendPageMessage(message) {
   } else {
     log.error('No window.ReactNativeWebView.postMessage available')
   }
+}
+
+function getDateDistanceInDays(dateString) {
+  const distanceMs = Date.now() - new Date(dateString).getTime()
+  const days = 1000 * 60 * 60 * 24
+
+  return Math.floor(distanceMs / days)
 }
