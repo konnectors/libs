@@ -168,7 +168,6 @@ describe('ContentScript', () => {
       )
     })
   })
-
   describe('runInWorkerUntilTrue', () => {
     const contentScript = new ContentScript()
     contentScript.contentScriptType = PILOT_TYPE
@@ -198,6 +197,92 @@ describe('ContentScript', () => {
       await expect(
         contentScript.runInWorkerUntilTrue({ method: 'tocall', timeout: 1 })
       ).rejects.toThrow('Timeout error')
+    })
+  })
+  describe('shouldFullSync', () => {
+    it('should force full sync => Flag', async () => {
+      const contentScript = new ContentScript()
+      contentScript.contentScriptType = PILOT_TYPE
+
+      const options = {
+        flags: {
+          'clisk.force-full-sync': true
+        },
+        trigger: {
+          current_state: {
+            last_execution: '2024-07-24T14:55:57.83761233+02:00',
+            last_failure: '2024-07-23T14:55:57.83761233+02:00',
+            last_success: '2024-07-24T14:55:57.83761233+02:00'
+          }
+        }
+      }
+      const result = await contentScript.shouldFullSync(options)
+      expect(result).toEqual({
+        forceFullSync: true,
+        distanceInDays: 0
+      })
+    })
+    it('should force full sync => First execution', async () => {
+      const contentScript = new ContentScript()
+      contentScript.contentScriptType = PILOT_TYPE
+
+      const options = {
+        flags: {
+          'clisk.force-full-sync': false
+        },
+        trigger: {
+          current_state: {}
+        }
+      }
+      const result = await contentScript.shouldFullSync(options)
+      expect(result).toEqual({
+        forceFullSync: true,
+        distanceInDays: 0
+      })
+    })
+    it('should force full sync => Last execution failed', async () => {
+      const contentScript = new ContentScript()
+      contentScript.contentScriptType = PILOT_TYPE
+
+      const options = {
+        flags: {
+          'clisk.force-full-sync': false
+        },
+        trigger: {
+          current_state: {
+            last_execution: '2024-07-24T14:55:57.83761233+02:00',
+            last_failure: '2024-07-24T14:55:57.83761233+02:00',
+            last_success: '2024-07-23T14:55:57.83761233+02:00'
+          }
+        }
+      }
+      const result = await contentScript.shouldFullSync(options)
+      expect(result).toEqual({
+        forceFullSync: true,
+        distanceInDays: 0
+      })
+    })
+    it('should not force full sync', async () => {
+      const contentScript = new ContentScript()
+      contentScript.contentScriptType = PILOT_TYPE
+
+      const options = {
+        flags: {
+          'clisk.force-full-sync': false
+        },
+        trigger: {
+          current_state: {
+            last_execution: '2024-07-24T14:55:57.83761233+02:00',
+            last_failure: '2024-07-23T14:55:57.83761233+02:00',
+            last_success: '2024-07-24T14:55:57.83761233+02:00'
+          }
+        }
+      }
+      const result = await contentScript.shouldFullSync(options)
+      expect(result).toEqual({
+        forceFullSync: false,
+        distanceInDays: 0
+      })
     })
   })
 })
