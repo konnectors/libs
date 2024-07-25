@@ -100,8 +100,6 @@ export default class ContentScript {
         suffixFn: args => args?.[0]
       }
     )
-    this.shouldFullSync = wrapTimerDebug(this, 'shouldFullSync')
-
     if (options.requestInterceptor) {
       this.requestInterceptor = options.requestInterceptor
       this.requestInterceptor.setLogger(this.log.bind(this))
@@ -137,8 +135,7 @@ export default class ContentScript {
       'getDebugData',
       'getCliskVersion',
       'checkForElement',
-      'evaluate',
-      'shouldFullSync'
+      'evaluate'
     ]
 
     if (options.additionalExposedMethodsNames) {
@@ -939,10 +936,10 @@ export default class ContentScript {
     this.onlyIn(PILOT_TYPE, 'shouldFullSync')
     const { trigger, flags } = options
     let forceFullSync = false
-    let userFullSync = false
+    let flagFullSync = false
     if (flags['clisk.force-full-sync'] === true) {
       this.log('info', 'User forces full sync')
-      userFullSync = true
+      flagFullSync = true
     }
     const isFirstJob =
       !trigger.current_state?.last_failure &&
@@ -959,7 +956,7 @@ export default class ContentScript {
     }
     this.log('debug', `distanceInDays: ${distanceInDays}`)
     if (
-      userFullSync ||
+      flagFullSync ||
       !hasLastExecution ||
       isLastJobError ||
       distanceInDays >= 30
