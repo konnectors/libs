@@ -200,7 +200,7 @@ describe('ContentScript', () => {
     })
   })
   describe('shouldFullSync', () => {
-    it('should force full sync => Flag', async () => {
+    it('should force full sync if forceFullSync flag is activated', async () => {
       const contentScript = new ContentScript()
       contentScript.contentScriptType = PILOT_TYPE
 
@@ -222,7 +222,7 @@ describe('ContentScript', () => {
         distanceInDays: 0
       })
     })
-    it('should force full sync => First execution', async () => {
+    it('should force full sync if it is the first execution', async () => {
       const contentScript = new ContentScript()
       contentScript.contentScriptType = PILOT_TYPE
 
@@ -240,7 +240,7 @@ describe('ContentScript', () => {
         distanceInDays: 0
       })
     })
-    it('should force full sync => Last execution failed', async () => {
+    it('should force full sync if the last execution failed', async () => {
       const contentScript = new ContentScript()
       contentScript.contentScriptType = PILOT_TYPE
 
@@ -262,7 +262,7 @@ describe('ContentScript', () => {
         distanceInDays: 0
       })
     })
-    it('should not force full sync', async () => {
+    it('should not force full sync in nominal case', async () => {
       const contentScript = new ContentScript()
       contentScript.contentScriptType = PILOT_TYPE
 
