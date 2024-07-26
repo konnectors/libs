@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.38.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.37.0...cozy-clisk@0.38.0) (2024-07-26)
+
+
+### Bug Fixes
+
+* Mock date of the day for shouldFullSync ([40d3391](https://github.com/konnectors/libs/commit/40d3391f81dcd2c1315834b030aa73da7ce1d13f))
+* Small renaming and corrections after review ([e0f0eee](https://github.com/konnectors/libs/commit/e0f0eee17ea9f1dce799f62f3db6ef49ec48caa2))
+
+
+### Features
+
+* Add shouldFullSync function ([7a573d4](https://github.com/konnectors/libs/commit/7a573d4e0e425fbee836d830fd10103ddbfc848c))
+* Add shouldFullSync UTs ([df6ba20](https://github.com/konnectors/libs/commit/df6ba20af6073ce5f0ff5e83178854c34c301d68))
+
+
+
+
+
 # [0.37.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.36.1...cozy-clisk@0.37.0) (2024-06-17)
 
 
