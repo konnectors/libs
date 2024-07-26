@@ -200,6 +200,13 @@ describe('ContentScript', () => {
     })
   })
   describe('shouldFullSync', () => {
+    const fixedDate = new Date('2024-07-24T14:55:57.83761233+02:00').getTime()
+    beforeAll(() => {
+      jest.spyOn(Date, 'now').mockImplementation(() => fixedDate)
+    })
+    afterAll(() => {
+      jest.restoreAllMocks()
+    })
     it('should force full sync if forceFullSync flag is activated', async () => {
       const contentScript = new ContentScript()
       contentScript.contentScriptType = PILOT_TYPE
