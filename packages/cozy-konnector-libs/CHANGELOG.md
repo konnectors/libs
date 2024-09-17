@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.12.1](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@5.12.0...cozy-konnector-libs@5.12.1) (2024-09-17)
+
+
+### Bug Fixes
+
+* Explicitely use node-fetch 2.7.0 ([443e524](https://github.com/cozy/cozy-konnector-libs/commit/443e52478c4facc0e288f564d2acbc66435abaa2))
+
+
+
+
+
 # [5.12.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@5.11.0...cozy-konnector-libs@5.12.0) (2024-07-18)
 
 
