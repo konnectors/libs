@@ -21,6 +21,7 @@ import { dataUriToArrayBuffer } from '../libs/utils'
  * @property {import('cozy-client/types/types').IOCozyFile} [existingFile] - already existing file corresponding to the entry
  * @property {boolean} [shouldReplace] - Internal result of the shouldReplaceFile function on the entry
  * @property {boolean} [forceReplaceFile] - should the konnector force the replace of the current file
+ * @property {import('cozy-client/types/types').IOCozyFile} [fileDocument] - Resulting cozy file
  */
 
 /**
@@ -137,9 +138,8 @@ const saveFiles = async (client, entries, folderPath, options) => {
 
   // do not create subPath folder or call saveFile for existing files or files that don't need to be replaced
   for (const entry of entries) {
-    const existingFile = options.existingFilesIndex.get(
-      calculateFileKey(entry, options.fileIdAttributes)
-    )
+    const fileKey = calculateFileKey(entry, options.fileIdAttributes)
+    const existingFile = options.existingFilesIndex.get(fileKey)
     let shouldReplace = false
     if (existingFile) {
       shouldReplace = shouldReplaceFile(existingFile, entry, saveOptions)
@@ -161,6 +161,13 @@ const saveFiles = async (client, entries, folderPath, options) => {
 
   let savedFiles = 0
   for (const entry of toSaveEntries) {
+    const fileKey = calculateFileKey(entry, options.fileIdAttributes)
+    if (options.existingFilesIndex.get(fileKey) && !entry.forceReplaceFile) {
+      // do not save multiple entries related to the same file. (Can be the case with saveBills
+      // with multiple bills associated to the same file)
+      continue
+    }
+
     const start = Date.now()
     ;['filename'].forEach(key => addValOrFnResult(entry, key, options))
 
@@ -174,6 +181,7 @@ const saveFiles = async (client, entries, folderPath, options) => {
       delete savedEntry._cozy_file_to_create
     }
     savedEntries.push(savedEntry)
+    options.existingFilesIndex.set(fileKey, savedEntry.fileDocument)
     const end = Date.now()
     saveOptions.log(
       'debug',

@@ -576,4 +576,51 @@ describe('saveFiles', function () {
       }
     ])
   })
+  it('should save only one file even with multiple entries related to the same file', async () => {
+    const client = {
+      save: jest.fn().mockImplementation(doc => ({
+        data: doc
+      })),
+      query: jest.fn().mockResolvedValue({ included: [], data: null }),
+      collection: () => ({
+        statByPath: jest.fn().mockImplementation(path => {
+          return { data: { _id: path } }
+        }),
+        addReferencesTo: jest.fn()
+      })
+    }
+    const documents = [
+      {
+        filestream: 'filestream content',
+        filename: 'file name.txt'
+      },
+      {
+        filestream: 'filestream content 2',
+        filename: 'file name.txt'
+      }
+    ]
+    await saveFiles(client, documents, '/test/folder/path', {
+      manifest: {
+        slug: 'testslug'
+      },
+      sourceAccount: 'testsourceaccount',
+      sourceAccountIdentifier: 'testsourceaccountidentifier',
+      fileIdAttributes: ['filename'],
+      existingFilesIndex: new Map(),
+      log: jest.fn()
+    })
+    expect(client.save).toHaveBeenCalledTimes(1)
+    expect(client.save).toHaveBeenNthCalledWith(1, {
+      _type: 'io.cozy.files',
+      data: 'filestream content',
+      dirId: '/test/folder/path',
+      metadata: {
+        fileIdAttributes: 'file name.txt'
+      },
+      name: 'file name.txt',
+      sourceAccount: 'testsourceaccount',
+      sourceAccountIdentifier: 'testsourceaccountidentifier',
+      type: 'file'
+    })
+  })
 })
