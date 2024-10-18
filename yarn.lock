@@ -5011,10 +5011,10 @@ cozy-flags@^2.8.7:
   dependencies:
     microee "^0.0.6"
 
-cozy-logger@1.9.0:
-  version "1.9.0"
-  resolved "https://registry.yarnpkg.com/cozy-logger/-/cozy-logger-1.9.0.tgz#e3a2323d9a2945ca10da5c318ff2f63544a54415"
-  integrity sha512-x/iFwFuNTbG4lwgeKPv6HtdixY+CcJm47sRd2za09aS1zZMHnN3HX7fFgoSSgEqFhpnIO/PpP2pVqJ4orSCp0g==
+cozy-logger@1.10.5:
+  version "1.10.5"
+  resolved "https://registry.yarnpkg.com/cozy-logger/-/cozy-logger-1.10.5.tgz#0a0363ff236498d5f04082e055aaf64087d89add"
+  integrity sha512-g7iywwcQDT3VQ3Dvb4NRGxGWCuJrUhnv89jM9v1BOXfQanYdtcCJkSaFnzjgacaAz9YLDZWBl9TcdO+N4a7c3w==
   dependencies:
     chalk "^2.4.2"
     json-stringify-safe "5.0.1"
