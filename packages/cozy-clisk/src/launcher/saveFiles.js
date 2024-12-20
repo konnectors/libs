@@ -19,7 +19,6 @@ import { dataUriToArrayBuffer } from '../libs/utils'
  * @property {string} [contract.id] - id of the contract
  * @property {string} [contract.name] - name of the contract
  * @property {import('cozy-client/types/types').IOCozyFile} [existingFile] - already existing file corresponding to the entry
- * @property {boolean} [shouldReplace] - Internal result of the shouldReplaceFile function on the entry
  * @property {boolean} [forceReplaceFile] - should the konnector force the replace of the current file
  * @property {import('cozy-client/types/types').IOCozyFile} [fileDocument] - Resulting cozy file
  */
@@ -140,13 +139,17 @@ const saveFiles = async (client, entries, folderPath, options) => {
   for (const entry of entries) {
     const fileKey = calculateFileKey(entry, options.fileIdAttributes)
     const existingFile = options.existingFilesIndex.get(fileKey)
-    let shouldReplace = false
+    let forceReplaceFile = false
     if (existingFile) {
-      shouldReplace = shouldReplaceFile(existingFile, entry, saveOptions)
+      forceReplaceFile = shouldReplaceFile(existingFile, entry, saveOptions)
     }
 
-    if (!existingFile || shouldReplace) {
-      toSaveEntries.push({ ...entry, existingFile, shouldReplace })
+    if (!existingFile || forceReplaceFile) {
+      toSaveEntries.push({
+        ...entry,
+        existingFile,
+        forceReplaceFile
+      })
     } else {
       savedEntries.push({ ...entry, fileDocument: existingFile })
     }
@@ -349,7 +352,7 @@ const saveFile = async function (client, entry, options) {
 
   if (
     entry.fileurl &&
-    (!entry.existingFile || entry.shouldReplace) &&
+    (!entry.existingFile || entry.forceReplaceFile) &&
     options.downloadAndFormatFile
   ) {
     const downloadedEntry = await options.downloadAndFormatFile(entry)
@@ -375,7 +378,7 @@ const saveFile = async function (client, entry, options) {
   }
 
   let method = 'create'
-  if (resultEntry.shouldReplace && resultEntry.existingFile) {
+  if (resultEntry.forceReplaceFile && resultEntry.existingFile) {
     method = 'updateById'
     options.log(
       'debug',
@@ -863,7 +866,6 @@ function sanitizeEntry(entry) {
   delete entry.filestream
   delete entry.shouldReplaceFile
   delete entry.existingFile
-  delete entry.shouldReplace
   delete entry.forceReplaceFile
   delete entry.fileAttributes
   return entry
