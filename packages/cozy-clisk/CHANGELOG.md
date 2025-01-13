@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.38.2](https://github.com/konnectors/libs/compare/cozy-clisk@0.38.1...cozy-clisk@0.38.2) (2025-01-13)
+
+
+### Bug Fixes
+
+* Really update files when metadata update is needed ([55b18df](https://github.com/konnectors/libs/commit/55b18df4a14d807777af5e542b23181d05c6158a))
+
+
+
+
+
 ## [0.38.1](https://github.com/konnectors/libs/compare/cozy-clisk@0.38.0...cozy-clisk@0.38.1) (2024-10-16)
 
 
