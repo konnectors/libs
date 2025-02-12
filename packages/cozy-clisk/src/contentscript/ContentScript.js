@@ -105,6 +105,9 @@ export default class ContentScript {
       this.requestInterceptor = options.requestInterceptor
       this.requestInterceptor.setLogger(this.log.bind(this))
     }
+    if (options.recordOptions) {
+      this.recordOptions = options.recordOptions
+    }
   }
   /**
    * Init the bridge communication with the launcher.
@@ -1002,7 +1005,8 @@ export default class ContentScript {
         window.ReactNativeWebView?.postMessage(
           JSON.stringify({ ...event, messageType: 'rrweb' })
         )
-      }
+      },
+      ...this.recordOptions
     })
   }
 }
