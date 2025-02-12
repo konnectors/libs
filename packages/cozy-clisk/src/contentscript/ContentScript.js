@@ -1,5 +1,6 @@
 // @ts-check
 import Minilog from '@cozy/minilog'
+import { record } from '@rrweb/record'
 import ky from 'ky/umd'
 import pTimeout from 'p-timeout'
 import waitFor, { TimeoutError } from 'p-wait-for'
@@ -177,7 +178,7 @@ export default class ContentScript {
    *
    * @param {string} contentScriptType - ("pilot" | "worker")
    */
-  async setContentScriptType(contentScriptType) {
+  async setContentScriptType(contentScriptType, options = {}) {
     this.contentScriptType = contentScriptType
     log.info(`I am the ${contentScriptType}`)
 
@@ -188,6 +189,7 @@ export default class ContentScript {
     }
 
     if (contentScriptType === WORKER_TYPE) {
+      this.initRecorder(options.shouldRecord)
       this.onWorkerReady()
       this.requestInterceptor?.on('response', response => {
         this.bridge?.emit('workerEvent', {
@@ -989,6 +991,19 @@ export default class ContentScript {
    */
   async getCliskVersion() {
     return cliskPackageJson.version
+  }
+
+  initRecorder(shouldRecord) {
+    if (!shouldRecord) {
+      return
+    }
+    record({
+      emit(event) {
+        window.ReactNativeWebView?.postMessage(
+          JSON.stringify({ ...event, messageType: 'rrweb' })
+        )
+      }
+    })
   }
 }
 
