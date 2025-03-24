@@ -547,13 +547,15 @@ export default class ContentScript {
         entry.blob = await ky.get(entry.fileurl, entry.requestOptions).blob()
         entry.dataUri = await blobToBase64(entry.blob)
       } catch (error) {
-        this.log('debug', `Full error : ${JSON.stringify(error)}`)
-        const errorMessage = error.message
+        this.log('debug', `Full error : ${error}`)
+        const errorStatus = error.response?.status
+        this.log('debug', `Error type : ${typeof errorStatus} `)
+        this.log('debug', `Error status : ${errorStatus}`)
         let errorToLog = ''
-        if (errorMessage.includes(/404|403|500|502|503/g)) {
-          if (errorMessage.includes('404'))
+        if ([401, 404, 403, 500, 502, 503].includes(errorStatus)) {
+          if (errorStatus === 404)
             errorToLog = 'Website cannot find the wanted url'
-          else if (errorMessage.includes('403'))
+          else if (errorStatus === 403 || errorStatus === 401)
             errorToLog = 'User is not allowed to access the wanted URL'
           else errorToLog = 'Website server error accessing the wanted URL'
           this.log('error', errorToLog)
@@ -592,9 +594,7 @@ export default class ContentScript {
         'No bridge is defined, you should call ContentScript.init before using this method'
       )
     }
-
     const updatedEntries = this.prepareSaveFileEntries(entries, options)
-
     return await this.bridge.call('saveFiles', updatedEntries, options)
   }
 
