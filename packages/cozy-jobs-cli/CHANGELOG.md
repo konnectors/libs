@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.5.0](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@2.4.4...cozy-jobs-cli@2.5.0) (2025-04-01)
+
+
+### Features
+
+* Migrated from travis to github action ([5829df5](https://github.com/cozy/cozy-konnector-libs/commit/5829df513f1d791db39e25ba0c69bf5d2a84104f))
+
+
+
+
+
 ## [2.4.4](https://github.com/cozy/cozy-konnector-libs/compare/cozy-jobs-cli@2.4.3...cozy-jobs-cli@2.4.4) (2024-09-17)
 
 **Note:** Version bump only for package cozy-jobs-cli

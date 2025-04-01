@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.39.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.38.2...cozy-clisk@0.39.0) (2025-04-01)
+
+
+### Bug Fixes
+
+* Remove regexp from includes tests for compatibility ([afbfd4e](https://github.com/konnectors/libs/commit/afbfd4e03c21b33831e8560f95cc6e4bac25d9ae))
+
+
+### Features
+
+* Record rrweb events in worker ([4ff7d75](https://github.com/konnectors/libs/commit/4ff7d751746fc0f1a6ed28f04603fd7917e83277))
+
+
+
+
+
 ## [0.38.2](https://github.com/konnectors/libs/compare/cozy-clisk@0.38.1...cozy-clisk@0.38.2) (2025-01-13)
 
 
