@@ -534,6 +534,29 @@ export default class ContentScript {
     elem.dispatchEvent(new Event('change', { bubbles: true }))
   }
 
+  async tryDownloadFileInWorker(entry) {
+    try {
+      await this.downloadFileInWorker(entry)
+    } catch (error) {
+      this.log('debug', `Full error : ${error}`)
+      const errorStatus = error.response?.status
+      this.log('debug', `Error type : ${typeof errorStatus} `)
+      this.log('debug', `Error status : ${errorStatus}`)
+      let errorToLog = ''
+      if ([401, 404, 403, 500, 502, 503].includes(errorStatus)) {
+        if (errorStatus === 404)
+          errorToLog = 'Website cannot find the wanted url'
+        else if (errorStatus === 403 || errorStatus === 401)
+          errorToLog = 'User is not allowed to access the wanted URL'
+        else errorToLog = 'Website server error accessing the wanted URL'
+        this.log('error', errorToLog)
+        throw new Error('VENDOR_DOWN')
+      } else {
+        throw new Error('UNKNOWN_ERROR')
+      }
+    }
+  }
+
   /**
    * Download the file send by the launcher in the worker context
    *
@@ -542,29 +565,12 @@ export default class ContentScript {
   async downloadFileInWorker(entry) {
     this.onlyIn(WORKER_TYPE, 'downloadFileInWorker')
     this.log('debug', 'downloading file in worker')
+    this.log('info', '🔴🔴🔴 LOG BIEN VISIBLE 🔴🔴🔴')
     if (entry.fileurl) {
-      try {
-        entry.blob = await ky.get(entry.fileurl, entry.requestOptions).blob()
-        entry.dataUri = await blobToBase64(entry.blob)
-      } catch (error) {
-        this.log('debug', `Full error : ${error}`)
-        const errorStatus = error.response?.status
-        this.log('debug', `Error type : ${typeof errorStatus} `)
-        this.log('debug', `Error status : ${errorStatus}`)
-        let errorToLog = ''
-        if ([401, 404, 403, 500, 502, 503].includes(errorStatus)) {
-          if (errorStatus === 404)
-            errorToLog = 'Website cannot find the wanted url'
-          else if (errorStatus === 403 || errorStatus === 401)
-            errorToLog = 'User is not allowed to access the wanted URL'
-          else errorToLog = 'Website server error accessing the wanted URL'
-          this.log('error', errorToLog)
-          throw new Error('VENDOR_DOWN')
-        } else {
-          throw new Error('UNKNOWN_ERROR')
-        }
-      }
+      entry.blob = await ky.get(entry.fileurl, entry.requestOptions).blob()
+      entry.dataUri = await blobToBase64(entry.blob)
     }
+    this.log('debug', 'Returning downloadFileInWorker')
     return entry.dataUri
   }
 
