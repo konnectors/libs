@@ -4,3 +4,4 @@ packages/*/.vscode/*
 yarn-error.log
 packages/*/dist/*
 .changelog/*
+.yarn/*

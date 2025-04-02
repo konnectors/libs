@@ -9,7 +9,7 @@
     "babel-preset-env": "1.7.0",
     "cross-env": "7.0.3",
     "eslint-config-cozy-app": "6.1.0",
-    "lerna": "4.0.0"
+    "lerna": "8.2.1"
   },
   "prettier": {
     "semi": false,
@@ -29,5 +29,5 @@
     ],
     "testEnvironment": "node"
   },
-  "dependencies": {}
+  "packageManager": "yarn@4.7.0"
 }

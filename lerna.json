@@ -1,8 +1,6 @@
 {
-  "lerna": "3.15.0",
-  "version": "independent",
-  "useWorkspaces": true,
   "npmClient": "yarn",
+  "version": "independent",
   "command": {
     "version": {
       "conventionalCommits": true,
@@ -11,5 +9,6 @@
     "publish": {
       "conventionalCommits": true
     }
-  }
+  },
+  "$schema": "node_modules/lerna/schemas/lerna-schema.json"
 }
