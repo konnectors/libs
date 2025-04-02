@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.12.3](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@5.12.2...cozy-konnector-libs@5.12.3) (2025-04-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency express to v4.20.0 [security] ([a35c664](https://github.com/cozy/cozy-konnector-libs/commit/a35c66406237c3e459e4742ae340e4807b60589a))
+
+
+
+
+
 ## [5.12.2](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@5.12.1...cozy-konnector-libs@5.12.2) (2025-04-02)
 
 
