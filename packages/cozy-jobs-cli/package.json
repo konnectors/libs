@@ -9,8 +9,8 @@
   },
   "license": "MIT",
   "bin": {
-    "cozy-konnector-shell": "src/konnector-shell.js",
     "cozy-konnector-dev": "src/konnector-dev.js",
+    "cozy-konnector-shell": "src/konnector-shell.js",
     "cozy-konnector-standalone": "src/konnector-standalone.js",
     "cozy-run-dev": "src/run-dev.js",
     "cozy-run-standalone": "src/konnector-standalone.js"
