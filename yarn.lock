@@ -6629,7 +6629,7 @@ __metadata:
     cozy-client: "npm:45.14.1"
     cozy-device-helper: "npm:^2.1.0"
     cozy-flags: "npm:^2.8.7"
-    cozy-konnector-libs: "npm:^5.12.4"
+    cozy-konnector-libs: "npm:^5.13.0"
     cozy-logger: "npm:1.9.0"
     eslint-config-cozy-app: "npm:6.1.0"
     jest: "npm:29.7.0"
@@ -6682,7 +6682,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"cozy-konnector-libs@npm:^5.12.4, cozy-konnector-libs@workspace:packages/cozy-konnector-libs":
+"cozy-konnector-libs@npm:^5.13.0, cozy-konnector-libs@workspace:packages/cozy-konnector-libs":
   version: 0.0.0-use.local
   resolution: "cozy-konnector-libs@workspace:packages/cozy-konnector-libs"
   dependencies:

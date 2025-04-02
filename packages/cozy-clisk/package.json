@@ -1,6 +1,6 @@
 {
   "name": "cozy-clisk",
-  "version": "0.39.0",
+  "version": "0.40.0",
   "description": "All the libs needed to run a cozy client connector",
   "repository": {
     "type": "git",
