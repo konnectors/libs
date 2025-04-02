@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.12.4](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@5.12.3...cozy-konnector-libs@5.12.4) (2025-04-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency cozy-client-js to ^0.21.0 ([097258e](https://github.com/cozy/cozy-konnector-libs/commit/097258e66c495f9b4677db2da0e93087af3696ed))
+
+
+
+
+
 ## [5.12.3](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@5.12.2...cozy-konnector-libs@5.12.3) (2025-04-02)
 
 
