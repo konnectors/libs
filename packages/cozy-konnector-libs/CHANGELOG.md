@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.12.2](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@5.12.1...cozy-konnector-libs@5.12.2) (2025-04-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency body-parser to v1.20.3 [security] ([1b1d733](https://github.com/cozy/cozy-konnector-libs/commit/1b1d733c2de6ccc0682e5fb3be78341cc521e6b3))
+
+
+
+
+
 ## [5.12.1](https://github.com/cozy/cozy-konnector-libs/compare/cozy-konnector-libs@5.12.0...cozy-konnector-libs@5.12.1) (2024-09-17)
 
 
