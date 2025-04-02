@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.7.1](https://github.com/konnectors/libs/compare/cozy-konnector-build@1.7.0...cozy-konnector-build@1.7.1) (2025-04-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency webpack to v5.94.0 [security] ([8fbbb3f](https://github.com/konnectors/libs/commit/8fbbb3f129bd9933e573aa8d0c64e9a05dd3fe67))
+
+
+
+
+
 # [1.7.0](https://github.com/konnectors/libs/compare/cozy-konnector-build@1.6.0...cozy-konnector-build@1.7.0) (2024-03-19)
 
 
