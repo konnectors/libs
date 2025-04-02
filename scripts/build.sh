@@ -2,7 +2,6 @@
 
 set -e
 
-yarn lerna bootstrap
 yarn test
 cd packages/cozy-konnector-libs
 yarn docs
