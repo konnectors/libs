@@ -6630,7 +6630,7 @@ __metadata:
     cozy-device-helper: "npm:^2.1.0"
     cozy-flags: "npm:^2.8.7"
     cozy-konnector-libs: "npm:^5.13.0"
-    cozy-logger: "npm:1.9.0"
+    cozy-logger: "npm:1.17.0"
     eslint-config-cozy-app: "npm:6.1.0"
     jest: "npm:29.7.0"
     node-fetch: "npm:2.7.0"
@@ -6740,13 +6740,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"cozy-logger@npm:1.9.0":
-  version: 1.9.0
-  resolution: "cozy-logger@npm:1.9.0"
+"cozy-logger@npm:1.17.0":
+  version: 1.17.0
+  resolution: "cozy-logger@npm:1.17.0"
   dependencies:
     chalk: "npm:^2.4.2"
     json-stringify-safe: "npm:5.0.1"
-  checksum: 10c0/962855b05fdee023ae4815df52089ef51a3b11ff2d658c6a82dfe7dc2a20dfbd224f7610b92d4859c84f0a85f46c52a5d3f3c80df3177663c60a868e3630c2bf
+  checksum: 10c0/5eb42fcfea0a3adf203c95a7e6674cdd344b282216296d00ca61f2a17d2541cd938ea50db4b105865d7f1005205b72980c0ad8ffe6a2dba8d3c2803cc7eef39a
   languageName: node
   linkType: hard
 
