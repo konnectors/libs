@@ -1,6 +1,6 @@
 // @ts-check
 import retry from 'bluebird-retry'
-import get from 'lodash/get'
+import get from 'lodash/get.js'
 
 import { Q, models } from 'cozy-client'
 
@@ -740,7 +740,7 @@ const removeFile = async function (client, file, options) {
   }
 }
 
-module.exports = saveFiles
+export default saveFiles
 
 /**
  * @typedef {Object} FileWithName

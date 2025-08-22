@@ -13,6 +13,13 @@
     "konnector"
   ],
   "main": "dist/index.js",
+  "module": "dist/esm/index.mjs",
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
   "author": "doubleface <christophe@cozycloud.cc>",
   "license": "MIT",
   "bugs": {
@@ -22,11 +29,17 @@
   "scripts": {
     "lint": "eslint 'src/**/*.js'",
     "prepublishOnly": "yarn run build",
-    "build": "babel --root-mode upward src/ -d dist/ --copy-files --verbose --ignore '**/*.spec.js','**/*.spec.jsx'",
+    "build": "yarn run build:cjs && yarn run build:esm && yarn run copy-assets",
+    "build:cjs": "babel --root-mode upward src/ -d dist/ --copy-files --verbose --ignore '**/*.spec.js','**/*.spec.jsx'",
+    "build:esm": "BABEL_ENV=esm babel --root-mode upward src/ -d dist/esm/ --copy-files --verbose --ignore '**/*.spec.js','**/*.spec.jsx' --out-file-extension .mjs",
+    "copy-assets": "cp package.json dist/",
     "test": "jest src"
   },
   "devDependencies": {
+    "@babel/cli": "^7.28.3",
     "@babel/core": "7.26.10",
+    "@babel/preset-env": "^7.28.3",
+    "@babel/types": "^7.28.2",
     "babel-jest": "29.7.0",
     "babel-preset-cozy-app": "2.1.0",
     "eslint-plugin-import": "^2.29.1",

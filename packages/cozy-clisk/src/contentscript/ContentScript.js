@@ -1,11 +1,13 @@
 // @ts-check
+import fs from 'fs'
+import path from 'path'
+
 import Minilog from '@cozy/minilog'
 import { record } from '@rrweb/record'
 import pTimeout from 'p-timeout'
 import waitFor, { TimeoutError } from 'p-wait-for'
 
 import { blobToBase64, callStringFunction } from './utils'
-import cliskPackageJson from '../../package.json'
 import LauncherBridge from '../bridge/LauncherBridge'
 import { calculateFileKey } from '../libs/utils'
 import { wrapTimerFactory } from '../libs/wrapTimer'
@@ -996,6 +998,9 @@ export default class ContentScript {
    * Returns the current clisk version number in package.json file
    */
   async getCliskVersion() {
+    const packageJsonPath = path.resolve(__dirname, '../../package.json')
+    const packageJsonContent = fs.readFileSync(packageJsonPath, 'utf8')
+    const cliskPackageJson = JSON.parse(packageJsonContent)
     return cliskPackageJson.version
   }
 
