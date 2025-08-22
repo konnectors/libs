@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.41.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.40.0...cozy-clisk@0.41.0) (2025-08-22)
+
+### Features
+
+- Remove ky dependency ([4323fe7](https://github.com/konnectors/libs/commit/4323fe7135156f3480f0f984129df47f565d174e))
+
 # [0.40.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.39.0...cozy-clisk@0.40.0) (2025-04-02)
 
 ### Features
