@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.42.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.41.0...cozy-clisk@0.42.0) (2025-08-22)
+
+### Bug Fixes
+
+- Do not try window object in node environment ([958cd88](https://github.com/konnectors/libs/commit/958cd883dcc67c4b8a26017290dd58aa415bd110))
+
+### Features
+
+- Update babel configuration and package structure for ESM support ([25eb47e](https://github.com/konnectors/libs/commit/25eb47e958784a03f277921aa6928da4c3fc5b70))
+
 # [0.41.0](https://github.com/konnectors/libs/compare/cozy-clisk@0.40.0...cozy-clisk@0.41.0) (2025-08-22)
 
 ### Features
