@@ -41,7 +41,6 @@
     "@cozy/minilog": "^1.0.0",
     "@rrweb/record": "^2.0.0-alpha.18",
     "bluebird-retry": "^0.11.0",
-    "ky": "^0.25.1",
     "lodash": "^4.17.21",
     "microee": "^0.0.6",
     "p-timeout": "^6.0.0",

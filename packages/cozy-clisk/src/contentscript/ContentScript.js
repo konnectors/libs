@@ -1,7 +1,6 @@
 // @ts-check
 import Minilog from '@cozy/minilog'
 import { record } from '@rrweb/record'
-import ky from 'ky/umd'
 import pTimeout from 'p-timeout'
 import waitFor, { TimeoutError } from 'p-wait-for'
 
@@ -544,7 +543,11 @@ export default class ContentScript {
     this.log('debug', 'downloading file in worker')
     if (entry.fileurl) {
       try {
-        entry.blob = await ky.get(entry.fileurl, entry.requestOptions).blob()
+        const response = await fetch(entry.fileurl, {
+          method: 'GET',
+          ...entry.requestOptions
+        })
+        entry.blob = await response.blob()
         entry.dataUri = await blobToBase64(entry.blob)
       } catch (error) {
         this.log('debug', `Full error : ${error}`)

@@ -6559,7 +6559,6 @@ __metadata:
     eslint-plugin-prettier: "npm:^5.1.3"
     jest: "npm:29.7.0"
     jest-environment-jsdom: "npm:29.7.0"
-    ky: "npm:^0.25.1"
     lodash: "npm:^4.17.21"
     microee: "npm:^0.0.6"
     p-timeout: "npm:^6.0.0"
@@ -11899,13 +11898,6 @@ __metadata:
   version: 3.0.3
   resolution: "kleur@npm:3.0.3"
   checksum: 10c0/cd3a0b8878e7d6d3799e54340efe3591ca787d9f95f109f28129bdd2915e37807bf8918bb295ab86afb8c82196beec5a1adcaf29042ce3f2bd932b038fe3aa4b
-  languageName: node
-  linkType: hard
-
-"ky@npm:^0.25.1":
-  version: 0.25.1
-  resolution: "ky@npm:0.25.1"
-  checksum: 10c0/df78933d399310b025356be144490bd090a474bb63fd12ac7fae7b640f6357f1a944ad63a5c176282fecc4908362ca8fb5aaeeb9a3405d97e715492c26c46ea9
   languageName: node
   linkType: hard
 
