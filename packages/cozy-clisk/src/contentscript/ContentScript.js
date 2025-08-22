@@ -22,7 +22,7 @@ const DEFAULT_WAIT_FOR_ELEMENT_ACCROSS_PAGES_TIMEOUT = 60 * s
 export const PILOT_TYPE = 'pilot'
 export const WORKER_TYPE = 'worker'
 
-if (window?.addEventListener) {
+if (!global && window?.addEventListener) {
   // allows cozy-clisk to be embedded in other envs (react-native, jest)
   window.addEventListener('load', () => {
     sendPageMessage('load')
