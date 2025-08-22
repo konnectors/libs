@@ -1,7 +1,7 @@
 // @ts-check
 import Minilog from '@cozy/minilog'
-import get from 'lodash/get'
-import uniqBy from 'lodash/uniqBy'
+import get from 'lodash/get.js'
+import uniqBy from 'lodash/uniqBy.js'
 
 import { Q } from 'cozy-client'
 const log = Minilog('hydrateAndFilter')

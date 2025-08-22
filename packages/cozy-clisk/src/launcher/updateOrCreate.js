@@ -1,6 +1,6 @@
 // @ts-check
 import Minilog from '@cozy/minilog'
-import get from 'lodash/get'
+import get from 'lodash/get.js'
 
 import { Q } from 'cozy-client'
 const log = Minilog('updateOrCreate')
