@@ -6291,17 +6291,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cozy-flags@npm:^2.8.7":
-  version: 2.12.0
-  resolution: "cozy-flags@npm:2.12.0"
+"cozy-flags@npm:^4.0.0":
+  version: 4.7.0
+  resolution: "cozy-flags@npm:4.7.0"
   dependencies:
     microee: "npm:^0.0.6"
   peerDependencies:
     cozy-client: ">=20.0.0"
     react: ^16.12.0
   bin:
-    cozy-flags: bin/cozy-flags
-  checksum: 10c0/f7c581f8c56f16db89348c94869d6973993991568bd3bd1bb44c6d2baafc56a3e7cbba7f8ea7245321cea72f07be751b536118d12185fc53a556158ad525d8a3
+    cozy-flags: ./bin/cozy-flags
+  checksum: 10c0/3d466d4e49b6fff79ec4b83f7ee34aa930168389b87bd8b30e5a34b6d1f56f829ad4896c352e280aa499b097108d55cf666a7d6421dfdb37069e808176580876
   languageName: node
   linkType: hard
 
@@ -6320,7 +6320,7 @@ __metadata:
     commander: "npm:7.2.0"
     cozy-client: "npm:45.14.1"
     cozy-device-helper: "npm:^2.1.0"
-    cozy-flags: "npm:^2.8.7"
+    cozy-flags: "npm:^4.0.0"
     cozy-konnector-libs: "npm:^5.13.0"
     cozy-logger: "npm:1.9.0"
     eslint-config-cozy-app: "npm:6.1.0"
@@ -6392,7 +6392,7 @@ __metadata:
     cozy-client-js: "npm:^0.21.0"
     cozy-device-helper: "npm:^2.1.0"
     cozy-doctypes: "npm:^1.83.8"
-    cozy-flags: "npm:^2.8.7"
+    cozy-flags: "npm:^4.0.0"
     cozy-logger: "npm:^1.8.0"
     cross-env: "npm:7.0.3"
     csv-writer: "npm:1.6.0"
