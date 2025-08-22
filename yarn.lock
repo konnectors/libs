@@ -6416,7 +6416,7 @@ __metadata:
     request-debug: "npm:^0.2.0"
     request-promise: "npm:^4.2.6"
     strip-json-comments: "npm:^3.1.1"
-    tough-cookie: "npm:^2.5.0"
+    tough-cookie: "npm:^4.0.0"
     zombie: "npm:6.1.4"
   peerDependencies:
     pdfjs: ^2.3.0
@@ -15689,7 +15689,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tough-cookie@npm:^2.3.1, tough-cookie@npm:^2.3.3, tough-cookie@npm:^2.3.4, tough-cookie@npm:^2.5.0, tough-cookie@npm:~2.5.0":
+"tough-cookie@npm:^2.3.1, tough-cookie@npm:^2.3.3, tough-cookie@npm:^2.3.4, tough-cookie@npm:~2.5.0":
   version: 2.5.0
   resolution: "tough-cookie@npm:2.5.0"
   dependencies:
@@ -15699,7 +15699,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tough-cookie@npm:^4.1.2":
+"tough-cookie@npm:^4.0.0, tough-cookie@npm:^4.1.2":
   version: 4.1.4
   resolution: "tough-cookie@npm:4.1.4"
   dependencies:
