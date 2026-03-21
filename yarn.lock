@@ -6124,23 +6124,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cozy-app-publish@npm:0.33.0":
-  version: 0.33.0
-  resolution: "cozy-app-publish@npm:0.33.0"
+"cozy-app-publish@npm:0.44.1":
+  version: 0.44.1
+  resolution: "cozy-app-publish@npm:0.44.1"
   dependencies:
     argparse: "npm:^2.0.1"
     chalk: "npm:^2.4.2"
     cross-spawn: "npm:^6.0.5"
     fs-extra: "npm:^7.0.1"
-    lodash: "npm:^4.17.19"
+    lodash: "npm:^4.17.21"
     node-fetch: "npm:^2.6.1"
     prompt: "npm:^1.0.0"
     request: "npm:^2.88.0"
     tar: "npm:^6.1.11"
     verror: "npm:^1.10.1"
   bin:
-    cozy-app-publish: src/cozy-app-publish.js
-  checksum: 10c0/df3fa9c3e8dcf1830c88874ccfddb373d61f9cf52c71f75d354c10119d9a6855e30d12bb8d7e350a0b58e04c1eeb8ccfa8cde6ac5db5de90f34ae8e5b9d6e674
+    cozy-app-publish: ./src/cozy-app-publish.js
+  checksum: 10c0/83497c39530e92257df4dab4a6018037d0af2ab1fd93094f92864eaf4c0b10a186c5a3199af304910791bb7800976755c79278fc8d21adec9138f562f9d41510
   languageName: node
   linkType: hard
 
@@ -6345,7 +6345,7 @@ __metadata:
     "@babel/core": "npm:7.26.10"
     babel-preset-cozy-app: "npm:^2.0.2"
     copy-webpack-plugin: "npm:9.1.0"
-    cozy-app-publish: "npm:0.33.0"
+    cozy-app-publish: "npm:0.44.1"
     eslint-config-cozy-app: "npm:4.0.0"
     git-directory-deploy: "npm:1.5.1"
     husky: "npm:4.3.8"
