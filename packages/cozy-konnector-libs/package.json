@@ -49,7 +49,7 @@
   },
   "peerDependencies": {
     "pdfjs": "^2.3.0",
-    "pdfjs-dist": "^2.1.266",
+    "pdfjs-dist": "^4.2.67",
     "zombie": "^6.1.4"
   },
   "peerDependenciesMeta": {
@@ -94,7 +94,7 @@
     "jest": "29.7.0",
     "jsdoc-to-markdown": "6.0.1",
     "pdfjs": "2.4.7",
-    "pdfjs-dist": "2.12.313",
+    "pdfjs-dist": "4.2.67",
     "zombie": "6.1.4"
   }
 }
