@@ -6124,23 +6124,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cozy-app-publish@npm:0.33.0":
-  version: 0.33.0
-  resolution: "cozy-app-publish@npm:0.33.0"
+"cozy-app-publish@npm:0.44.2":
+  version: 0.44.2
+  resolution: "cozy-app-publish@npm:0.44.2"
   dependencies:
     argparse: "npm:^2.0.1"
     chalk: "npm:^2.4.2"
     cross-spawn: "npm:^6.0.5"
     fs-extra: "npm:^7.0.1"
-    lodash: "npm:^4.17.19"
-    node-fetch: "npm:^2.6.1"
+    lodash: "npm:^4.17.21"
     prompt: "npm:^1.0.0"
-    request: "npm:^2.88.0"
-    tar: "npm:^6.1.11"
+    tar: "npm:^7.5.22"
     verror: "npm:^1.10.1"
   bin:
-    cozy-app-publish: src/cozy-app-publish.js
-  checksum: 10c0/df3fa9c3e8dcf1830c88874ccfddb373d61f9cf52c71f75d354c10119d9a6855e30d12bb8d7e350a0b58e04c1eeb8ccfa8cde6ac5db5de90f34ae8e5b9d6e674
+    cozy-app-publish: ./src/cozy-app-publish.js
+  checksum: 10c0/7058b441a6816b49a6451e5a223ed469b921d980fed812090908210d39e5debd29b81757d21ce1875ed92feb06fb4f34cefb27e02b70cd9bf6b1719d00e2d7af
   languageName: node
   linkType: hard
 
@@ -6345,7 +6343,7 @@ __metadata:
     "@babel/core": "npm:7.26.10"
     babel-preset-cozy-app: "npm:^2.0.2"
     copy-webpack-plugin: "npm:9.1.0"
-    cozy-app-publish: "npm:0.33.0"
+    cozy-app-publish: "npm:0.44.2"
     eslint-config-cozy-app: "npm:4.0.0"
     git-directory-deploy: "npm:1.5.1"
     husky: "npm:4.3.8"
@@ -11844,6 +11842,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"minizlib@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "minizlib@npm:3.1.0"
+  dependencies:
+    minipass: "npm:^7.1.2"
+  checksum: 10c0/5aad75ab0090b8266069c9aabe582c021ae53eb33c6c691054a13a45db3b4f91a7fb1bd79151e6b4e9e9a86727b522527c0a06ec7d45206b745d54cd3097bcec
+  languageName: node
+  linkType: hard
+
 "mitt@npm:^3.0.0":
   version: 3.0.1
   resolution: "mitt@npm:3.0.1"
@@ -14176,7 +14183,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"request@npm:^2.85.0, request@npm:^2.87.0, request@npm:^2.88.0, request@npm:^2.88.2":
+"request@npm:^2.85.0, request@npm:^2.87.0, request@npm:^2.88.2":
   version: 2.88.2
   resolution: "request@npm:2.88.2"
   dependencies:
@@ -15466,6 +15473,19 @@ __metadata:
     mkdirp: "npm:^3.0.1"
     yallist: "npm:^5.0.0"
   checksum: 10c0/d4679609bb2a9b48eeaf84632b6d844128d2412b95b6de07d53d8ee8baf4ca0857c9331dfa510390a0727b550fd543d4d1a10995ad86cdf078423fbb8d99831d
+  languageName: node
+  linkType: hard
+
+"tar@npm:^7.5.22":
+  version: 7.5.22
+  resolution: "tar@npm:7.5.22"
+  dependencies:
+    "@isaacs/fs-minipass": "npm:^4.0.0"
+    chownr: "npm:^3.0.0"
+    minipass: "npm:^7.1.2"
+    minizlib: "npm:^3.1.0"
+    yallist: "npm:^5.0.0"
+  checksum: 10c0/1311f6be85a8157ac4c9147bae43e13923d2a1aae15e4aa1bd5239e4e03d2cf53cfe103dde7f35832fbb4c938b042856bc8e9a0afd29abd05e2d1608788c4fea
   languageName: node
   linkType: hard
 
