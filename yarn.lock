@@ -42,7 +42,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/cli@npm:^7.28.3":
+"@babel/cli@npm:7.28.3":
   version: 7.28.3
   resolution: "@babel/cli@npm:7.28.3"
   dependencies:
@@ -156,7 +156,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/eslint-parser@npm:^7.16.3, @babel/eslint-parser@npm:^7.19.1":
+"@babel/eslint-parser@npm:7.28.0, @babel/eslint-parser@npm:^7.16.3":
   version: 7.28.0
   resolution: "@babel/eslint-parser@npm:7.28.0"
   dependencies:
@@ -1381,7 +1381,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/preset-env@npm:^7.16.4, @babel/preset-env@npm:^7.28.3":
+"@babel/preset-env@npm:7.28.3, @babel/preset-env@npm:^7.16.4":
   version: 7.28.3
   resolution: "@babel/preset-env@npm:7.28.3"
   dependencies:
@@ -1538,7 +1538,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/types@npm:^7.0.0, @babel/types@npm:^7.16.8, @babel/types@npm:^7.20.7, @babel/types@npm:^7.26.10, @babel/types@npm:^7.27.1, @babel/types@npm:^7.27.3, @babel/types@npm:^7.28.2, @babel/types@npm:^7.3.3, @babel/types@npm:^7.4.4":
+"@babel/types@npm:7.28.2, @babel/types@npm:^7.0.0, @babel/types@npm:^7.16.8, @babel/types@npm:^7.20.7, @babel/types@npm:^7.26.10, @babel/types@npm:^7.27.1, @babel/types@npm:^7.27.3, @babel/types@npm:^7.28.2, @babel/types@npm:^7.3.3, @babel/types@npm:^7.4.4":
   version: 7.28.2
   resolution: "@babel/types@npm:7.28.2"
   dependencies:
@@ -6238,18 +6238,18 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "cozy-clisk@workspace:packages/cozy-clisk"
   dependencies:
-    "@babel/cli": "npm:^7.28.3"
+    "@babel/cli": "npm:7.28.3"
     "@babel/core": "npm:7.26.10"
-    "@babel/preset-env": "npm:^7.28.3"
-    "@babel/types": "npm:^7.28.2"
+    "@babel/preset-env": "npm:7.28.3"
+    "@babel/types": "npm:7.28.2"
     "@cozy/minilog": "npm:^1.0.0"
     "@rrweb/record": "npm:^2.0.0-alpha.18"
     babel-jest: "npm:29.7.0"
     babel-preset-cozy-app: "npm:2.1.0"
     bluebird-retry: "npm:^0.11.0"
-    eslint-plugin-import: "npm:^2.29.1"
-    eslint-plugin-jest: "npm:^27.9.0"
-    eslint-plugin-prettier: "npm:^5.1.3"
+    eslint-plugin-import: "npm:2.32.0"
+    eslint-plugin-jest: "npm:27.9.0"
+    eslint-plugin-prettier: "npm:5.5.4"
     jest: "npm:29.7.0"
     jest-environment-jsdom: "npm:29.7.0"
     lodash: "npm:^4.17.21"
@@ -6257,7 +6257,7 @@ __metadata:
     p-timeout: "npm:^6.0.0"
     p-wait-for: "npm:^5.0.2"
     post-me: "npm:^0.4.5"
-    prettier: "npm:^3.2.5"
+    prettier: "npm:3.6.2"
     typescript: "npm:4.9.5"
   peerDependencies:
     cozy-client: ">=41.2.0"
@@ -6359,18 +6359,18 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "cozy-konnector-libs-monorepo@workspace:."
   dependencies:
-    "@babel/eslint-parser": "npm:^7.19.1"
+    "@babel/eslint-parser": "npm:7.28.0"
     babel-preset-env: "npm:1.7.0"
     cross-env: "npm:7.0.3"
-    eslint: "npm:^8.35.0"
+    eslint: "npm:8.57.1"
     eslint-config-cozy-app: "npm:6.1.0"
-    eslint-config-prettier: "npm:^8.6.0"
-    eslint-plugin-import: "npm:^2.27.5"
-    eslint-plugin-jest: "npm:^27.2.1"
-    eslint-plugin-prettier: "npm:^4.2.1"
-    eslint-plugin-promise: "npm:^6.1.1"
+    eslint-config-prettier: "npm:8.10.2"
+    eslint-plugin-import: "npm:2.32.0"
+    eslint-plugin-jest: "npm:27.9.0"
+    eslint-plugin-prettier: "npm:4.2.5"
+    eslint-plugin-promise: "npm:6.6.0"
     lerna: "npm:8.2.1"
-    prettier: "npm:^2.8.4"
+    prettier: "npm:2.8.8"
   languageName: unknown
   linkType: soft
 
@@ -7641,7 +7641,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-config-prettier@npm:^8.3.0, eslint-config-prettier@npm:^8.6.0":
+"eslint-config-prettier@npm:8.10.2, eslint-config-prettier@npm:^8.3.0":
   version: 8.10.2
   resolution: "eslint-config-prettier@npm:8.10.2"
   peerDependencies:
@@ -7675,7 +7675,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-import@npm:^2.27.5, eslint-plugin-import@npm:^2.29.1":
+"eslint-plugin-import@npm:2.32.0":
   version: 2.32.0
   resolution: "eslint-plugin-import@npm:2.32.0"
   dependencies:
@@ -7704,7 +7704,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-jest@npm:^27.2.1, eslint-plugin-jest@npm:^27.9.0":
+"eslint-plugin-jest@npm:27.9.0":
   version: 27.9.0
   resolution: "eslint-plugin-jest@npm:27.9.0"
   dependencies:
@@ -7722,7 +7722,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-prettier@npm:^4.0.0, eslint-plugin-prettier@npm:^4.2.1":
+"eslint-plugin-prettier@npm:4.2.5, eslint-plugin-prettier@npm:^4.0.0":
   version: 4.2.5
   resolution: "eslint-plugin-prettier@npm:4.2.5"
   dependencies:
@@ -7737,7 +7737,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-prettier@npm:^5.1.3":
+"eslint-plugin-prettier@npm:5.5.4":
   version: 5.5.4
   resolution: "eslint-plugin-prettier@npm:5.5.4"
   dependencies:
@@ -7757,7 +7757,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-promise@npm:^6.0.0, eslint-plugin-promise@npm:^6.1.1":
+"eslint-plugin-promise@npm:6.6.0, eslint-plugin-promise@npm:^6.0.0":
   version: 6.6.0
   resolution: "eslint-plugin-promise@npm:6.6.0"
   peerDependencies:
@@ -7864,7 +7864,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:^8.3.0, eslint@npm:^8.35.0":
+"eslint@npm:8.57.1, eslint@npm:^8.3.0":
   version: 8.57.1
   resolution: "eslint@npm:8.57.1"
   dependencies:
@@ -13419,7 +13419,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:^2.5.0, prettier@npm:^2.8.4":
+"prettier@npm:2.8.8, prettier@npm:^2.5.0":
   version: 2.8.8
   resolution: "prettier@npm:2.8.8"
   bin:
@@ -13428,7 +13428,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:^3.2.5":
+"prettier@npm:3.6.2":
   version: 3.6.2
   resolution: "prettier@npm:3.6.2"
   bin:
