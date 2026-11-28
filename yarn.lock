@@ -6264,12 +6264,10 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"cozy-device-helper@npm:^2.1.0":
-  version: 2.7.0
-  resolution: "cozy-device-helper@npm:2.7.0"
-  dependencies:
-    lodash: "npm:^4.17.19"
-  checksum: 10c0/98d689e341722f75b26af9ed6be7ca41c31806294f165bb68c1e7ce4490a4a76def65299b03acb3a1823c4ea308b495aab8dab07429ea2fbbe6d683fab840dd0
+"cozy-device-helper@npm:^4.0.0":
+  version: 4.0.5
+  resolution: "cozy-device-helper@npm:4.0.5"
+  checksum: 10c0/1d91c9efbb3db4cf2d4ed7e0bc59107ee1d21ab46d2e84ed3491416bcea9e902c6df15a3024a70f5d54de0f4f0a4cc82ed3d4170e3f741fd4872cf9cb00b60ca
   languageName: node
   linkType: hard
 
@@ -6319,7 +6317,7 @@ __metadata:
     cli-highlight: "npm:2.1.11"
     commander: "npm:7.2.0"
     cozy-client: "npm:45.14.1"
-    cozy-device-helper: "npm:^2.1.0"
+    cozy-device-helper: "npm:^4.0.0"
     cozy-flags: "npm:^2.8.7"
     cozy-konnector-libs: "npm:^5.13.0"
     cozy-logger: "npm:1.9.0"
@@ -6390,7 +6388,7 @@ __metadata:
     classificator: "npm:^0.3.3"
     cozy-client: "npm:^45.14.1"
     cozy-client-js: "npm:^0.21.0"
-    cozy-device-helper: "npm:^2.1.0"
+    cozy-device-helper: "npm:^4.0.0"
     cozy-doctypes: "npm:^1.83.8"
     cozy-flags: "npm:^2.8.7"
     cozy-logger: "npm:^1.8.0"
